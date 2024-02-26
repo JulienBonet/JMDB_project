@@ -8,14 +8,13 @@
     "Lucida Sans", Arial, sans-serif;
   font-size: 1rem;
   text-align: center;
-  background-color: var(--color-background2);
-  color: var(--color-primary);
-  padding: 10px 0;
-  border-top: solid 1px var(--color-secondary);
-  border-radius: 15px 15px 0 0;
-  width: min(13%);
+  color: var(--color-secondary);
+  padding: 10px 1rem;
+  border: solid 1px white;
+  border-top: 0;
+  border-radius: 0 0 20px 20px;
 }
 
 .whiteString {
-  color: whitesmoke;
+  color: var(--color-secondary);
 }
