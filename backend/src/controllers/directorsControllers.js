@@ -1,27 +1,27 @@
 const directorsModel = require("../models/directorsModel");
 
-const getAllDirectorsAsc = async (req, res, next) => {
+const getAllArtistAsc = async (req, res, next) => {
   try {
-    const [directors] = await directorsModel.findAllDirectorsAsc();
+    const [directors] = await directorsModel.findAllArtistAsc();
     res.status(200).json(directors);
   } catch (error) {
     next(error);
   }
 };
 
-const getAllDirectorsDesc = async (req, res, next) => {
+const getAllArtistDesc = async (req, res, next) => {
   try {
-    const [directors] = await directorsModel.findAllfindAllDirectorsDesc();
+    const [directors] = await directorsModel.findAllArtistDesc();
     res.status(200).json(directors);
   } catch (error) {
     next(error);
   }
 };
 
-const getAllMoviesByDirectorId = async (req, res, next) => {
+const getAllMoviesByArtistId = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const [movies] = await directorsModel.findAllMoviesByDirectorId(id);
+    const [movies] = await directorsModel.findAllMoviesByArtistId(id);
     res.status(200).json(movies);
   } catch (error) {
     next(error);
@@ -31,7 +31,7 @@ const getAllMoviesByDirectorId = async (req, res, next) => {
 const getAllSorted0 = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const [movies] = await directorsModel.findAllMoviesByDirectorIdAsc(id);
+    const [movies] = await directorsModel.findAllMoviesByArtistIdAsc(id);
     res.status(200).json(movies);
   } catch (error) {
     next(error);
@@ -41,7 +41,7 @@ const getAllSorted0 = async (req, res, next) => {
 const getAllSorted1 = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const [movies] = await directorsModel.findAllMoviesByDirectorIdDesc(id);
+    const [movies] = await directorsModel.findAllMoviesByArtistIdDesc(id);
     res.status(200).json(movies);
   } catch (error) {
     next(error);
@@ -51,7 +51,7 @@ const getAllSorted1 = async (req, res, next) => {
 const getAllSorted2 = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const [movies] = await directorsModel.findAllMoviesByDirectorIdYearAsc(id);
+    const [movies] = await directorsModel.findAllMoviesByArtistIdYearAsc(id);
     res.status(200).json(movies);
   } catch (error) {
     next(error);
@@ -61,7 +61,7 @@ const getAllSorted2 = async (req, res, next) => {
 const getAllSorted3 = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const [movies] = await directorsModel.findAllMoviesByDirectorIdYearDesc(id);
+    const [movies] = await directorsModel.findAllMoviesByArtistIdYearDesc(id);
     res.status(200).json(movies);
   } catch (error) {
     next(error);
@@ -69,9 +69,9 @@ const getAllSorted3 = async (req, res, next) => {
 };
 
 module.exports = {
-  getAllDirectorsAsc,
-  getAllDirectorsDesc,
-  getAllMoviesByDirectorId,
+  getAllArtistAsc,
+  getAllArtistDesc,
+  getAllMoviesByArtistId,
   getAllSorted0,
   getAllSorted1,
   getAllSorted2,
