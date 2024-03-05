@@ -3,7 +3,6 @@ const castingModel = require("../models/castingModel");
 const getAllArtistAsc = async (req, res, next) => {
   try {
     const [artist] = await castingModel.findAllArtistAsc();
-    console.info(artist);
     res.status(200).json(artist);
   } catch (error) {
     next(error);

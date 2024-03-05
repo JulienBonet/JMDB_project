@@ -41,7 +41,6 @@ function MovieDirectors() {
         return response.json();
       })
       .then((directorsDataLetter) => {
-        console.info(directorsDataLetter);
         setSelectedDirectorByLetter(directorsDataLetter);
       })
       .catch((error) => {
