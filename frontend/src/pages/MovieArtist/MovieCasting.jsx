@@ -1,18 +1,9 @@
 import { useState, useEffect } from "react";
 import { useLoaderData } from "react-router-dom";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import Stack from "@mui/material/Stack";
-import Button from "@mui/material/Button";
+import { createTheme } from "@mui/material/styles";
 import "./movieArtist.css";
-import "../../assets/css/common_elements.css";
-import "../../assets/css/scrollButton.css";
-import MovieCount from "../../components/MovieCount/MovieCount";
-import Counter from "../../components/Counters/Counters";
-import AlphabeticBtn from "../../components/AlphabeticBtn/AlphabeticBtn";
-import ChronologicBtn from "../../components/ChronologicBtn/ChronologicBtn";
-import MovieThumbnail from "../../components/MovieThumbnail/MovieThumbnail";
-import ActorBear from "../../assets/ico/actor-bear.jpeg";
-import AlphabetDropdown from "../../components/AlphabetOption/AlphabetDropdown";
+import ArtistList from "../../components/ArtistList/ArtistList";
+import ArtistFilmo from "../../components/ArtistFilmo/ArtistFilmo";
 
 function MovieCasting() {
   // DATAS
@@ -39,7 +30,6 @@ function MovieCasting() {
         return response.json();
       })
       .then((castingDataLetter) => {
-        console.info(castingDataLetter);
         setSelectedCastingByLetter(castingDataLetter);
       })
       .catch((error) => {
@@ -47,7 +37,7 @@ function MovieCasting() {
       });
   }, [selectedLetter]);
 
-  // REQUEST ALL MOVIES
+  // REQUEST ALL MOVIES by ARTIST
   useEffect(() => {
     fetch(
       `${import.meta.env.VITE_BACKEND_URL}/api/casting/${selectedCasting.id}`
@@ -98,7 +88,7 @@ function MovieCasting() {
       )
     : [];
 
-  // AFFICHER LE NOMBRE D'ARTISTES
+  // ARTISTS AMOUNT
   const castingAmount = selectedCastingByLetter.length;
   const selectedCastingAmount = filteredCasting.length;
 
@@ -107,6 +97,7 @@ function MovieCasting() {
     setData(movies);
   }, [movies]);
 
+  // REQUEST ALL MOVIES SORTED ALPHABETICAL ASC
   const movieSortedA = async () => {
     try {
       const response = await fetch(
@@ -124,7 +115,7 @@ function MovieCasting() {
       console.error("Error fetching data:", error);
     }
   };
-
+  // REQUEST ALL MOVIES SORTED ALPHABETICAL DESC
   const movieSortedZ = async () => {
     try {
       const response = await fetch(
@@ -142,7 +133,7 @@ function MovieCasting() {
       console.error("Error fetching data:", error);
     }
   };
-
+  // REQUEST ALL MOVIES SORTED CHRONOLOGICAL ASC
   const movieSortedYear = async () => {
     try {
       const response = await fetch(
@@ -161,6 +152,7 @@ function MovieCasting() {
     }
   };
 
+  // REQUEST ALL MOVIES SORTED CHRONOLOGICAL DSC
   const movieSortedYearDesc = async () => {
     try {
       const response = await fetch(
@@ -197,6 +189,9 @@ function MovieCasting() {
     },
   });
 
+  // PROPS FOR TEXTS & IMAGE
+  const origin = "casting";
+
   return (
     <main>
       <section className="artists_content">
@@ -207,6 +202,7 @@ function MovieCasting() {
                 value={search}
                 onChange={handleTyping}
                 className="search_bar"
+                placeholder="recherche acteur"
               />
             </div>
           </section>
@@ -214,99 +210,29 @@ function MovieCasting() {
         <div className="dashed_secondary_bar" />
         <section>
           <section className="artists_seach_container">
-            <section className="artists_groups">
-              <AlphabetDropdown onLetterChange={handleLetterChange} />
-              {search === "" && (
-                <div className="artists_groups_content">
-                  <ThemeProvider theme={theme}>
-                    <Stack spacing={2} direction="row" className="artists_list">
-                      {selectedCastingByLetter.map((casting) => (
-                        <Button
-                          key={casting.id}
-                          variant="text"
-                          color="artists_list"
-                          size="small"
-                          className="artists_button"
-                          onClick={() => handleArtistClick(casting)}
-                        >
-                          {casting.name}
-                        </Button>
-                      ))}
-                    </Stack>
-                  </ThemeProvider>
-                </div>
-              )}
-              {search !== "" && (
-                <div className="artists_groups_content">
-                  <ThemeProvider theme={theme}>
-                    <Stack spacing={2} direction="row" className="artists_list">
-                      {filteredCasting.map((casting) => (
-                        <Button
-                          key={casting.id}
-                          variant="text"
-                          color="primary"
-                          size="small"
-                          className="artists_button"
-                          onClick={() => handleArtistClick(casting)}
-                        >
-                          {casting.name}
-                        </Button>
-                      ))}
-                    </Stack>
-                  </ThemeProvider>
-                </div>
-              )}
-              {search === "" && (
-                <Counter origin="casting" countAmount={castingAmount} />
-              )}
-              {search !== "" && (
-                <Counter origin="casting" countAmount={selectedCastingAmount} />
-              )}
-            </section>
-            <section className="filmo_artists">
-              {selectedCasting === "" && (
-                <section className="artists_bear">
-                  <section className="artists_bear_position">
-                    <div className="artists_bear_container">
-                      <div className="artists_pitch_container">
-                        <p className="artists_pitch">
-                          QUEL ACTEUR CHERCHONS NOUS ?
-                        </p>
-                      </div>
-                      <img
-                        src={ActorBear}
-                        alt="a Bear director"
-                        className="artists_bear_illustr"
-                      />
-                    </div>
-                  </section>
-                </section>
-              )}
-              {selectedCasting !== "" && (
-                <section className="artists_filmo">
-                  <div className="scroll_zone scroll_zone_2">
-                    <div className="artists_filmo_thumbs">
-                      {data.map((filmo) => (
-                        <MovieThumbnail key={filmo.id} data={filmo} />
-                      ))}
-                    </div>
-                  </div>
-                </section>
-              )}
-              <div className="btn_sort_container_search">
-                <AlphabeticBtn
-                  origin="artists"
-                  onClick={sortOrderA === "asc" ? movieSortedZ : movieSortedA}
-                />
-                <MovieCount movieAmount={movieAmount} />
-                <ChronologicBtn
-                  origin="artists"
-                  onClick={
-                    sortOrderY === "asc" ? movieSortedYearDesc : movieSortedYear
-                  }
-                />
-              </div>
-            </section>
+            <ArtistList
+              handleLetterChange={handleLetterChange}
+              search={search}
+              theme={theme}
+              selectedByLetter={selectedCastingByLetter}
+              filteredArtist={filteredCasting}
+              handleArtistClick={handleArtistClick}
+              origin={origin}
+              artistAmount={castingAmount}
+              selectedArtistAmount={selectedCastingAmount}
+            />
+            <ArtistFilmo
+              selectedArtist={selectedCasting}
+              origin={origin}
+              data={data}
+              sortOrderA={sortOrderA}
+              movieSortedZ={movieSortedZ}
+              movieSortedA={movieSortedA}
+              sortOrderY={sortOrderY}
+              movieSortedYearDesc={movieSortedYearDesc}
+              movieSortedYear={movieSortedYear}
+              movieAmount={movieAmount}
+            />
           </section>
         </section>
       </section>
