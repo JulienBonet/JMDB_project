@@ -78,7 +78,7 @@ function AdminStudioList() {
       });
   };
 
-  // DELETE COMPOSITOR
+  // DELETE STUDIO
   const handleDelete = async (id) => {
     // Display confirmation dialog
     const confirmDelete = window.confirm(
@@ -215,10 +215,6 @@ function AdminStudioList() {
                 origin={origin}
                 onUpdate={refreshStudio}
                 closeModal={closeModal}
-                showImage
-                showPitch
-                showWikilink
-                showImdbLink
               />
             </Container>
           </Box>
