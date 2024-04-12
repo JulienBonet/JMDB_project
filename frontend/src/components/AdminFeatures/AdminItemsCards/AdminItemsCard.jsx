@@ -150,6 +150,7 @@ function AdminItemsCard({ item, origin, onUpdate, closeModal }) {
             <p className="Items_info">{name}</p>
           )}
         </div>
+
         <div className="Info_item_line">
           <h2 className="ItemsCard_title">PITCH: </h2>
           {isModify ? (
@@ -162,6 +163,7 @@ function AdminItemsCard({ item, origin, onUpdate, closeModal }) {
             <p className="Items_info">{pitch}</p>
           )}
         </div>
+
         <div className="Info_item_line">
           <h2 className="ItemsCard_title">WIKIPEDIA: </h2>
           {isModify ? (
@@ -174,6 +176,7 @@ function AdminItemsCard({ item, origin, onUpdate, closeModal }) {
             <p className="Items_info">{wikilink}</p>
           )}
         </div>
+
         <div className="Info_item_line">
           <h2 className="ItemsCard_title">IMDB: </h2>
           {isModify ? (
@@ -186,6 +189,7 @@ function AdminItemsCard({ item, origin, onUpdate, closeModal }) {
             <p className="Items_info">{imdblink}</p>
           )}
         </div>
+
         <div className="Info_Btn-Modify">
           {isEditing ? (
             <section className="Item_Editing_Buttons">
@@ -209,6 +213,7 @@ function AdminItemsCard({ item, origin, onUpdate, closeModal }) {
           )}
         </div>
       </section>
+
       <section className="ItemsCard_Col2">
         {image && (
           <img className="ItemImage" src={image} alt={`${item.name}`} />
