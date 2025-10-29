@@ -7,7 +7,7 @@ import ArtistList from "../../components/ArtistList/ArtistList";
 import ArtistFilmo from "../../components/ArtistFilmo/ArtistFilmo";
 import MovieArtistSearchBar from "../../components/MovieArtistSearchBar/MovieArtistSearchBar";
 
-function MovieCasting() {
+function MovieStudio() {
   // DATAS
   const studioData = useLoaderData();
   const [movies, setMovies] = useState([]);
@@ -264,6 +264,6 @@ function MovieCasting() {
       </section>
     </main>
   ); // end return
-} // function MovieCasting()
+} // function MovieStudio()
 
-export default MovieCasting;
+export default MovieStudio;
