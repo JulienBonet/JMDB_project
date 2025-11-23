@@ -7,7 +7,7 @@ countries.registerLocale(frLocale);
 
 // Dictionnaire de corrections spécifiques
 const countryCorrections = {
-  "États-Unis d'Amérique": "États-Unis",
+  "États-Unis d'Amérique": "USA",
   //   "Royaume-Uni de Grande-Bretagne et d'Irlande du Nord": "Royaume-Uni",
   // ajoutez ici toutes les corrections
 };
