@@ -690,6 +690,7 @@ function AddNewMovie() {
     transform: "translate(-50%, -50%)",
     bgcolor: "background.paper",
     border: "2px solid #000",
+    borderRadius: "10px",
     boxShadow: 24,
     pt: 0,
     pb: 4,
