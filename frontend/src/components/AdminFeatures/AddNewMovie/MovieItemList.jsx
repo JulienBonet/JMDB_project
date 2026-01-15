@@ -135,7 +135,6 @@ export default function TransferList({
   // État pour la barre de recherche dans la liste de droite
   const [searchTermRight, setSearchTermRight] = useState("");
   const [focusCategory, setFocusCategory] = useState("all");
-  console.info("focusCategory", focusCategory);
 
   // Modal createdItemCard
   const [showModal, setShowModal] = useState(false);
