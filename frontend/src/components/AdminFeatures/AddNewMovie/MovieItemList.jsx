@@ -274,7 +274,7 @@ export default function TransferList({
   });
 
   const isSmall = useMediaQuery(theme.breakpoints.down("sm"));
-  const listHeight = isSmall ? 220 : 460;
+  const listHeight = isSmall ? 170 : 460;
 
   const customList = (
     items,
