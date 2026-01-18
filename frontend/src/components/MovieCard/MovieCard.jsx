@@ -206,7 +206,11 @@ function MovieCard({
           console.error("Error fetching user data:", error);
         });
     } else {
-      fetch(`${import.meta.env.VITE_BACKEND_URL}/api/movies/${movieData.id}`)
+      fetch(`${import.meta.env.VITE_BACKEND_URL}/api/movies/${movieData.id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
         .then((response) => {
           if (!response.ok) {
             throw new Error("Network response was not ok");

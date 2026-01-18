@@ -86,7 +86,12 @@ function MovieSearch() {
   const fetchMovies = async () => {
     try {
       setIsLoading(true);
-      const res = await fetch(buildUrl());
+      const res = await fetch(buildUrl(), {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
       if (!res.ok) {
         // tu peux adapter la gestion d'erreur
         console.error("Erreur fetch movies:", res.statusText);
