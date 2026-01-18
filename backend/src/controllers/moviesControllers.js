@@ -1,15 +1,6 @@
 /* eslint-disable consistent-return */
 const moviesModel = require("../models/moviesModel");
 
-// const getAll = async (req, res, next) => {
-//   try {
-//     const [movies] = await moviesModel.findAll();
-//     res.status(200).json(movies);
-//   } catch (error) {
-//     next(error);
-//   }
-// };
-
 const getAll = async (req, res, next) => {
   try {
     const isAdmin =
@@ -66,19 +57,6 @@ const getAllSortedNox = async (req, res, next) => {
     next(error);
   }
 };
-
-// const getById = async (req, res, next) => {
-//   try {
-//     const [[movie]] = await moviesModel.findById(req.params.id);
-//     if (movie == null) {
-//       res.sendStatus(404);
-//     } else {
-//       res.json(movie);
-//     }
-//   } catch (err) {
-//     next(err);
-//   }
-// };
 
 const getById = async (req, res, next) => {
   try {
@@ -289,7 +267,7 @@ const getAllDecades = async (req, res, next) => {
 
 const getByTvShow = async (req, res) => {
   try {
-    const { isTvShow } = req.query; // "0", "1" ou vide
+    const { isTvShow } = req.query;
     const [rows] = await moviesModel.findByTvShow(isTvShow);
     res.json(rows);
   } catch (err) {
@@ -297,34 +275,6 @@ const getByTvShow = async (req, res) => {
     res.status(500).json({ message: "Erreur serveur" });
   }
 };
-
-// const getFilteredMovies = async (req, res, next) => {
-//   try {
-//     const {
-//       search = "",
-//       kind = "",
-//       country = "",
-//       year = "",
-//       tvshow,
-//       orderby = "title",
-//       direction = "ASC",
-//     } = req.query;
-
-//     const movies = await moviesModel.findFilteredMovies({
-//       search,
-//       kind,
-//       country,
-//       year,
-//       tvshow,
-//       orderby,
-//       direction,
-//     });
-
-//     res.status(200).json(movies);
-//   } catch (err) {
-//     next(err);
-//   }
-// };
 
 const getFilteredMovies = async (req, res, next) => {
   try {

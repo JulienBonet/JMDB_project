@@ -70,7 +70,6 @@ function MovieSearch() {
     if (selectedYear) p.append("year", selectedYear);
 
     if (selectedTvShow !== "all") {
-      // backend expects 0/1 for the old route; keep same semantics
       p.append("tvshow", selectedTvShow === "movies" ? 0 : 1);
     }
 

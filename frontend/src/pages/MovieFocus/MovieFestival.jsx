@@ -166,10 +166,24 @@ function MovieThema() {
                   <InfoOutlinedIcon
                     sx={{
                       fontSize: "2rem",
+                      animation: "infoPulse 1.2s ease-out 1",
+                      "@keyframes infoPulse": {
+                        "0%": {
+                          transform: "scale(0.8)",
+                          opacity: 0,
+                        },
+                        "50%": {
+                          transform: "scale(1.25)",
+                          opacity: 1,
+                        },
+                        "100%": {
+                          transform: "scale(1)",
+                        },
+                      },
                       transition: "0.2s ease",
                       "&:hover": {
-                        color: "var(--color-03)", // ta couleur hover
-                        transform: "scale(1.15)", // petit zoom
+                        color: "var(--color-03)",
+                        transform: "scale(1.15)",
                       },
                     }}
                   />
