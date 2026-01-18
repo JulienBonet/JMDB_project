@@ -10,10 +10,6 @@ const excludeXOnlyMoviesSQL = `
   )
 `;
 
-// const findAll = (orderBy = "id", orderDir = "DESC") => {
-//   return db.query(`SELECT * FROM movies ORDER BY ${orderBy} ${orderDir}`, []);
-// };
-
 const findAll = (isAdmin, orderBy = "id", orderDir = "DESC") => {
   let sql = `
     SELECT m.*
@@ -45,47 +41,6 @@ const findAllSortedNoX = () => {
       return result;
     });
 };
-
-// const findById = (id) => {
-//   return db.query(
-//     `SELECT movies.*,
-//     GROUP_CONCAT(DISTINCT director.name SEPARATOR ', ') AS directors,
-//     GROUP_CONCAT(DISTINCT casting.name SEPARATOR ', ') AS casting,
-//     GROUP_CONCAT(DISTINCT genre.name SEPARATOR ', ') AS genres,
-//     GROUP_CONCAT(DISTINCT country.name SEPARATOR ', ') AS countries,
-//     GROUP_CONCAT(DISTINCT language.name SEPARATOR ', ') AS languages,
-//     GROUP_CONCAT(DISTINCT music.name SEPARATOR ', ') AS music,
-//     GROUP_CONCAT(DISTINCT screenwriter.name SEPARATOR ', ') AS screenwriters,
-//     GROUP_CONCAT(DISTINCT studio.name SEPARATOR ', ') AS studios,
-//     GROUP_CONCAT(DISTINCT tag.name SEPARATOR ', ') AS tags,
-//     GROUP_CONCAT(DISTINCT focus.name SEPARATOR ', ') AS focus
-// FROM movies
-// LEFT JOIN movie_director ON movies.id = movie_director.movieId
-// LEFT JOIN director ON movie_director.directorId = director.id
-// LEFT JOIN movie_casting ON movies.id = movie_casting.movieId
-// LEFT JOIN casting ON movie_casting.castingId = casting.id
-// LEFT JOIN movie_genre ON movies.id = movie_genre.movieId
-// LEFT JOIN genre ON movie_genre.genreId = genre.id
-// LEFT JOIN movie_country ON movies.id = movie_country.movieId
-// LEFT JOIN country ON movie_country.countryId = country.id
-// LEFT JOIN movie_language ON movies.id = movie_language.movieId
-// LEFT JOIN language ON movie_language.languageId = language.id
-// LEFT JOIN movie_music ON movies.id = movie_music.movieId
-// LEFT JOIN music ON movie_music.musicId = music.id
-// LEFT JOIN movie_screenwriter ON movies.id = movie_screenwriter.movieId
-// LEFT JOIN screenwriter ON movie_screenwriter.screenwriterId = screenwriter.id
-// LEFT JOIN movie_studio ON movies.id = movie_studio.movieId
-// LEFT JOIN studio ON movie_studio.studioId = studio.id
-// LEFT JOIN movie_tag ON movies.id = movie_tag.movieId
-// LEFT JOIN tag ON movie_tag.tagId = tag.id
-// LEFT JOIN movie_focus ON movies.id = movie_focus.movieId
-// LEFT JOIN focus ON movie_focus.focusId = focus.id
-// WHERE movies.id = ?
-// GROUP BY movies.id, movies.title, movies.altTitle, movies.year, movies.duration, movies.cover, movies.trailer, movies.pitch, movies.story, movies.location, movies.videoFormat, movies.comment, movies.videoSupport, movies.fileSize, movies.idTheMovieDb, movies.idIMDb;
-//   `,
-//     [id]
-//   );
-// };
 
 const findById = (id, isAdmin) => {
   let sql = `
@@ -355,7 +310,7 @@ const findByName = async (title) => {
       "SELECT COUNT(*) as count FROM movies WHERE title = ?",
       [title]
     );
-    return rows[0].count > 0; // true si existe, false sinon
+    return rows[0].count > 0;
   } catch (err) {
     console.error("Erreur dans Movie_ findByName:", err);
     throw err;
