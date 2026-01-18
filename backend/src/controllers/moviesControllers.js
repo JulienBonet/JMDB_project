@@ -12,7 +12,8 @@ const moviesModel = require("../models/moviesModel");
 
 const getAll = async (req, res, next) => {
   try {
-    const isAdmin = !!req.user?.isAdmin;
+    const isAdmin =
+      req.user && (Number(req.user.isAdmin) === 1 || req.user.isAdmin === true);
     const [movies] = await moviesModel.findAll(isAdmin);
     res.status(200).json(movies);
   } catch (error) {
@@ -81,7 +82,9 @@ const getAllSortedNox = async (req, res, next) => {
 
 const getById = async (req, res, next) => {
   try {
-    const isAdmin = !!req.user?.isAdmin;
+    const isAdmin =
+      req.user && (Number(req.user.isAdmin) === 1 || req.user.isAdmin === true);
+
     const [[movie]] = await moviesModel.findById(req.params.id, isAdmin);
 
     if (!movie) {
@@ -325,7 +328,8 @@ const getByTvShow = async (req, res) => {
 
 const getFilteredMovies = async (req, res, next) => {
   try {
-    const isAdmin = !!req.user?.isAdmin;
+    const isAdmin =
+      req.user && (Number(req.user.isAdmin) === 1 || req.user.isAdmin === true);
 
     const {
       search = "",
