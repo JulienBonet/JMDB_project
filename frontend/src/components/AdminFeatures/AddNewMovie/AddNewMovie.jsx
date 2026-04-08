@@ -87,7 +87,7 @@ function AddNewMovie() {
     title: "",
     altTitle: "",
     year: "",
-    duration: "",
+    duration: 0,
     pitch: "",
     story: "",
     comment: "",
@@ -102,13 +102,13 @@ function AddNewMovie() {
     isTvShow: false,
     nbTvSeasons: "",
     tvSeasons: "",
-    nbTvEpisodes: "",
-    episodeDuration: "",
+    nbTvEpisodes: null,
+    episodeDuration: 0,
   });
-  // useEffect(() => {
-  //   console.info("data", data);
-  //   console.info("movie", movie);
-  // }, [data]);
+  useEffect(() => {
+    console.info("data", data);
+    console.info("movie", movie);
+  }, [movie, data]);
 
   //-----------------------------------------------
   // GESTION DES FIELDS SAISONS - EPISODES - DUREE
@@ -346,7 +346,7 @@ function AddNewMovie() {
       title: "",
       altTitle: "",
       year: "",
-      duration: "",
+      duration: 0,
       pitch: "",
       story: "",
       posterUrl: "",
@@ -360,8 +360,8 @@ function AddNewMovie() {
       isTvShow,
       nbTvSeasons: "",
       tvSeasons: "",
-      nbTvEpisodes: "",
-      episodeDuration: "",
+      nbTvEpisodes: null,
+      episodeDuration: 0,
     });
 
     // Réinitialiser les états du front
