@@ -1,32 +1,31 @@
 /* eslint-disable no-continue */
 /* eslint-disable no-unreachable */
 /* eslint-disable no-unused-vars */
-/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-plusplus */
 /* eslint-disable consistent-return */
 /* eslint-disable prefer-destructuring */
-require("dotenv").config();
-const axios = require("axios");
-const { cloudinary, uploadBufferToCloudinary } = require("../utils/cloudinary");
-const { resizeAndCropBuffer } = require("../utils/imageUtils");
+require('dotenv').config();
+const axios = require('axios');
+const { cloudinary, uploadBufferToCloudinary } = require('../utils/cloudinary');
+const { resizeAndCropBuffer } = require('../utils/imageUtils');
 
-const { cleanTags } = require("../utils/tags");
-const { cleanStudioName } = require("../utils/studio");
-const editingModel = require("../models/editingModel");
-const editingMovieModel = require("../models/editingMovieModel");
-const purgeModel = require("../models/purgeModel");
+const { cleanTags } = require('../utils/tags');
+const { cleanStudioName } = require('../utils/studio');
+const editingModel = require('../models/editingModel');
+const editingMovieModel = require('../models/editingMovieModel');
+const purgeModel = require('../models/purgeModel');
 
-const DEFAULT_COVER = "00_cover_default.jpg";
-const CLOUD_FOLDER = "jmdb/covers";
+const DEFAULT_COVER = '00_cover_default.jpg';
+const CLOUD_FOLDER = 'jmdb/covers';
 
 // -------------------------- Fonctions Cloudinary --------------------------
 
 const uploadLocalCover = async (localFilePath, movieId = null) => {
-  const folder = movieId ? `jmdb/covers/${movieId}` : "jmdb/covers";
+  const folder = movieId ? `jmdb/covers/${movieId}` : 'jmdb/covers';
   const result = await cloudinary.uploader.upload(localFilePath, {
     folder,
-    public_id: movieId ? "cover" : undefined,
+    public_id: movieId ? 'cover' : undefined,
     overwrite: true,
   });
   return result.secure_url;
@@ -37,39 +36,32 @@ const updateImageFromUrl = async (req, res) => {
     const { id } = req.params;
     const { imageUrl } = req.body;
 
-    if (!imageUrl)
-      return res.status(400).json({ message: "Aucune URL fournie" });
+    if (!imageUrl) return res.status(400).json({ message: 'Aucune URL fournie' });
 
     const [movie] = await editingMovieModel.findMovieById(id);
-    if (!movie) return res.status(404).json({ message: "Film introuvable" });
+    if (!movie) return res.status(404).json({ message: 'Film introuvable' });
 
     const oldCover = movie.cover;
 
     // 1️⃣ Télécharger l'image distante
-    const response = await axios.get(imageUrl, { responseType: "arraybuffer" });
+    const response = await axios.get(imageUrl, { responseType: 'arraybuffer' });
     const buffer = Buffer.from(response.data);
 
     // 2️⃣ Resize / crop si nécessaire
     const resizedBuffer = await resizeAndCropBuffer(buffer, 306, 459);
 
     // 3️⃣ Upload sur Cloudinary via ta fonction existante
-    const folder = "jmdb/covers";
-    const { publicId, url } = await uploadBufferToCloudinary(
-      resizedBuffer,
-      folder,
-      "cover"
-    );
+    const folder = 'jmdb/covers';
+    const { publicId, url } = await uploadBufferToCloudinary(resizedBuffer, folder, 'cover');
 
     // 4️⃣ Stocker uniquement le nom du fichier (publicId + extension) en DB
-    const filename = `${publicId.split("/").pop()}.jpg`; // garde juste cover-xxx
+    const filename = `${publicId.split('/').pop()}.jpg`; // garde juste cover-xxx
     await editingMovieModel.updateMovieImage(filename, id);
 
     // 5️⃣ Supprimer ancienne image si pas par défaut
     if (oldCover && oldCover !== DEFAULT_COVER) {
-      const oldPublicId = oldCover.replace(/\.[^.]+$/, "");
-      const fullPublicId = oldPublicId.includes("/")
-        ? oldPublicId
-        : `jmdb/covers/${oldPublicId}`;
+      const oldPublicId = oldCover.replace(/\.[^.]+$/, '');
+      const fullPublicId = oldPublicId.includes('/') ? oldPublicId : `jmdb/covers/${oldPublicId}`;
 
       await cloudinary.uploader.destroy(fullPublicId);
     }
@@ -78,15 +70,13 @@ const updateImageFromUrl = async (req, res) => {
 
     // 6️⃣ Retour front avec URL complète pour affichage immédiat
     return res.status(200).json({
-      message: "Image successfully updated",
+      message: 'Image successfully updated',
       movie: updatedMovie,
       secure_url: url,
     });
   } catch (err) {
-    console.error("❌ updateImageFromUrl:", err);
-    return res
-      .status(500)
-      .json({ message: "Error updating image", error: err.message });
+    console.error('❌ updateImageFromUrl:', err);
+    return res.status(500).json({ message: 'Error updating image', error: err.message });
   }
 };
 
@@ -108,7 +98,7 @@ const addMovie = async (req, res) => {
 
     // Normaliser les booléens
     const normalizeBool = (val) =>
-      val === true || val === "true" || val === 1 || val === "1" ? 1 : 0;
+      val === true || val === 'true' || val === 1 || val === '1' ? 1 : 0;
     parsedBody.vostfr = normalizeBool(parsedBody.vostfr);
     parsedBody.multi = normalizeBool(parsedBody.multi);
     parsedBody.isTvShow = normalizeBool(parsedBody.isTvShow);
@@ -116,32 +106,20 @@ const addMovie = async (req, res) => {
     // --------------------------
     // 2️⃣ Gestion de l’image avant insertion
     // --------------------------
-    let coverFilename = "00_cover_default.jpg"; // valeur par défaut
+    let coverFilename = '00_cover_default.jpg'; // valeur par défaut
 
     if (req.file?.buffer) {
       // IMAGE LOCALE
-      const resizedBuffer = await resizeAndCropBuffer(
-        req.file.buffer,
-        306,
-        459
-      );
-      const { publicId } = await uploadBufferToCloudinary(
-        resizedBuffer,
-        CLOUD_FOLDER,
-        "cover"
-      );
-      coverFilename = `${publicId.split("/").pop()}.jpg`;
+      const resizedBuffer = await resizeAndCropBuffer(req.file.buffer, 306, 459);
+      const { publicId } = await uploadBufferToCloudinary(resizedBuffer, CLOUD_FOLDER, 'cover');
+      coverFilename = `${publicId.split('/').pop()}.jpg`;
     } else if (parsedBody.coverUrl) {
       // IMAGE TMDB
       const imageResponse = await fetch(parsedBody.coverUrl);
       const buffer = Buffer.from(await imageResponse.arrayBuffer());
       const resizedBuffer = await resizeAndCropBuffer(buffer, 306, 459);
-      const { publicId } = await uploadBufferToCloudinary(
-        resizedBuffer,
-        CLOUD_FOLDER,
-        "cover"
-      );
-      coverFilename = `${publicId.split("/").pop()}.jpg`;
+      const { publicId } = await uploadBufferToCloudinary(resizedBuffer, CLOUD_FOLDER, 'cover');
+      coverFilename = `${publicId.split('/').pop()}.jpg`;
     }
 
     parsedBody.cover = coverFilename;
@@ -157,9 +135,7 @@ const addMovie = async (req, res) => {
     // genres
     if (parsedBody.genres?.length > 0) {
       await Promise.all(
-        parsedBody.genres.map((g) =>
-          editingMovieModel.addMovieKind(movieId, g.id)
-        )
+        parsedBody.genres.map((g) => editingMovieModel.addMovieKind(movieId, g.id))
       );
     }
 
@@ -176,14 +152,11 @@ const addMovie = async (req, res) => {
           existing = rowsAfter[0];
         }
 
-        if (!existing?.id)
-          console.warn("⚠️ Could not get ID for director:", name);
+        if (!existing?.id) console.warn('⚠️ Could not get ID for director:', name);
         else directorIds.push(existing.id);
       }
 
-      await Promise.all(
-        directorIds.map((id) => editingMovieModel.addMovieDirector(movieId, id))
-      );
+      await Promise.all(directorIds.map((id) => editingMovieModel.addMovieDirector(movieId, id)));
     }
 
     // castings
@@ -199,9 +172,7 @@ const addMovie = async (req, res) => {
         }
         if (existing?.id) castingIds.push(existing.id);
       }
-      await Promise.all(
-        castingIds.map((id) => editingMovieModel.addMovieCasting(movieId, id))
-      );
+      await Promise.all(castingIds.map((id) => editingMovieModel.addMovieCasting(movieId, id)));
     }
 
     // screenwriters
@@ -218,9 +189,7 @@ const addMovie = async (req, res) => {
         if (existing?.id) screenwriterIds.push(existing.id);
       }
       await Promise.all(
-        screenwriterIds.map((id) =>
-          editingMovieModel.addMovieScreenwriter(movieId, id)
-        )
+        screenwriterIds.map((id) => editingMovieModel.addMovieScreenwriter(movieId, id))
       );
     }
 
@@ -237,9 +206,7 @@ const addMovie = async (req, res) => {
         }
         if (existing?.id) compositorIds.push(existing.id);
       }
-      await Promise.all(
-        compositorIds.map((id) => editingMovieModel.addMovieMusic(movieId, id))
-      );
+      await Promise.all(compositorIds.map((id) => editingMovieModel.addMovieMusic(movieId, id)));
     }
 
     // studios
@@ -257,12 +224,10 @@ const addMovie = async (req, res) => {
         }
 
         if (existingId) studioIds.push(existingId);
-        else console.warn("⚠️ Could not get ID for studio:", name);
+        else console.warn('⚠️ Could not get ID for studio:', name);
       }
 
-      await Promise.all(
-        studioIds.map((id) => editingMovieModel.addMovieStudio(movieId, id))
-      );
+      await Promise.all(studioIds.map((id) => editingMovieModel.addMovieStudio(movieId, id)));
     }
 
     // countries
@@ -278,9 +243,7 @@ const addMovie = async (req, res) => {
         }
         if (existing?.id) countryIds.push(existing.id);
       }
-      await Promise.all(
-        countryIds.map((id) => editingMovieModel.addMovieCountry(movieId, id))
-      );
+      await Promise.all(countryIds.map((id) => editingMovieModel.addMovieCountry(movieId, id)));
     }
 
     // languages
@@ -296,9 +259,7 @@ const addMovie = async (req, res) => {
         }
         if (existing?.id) languageIds.push(existing.id);
       }
-      await Promise.all(
-        languageIds.map((id) => editingMovieModel.addMovieLanguage(movieId, id))
-      );
+      await Promise.all(languageIds.map((id) => editingMovieModel.addMovieLanguage(movieId, id)));
     }
 
     // tags
@@ -317,20 +278,16 @@ const addMovie = async (req, res) => {
         }
 
         if (existing?.id) tagIds.push(existing.id);
-        else console.warn("⚠️ Could not get ID for tag:", t);
+        else console.warn('⚠️ Could not get ID for tag:', t);
       }
 
-      await Promise.all(
-        tagIds.map((id) => editingMovieModel.addMovieTag(movieId, id))
-      );
+      await Promise.all(tagIds.map((id) => editingMovieModel.addMovieTag(movieId, id)));
     }
 
     // focus
     if (parsedBody.focus?.length > 0) {
       await Promise.all(
-        parsedBody.focus.map((f) =>
-          editingMovieModel.addMovieFocus(movieId, f.id)
-        )
+        parsedBody.focus.map((f) => editingMovieModel.addMovieFocus(movieId, f.id))
       );
     }
 
@@ -338,13 +295,13 @@ const addMovie = async (req, res) => {
     // 5️⃣ Réponse front
     // --------------------------
     const coverUrl =
-      coverFilename === "00_cover_default.jpg"
+      coverFilename === '00_cover_default.jpg'
         ? DEFAULT_COVER
         : cloudinary.url(`${CLOUD_FOLDER}/${coverFilename}`);
-    res.status(201).json({ message: "Film créé", movieId, coverUrl });
+    res.status(201).json({ message: 'Film créé', movieId, coverUrl });
   } catch (error) {
-    console.error("❌ addMovie error:", error);
-    res.status(500).json({ error: "Erreur lors de la création du film" });
+    console.error('❌ addMovie error:', error);
+    res.status(500).json({ error: 'Erreur lors de la création du film' });
   }
 };
 
@@ -359,17 +316,17 @@ const deleteMovie = async (req, res) => {
     const [movie] = await editingMovieModel.findMovieById(movieId);
 
     if (!movie) {
-      return res.status(404).json({ message: "Film introuvable" });
+      return res.status(404).json({ message: 'Film introuvable' });
     }
 
     // 2️⃣ Supprimer l’image Cloudinary (si pas défaut)
     if (movie.cover && movie.cover !== DEFAULT_COVER) {
       // movie.cover = "cover-uuid.jpg"
-      const baseName = movie.cover.replace(/\.[^.]+$/, "");
+      const baseName = movie.cover.replace(/\.[^.]+$/, '');
       const publicId = `jmdb/covers/${baseName}`;
 
       const result = await cloudinary.uploader.destroy(publicId, {
-        resource_type: "image",
+        resource_type: 'image',
         invalidate: true, // 🔥 indispensable (cache CDN)
       });
     }
@@ -379,13 +336,13 @@ const deleteMovie = async (req, res) => {
 
     // 4️⃣ Réponse
     return res.status(200).json({
-      message: "Film supprimé avec succès",
+      message: 'Film supprimé avec succès',
       movieId,
     });
   } catch (err) {
-    console.error("❌ Erreur deleteMovie:", err);
+    console.error('❌ Erreur deleteMovie:', err);
     return res.status(500).json({
-      message: "Erreur lors de la suppression",
+      message: 'Erreur lors de la suppression',
       error: err.message,
     });
   }
@@ -398,20 +355,20 @@ const editMovieImage = async (req, res) => {
     const { id } = req.params;
 
     if (!req.file || !req.file.buffer)
-      return res.status(400).json({ message: "Aucun fichier fourni" });
+      return res.status(400).json({ message: 'Aucun fichier fourni' });
 
     const [movie] = await editingMovieModel.findMovieById(id);
-    if (!movie) return res.status(404).json({ message: "Film introuvable" });
+    if (!movie) return res.status(404).json({ message: 'Film introuvable' });
 
     const oldCover = movie.cover;
 
     // 🗑️ Suppression ancienne image Cloudinary
     if (oldCover && oldCover !== DEFAULT_COVER) {
       try {
-        const publicId = `${CLOUD_FOLDER}/${oldCover.replace(/\.[^.]+$/, "")}`;
+        const publicId = `${CLOUD_FOLDER}/${oldCover.replace(/\.[^.]+$/, '')}`;
         await cloudinary.uploader.destroy(publicId);
       } catch (err) {
-        console.error("❌ Cloudinary delete error:", err);
+        console.error('❌ Cloudinary delete error:', err);
       }
     }
 
@@ -419,26 +376,22 @@ const editMovieImage = async (req, res) => {
     const resizedBuffer = await resizeAndCropBuffer(req.file.buffer, 306, 459);
 
     // ☁ Upload Cloudinary
-    const { publicId, url } = await uploadBufferToCloudinary(
-      resizedBuffer,
-      CLOUD_FOLDER,
-      "cover"
-    );
+    const { publicId, url } = await uploadBufferToCloudinary(resizedBuffer, CLOUD_FOLDER, 'cover');
 
-    const filenameOnly = publicId.split("/").pop();
+    const filenameOnly = publicId.split('/').pop();
     const filename = `${filenameOnly}.jpg`;
 
     // 💾 Update BDD (ON STOCKE LE NOM, PAS L’URL)
     await editingMovieModel.updateMovieImage(filename, id);
 
     return res.status(200).json({
-      message: "Image successfully updated",
+      message: 'Image successfully updated',
       filename,
       url,
     });
   } catch (error) {
-    console.error("❌ editMovieImage:", error);
-    return res.status(500).json({ message: "Error updating image" });
+    console.error('❌ editMovieImage:', error);
+    return res.status(500).json({ message: 'Error updating image' });
   }
 };
 
@@ -577,8 +530,8 @@ const editMovieById = async (req, res) => {
     const updatedMovie = await editingMovieModel.findMovieExtendedById(id);
     res.status(200).json(updatedMovie);
   } catch (error) {
-    console.error("Erreur editMovieById :", error);
-    res.status(500).send("Erreur lors de la mise à jour du film");
+    console.error('Erreur editMovieById :', error);
+    res.status(500).send('Erreur lors de la mise à jour du film');
   }
 };
 

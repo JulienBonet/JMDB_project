@@ -1,4 +1,4 @@
-const screenwritersModel = require("../models/screenwritersModel");
+const screenwritersModel = require('../models/screenwritersModel');
 
 const getAllArtistAsc = async (req, res, next) => {
   try {
@@ -60,8 +60,7 @@ const getAllSorted1 = async (req, res, next) => {
 const getAllSorted2 = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const [movies] =
-      await screenwritersModel.findAllMoviesByArtistIdYearAsc(id);
+    const [movies] = await screenwritersModel.findAllMoviesByArtistIdYearAsc(id);
     res.status(200).json(movies);
   } catch (error) {
     next(error);
@@ -71,8 +70,7 @@ const getAllSorted2 = async (req, res, next) => {
 const getAllSorted3 = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const [movies] =
-      await screenwritersModel.findAllMoviesByArtistIdYearDesc(id);
+    const [movies] = await screenwritersModel.findAllMoviesByArtistIdYearDesc(id);
     res.status(200).json(movies);
   } catch (error) {
     next(error);
@@ -92,8 +90,7 @@ const getAllByLetter = async (req, res, next) => {
 const getAllByName = async (req, res, next) => {
   try {
     const { name } = req.params;
-    const [[screenwriter]] =
-      await screenwritersModel.findScreenwriterByName(name);
+    const [[screenwriter]] = await screenwritersModel.findScreenwriterByName(name);
     res.status(200).json(screenwriter);
   } catch (error) {
     next(error);

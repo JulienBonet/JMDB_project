@@ -1,4 +1,4 @@
-const tagsModel = require("../models/tagsModel");
+const tagsModel = require('../models/tagsModel');
 
 const getAllTagAsc = async (req, res, next) => {
   try {
@@ -100,8 +100,8 @@ const getAllByName = async (req, res) => {
     // rows[0] contient ton tag
     return res.status(200).json(rows[0]);
   } catch (error) {
-    console.error("Error in getAllByName:", error);
-    return res.status(500).json({ error: "Internal server error" });
+    console.error('Error in getAllByName:', error);
+    return res.status(500).json({ error: 'Internal server error' });
   }
 };
 

@@ -1,4 +1,4 @@
-const castingModel = require("../models/castingModel");
+const castingModel = require('../models/castingModel');
 
 const getAllArtistAsc = async (req, res, next) => {
   try {

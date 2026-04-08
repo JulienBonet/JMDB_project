@@ -1,11 +1,11 @@
 /* eslint-disable no-shadow */
 /* eslint-disable consistent-return */
-const { writeToStream } = require("@fast-csv/format");
-const { exec } = require("child_process");
-const fs = require("fs");
-const path = require("path");
-const db = require("../../database/client");
-require("dotenv").config();
+const { writeToStream } = require('@fast-csv/format');
+const { exec } = require('child_process');
+const fs = require('fs');
+const path = require('path');
+const db = require('../../database/client');
+require('dotenv').config();
 
 // Supprime les fichiers .sql et .csv plus vieux que olderThanMs
 const purgeTmpFiles = (tmpDir, olderThanMs = 1000 * 60 * 10) => {
@@ -27,7 +27,7 @@ const purgeTmpFiles = (tmpDir, olderThanMs = 1000 * 60 * 10) => {
 
 const exportCSV = async (req, res) => {
   try {
-    await db.query("SET SESSION group_concat_max_len = 1000000;");
+    await db.query('SET SESSION group_concat_max_len = 1000000;');
 
     const [rows] = await db.query(`
   SELECT
@@ -110,26 +110,26 @@ const exportCSV = async (req, res) => {
 `);
 
     if (!rows.length) {
-      return res.status(404).send("Aucune donnée à exporter");
+      return res.status(404).send('Aucune donnée à exporter');
     }
 
-    const tmpDir = path.join(__dirname, "../tmp");
+    const tmpDir = path.join(__dirname, '../tmp');
     if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir);
 
     const filePath = path.join(
       tmpDir,
-      `movies_export_${new Date().toISOString().replace(/[:.]/g, "-")}.csv`
+      `movies_export_${new Date().toISOString().replace(/[:.]/g, '-')}.csv`
     );
     const ws = fs.createWriteStream(filePath);
 
     writeToStream(ws, rows, { headers: true })
-      .on("finish", () => {
-        res.download(filePath, "movies_export.csv", (err) => {
+      .on('finish', () => {
+        res.download(filePath, 'movies_export.csv', (err) => {
           if (!err) fs.unlinkSync(filePath);
         });
       })
-      .on("error", (err) => {
-        console.error("Erreur fast-csv:", err);
+      .on('error', (err) => {
+        console.error('Erreur fast-csv:', err);
         res.status(500).send("Erreur lors de l'écriture du CSV");
       });
   } catch (err) {
@@ -224,7 +224,7 @@ const exportCSV = async (req, res) => {
 
 const exportSQL = async (req, res) => {
   try {
-    const tmpDir = path.join(__dirname, "../tmp");
+    const tmpDir = path.join(__dirname, '../tmp');
     if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir);
 
     // PURGE des anciens fichiers CSV/SQL
@@ -232,7 +232,7 @@ const exportSQL = async (req, res) => {
 
     const filePath = path.join(
       tmpDir,
-      `jmdb_database_backup_${new Date().toISOString().replace(/[:.]/g, "-")}.sql`
+      `jmdb_database_backup_${new Date().toISOString().replace(/[:.]/g, '-')}.sql`
     );
 
     const { DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
@@ -261,7 +261,7 @@ const exportSQL = async (req, res) => {
     );
   } catch (err) {
     console.error(err);
-    res.status(500).send("Erreur serveur");
+    res.status(500).send('Erreur serveur');
   }
 };
 
@@ -270,9 +270,7 @@ const getAdminStats = async (req, res) => {
     const stats = {};
 
     // Nombre total de films
-    const [[{ totalMovies }]] = await db.query(
-      "SELECT COUNT(*) AS totalMovies FROM movies"
-    );
+    const [[{ totalMovies }]] = await db.query('SELECT COUNT(*) AS totalMovies FROM movies');
     stats.totalMovies = totalMovies;
     // Nombre de DVD original
     const [[{ totalDVDOriginal }]] = await db.query(
@@ -307,14 +305,12 @@ const getAdminStats = async (req, res) => {
 
     // Durée totale de tous les films (en minutes)
     const [[{ totalDuration }]] = await db.query(
-      "SELECT SUM(duration) AS totalDuration FROM movies"
+      'SELECT SUM(duration) AS totalDuration FROM movies'
     );
     stats.totalDuration = totalDuration || 0;
 
     // Nombre total de genres
-    const [[{ totalGenres }]] = await db.query(
-      "SELECT COUNT(*) AS totalGenres FROM genre"
-    );
+    const [[{ totalGenres }]] = await db.query('SELECT COUNT(*) AS totalGenres FROM genre');
     stats.totalGenres = totalGenres;
 
     // Liste des genres avec nombre de films par genre
@@ -329,38 +325,30 @@ const getAdminStats = async (req, res) => {
 
     // Nombre total de réalisateurs
     const [[{ totalDirectors }]] = await db.query(
-      "SELECT COUNT(*) AS totalDirectors FROM director"
+      'SELECT COUNT(*) AS totalDirectors FROM director'
     );
     stats.totalDirectors = totalDirectors;
 
     // Nombre total de scénaristes
     const [[{ totalScreenwriters }]] = await db.query(
-      "SELECT COUNT(*) AS totalScreenwriters FROM screenwriter"
+      'SELECT COUNT(*) AS totalScreenwriters FROM screenwriter'
     );
     stats.totalScreenwriters = totalScreenwriters;
 
     // Nombre total de compositeurs
-    const [[{ totalComposers }]] = await db.query(
-      "SELECT COUNT(*) AS totalComposers FROM music"
-    );
+    const [[{ totalComposers }]] = await db.query('SELECT COUNT(*) AS totalComposers FROM music');
     stats.totalComposers = totalComposers;
 
     // Nombre total de studios
-    const [[{ totalStudios }]] = await db.query(
-      "SELECT COUNT(*) AS totalStudios FROM studio"
-    );
+    const [[{ totalStudios }]] = await db.query('SELECT COUNT(*) AS totalStudios FROM studio');
     stats.totalStudios = totalStudios;
 
     // Nombre total de tags
-    const [[{ totalTags }]] = await db.query(
-      "SELECT COUNT(*) AS totalTags FROM tag"
-    );
+    const [[{ totalTags }]] = await db.query('SELECT COUNT(*) AS totalTags FROM tag');
     stats.totalTags = totalTags;
 
     // Nombre total de focus
-    const [[{ totalFocus }]] = await db.query(
-      "SELECT COUNT(*) AS totalFocus FROM focus"
-    );
+    const [[{ totalFocus }]] = await db.query('SELECT COUNT(*) AS totalFocus FROM focus');
     stats.totalFocus = totalFocus;
 
     // Liste des categories de focus avec nombres de focus
@@ -376,7 +364,7 @@ const getAdminStats = async (req, res) => {
     res.json(stats);
   } catch (err) {
     console.error(err);
-    res.status(500).send("Erreur lors de la récupération des stats");
+    res.status(500).send('Erreur lors de la récupération des stats');
   }
 };
 
