@@ -1,4 +1,4 @@
-const db = require("../../database/client");
+const db = require('../../database/client');
 
 const excludeXOnlyMoviesSQL = `
   AND m.id NOT IN (
@@ -10,7 +10,7 @@ const excludeXOnlyMoviesSQL = `
   )
 `;
 
-const findAll = (isAdmin, orderBy = "id", orderDir = "DESC") => {
+const findAll = (isAdmin, orderBy = 'id', orderDir = 'DESC') => {
   let sql = `
     SELECT m.*
     FROM movies m
@@ -94,88 +94,76 @@ const findById = (id, isAdmin) => {
 };
 
 const findAllYears = () => {
-  return db.query(
-    "SELECT DISTINCT year FROM movies WHERE year IS NOT NULL ORDER BY year DESC;"
-  );
+  return db.query('SELECT DISTINCT year FROM movies WHERE year IS NOT NULL ORDER BY year DESC;');
 };
 
 const findByYear = (year) => {
-  return db.query("SELECT * FROM movies WHERE year LIKE ?;", [`${year}%`]);
+  return db.query('SELECT * FROM movies WHERE year LIKE ?;', [`${year}%`]);
 };
 
 const findByYearSortedA = (year) => {
-  return db.query(
-    "SELECT * FROM movies WHERE year LIKE ? ORDER BY title ASC;",
-    [`${year}%`]
-  );
+  return db.query('SELECT * FROM movies WHERE year LIKE ? ORDER BY title ASC;', [`${year}%`]);
 };
 
 const findByYearSortedZ = (year) => {
-  return db.query(
-    "SELECT * FROM movies WHERE year LIKE ? ORDER BY title DESC;",
-    [`${year}%`]
-  );
+  return db.query('SELECT * FROM movies WHERE year LIKE ? ORDER BY title DESC;', [`${year}%`]);
 };
 
 const findAllCountry = () => {
-  return db.query(
-    "SELECT id, name FROM country WHERE name IS NOT NULL ORDER BY name ASC;"
-  );
+  return db.query('SELECT id, name FROM country WHERE name IS NOT NULL ORDER BY name ASC;');
 };
 
 const findAllCountryIdDesc = () => {
-  return db.query("SELECT * FROM country order by id desc;");
+  return db.query('SELECT * FROM country order by id desc;');
 };
 
 const findCountryByName = (name) => {
-  return db.query("SELECT * FROM country WHERE name = ?", [name]);
+  return db.query('SELECT * FROM country WHERE name = ?', [name]);
 };
 
 const findByCountry = (id) => {
   return db.query(
-    "SELECT * FROM movies AS m JOIN movie_country AS mc ON m.id = mc.movieId JOIN country AS c ON c.id = mc.countryId WHERE c.id = ?;",
+    'SELECT * FROM movies AS m JOIN movie_country AS mc ON m.id = mc.movieId JOIN country AS c ON c.id = mc.countryId WHERE c.id = ?;',
     [id]
   );
 };
 
 const findByCountrySortedAlpha = (id) => {
   return db.query(
-    "SELECT * FROM movies AS m JOIN movie_country AS mc ON m.id = mc.movieId JOIN country AS c ON c.id = mc.countryId WHERE c.id = ? ORDER BY title ASC;",
+    'SELECT * FROM movies AS m JOIN movie_country AS mc ON m.id = mc.movieId JOIN country AS c ON c.id = mc.countryId WHERE c.id = ? ORDER BY title ASC;',
     [id]
   );
 };
 
 const findByCountrySortedZeta = (id) => {
   return db.query(
-    "SELECT * FROM movies AS m JOIN movie_country AS mc ON m.id = mc.movieId JOIN country AS c ON c.id = mc.countryId WHERE c.id = ? ORDER BY title DESC;",
+    'SELECT * FROM movies AS m JOIN movie_country AS mc ON m.id = mc.movieId JOIN country AS c ON c.id = mc.countryId WHERE c.id = ? ORDER BY title DESC;',
     [id]
   );
 };
 
 const findByCountrySortedYearAsc = (id) => {
   return db.query(
-    "SELECT * FROM movies AS m JOIN movie_country AS mc ON m.id = mc.movieId JOIN country AS c ON c.id = mc.countryId WHERE c.id = ? ORDER BY year ASC;",
+    'SELECT * FROM movies AS m JOIN movie_country AS mc ON m.id = mc.movieId JOIN country AS c ON c.id = mc.countryId WHERE c.id = ? ORDER BY year ASC;',
     [id]
   );
 };
 
 const findByCountrySortedYearDesc = (id) => {
   return db.query(
-    "SELECT * FROM movies AS m JOIN movie_country AS mc ON m.id = mc.movieId JOIN country AS c ON c.id = mc.countryId WHERE c.id = ? ORDER BY year DESC;",
+    'SELECT * FROM movies AS m JOIN movie_country AS mc ON m.id = mc.movieId JOIN country AS c ON c.id = mc.countryId WHERE c.id = ? ORDER BY year DESC;',
     [id]
   );
 };
 
 const findAllDecades = () => {
   return db.query(
-    "SELECT DISTINCT FLOOR(year / 10) * 10 AS decade FROM movies WHERE year IS NOT NULL ORDER BY decade DESC;"
+    'SELECT DISTINCT FLOOR(year / 10) * 10 AS decade FROM movies WHERE year IS NOT NULL ORDER BY decade DESC;'
   );
 };
 
 const findMoviesByDecade = (decade) => {
-  return db.query("SELECT * FROM movies WHERE FLOOR(year / 10) * 10 = ?;", [
-    decade,
-  ]);
+  return db.query('SELECT * FROM movies WHERE FLOOR(year / 10) * 10 = ?;', [decade]);
 };
 
 const findByTvShow = (isTvShow) => {
@@ -191,14 +179,14 @@ const findByTvShow = (isTvShow) => {
   `;
 
   // Si isTvShow est "0" ou "1", ajouter la condition
-  if (isTvShow === "0" || isTvShow === "1") {
+  if (isTvShow === '0' || isTvShow === '1') {
     sql += ` WHERE movies.isTvShow = ?`;
-    sql += " GROUP BY movies.id ORDER BY movies.id DESC;";
+    sql += ' GROUP BY movies.id ORDER BY movies.id DESC;';
     return db.query(sql, [isTvShow]);
   }
 
   // Sinon, tous les films et séries
-  sql += " GROUP BY movies.id ORDER BY movies.id DESC;";
+  sql += ' GROUP BY movies.id ORDER BY movies.id DESC;';
   return db.query(sql, []);
 };
 
@@ -228,39 +216,39 @@ const findFilteredMovies = async ({
   }
 
   if (search) {
-    sql += " AND m.title LIKE ?";
+    sql += ' AND m.title LIKE ?';
     params.push(`%${search}%`);
   }
 
   if (kind) {
-    sql += " AND g.name = ?";
+    sql += ' AND g.name = ?';
     params.push(kind);
   }
 
   if (country) {
-    sql += " AND c.name = ?";
+    sql += ' AND c.name = ?';
     params.push(country);
   }
 
   if (year) {
     const start = parseInt(year, 10);
     const end = start + 9;
-    sql += " AND m.year BETWEEN ? AND ?";
+    sql += ' AND m.year BETWEEN ? AND ?';
     params.push(start, end);
   }
 
-  if (tvshow === "0" || tvshow === "1") {
-    sql += " AND m.isTvShow = ?";
+  if (tvshow === '0' || tvshow === '1') {
+    sql += ' AND m.isTvShow = ?';
     params.push(tvshow);
   }
 
   // 🛡 Orderby whitelist
-  const allowedOrder = ["title", "year", "id"];
-  const safeOrder = allowedOrder.includes(orderby) ? orderby : "id";
-  const safeDirection = direction === "ASC" ? "ASC" : "DESC";
+  const allowedOrder = ['title', 'year', 'id'];
+  const safeOrder = allowedOrder.includes(orderby) ? orderby : 'id';
+  const safeDirection = direction === 'ASC' ? 'ASC' : 'DESC';
 
   // Si on trie par titre, ignorer les articles
-  if (safeOrder === "title") {
+  if (safeOrder === 'title') {
     sql += `
       GROUP BY m.id
       ORDER BY LOWER(
@@ -306,13 +294,10 @@ const findFilteredMovies = async ({
 
 const findByName = async (title) => {
   try {
-    const [rows] = await db.query(
-      "SELECT COUNT(*) as count FROM movies WHERE title = ?",
-      [title]
-    );
+    const [rows] = await db.query('SELECT COUNT(*) as count FROM movies WHERE title = ?', [title]);
     return rows[0].count > 0;
   } catch (err) {
-    console.error("Erreur dans Movie_ findByName:", err);
+    console.error('Erreur dans Movie_ findByName:', err);
     throw err;
   }
 };

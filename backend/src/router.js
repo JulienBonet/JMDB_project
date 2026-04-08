@@ -1,4 +1,4 @@
-const express = require("express");
+const express = require('express');
 
 const router = express.Router();
 
@@ -7,24 +7,24 @@ const router = express.Router();
 /* ************************************************************************* */
 
 // Import routes
-const moviesRouter = require("./routes/moviesRoute");
-const kindsRouter = require("./routes/kindsRoute");
-const directorsRouter = require("./routes/directorsRoute");
-const castingRouter = require("./routes/castingRoute");
-const screenwriterRouter = require("./routes/screenwritersRoute");
-const musicRouter = require("./routes/musicRoute");
-const studioRouter = require("./routes/studioRoute");
-const tagsRouter = require("./routes/tagsRoute");
-const languagesRouter = require("./routes/languagesRoutes");
-const focusRouter = require("./routes/focusRoute");
-const editingRouter = require("./routes/editingRoute");
-const editingMovieRouter = require("./routes/editingMovieRoute");
-const purgeRouter = require("./routes/purgeRoute");
-const userRouter = require("./routes/userRoutes");
-const authRouter = require("./routes/authRoutes");
-const tmdbRouter = require("./routes/tmdbRoutes");
-const exportStatsRouter = require("./routes/exportStatsRoutes");
-const favoriteRouter = require("./routes/favoriteRoutes");
+const moviesRouter = require('./routes/moviesRoute');
+const kindsRouter = require('./routes/kindsRoute');
+const directorsRouter = require('./routes/directorsRoute');
+const castingRouter = require('./routes/castingRoute');
+const screenwriterRouter = require('./routes/screenwritersRoute');
+const musicRouter = require('./routes/musicRoute');
+const studioRouter = require('./routes/studioRoute');
+const tagsRouter = require('./routes/tagsRoute');
+const languagesRouter = require('./routes/languagesRoutes');
+const focusRouter = require('./routes/focusRoute');
+const editingRouter = require('./routes/editingRoute');
+const editingMovieRouter = require('./routes/editingMovieRoute');
+const purgeRouter = require('./routes/purgeRoute');
+const userRouter = require('./routes/userRoutes');
+const authRouter = require('./routes/authRoutes');
+const tmdbRouter = require('./routes/tmdbRoutes');
+const exportStatsRouter = require('./routes/exportStatsRoutes');
+const favoriteRouter = require('./routes/favoriteRoutes');
 
 // Apply routes
 router.use(moviesRouter);
@@ -42,8 +42,8 @@ router.use(editingMovieRouter);
 router.use(purgeRouter);
 router.use(userRouter);
 router.use(tmdbRouter);
-router.use("/", exportStatsRouter);
-router.use("/auth", authRouter);
+router.use('/', exportStatsRouter);
+router.use('/auth', authRouter);
 router.use(favoriteRouter);
 
 /* ************************************************************************* */

@@ -1,4 +1,4 @@
-const db = require("../../database/client");
+const db = require('../../database/client');
 
 const insertFavorite = (userId, movieId) => {
   return db.query(
@@ -10,10 +10,10 @@ const insertFavorite = (userId, movieId) => {
 };
 
 const removeFavorite = (userId, movieId) => {
-  return db.query(
-    "DELETE FROM user_favorite WHERE user_id = ? AND movie_id = ?",
-    [userId, movieId]
-  );
+  return db.query('DELETE FROM user_favorite WHERE user_id = ? AND movie_id = ?', [
+    userId,
+    movieId,
+  ]);
 };
 
 const findAllFavoriteByUser = (userId) => {
@@ -72,10 +72,10 @@ const findFavoritesYearDesc = (userId) => {
 };
 
 const isFavorite = (userId, movieId) => {
-  return db.query(
-    "SELECT 1 FROM user_favorite WHERE user_id = ? AND movie_id = ?",
-    [userId, movieId]
-  );
+  return db.query('SELECT 1 FROM user_favorite WHERE user_id = ? AND movie_id = ?', [
+    userId,
+    movieId,
+  ]);
 };
 
 module.exports = {

@@ -1,4 +1,4 @@
-const db = require("../../database/client");
+const db = require('../../database/client');
 
 const findAllTagAsc = () => {
   return db.query(
@@ -168,11 +168,11 @@ const findAllByLetter = (letter) => {
 };
 
 const findTagByName = (name) => {
-  return db.query("SELECT * FROM tag WHERE name = ?", [name]);
+  return db.query('SELECT * FROM tag WHERE name = ?', [name]);
 };
 
 const findTagById = (id) => {
-  return db.query("SELECT * FROM tag WHERE id = ?", [id]);
+  return db.query('SELECT * FROM tag WHERE id = ?', [id]);
 };
 
 module.exports = {

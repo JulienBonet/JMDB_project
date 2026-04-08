@@ -7,12 +7,12 @@ function cleanTags(rawTags) {
     .flatMap((tag) => {
       if (!tag) return [];
       // si tag est un objet { name: "..." }
-      if (typeof tag === "object" && tag.name) {
-        return tag.name.split(",");
+      if (typeof tag === 'object' && tag.name) {
+        return tag.name.split(',');
       }
       // si tag est une string directement
-      if (typeof tag === "string") {
-        return tag.split(",");
+      if (typeof tag === 'string') {
+        return tag.split(',');
       }
       return [];
     })

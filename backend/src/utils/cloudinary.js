@@ -1,8 +1,8 @@
 /* eslint-disable consistent-return */
-const cloudinary = require("cloudinary").v2;
-const { randomUUID } = require("crypto");
+const cloudinary = require('cloudinary').v2;
+const { randomUUID } = require('crypto');
 
-require("dotenv").config();
+require('dotenv').config();
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -10,7 +10,7 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-const uploadBufferToCloudinary = (buffer, folder, prefix = "file") => {
+const uploadBufferToCloudinary = (buffer, folder, prefix = 'file') => {
   return new Promise((resolve, reject) => {
     const publicId = `${prefix}-${randomUUID()}`; // préfixe dynamique
 
@@ -18,7 +18,7 @@ const uploadBufferToCloudinary = (buffer, folder, prefix = "file") => {
       { folder, public_id: publicId, overwrite: true },
       (error, result) => {
         if (error) {
-          console.error("❌ ERREUR Cloudinary :", error);
+          console.error('❌ ERREUR Cloudinary :', error);
           return reject(error);
         }
 

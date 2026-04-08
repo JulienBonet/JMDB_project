@@ -1,4 +1,4 @@
-const db = require("../../database/client");
+const db = require('../../database/client');
 
 const findAllArtistAsc = () => {
   return db.query(
@@ -173,11 +173,11 @@ const findAllByLetter = (letter) => {
 };
 
 const findDirectorByName = (name) => {
-  return db.query("SELECT * FROM director WHERE name = ?", [name]);
+  return db.query('SELECT * FROM director WHERE name = ?', [name]);
 };
 
 const findDirectorById = (id) => {
-  return db.query("SELECT * FROM director WHERE id = ?", [id]);
+  return db.query('SELECT * FROM director WHERE id = ?', [id]);
 };
 
 const findAllArtistFocusRandom = () => {
