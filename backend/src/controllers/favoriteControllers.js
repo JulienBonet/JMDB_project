@@ -1,10 +1,10 @@
-const favoriteModel = require("../models/favoriteModel");
+const favoriteModel = require('../models/favoriteModel');
 
 const addFavorite = async (req, res, next) => {
   try {
     const { userId, movieId } = req.body;
     await favoriteModel.insertFavorite(userId, movieId);
-    res.status(201).json({ message: "Favori ajouté" });
+    res.status(201).json({ message: 'Favori ajouté' });
   } catch (error) {
     next(error);
   }
@@ -14,7 +14,7 @@ const unFavorite = async (req, res, next) => {
   try {
     const { userId, movieId } = req.body;
     await favoriteModel.removeFavorite(userId, movieId);
-    res.status(200).json({ message: "Favori supprimé" });
+    res.status(200).json({ message: 'Favori supprimé' });
   } catch (error) {
     next(error);
   }

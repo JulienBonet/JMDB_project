@@ -1,10 +1,9 @@
 /* eslint-disable consistent-return */
-const moviesModel = require("../models/moviesModel");
+const moviesModel = require('../models/moviesModel');
 
 const getAll = async (req, res, next) => {
   try {
-    const isAdmin =
-      req.user && (Number(req.user.isAdmin) === 1 || req.user.isAdmin === true);
+    const isAdmin = req.user && (Number(req.user.isAdmin) === 1 || req.user.isAdmin === true);
     const [movies] = await moviesModel.findAll(isAdmin);
     res.status(200).json(movies);
   } catch (error) {
@@ -14,7 +13,7 @@ const getAll = async (req, res, next) => {
 
 const getAllSorted0 = async (req, res, next) => {
   try {
-    const [movies] = await moviesModel.findAll("title", "ASC");
+    const [movies] = await moviesModel.findAll('title', 'ASC');
     res.status(200).json(movies);
   } catch (error) {
     next(error);
@@ -23,7 +22,7 @@ const getAllSorted0 = async (req, res, next) => {
 
 const getAllSorted1 = async (req, res, next) => {
   try {
-    const [movies] = await moviesModel.findAll("title", "DESC");
+    const [movies] = await moviesModel.findAll('title', 'DESC');
     res.status(200).json(movies);
   } catch (error) {
     next(error);
@@ -32,7 +31,7 @@ const getAllSorted1 = async (req, res, next) => {
 
 const getAllSorted2 = async (req, res, next) => {
   try {
-    const [movies] = await moviesModel.findAll("year", "ASC");
+    const [movies] = await moviesModel.findAll('year', 'ASC');
     res.status(200).json(movies);
   } catch (error) {
     next(error);
@@ -41,7 +40,7 @@ const getAllSorted2 = async (req, res, next) => {
 
 const getAllSorted3 = async (req, res, next) => {
   try {
-    const [movies] = await moviesModel.findAll("year", "DESC");
+    const [movies] = await moviesModel.findAll('year', 'DESC');
     res.status(200).json(movies);
   } catch (error) {
     next(error);
@@ -53,15 +52,14 @@ const getAllSortedNox = async (req, res, next) => {
     const [movies] = await moviesModel.findAllSortedNoX();
     res.status(200).json(movies);
   } catch (error) {
-    console.error("Erreur lors de la récupération des films :", error);
+    console.error('Erreur lors de la récupération des films :', error);
     next(error);
   }
 };
 
 const getById = async (req, res, next) => {
   try {
-    const isAdmin =
-      req.user && (Number(req.user.isAdmin) === 1 || req.user.isAdmin === true);
+    const isAdmin = req.user && (Number(req.user.isAdmin) === 1 || req.user.isAdmin === true);
 
     const [[movie]] = await moviesModel.findById(req.params.id, isAdmin);
 
@@ -85,7 +83,7 @@ const getByLetter = async (req, res, next) => {
       res.status(200).json(movies);
     }
   } catch (err) {
-    console.error("Error:", err);
+    console.error('Error:', err);
     next(err);
   }
 };
@@ -109,7 +107,7 @@ const getByYear = async (req, res, next) => {
       res.status(200).json(movies);
     }
   } catch (err) {
-    console.error("Error:", err);
+    console.error('Error:', err);
     next(err);
   }
 };
@@ -124,7 +122,7 @@ const getByYearSorted0 = async (req, res, next) => {
       res.status(200).json(movies);
     }
   } catch (err) {
-    console.error("Error:", err);
+    console.error('Error:', err);
     next(err);
   }
 };
@@ -139,7 +137,7 @@ const getByYearSorted1 = async (req, res, next) => {
       res.status(200).json(movies);
     }
   } catch (err) {
-    console.error("Error:", err);
+    console.error('Error:', err);
     next(err);
   }
 };
@@ -182,7 +180,7 @@ const getAllByCountry = async (req, res, next) => {
       res.status(200).json(movies);
     }
   } catch (err) {
-    console.error("Error:", err);
+    console.error('Error:', err);
     next(err);
   }
 };
@@ -197,7 +195,7 @@ const getAllByCountrySorted0 = async (req, res, next) => {
       res.status(200).json(movies);
     }
   } catch (err) {
-    console.error("Error:", err);
+    console.error('Error:', err);
     next(err);
   }
 };
@@ -212,7 +210,7 @@ const getAllByCountrySorted1 = async (req, res, next) => {
       res.status(200).json(movies);
     }
   } catch (err) {
-    console.error("Error:", err);
+    console.error('Error:', err);
     next(err);
   }
 };
@@ -227,7 +225,7 @@ const getAllByCountrySorted2 = async (req, res, next) => {
       res.status(200).json(movies);
     }
   } catch (err) {
-    console.error("Error:", err);
+    console.error('Error:', err);
     next(err);
   }
 };
@@ -242,7 +240,7 @@ const getAllByCountrySorted3 = async (req, res, next) => {
       res.status(200).json(movies);
     }
   } catch (err) {
-    console.error("Error:", err);
+    console.error('Error:', err);
     next(err);
   }
 };
@@ -272,23 +270,22 @@ const getByTvShow = async (req, res) => {
     res.json(rows);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Erreur serveur" });
+    res.status(500).json({ message: 'Erreur serveur' });
   }
 };
 
 const getFilteredMovies = async (req, res, next) => {
   try {
-    const isAdmin =
-      req.user && (Number(req.user.isAdmin) === 1 || req.user.isAdmin === true);
+    const isAdmin = req.user && (Number(req.user.isAdmin) === 1 || req.user.isAdmin === true);
 
     const {
-      search = "",
-      kind = "",
-      country = "",
-      year = "",
+      search = '',
+      kind = '',
+      country = '',
+      year = '',
       tvshow,
-      orderby = "title",
-      direction = "ASC",
+      orderby = 'title',
+      direction = 'ASC',
     } = req.query;
 
     const movies = await moviesModel.findFilteredMovies({
@@ -312,7 +309,7 @@ const getByName = async (req, res) => {
   const { name } = req.params;
 
   if (!name) {
-    return res.status(400).json({ error: "Le paramètre name est requis" });
+    return res.status(400).json({ error: 'Le paramètre name est requis' });
   }
 
   try {
@@ -320,9 +317,7 @@ const getByName = async (req, res) => {
     return res.json({ exists });
   } catch (err) {
     console.error(err);
-    return res
-      .status(500)
-      .json({ error: "Erreur serveur lors de la vérification du titre" });
+    return res.status(500).json({ error: 'Erreur serveur lors de la vérification du titre' });
   }
 };
 

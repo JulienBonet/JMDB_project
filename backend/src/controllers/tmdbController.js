@@ -1,13 +1,13 @@
 /* eslint-disable camelcase */
 /* eslint-disable consistent-return */
-const fetch = require("node-fetch");
+const fetch = require('node-fetch');
 
 // Helper générique pour un fetch TMDB
 const fetchTMDB = async (url) => {
   const r = await fetch(url, {
     headers: {
       Authorization: `Bearer ${process.env.VITE_APP_TMDB_AUTH_TOKEN}`,
-      Accept: "application/json",
+      Accept: 'application/json',
     },
   });
   if (!r.ok) throw new Error(`TMDB fetch failed: ${r.status}`);
@@ -22,20 +22,14 @@ const fetchMovieById = async (req, res, next) => {
 
   try {
     const [movieData, credits, videos, keywords] = await Promise.all([
-      fetchTMDB(
-        `https://api.themoviedb.org/3/${mediaType}/${id}?language=fr-FR`
-      ),
-      fetchTMDB(
-        `https://api.themoviedb.org/3/${mediaType}/${id}/credits?language=fr-FR`
-      ),
-      fetchTMDB(
-        `https://api.themoviedb.org/3/${mediaType}/${id}/videos?language=fr-FR`
-      ),
+      fetchTMDB(`https://api.themoviedb.org/3/${mediaType}/${id}?language=fr-FR`),
+      fetchTMDB(`https://api.themoviedb.org/3/${mediaType}/${id}/credits?language=fr-FR`),
+      fetchTMDB(`https://api.themoviedb.org/3/${mediaType}/${id}/videos?language=fr-FR`),
       fetchTMDB(`https://api.themoviedb.org/3/${mediaType}/${id}/keywords`),
     ]);
 
     // Logs dev uniquement
-    if (process.env.NODE_ENV !== "production") {
+    if (process.env.NODE_ENV !== 'production') {
       console.info(`🌐 TMDB fetch success: ${mediaType} ${id}`);
     }
 
@@ -51,22 +45,14 @@ const fetchMovieById = async (req, res, next) => {
 -------------------------------------------- */
 const fetchTmdbData = async (req, res) => {
   const { idTheMovieDb } = req.params;
-  const [mediaType, movieId] = idTheMovieDb.split("/");
+  const [mediaType, movieId] = idTheMovieDb.split('/');
 
   try {
     const [movieData, credits, videos, keywords] = await Promise.all([
-      fetchTMDB(
-        `https://api.themoviedb.org/3/${mediaType}/${movieId}?language=fr-FR`
-      ),
-      fetchTMDB(
-        `https://api.themoviedb.org/3/${mediaType}/${movieId}/credits?language=fr-FR`
-      ),
-      fetchTMDB(
-        `https://api.themoviedb.org/3/${mediaType}/${movieId}/videos?language=fr-FR`
-      ),
-      fetchTMDB(
-        `https://api.themoviedb.org/3/${mediaType}/${movieId}/keywords`
-      ),
+      fetchTMDB(`https://api.themoviedb.org/3/${mediaType}/${movieId}?language=fr-FR`),
+      fetchTMDB(`https://api.themoviedb.org/3/${mediaType}/${movieId}/credits?language=fr-FR`),
+      fetchTMDB(`https://api.themoviedb.org/3/${mediaType}/${movieId}/videos?language=fr-FR`),
+      fetchTMDB(`https://api.themoviedb.org/3/${mediaType}/${movieId}/keywords`),
     ]);
 
     res.status(200).json({
@@ -104,13 +90,13 @@ const fetchTrailerFromTMDB = async (req, res) => {
     const data = await fetchTMDB(tmdbUrl);
 
     const trailerData = data.results.find(
-      (video) => video.type === "Trailer" && video.site === "YouTube"
+      (video) => video.type === 'Trailer' && video.site === 'YouTube'
     );
 
     res.status(200).json({ trailer: trailerData || null });
   } catch (err) {
-    console.error("Erreur TMDB trailer :", err.message);
-    res.status(500).json({ error: "Impossible de récupérer le trailer TMDB" });
+    console.error('Erreur TMDB trailer :', err.message);
+    res.status(500).json({ error: 'Impossible de récupérer le trailer TMDB' });
   }
 };
 
@@ -126,7 +112,7 @@ const fetchCoverFromTMDB = async (req, res) => {
     const data = await fetchTMDB(tmdbUrl);
     res.status(200).json({ poster_path: data.poster_path || null });
   } catch (err) {
-    console.error("Erreur TMDB cover :", err.message);
+    console.error('Erreur TMDB cover :', err.message);
     res.status(500).json({ poster_path: null });
   }
 };
@@ -146,7 +132,7 @@ const fetchKeywordsFromTMDB = async (req, res) => {
     // Appel direct à TMDB
     const response = await fetch(tmdbUrl, {
       headers: {
-        Accept: "application/json",
+        Accept: 'application/json',
         Authorization: `Bearer ${process.env.VITE_APP_TMDB_AUTH_TOKEN}`,
       },
     });
@@ -158,7 +144,7 @@ const fetchKeywordsFromTMDB = async (req, res) => {
     try {
       data = JSON.parse(rawText);
     } catch (jsonErr) {
-      console.error("💥 Erreur parsing JSON TMDB :", jsonErr.message);
+      console.error('💥 Erreur parsing JSON TMDB :', jsonErr.message);
       return res.status(500).json({ keywordsData: [] });
     }
 
@@ -172,7 +158,7 @@ const fetchKeywordsFromTMDB = async (req, res) => {
 
     res.status(200).json({ keywordsData: keywords });
   } catch (err) {
-    console.error("💥 Erreur TMDB keywords :", err.message);
+    console.error('💥 Erreur TMDB keywords :', err.message);
     res.status(500).json({ keywordsData: [] });
   }
 };
@@ -188,7 +174,7 @@ const fetchTvSeasons = async (req, res) => {
   try {
     const response = await fetch(tmdbUrl, {
       headers: {
-        Accept: "application/json",
+        Accept: 'application/json',
         Authorization: `Bearer ${process.env.VITE_APP_TMDB_AUTH_TOKEN}`,
       },
     });
@@ -205,7 +191,7 @@ const fetchTvSeasons = async (req, res) => {
 
     res.status(200).json({ seasons });
   } catch (err) {
-    console.error("💥 Erreur fetch TV seasons :", err.message);
+    console.error('💥 Erreur fetch TV seasons :', err.message);
     res.status(500).json({ seasons: [] });
   }
 };
@@ -247,27 +233,17 @@ const fetchMovieDetails = async (req, res) => {
 
   try {
     const [movieData, credits, videos, keywords] = await Promise.all([
-      fetchTMDB(
-        `https://api.themoviedb.org/3/${mediaType}/${movieId}?language=fr-FR`
-      ),
-      fetchTMDB(
-        `https://api.themoviedb.org/3/${mediaType}/${movieId}/credits?language=fr-FR`
-      ),
-      fetchTMDB(
-        `https://api.themoviedb.org/3/${mediaType}/${movieId}/videos?language=fr-FR`
-      ),
-      fetchTMDB(
-        `https://api.themoviedb.org/3/${mediaType}/${movieId}/keywords`
-      ),
+      fetchTMDB(`https://api.themoviedb.org/3/${mediaType}/${movieId}?language=fr-FR`),
+      fetchTMDB(`https://api.themoviedb.org/3/${mediaType}/${movieId}/credits?language=fr-FR`),
+      fetchTMDB(`https://api.themoviedb.org/3/${mediaType}/${movieId}/videos?language=fr-FR`),
+      fetchTMDB(`https://api.themoviedb.org/3/${mediaType}/${movieId}/keywords`),
     ]);
 
     res.status(200).json({
       movieData: movieData || {},
       credits: credits || { cast: [], crew: [] },
       videos: videos?.results || [],
-      keywords: Array.isArray(keywords?.results)
-        ? keywords.results
-        : keywords?.keywords || [],
+      keywords: Array.isArray(keywords?.results) ? keywords.results : keywords?.keywords || [],
     });
   } catch (err) {
     console.error(`🔥 TMDB fetchMovieDetails error: ${err.message}`);

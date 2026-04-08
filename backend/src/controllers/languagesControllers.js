@@ -1,4 +1,4 @@
-const languagesModel = require("../models/languagesModel");
+const languagesModel = require('../models/languagesModel');
 
 const getAllLanguagesIdDesc = async (req, res, next) => {
   try {

@@ -1,4 +1,4 @@
-const studioModel = require("../models/studioModel");
+const studioModel = require('../models/studioModel');
 
 const getAllArtistAsc = async (req, res, next) => {
   try {

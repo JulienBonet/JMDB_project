@@ -1,4 +1,4 @@
-const directorsModel = require("../models/directorsModel");
+const directorsModel = require('../models/directorsModel');
 
 const getAllArtistAsc = async (req, res, next) => {
   try {

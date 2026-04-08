@@ -1,4 +1,4 @@
-const kindsModel = require("../models/kindsModel");
+const kindsModel = require('../models/kindsModel');
 
 const getAllKinds = async (req, res, next) => {
   try {

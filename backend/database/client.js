@@ -2,7 +2,7 @@
 const { DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
 
 // Create a connection pool to the database
-const mysql = require("mysql2/promise");
+const mysql = require('mysql2/promise');
 
 const client = mysql.createPool({
   host: DB_HOST,
@@ -22,11 +22,11 @@ client
   })
   .catch((error) => {
     console.warn(
-      "Warning:",
-      "Failed to establish a database connection.",
-      "Please check your database credentials in the .env file if you need a database access."
+      'Warning:',
+      'Failed to establish a database connection.',
+      'Please check your database credentials in the .env file if you need a database access.'
     );
-    console.error("Error message:", error.message);
+    console.error('Error message:', error.message);
   });
 
 // Store database name into client for further uses
