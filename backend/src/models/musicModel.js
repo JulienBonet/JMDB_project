@@ -1,4 +1,4 @@
-const db = require("../../database/client");
+const db = require('../../database/client');
 
 const findAllArtistAsc = () => {
   return db.query(
@@ -173,11 +173,11 @@ const findAllByLetter = (letter) => {
 };
 
 const findCompositorByName = (name) => {
-  return db.query("SELECT * FROM music WHERE name = ?", [name]);
+  return db.query('SELECT * FROM music WHERE name = ?', [name]);
 };
 
 const findCompositorById = (id) => {
-  return db.query("SELECT * FROM music WHERE id = ?", [id]);
+  return db.query('SELECT * FROM music WHERE id = ?', [id]);
 };
 
 module.exports = {

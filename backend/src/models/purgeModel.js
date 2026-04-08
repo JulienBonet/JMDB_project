@@ -1,4 +1,4 @@
-const db = require("../../database/client");
+const db = require('../../database/client');
 
 // Recherche réalisateurs orphelins
 async function findOrphanedDirectors() {
@@ -145,13 +145,11 @@ async function findOrphanedRecords() {
 // Fonction pour supprimer les enregistrements orphelins
 async function deleteOrphanedRecords(ids, table, idColumn) {
   console.info(
-    `Tentative de suppression des enregistrements orphelins dans ${table} : ${ids.join(", ")}`
+    `Tentative de suppression des enregistrements orphelins dans ${table} : ${ids.join(', ')}`
   );
-  const deleteQuery = `DELETE FROM ${table} WHERE ${idColumn} IN (${ids.join(",")})`;
+  const deleteQuery = `DELETE FROM ${table} WHERE ${idColumn} IN (${ids.join(',')})`;
   await db.execute(deleteQuery);
-  console.info(
-    `Enregistrements orphelins supprimés de ${table} : ${ids.join(", ")}`
-  );
+  console.info(`Enregistrements orphelins supprimés de ${table} : ${ids.join(', ')}`);
 }
 
 // Fonction pour purger tous les enregistrements orphelins
@@ -159,93 +157,53 @@ async function purgeOrphanedRecords() {
   const orphanedRecords = await findOrphanedRecords();
 
   if (orphanedRecords.orphanedTags.length > 0) {
-    console.info(
-      `Tags orphelins trouvés : ${orphanedRecords.orphanedTags.join(", ")}`
-    );
-    await deleteOrphanedRecords(orphanedRecords.orphanedTags, "tag", "id");
+    console.info(`Tags orphelins trouvés : ${orphanedRecords.orphanedTags.join(', ')}`);
+    await deleteOrphanedRecords(orphanedRecords.orphanedTags, 'tag', 'id');
   }
 
   if (orphanedRecords.orphanedGenres.length > 0) {
-    console.info(
-      `Genres orphelins trouvés : ${orphanedRecords.orphanedGenres.join(", ")}`
-    );
-    await deleteOrphanedRecords(orphanedRecords.orphanedGenres, "genre", "id");
+    console.info(`Genres orphelins trouvés : ${orphanedRecords.orphanedGenres.join(', ')}`);
+    await deleteOrphanedRecords(orphanedRecords.orphanedGenres, 'genre', 'id');
   }
 
   if (orphanedRecords.orphanedDirectors.length > 0) {
-    console.info(
-      `Directeurs orphelins trouvés : ${orphanedRecords.orphanedDirectors.join(", ")}`
-    );
-    await deleteOrphanedRecords(
-      orphanedRecords.orphanedDirectors,
-      "director",
-      "id"
-    );
+    console.info(`Directeurs orphelins trouvés : ${orphanedRecords.orphanedDirectors.join(', ')}`);
+    await deleteOrphanedRecords(orphanedRecords.orphanedDirectors, 'director', 'id');
   }
 
   if (orphanedRecords.orphanedCasting.length > 0) {
-    console.info(
-      `Casting orphelin trouvé : ${orphanedRecords.orphanedCasting.join(", ")}`
-    );
-    await deleteOrphanedRecords(
-      orphanedRecords.orphanedCasting,
-      "casting",
-      "id"
-    );
+    console.info(`Casting orphelin trouvé : ${orphanedRecords.orphanedCasting.join(', ')}`);
+    await deleteOrphanedRecords(orphanedRecords.orphanedCasting, 'casting', 'id');
   }
 
   if (orphanedRecords.orphanedScreenwriters.length > 0) {
     console.info(
-      `Scénaristes orphelins trouvés : ${orphanedRecords.orphanedScreenwriters.join(", ")}`
+      `Scénaristes orphelins trouvés : ${orphanedRecords.orphanedScreenwriters.join(', ')}`
     );
-    await deleteOrphanedRecords(
-      orphanedRecords.orphanedScreenwriters,
-      "screenwriter",
-      "id"
-    );
+    await deleteOrphanedRecords(orphanedRecords.orphanedScreenwriters, 'screenwriter', 'id');
   }
 
   if (orphanedRecords.orphanedMusic.length > 0) {
-    console.info(
-      `Compositeurs orphelins trouvés : ${orphanedRecords.orphanedMusic.join(", ")}`
-    );
-    await deleteOrphanedRecords(orphanedRecords.orphanedMusic, "music", "id");
+    console.info(`Compositeurs orphelins trouvés : ${orphanedRecords.orphanedMusic.join(', ')}`);
+    await deleteOrphanedRecords(orphanedRecords.orphanedMusic, 'music', 'id');
   }
 
   if (orphanedRecords.orphanedStudios.length > 0) {
-    console.info(
-      `Studios orphelins trouvés : ${orphanedRecords.orphanedStudios.join(", ")}`
-    );
-    await deleteOrphanedRecords(
-      orphanedRecords.orphanedStudios,
-      "studio",
-      "id"
-    );
+    console.info(`Studios orphelins trouvés : ${orphanedRecords.orphanedStudios.join(', ')}`);
+    await deleteOrphanedRecords(orphanedRecords.orphanedStudios, 'studio', 'id');
   }
 
   if (orphanedRecords.orphanedCountries.length > 0) {
-    console.info(
-      `Pays orphelins trouvés : ${orphanedRecords.orphanedCountries.join(", ")}`
-    );
-    await deleteOrphanedRecords(
-      orphanedRecords.orphanedCountries,
-      "country",
-      "id"
-    );
+    console.info(`Pays orphelins trouvés : ${orphanedRecords.orphanedCountries.join(', ')}`);
+    await deleteOrphanedRecords(orphanedRecords.orphanedCountries, 'country', 'id');
   }
 
   if (orphanedRecords.orphanedLanguages.length > 0) {
-    console.info(
-      `Langues orphelines trouvées : ${orphanedRecords.orphanedLanguages.join(", ")}`
-    );
-    await deleteOrphanedRecords(
-      orphanedRecords.orphanedLanguages,
-      "language",
-      "id"
-    );
+    console.info(`Langues orphelines trouvées : ${orphanedRecords.orphanedLanguages.join(', ')}`);
+    await deleteOrphanedRecords(orphanedRecords.orphanedLanguages, 'language', 'id');
   }
 
-  console.info("Purge des enregistrements orphelins terminée.");
+  console.info('Purge des enregistrements orphelins terminée.');
 }
 
 // Export des fonctions

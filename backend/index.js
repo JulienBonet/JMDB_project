@@ -1,13 +1,13 @@
 // Load environment variables from .env file
-require("dotenv").config({
+require('dotenv').config({
   path:
-    process.env.NODE_ENV === "production"
+    process.env.NODE_ENV === 'production'
       ? `${__dirname}/.env.production`
       : `${__dirname}/.env.development`,
 });
 
 // Import app from app.js
-const app = require("./src/app");
+const app = require('./src/app');
 
 // Get the port from the environment variables
 const port = process.env.APP_PORT || 3310;
@@ -17,6 +17,6 @@ app
   .listen(port, () => {
     console.info(`Server is listening on port ${port}`);
   })
-  .on("error", (err) => {
-    console.error("Error:", err.message);
+  .on('error', (err) => {
+    console.error('Error:', err.message);
   });

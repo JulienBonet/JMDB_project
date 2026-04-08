@@ -1,4 +1,4 @@
-const sharp = require("sharp");
+const sharp = require('sharp');
 
 /**
  * Redimensionne un buffer d'image selon une taille max
@@ -11,8 +11,8 @@ const sharp = require("sharp");
 const resizeAndCropBuffer = async (buffer, width, height) => {
   return sharp(buffer)
     .resize(width, height, {
-      fit: "cover",
-      position: "centre",
+      fit: 'cover',
+      position: 'centre',
     })
     .toBuffer();
 };

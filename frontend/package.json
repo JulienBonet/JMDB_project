@@ -10,6 +10,7 @@
   "dependencies": {
     "@mui/icons-material": "^5.15.14",
     "@mui/material": "^5.15.10",
+    "@popperjs/core": "^2.11.8",
     "axios": "^1.7.5",
     "dompurify": "^3.3.0",
     "prop-types": "^15.8.1",

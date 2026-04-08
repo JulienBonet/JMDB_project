@@ -1,4 +1,4 @@
-const db = require("../../database/client");
+const db = require('../../database/client');
 
 //-----------------------------------------------
 // ADD MOVIE
@@ -63,7 +63,7 @@ const updateMovie = (
   id
 ) =>
   db.query(
-    "UPDATE movies SET title = ?, altTitle = ?, year = ?, duration = ?, trailer = ?, story = ?, location = ?, videoFormat = ?, videoSupport = ?, fileSize = ?, vostfr = ?, multi = ?, isTvShow = ?, TvSeasons = ?, nbTvEpisodes = ?, episodeDuration = ?,comment = ?, idTheMovieDb = ? WHERE id = ?",
+    'UPDATE movies SET title = ?, altTitle = ?, year = ?, duration = ?, trailer = ?, story = ?, location = ?, videoFormat = ?, videoSupport = ?, fileSize = ?, vostfr = ?, multi = ?, isTvShow = ?, TvSeasons = ?, nbTvEpisodes = ?, episodeDuration = ?,comment = ?, idTheMovieDb = ? WHERE id = ?',
     [
       title,
       altTitle,
@@ -88,15 +88,12 @@ const updateMovie = (
   );
 
 const updateMovieImage = (imageUrl, id) =>
-  db
-    .query("UPDATE movies SET cover = ? WHERE id = ?", [imageUrl, id])
-    .then(([result]) => result);
+  db.query('UPDATE movies SET cover = ? WHERE id = ?', [imageUrl, id]).then(([result]) => result);
 
-const getLastInsertedMovieId = () =>
-  db.query("SELECT LAST_INSERT_ID() AS movieId");
+const getLastInsertedMovieId = () => db.query('SELECT LAST_INSERT_ID() AS movieId');
 
 const findMovieById = async (id) => {
-  const [result] = await db.query("SELECT * FROM movies WHERE id = ?", [id]);
+  const [result] = await db.query('SELECT * FROM movies WHERE id = ?', [id]);
   return result;
 };
 
@@ -142,42 +139,35 @@ const findMovieExtendedById = async (id) => {
 // DELETE MOVIE
 //-----------------------------------------------
 
-const eraseMovie = (id) => db.query("DELETE FROM movies WHERE id = ?", [id]);
+const eraseMovie = (id) => db.query('DELETE FROM movies WHERE id = ?', [id]);
 
 //-----------------------------------------------
 // EDIT MOVIE_GENRE
 //-----------------------------------------------
 
 const findMovieKind = (movieId, genreId) =>
-  db.query(
-    "SELECT * FROM `movie_genre` WHERE `movieId` = ? AND `genreId` = ?",
-    [movieId, genreId]
-  );
+  db.query('SELECT * FROM `movie_genre` WHERE `movieId` = ? AND `genreId` = ?', [movieId, genreId]);
 
 const findKindByMovieId = async (movieId) => {
-  const [result] = await db.query(
-    "SELECT genreId FROM `movie_genre` WHERE `movieId` = ?",
-    [movieId]
-  );
+  const [result] = await db.query('SELECT genreId FROM `movie_genre` WHERE `movieId` = ?', [
+    movieId,
+  ]);
   return result;
 };
 
 const countMoviesByKind = async (genreId) => {
   const [result] = await db.query(
-    "SELECT COUNT(*) AS movieCount FROM movie_genre WHERE genreId = ?",
+    'SELECT COUNT(*) AS movieCount FROM movie_genre WHERE genreId = ?',
     [genreId]
   );
   return result;
 };
 
 const addMovieKind = (movieId, genreId) =>
-  db.query("INSERT INTO `movie_genre` (`movieId`, `genreId`) VALUES (? , ?);", [
-    movieId,
-    genreId,
-  ]);
+  db.query('INSERT INTO `movie_genre` (`movieId`, `genreId`) VALUES (? , ?);', [movieId, genreId]);
 
 const eraseKindByMovieId = (movieId) => {
-  return db.query("DELETE FROM movie_genre WHERE movieId = ?", [movieId]);
+  return db.query('DELETE FROM movie_genre WHERE movieId = ?', [movieId]);
 };
 
 //-----------------------------------------------
@@ -185,35 +175,34 @@ const eraseKindByMovieId = (movieId) => {
 //-----------------------------------------------
 
 const findMovieDirector = (movieId, directorId) =>
-  db.query(
-    "SELECT * FROM `movie_director` WHERE `movieId` = ? AND `directorId` = ?",
-    [movieId, directorId]
-  );
+  db.query('SELECT * FROM `movie_director` WHERE `movieId` = ? AND `directorId` = ?', [
+    movieId,
+    directorId,
+  ]);
 
 const findDirectorsByMovieId = async (movieId) => {
-  const [result] = await db.query(
-    "SELECT directorId FROM `movie_director` WHERE `movieId` = ?",
-    [movieId]
-  );
+  const [result] = await db.query('SELECT directorId FROM `movie_director` WHERE `movieId` = ?', [
+    movieId,
+  ]);
   return result;
 };
 
 const countMoviesByDirector = async (directorId) => {
   const [result] = await db.query(
-    "SELECT COUNT(*) AS movieCount FROM movie_director WHERE directorId = ?",
+    'SELECT COUNT(*) AS movieCount FROM movie_director WHERE directorId = ?',
     [directorId]
   );
   return result;
 };
 
 const addMovieDirector = (movieId, directorId) =>
-  db.query(
-    "INSERT INTO `movie_director` (`movieId`, `directorId`) VALUES (? , ?);",
-    [movieId, directorId]
-  );
+  db.query('INSERT INTO `movie_director` (`movieId`, `directorId`) VALUES (? , ?);', [
+    movieId,
+    directorId,
+  ]);
 
 const eraseDirectorByMovieId = (movieId) => {
-  return db.query("DELETE FROM movie_director WHERE movieId = ?", [movieId]);
+  return db.query('DELETE FROM movie_director WHERE movieId = ?', [movieId]);
 };
 
 //-----------------------------------------------
@@ -221,35 +210,34 @@ const eraseDirectorByMovieId = (movieId) => {
 //-----------------------------------------------
 
 const findMovieCasting = (movieId, castingId) =>
-  db.query(
-    "SELECT * FROM `movie_casting` WHERE `movieId` = ? AND `castingId` = ?",
-    [movieId, castingId]
-  );
+  db.query('SELECT * FROM `movie_casting` WHERE `movieId` = ? AND `castingId` = ?', [
+    movieId,
+    castingId,
+  ]);
 
 const findCastingByMovieId = async (movieId) => {
-  const [result] = await db.query(
-    "SELECT castingId FROM `movie_casting` WHERE `movieId` = ?",
-    [movieId]
-  );
+  const [result] = await db.query('SELECT castingId FROM `movie_casting` WHERE `movieId` = ?', [
+    movieId,
+  ]);
   return result;
 };
 
 const countMoviesByCasting = async (castingId) => {
   const [result] = await db.query(
-    "SELECT COUNT(*) AS movieCount FROM movie_casting WHERE castingId = ?",
+    'SELECT COUNT(*) AS movieCount FROM movie_casting WHERE castingId = ?',
     [castingId]
   );
   return result;
 };
 
 const addMovieCasting = (movieId, castingId) =>
-  db.query(
-    "INSERT INTO `movie_casting` (`movieId`, `castingId`) VALUES (? , ?);",
-    [movieId, castingId]
-  );
+  db.query('INSERT INTO `movie_casting` (`movieId`, `castingId`) VALUES (? , ?);', [
+    movieId,
+    castingId,
+  ]);
 
 const eraseCastingByMovieId = (movieId) => {
-  return db.query("DELETE FROM movie_casting WHERE movieId = ?", [movieId]);
+  return db.query('DELETE FROM movie_casting WHERE movieId = ?', [movieId]);
 };
 
 //-----------------------------------------------
@@ -257,14 +245,14 @@ const eraseCastingByMovieId = (movieId) => {
 //-----------------------------------------------
 
 const findMovieScreenwriter = (movieId, screenwriterId) =>
-  db.query(
-    "SELECT * FROM `movie_screenwriter` WHERE `movieId` = ? AND `screenwriterId` = ?",
-    [movieId, screenwriterId]
-  );
+  db.query('SELECT * FROM `movie_screenwriter` WHERE `movieId` = ? AND `screenwriterId` = ?', [
+    movieId,
+    screenwriterId,
+  ]);
 
 const findScreenwriterByMovieId = async (movieId) => {
   const [result] = await db.query(
-    "SELECT screenwriterId FROM `movie_screenwriter` WHERE `movieId` = ?",
+    'SELECT screenwriterId FROM `movie_screenwriter` WHERE `movieId` = ?',
     [movieId]
   );
   return result;
@@ -272,22 +260,20 @@ const findScreenwriterByMovieId = async (movieId) => {
 
 const countMoviesByScreenwriter = async (screenwriterId) => {
   const [result] = await db.query(
-    "SELECT COUNT(*) AS movieCount FROM movie_screenwriter WHERE screenwriterId = ?",
+    'SELECT COUNT(*) AS movieCount FROM movie_screenwriter WHERE screenwriterId = ?',
     [screenwriterId]
   );
   return result;
 };
 
 const addMovieScreenwriter = (movieId, screenwriterId) =>
-  db.query(
-    "INSERT INTO `movie_screenwriter` (`movieId`, `screenwriterId`) VALUES (? , ?);",
-    [movieId, screenwriterId]
-  );
+  db.query('INSERT INTO `movie_screenwriter` (`movieId`, `screenwriterId`) VALUES (? , ?);', [
+    movieId,
+    screenwriterId,
+  ]);
 
 const eraseScreenwriterByMovieId = (movieId) => {
-  return db.query("DELETE FROM movie_screenwriter WHERE movieId = ?", [
-    movieId,
-  ]);
+  return db.query('DELETE FROM movie_screenwriter WHERE movieId = ?', [movieId]);
 };
 
 //-----------------------------------------------
@@ -295,35 +281,28 @@ const eraseScreenwriterByMovieId = (movieId) => {
 //-----------------------------------------------
 
 const findMovieMusic = (movieId, musicId) =>
-  db.query(
-    "SELECT * FROM `movie_music` WHERE `movieId` = ? AND `musicId` = ?",
-    [movieId, musicId]
-  );
+  db.query('SELECT * FROM `movie_music` WHERE `movieId` = ? AND `musicId` = ?', [movieId, musicId]);
 
 const findMusicByMovieId = async (movieId) => {
-  const [result] = await db.query(
-    "SELECT musicId FROM `movie_music` WHERE `movieId` = ?",
-    [movieId]
-  );
+  const [result] = await db.query('SELECT musicId FROM `movie_music` WHERE `movieId` = ?', [
+    movieId,
+  ]);
   return result;
 };
 
 const countMoviesByMusic = async (musicId) => {
   const [result] = await db.query(
-    "SELECT COUNT(*) AS movieCount FROM movie_music WHERE musicId = ?",
+    'SELECT COUNT(*) AS movieCount FROM movie_music WHERE musicId = ?',
     [musicId]
   );
   return result;
 };
 
 const addMovieMusic = (movieId, musicId) =>
-  db.query("INSERT INTO `movie_music` (`movieId`, `musicId`) VALUES (?, ?);", [
-    movieId,
-    musicId,
-  ]);
+  db.query('INSERT INTO `movie_music` (`movieId`, `musicId`) VALUES (?, ?);', [movieId, musicId]);
 
 const eraseMusicByMovieId = (movieId) => {
-  return db.query("DELETE FROM movie_music WHERE movieId = ?", [movieId]);
+  return db.query('DELETE FROM movie_music WHERE movieId = ?', [movieId]);
 };
 
 //-----------------------------------------------
@@ -331,35 +310,34 @@ const eraseMusicByMovieId = (movieId) => {
 //-----------------------------------------------
 
 const findMovieStudio = (movieId, studioId) =>
-  db.query(
-    "SELECT * FROM `movie_studio` WHERE `movieId` = ? AND `studioId` = ?",
-    [movieId, studioId]
-  );
+  db.query('SELECT * FROM `movie_studio` WHERE `movieId` = ? AND `studioId` = ?', [
+    movieId,
+    studioId,
+  ]);
 
 const findStudioByMovieId = async (movieId) => {
-  const [result] = await db.query(
-    "SELECT studioId FROM `movie_studio` WHERE `movieId` = ?",
-    [movieId]
-  );
+  const [result] = await db.query('SELECT studioId FROM `movie_studio` WHERE `movieId` = ?', [
+    movieId,
+  ]);
   return result;
 };
 
 const countMoviesByStudio = async (studioId) => {
   const [result] = await db.query(
-    "SELECT COUNT(*) AS movieCount FROM movie_studio WHERE studioId = ?",
+    'SELECT COUNT(*) AS movieCount FROM movie_studio WHERE studioId = ?',
     [studioId]
   );
   return result;
 };
 
 const addMovieStudio = (movieId, studioId) =>
-  db.query(
-    "INSERT INTO `movie_studio` (`movieId`, `studioId`) VALUES (? , ?);",
-    [movieId, studioId]
-  );
+  db.query('INSERT INTO `movie_studio` (`movieId`, `studioId`) VALUES (? , ?);', [
+    movieId,
+    studioId,
+  ]);
 
 const eraseStudioByMovieId = (movieId) => {
-  return db.query("DELETE FROM movie_studio WHERE movieId = ?", [movieId]);
+  return db.query('DELETE FROM movie_studio WHERE movieId = ?', [movieId]);
 };
 
 //-----------------------------------------------
@@ -367,35 +345,34 @@ const eraseStudioByMovieId = (movieId) => {
 //-----------------------------------------------
 
 const findMovieCountry = (movieId, countryId) =>
-  db.query(
-    "SELECT * FROM `movie_country` WHERE `movieId` = ? AND `countryId` = ?",
-    [movieId, countryId]
-  );
+  db.query('SELECT * FROM `movie_country` WHERE `movieId` = ? AND `countryId` = ?', [
+    movieId,
+    countryId,
+  ]);
 
 const findCountryByMovieId = async (movieId) => {
-  const [result] = await db.query(
-    "SELECT countryId FROM `movie_country` WHERE `movieId` = ?",
-    [movieId]
-  );
+  const [result] = await db.query('SELECT countryId FROM `movie_country` WHERE `movieId` = ?', [
+    movieId,
+  ]);
   return result;
 };
 
 const countMoviesByCountry = async (countryId) => {
   const [result] = await db.query(
-    "SELECT COUNT(*) AS movieCount FROM movie_country WHERE countryId = ?",
+    'SELECT COUNT(*) AS movieCount FROM movie_country WHERE countryId = ?',
     [countryId]
   );
   return result;
 };
 
 const addMovieCountry = (movieId, countryId) =>
-  db.query(
-    "INSERT INTO `movie_country` (`movieId`, `countryId`) VALUES (? , ?);",
-    [movieId, countryId]
-  );
+  db.query('INSERT INTO `movie_country` (`movieId`, `countryId`) VALUES (? , ?);', [
+    movieId,
+    countryId,
+  ]);
 
 const eraseCountryByMovieId = (movieId) => {
-  return db.query("DELETE FROM movie_country WHERE movieId = ?", [movieId]);
+  return db.query('DELETE FROM movie_country WHERE movieId = ?', [movieId]);
 };
 
 //-----------------------------------------------
@@ -403,35 +380,34 @@ const eraseCountryByMovieId = (movieId) => {
 //-----------------------------------------------
 
 const findMovieLanguage = (movieId, languageId) =>
-  db.query(
-    "SELECT * FROM `movie_language` WHERE `movieId` = ? AND `languageId` = ?",
-    [movieId, languageId]
-  );
+  db.query('SELECT * FROM `movie_language` WHERE `movieId` = ? AND `languageId` = ?', [
+    movieId,
+    languageId,
+  ]);
 
 const findLanguageByMovieId = async (movieId) => {
-  const [result] = await db.query(
-    "SELECT languageId FROM `movie_language` WHERE `movieId` = ?",
-    [movieId]
-  );
+  const [result] = await db.query('SELECT languageId FROM `movie_language` WHERE `movieId` = ?', [
+    movieId,
+  ]);
   return result;
 };
 
 const countMoviesBylanguage = async (languageId) => {
   const [result] = await db.query(
-    "SELECT COUNT(*) AS movieCount FROM movie_language WHERE languageId = ?",
+    'SELECT COUNT(*) AS movieCount FROM movie_language WHERE languageId = ?',
     [languageId]
   );
   return result;
 };
 
 const addMovieLanguage = (movieId, languageId) =>
-  db.query(
-    "INSERT INTO `movie_language` (`movieId`, `languageId`) VALUES (? , ?);",
-    [movieId, languageId]
-  );
+  db.query('INSERT INTO `movie_language` (`movieId`, `languageId`) VALUES (? , ?);', [
+    movieId,
+    languageId,
+  ]);
 
 const eraseLanguageByMovieId = (movieId) => {
-  return db.query("DELETE FROM movie_language WHERE movieId = ?", [movieId]);
+  return db.query('DELETE FROM movie_language WHERE movieId = ?', [movieId]);
 };
 
 //-----------------------------------------------
@@ -439,35 +415,25 @@ const eraseLanguageByMovieId = (movieId) => {
 //-----------------------------------------------
 
 const findMovieTag = (movieId, tagId) =>
-  db.query("SELECT * FROM `movie_tag` WHERE `movieId` = ? AND `tagId` = ?", [
-    movieId,
-    tagId,
-  ]);
+  db.query('SELECT * FROM `movie_tag` WHERE `movieId` = ? AND `tagId` = ?', [movieId, tagId]);
 
 const findTagByMovieId = async (movieId) => {
-  const [result] = await db.query(
-    "SELECT tagId FROM `movie_tag` WHERE `movieId` = ?",
-    [movieId]
-  );
+  const [result] = await db.query('SELECT tagId FROM `movie_tag` WHERE `movieId` = ?', [movieId]);
   return result;
 };
 
 const countMoviesByTag = async (tagId) => {
-  const [result] = await db.query(
-    "SELECT COUNT(*) AS movieCount FROM movie_tag WHERE tagId = ?",
-    [tagId]
-  );
+  const [result] = await db.query('SELECT COUNT(*) AS movieCount FROM movie_tag WHERE tagId = ?', [
+    tagId,
+  ]);
   return result;
 };
 
 const addMovieTag = (movieId, tagId) =>
-  db.query("INSERT INTO `movie_tag` (`movieId`, `tagId`) VALUES (? , ?);", [
-    movieId,
-    tagId,
-  ]);
+  db.query('INSERT INTO `movie_tag` (`movieId`, `tagId`) VALUES (? , ?);', [movieId, tagId]);
 
 const eraseTagByMovieId = (movieId) => {
-  return db.query("DELETE FROM movie_tag WHERE movieId = ?", [movieId]);
+  return db.query('DELETE FROM movie_tag WHERE movieId = ?', [movieId]);
 };
 
 //-----------------------------------------------
@@ -475,14 +441,11 @@ const eraseTagByMovieId = (movieId) => {
 //-----------------------------------------------
 
 const addMovieFocus = (movieId, focusId) => {
-  return db.query("INSERT INTO movie_focus (movieId, focusId) VALUES (?, ?)", [
-    movieId,
-    focusId,
-  ]);
+  return db.query('INSERT INTO movie_focus (movieId, focusId) VALUES (?, ?)', [movieId, focusId]);
 };
 
 const eraseFocusByMovieId = (movieId) => {
-  return db.query("DELETE FROM movie_focus WHERE movieId = ?", [movieId]);
+  return db.query('DELETE FROM movie_focus WHERE movieId = ?', [movieId]);
 };
 
 module.exports = {
