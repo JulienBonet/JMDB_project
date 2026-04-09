@@ -1,17 +1,17 @@
 /* eslint-disable no-restricted-syntax */
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
-import CircularProgress from "@mui/material/CircularProgress";
-import "../../assets/css/common_elements.css";
-import "./login.css";
-import { useAuth } from "../../Context/AuthContext";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import CircularProgress from '@mui/material/CircularProgress';
+import '../../assets/css/common_elements.css';
+import './login.css';
+import { useAuth } from '../../Context/AuthContext';
 
 function Login() {
-  const [name, setName] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [name, setName] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   const { login } = useAuth();
@@ -22,16 +22,16 @@ function Login() {
   // ---------
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
+    setError('');
     setLoading(true);
 
     try {
       await login(name, password);
-      console.log("Connexion réussie !");
-      navigate("/");
+      console.log('Connexion réussie !');
+      navigate('/');
     } catch (err) {
       console.error(err);
-      setError("Identifiants incorrects");
+      setError('Identifiants incorrects');
     } finally {
       setLoading(false);
     }
@@ -40,28 +40,28 @@ function Login() {
   // SX
   // ---------
   const textFieldSx = {
-    backgroundColor: "white",
-    "& .MuiOutlinedInput-root": {
-      "& fieldset": {
-        borderColor: "var(--color-04)", // bord normal
+    backgroundColor: 'white',
+    '& .MuiOutlinedInput-root': {
+      '& fieldset': {
+        borderColor: 'var(--color-04)', // bord normal
       },
-      "&:hover fieldset": {
-        borderColor: "var(--color-02)", // bord hover
+      '&:hover fieldset': {
+        borderColor: 'var(--color-02)', // bord hover
       },
-      "&.Mui-focused fieldset": {
-        borderColor: "var(--color-02)", // bord focus
+      '&.Mui-focused fieldset': {
+        borderColor: 'var(--color-02)', // bord focus
       },
     },
-    "& .MuiInputLabel-root.Mui-focused": {
-      color: "var(--color-05)", // label focus
+    '& .MuiInputLabel-root.Mui-focused': {
+      color: 'var(--color-05)', // label focus
     },
   };
 
   const SubmitButtonSx = {
-    width: "50%",
-    backgroundColor: "var(--color-03)",
-    color: "var(--color-04)",
-    "&:hover": { backgroundColor: "var(--color-02)", color: "var(--color-05)" },
+    width: '50%',
+    backgroundColor: 'var(--color-03)',
+    color: 'var(--color-04)',
+    '&:hover': { backgroundColor: 'var(--color-02)', color: 'var(--color-05)' },
   };
 
   // ---------
