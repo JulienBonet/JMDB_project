@@ -1,12 +1,12 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
-import ModeIcon from "@mui/icons-material/Mode";
-import DoneOutlineIcon from "@mui/icons-material/DoneOutline";
-import UndoIcon from "@mui/icons-material/Undo";
-import "./adminItemsCard.css";
+import { useState } from 'react';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
+import ModeIcon from '@mui/icons-material/Mode';
+import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
+import UndoIcon from '@mui/icons-material/Undo';
+import './adminItemsCard.css';
 
 function AdminItemsCard2({ item, origin, onUpdate, closeModal }) {
   const [isModify, setIsModify] = useState(false);
@@ -35,37 +35,37 @@ function AdminItemsCard2({ item, origin, onUpdate, closeModal }) {
         const response = await fetch(
           `${import.meta.env.VITE_BACKEND_URL}/api/${origin}/${item.id}`,
           {
-            method: "PUT",
+            method: 'PUT',
             headers: {
-              "Content-Type": "application/json",
+              'Content-Type': 'application/json',
             },
             body: JSON.stringify(data),
           }
         );
 
         if (!response.ok) {
-          console.error("Error updating item");
+          console.error('Error updating item');
           return;
         }
-        console.info("Item successfully updated");
+        console.info('Item successfully updated');
       }
 
       // 3. Réinitialiser les états locaux
       toast.success(`${origin} successfully updated`, {
-        className: "custom-toast",
+        className: 'custom-toast',
       });
       setIsModify(false);
       setIsEditing(false);
       onUpdate();
       closeModal();
     } catch (error) {
-      console.error("Request error:", error);
+      console.error('Request error:', error);
     }
   };
 
   // Fonctions pour filtrer les caractères interdits
   const regexInput = (value) => {
-    return value.replace(/[/\\]/g, "-");
+    return value.replace(/[/\\]/g, '-');
   };
 
   const handleNameChange = (e) => {
@@ -100,22 +100,13 @@ function AdminItemsCard2({ item, origin, onUpdate, closeModal }) {
         <div className="Info_Btn-Modify">
           {isEditing ? (
             <section className="Item_Editing_Buttons">
-              <DoneOutlineIcon
-                className="Item_validateButton"
-                onClick={handleValidate}
-              />
+              <DoneOutlineIcon className="Item_validateButton" onClick={handleValidate} />
               <UndoIcon className="Item_UndoButton" onClick={handleUndo} />
             </section>
           ) : (
             <section className="Item_Editing_Buttons">
-              <KeyboardReturnIcon
-                className="item_return_ico"
-                onClick={handleReturn}
-              />
-              <ModeIcon
-                className="item_tools_ico"
-                onClick={() => openModif()}
-              />
+              <KeyboardReturnIcon className="item_return_ico" onClick={handleReturn} />
+              <ModeIcon className="item_tools_ico" onClick={() => openModif()} />
             </section>
           )}
         </div>

@@ -1,30 +1,30 @@
 /* eslint-disable react/no-danger */
 /* eslint-disable react/prop-types */
-import { useState, useRef, useEffect } from "react";
-import { FormControl, Select, MenuItem, OutlinedInput } from "@mui/material";
-import ReactQuill from "react-quill";
-import DOMPurify from "dompurify";
-import "react-quill/dist/quill.snow.css";
-import "../../../assets/css/reactQuill_html_parametrage.css";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
-import ModeIcon from "@mui/icons-material/Mode";
-import DoneOutlineIcon from "@mui/icons-material/DoneOutline";
-import UndoIcon from "@mui/icons-material/Undo";
-import FileUploadIcon from "@mui/icons-material/FileUpload";
-import CachedIcon from "@mui/icons-material/Cached";
-import CircularProgress from "@mui/material/CircularProgress";
-import "./adminItemsCard.css";
+import { useState, useRef, useEffect } from 'react';
+import { FormControl, Select, MenuItem, OutlinedInput } from '@mui/material';
+import ReactQuill from 'react-quill';
+import DOMPurify from 'dompurify';
+import 'react-quill/dist/quill.snow.css';
+import '../../../assets/css/reactQuill_html_parametrage.css';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
+import ModeIcon from '@mui/icons-material/Mode';
+import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
+import UndoIcon from '@mui/icons-material/Undo';
+import FileUploadIcon from '@mui/icons-material/FileUpload';
+import CachedIcon from '@mui/icons-material/Cached';
+import CircularProgress from '@mui/material/CircularProgress';
+import './adminItemsCard.css';
 
 function AdminItemsCard4({ item, origin, onUpdate, closeModal }) {
   // console.info("origin", origin);
 
   const CLOUDINARY_BASE_URL = import.meta.env.VITE_CLOUDINARY_BASE_URL;
-  const isFocus = origin === "focus";
+  const isFocus = origin === 'focus';
 
   const getImageUrl = (publicId) => {
-    if (!publicId) return "00_jmtb_item_default.jpg";
+    if (!publicId) return '00_jmtb_item_default.jpg';
 
     return `${CLOUDINARY_BASE_URL}/${publicId}`;
   };
@@ -35,9 +35,7 @@ function AdminItemsCard4({ item, origin, onUpdate, closeModal }) {
   const [image, setImage] = useState(getImageUrl(item.image));
   const [showUploadButton, setShowUploadButton] = useState(true);
   const [categories, setCategories] = useState([]);
-  const [categoryId, setCategoryId] = useState(
-    item.categoryId ? Number(item.categoryId) : ""
-  );
+  const [categoryId, setCategoryId] = useState(item.categoryId ? Number(item.categoryId) : '');
   const [isLoading, setIsLoading] = useState(false);
   const fileInputRef = useRef(null);
 
@@ -51,11 +49,11 @@ function AdminItemsCard4({ item, origin, onUpdate, closeModal }) {
 
   // Fetch catégories (origin === "focus")
   useEffect(() => {
-    if (origin === "focus") {
+    if (origin === 'focus') {
       fetch(`${import.meta.env.VITE_BACKEND_URL}/api/focuscategory`)
         .then((res) => res.json())
         .then((data) => setCategories(data))
-        .catch((err) => console.error("Error fetching categories:", err));
+        .catch((err) => console.error('Error fetching categories:', err));
     }
   }, []);
   // End Fetch catégories (origin === "focus")
@@ -67,15 +65,15 @@ function AdminItemsCard4({ item, origin, onUpdate, closeModal }) {
     if (!file) return null;
 
     const imageData = new FormData();
-    imageData.append("image", file);
+    imageData.append('image', file);
 
     // Ajoute l'id du focus
-    imageData.append("focusId", item.id);
+    imageData.append('focusId', item.id);
 
     const response = await fetch(
       `${import.meta.env.VITE_BACKEND_URL}/api/${origin}/${item.id}/image`,
       {
-        method: "PUT",
+        method: 'PUT',
         body: imageData,
       }
     );
@@ -83,7 +81,7 @@ function AdminItemsCard4({ item, origin, onUpdate, closeModal }) {
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.message || "Upload failed");
+      throw new Error(data.message || 'Upload failed');
     }
 
     return data.url;
@@ -94,9 +92,7 @@ function AdminItemsCard4({ item, origin, onUpdate, closeModal }) {
       setIsLoading(true);
 
       const hasChanges =
-        name !== item.name ||
-        pitch !== item.pitch ||
-        categoryId !== item.categoryId;
+        name !== item.name || pitch !== item.pitch || categoryId !== item.categoryId;
 
       // 1️⃣ Mettre à jour les infos
       if (hasChanges) {
@@ -104,17 +100,17 @@ function AdminItemsCard4({ item, origin, onUpdate, closeModal }) {
         const response = await fetch(
           `${import.meta.env.VITE_BACKEND_URL}/api/${origin}/${item.id}`,
           {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data),
           }
         );
 
         if (!response.ok) {
-          console.error("Error updating item image", data);
-          throw new Error(data.message || "Upload failed");
+          console.error('Error updating item image', data);
+          throw new Error(data.message || 'Upload failed');
         }
-        console.info("Item successfully updated");
+        console.info('Item successfully updated');
       }
 
       // 2️⃣ Mettre à jour l'image
@@ -123,11 +119,11 @@ function AdminItemsCard4({ item, origin, onUpdate, closeModal }) {
         try {
           newImageUrl = await handleUpdateImage();
           setImage(newImageUrl);
-          console.info("Image successfully updated");
+          console.info('Image successfully updated');
         } catch (err) {
-          console.error("Erreur upload image :", err);
+          console.error('Erreur upload image :', err);
           toast.error(`Erreur upload image : ${err.message}`, {
-            className: "custom-toast",
+            className: 'custom-toast',
           });
           return;
         }
@@ -137,16 +133,16 @@ function AdminItemsCard4({ item, origin, onUpdate, closeModal }) {
       if (newImageUrl) setImage(newImageUrl);
 
       toast.success(`${origin} successfully updated`, {
-        className: "custom-toast",
+        className: 'custom-toast',
       });
       setIsModify(false);
       setShowUploadButton(true);
       onUpdate();
       closeModal();
     } catch (error) {
-      console.error("Request error:", error);
+      console.error('Request error:', error);
       toast.error(`Erreur inattendue : ${error.message}`, {
-        className: "custom-toast",
+        className: 'custom-toast',
       });
     } finally {
       setIsLoading(false);
@@ -155,7 +151,7 @@ function AdminItemsCard4({ item, origin, onUpdate, closeModal }) {
 
   // Fonctions pour filtrer les caractères interdits
   const regexInput = (value) => {
-    return value.replace(/[/\\]/g, "-");
+    return value.replace(/[/\\]/g, '-');
   };
 
   const handleNameChange = (e) => {
@@ -193,20 +189,18 @@ function AdminItemsCard4({ item, origin, onUpdate, closeModal }) {
   const modules = {
     toolbar: [
       [{ header: [1, 2, 3, false] }],
-      ["bold", "italic", "underline"],
-      [{ list: "ordered" }, { list: "bullet" }],
-      ["clean"],
+      ['bold', 'italic', 'underline'],
+      [{ list: 'ordered' }, { list: 'bullet' }],
+      ['clean'],
     ],
   };
 
-  const formats = ["header", "bold", "italic", "underline", "list", "bullet"];
+  const formats = ['header', 'bold', 'italic', 'underline', 'list', 'bullet'];
 
   return (
     <article className="ItemsCard">
       <section className="ItemsCard_Col_0">
-        {image && (
-          <img className="ItemImage" src={image} alt={`${item.name}`} />
-        )}
+        {image && <img className="ItemImage" src={image} alt={`${item.name}`} />}
         {isModify && (
           <>
             <input
@@ -214,18 +208,12 @@ function AdminItemsCard4({ item, origin, onUpdate, closeModal }) {
               accept="image/*"
               onChange={handleFileUpload}
               ref={fileInputRef}
-              style={{ display: "none" }}
+              style={{ display: 'none' }}
             />
             {showUploadButton ? (
-              <FileUploadIcon
-                className="Item_uploadButton"
-                onClick={handleUploadClick}
-              />
+              <FileUploadIcon className="Item_uploadButton" onClick={handleUploadClick} />
             ) : (
-              <CachedIcon
-                className="Item_reset_img_Button"
-                onClick={handleResetImage}
-              />
+              <CachedIcon className="Item_reset_img_Button" onClick={handleResetImage} />
             )}
           </>
         )}
@@ -248,11 +236,7 @@ function AdminItemsCard4({ item, origin, onUpdate, closeModal }) {
           <div className="Info_item_line">
             <h2 className="ItemsCard_title">PITCH: </h2>
             {isModify ? (
-              <input
-                type="text"
-                value={pitch}
-                onChange={(e) => setPitch(e.target.value)}
-              />
+              <input type="text" value={pitch} onChange={(e) => setPitch(e.target.value)} />
             ) : (
               <p className="Items_info">{pitch}</p>
             )}
@@ -269,8 +253,8 @@ function AdminItemsCard4({ item, origin, onUpdate, closeModal }) {
                 modules={modules}
                 formats={formats}
                 style={{
-                  width: "91%",
-                  minHeight: "200px",
+                  width: '91%',
+                  minHeight: '200px',
                 }}
                 className="Items_info"
               />
@@ -293,7 +277,7 @@ function AdminItemsCard4({ item, origin, onUpdate, closeModal }) {
                   onChange={(e) => setCategoryId(Number(e.target.value))}
                   input={<OutlinedInput label="Category" />}
                   sx={{
-                    backgroundColor: "white",
+                    backgroundColor: 'white',
                   }}
                 >
                   {categories.map((cat) => (
@@ -322,32 +306,21 @@ function AdminItemsCard4({ item, origin, onUpdate, closeModal }) {
                   className="Item_loader_mui"
                 />
               ) : (
-                <DoneOutlineIcon
-                  className="Item_validateButton"
-                  onClick={handleValidate}
-                />
+                <DoneOutlineIcon className="Item_validateButton" onClick={handleValidate} />
               )}
               <UndoIcon className="Item_UndoButton" onClick={handleUndo} />
             </section>
           ) : (
             <section className="Item_Editing_Buttons">
-              <KeyboardReturnIcon
-                className="item_return_ico"
-                onClick={handleReturn}
-              />
-              <ModeIcon
-                className="item_tools_ico"
-                onClick={() => openModif()}
-              />
+              <KeyboardReturnIcon className="item_return_ico" onClick={handleReturn} />
+              <ModeIcon className="item_tools_ico" onClick={() => openModif()} />
             </section>
           )}
         </div>
       </section>
 
       <section className="ItemsCard_Col2">
-        {image && (
-          <img className="ItemImage" src={image} alt={`${item.name}`} />
-        )}
+        {image && <img className="ItemImage" src={image} alt={`${item.name}`} />}
         {isModify && (
           <>
             <input
@@ -355,18 +328,12 @@ function AdminItemsCard4({ item, origin, onUpdate, closeModal }) {
               accept="image/*"
               onChange={handleFileUpload}
               ref={fileInputRef}
-              style={{ display: "none" }}
+              style={{ display: 'none' }}
             />
             {showUploadButton ? (
-              <FileUploadIcon
-                className="Item_uploadButton"
-                onClick={handleUploadClick}
-              />
+              <FileUploadIcon className="Item_uploadButton" onClick={handleUploadClick} />
             ) : (
-              <CachedIcon
-                className="Item_reset_img_Button"
-                onClick={handleResetImage}
-              />
+              <CachedIcon className="Item_reset_img_Button" onClick={handleResetImage} />
             )}
           </>
         )}

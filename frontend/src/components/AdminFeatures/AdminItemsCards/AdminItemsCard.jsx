@@ -1,52 +1,50 @@
 /* eslint-disable react/no-danger */
 /* eslint-disable react/prop-types */
 // /* eslint-disable react/prop-types */
-import { useState, useRef } from "react";
-import { toast } from "react-toastify";
-import ReactQuill from "react-quill";
-import DOMPurify from "dompurify";
-import "react-quill/dist/quill.snow.css";
-import "../../../assets/css/reactQuill_html_parametrage.css";
-import "react-toastify/dist/ReactToastify.css";
-import Switch from "@mui/material/Switch";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
-import ModeIcon from "@mui/icons-material/Mode";
-import DoneOutlineIcon from "@mui/icons-material/DoneOutline";
-import UndoIcon from "@mui/icons-material/Undo";
-import FileUploadIcon from "@mui/icons-material/FileUpload";
-import CachedIcon from "@mui/icons-material/Cached";
-import CircularProgress from "@mui/material/CircularProgress";
-import "./adminItemsCard.css";
-import "./adminItemsCardMediaQueries.css";
+import { useState, useRef } from 'react';
+import { toast } from 'react-toastify';
+import ReactQuill from 'react-quill';
+import DOMPurify from 'dompurify';
+import 'react-quill/dist/quill.snow.css';
+import '../../../assets/css/reactQuill_html_parametrage.css';
+import 'react-toastify/dist/ReactToastify.css';
+import Switch from '@mui/material/Switch';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
+import ModeIcon from '@mui/icons-material/Mode';
+import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
+import UndoIcon from '@mui/icons-material/Undo';
+import FileUploadIcon from '@mui/icons-material/FileUpload';
+import CachedIcon from '@mui/icons-material/Cached';
+import CircularProgress from '@mui/material/CircularProgress';
+import './adminItemsCard.css';
+import './adminItemsCardMediaQueries.css';
 
 function AdminItemsCard({ item, origin, onUpdate, closeModal }) {
   const CLOUDINARY_BASE_URL = import.meta.env.VITE_CLOUDINARY_BASE_URL;
 
   // Fonction Cloudinary
   const getImageUrl = (publicId) => {
-    if (!publicId) return "00_jmtb_item_default.jpg";
+    if (!publicId) return '00_jmtb_item_default.jpg';
     return `${CLOUDINARY_BASE_URL}/${publicId}`;
   };
 
   const [isModify, setIsModify] = useState(false);
-  const [name, setName] = useState(item.name || "");
-  const [pitch, setPitch] = useState(item.pitch || "");
-  const [wikilink, setWikilink] = useState(item.wikilink || "");
-  const [imdblink, setImdblink] = useState(item.imdblink || "");
-  const [senscritiquelink, setSenscritiquelink] = useState(
-    item.senscritiquelink || ""
-  );
-  const [websitelink, setWebsitelink] = useState(item.webSitelink || "");
-  const [birthDate, setBirthDate] = useState(item.birthDate || "");
-  const [deathDate, setDeathDate] = useState(item.deathDate || "");
-  const [isFocus, setIsFocus] = useState(item.isFocus || "");
+  const [name, setName] = useState(item.name || '');
+  const [pitch, setPitch] = useState(item.pitch || '');
+  const [wikilink, setWikilink] = useState(item.wikilink || '');
+  const [imdblink, setImdblink] = useState(item.imdblink || '');
+  const [senscritiquelink, setSenscritiquelink] = useState(item.senscritiquelink || '');
+  const [websitelink, setWebsitelink] = useState(item.webSitelink || '');
+  const [birthDate, setBirthDate] = useState(item.birthDate || '');
+  const [deathDate, setDeathDate] = useState(item.deathDate || '');
+  const [isFocus, setIsFocus] = useState(item.isFocus || '');
   const [image, setImage] = useState(getImageUrl(item.image));
   const [showUploadButton, setShowUploadButton] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const fileInputRef = useRef(null);
 
-  const isArtistFocus = origin === "director" || origin === "casting";
+  const isArtistFocus = origin === 'director' || origin === 'casting';
 
   const openModif = () => {
     setIsModify(true);
@@ -61,12 +59,12 @@ function AdminItemsCard({ item, origin, onUpdate, closeModal }) {
     if (!file) return null;
 
     const formData = new FormData();
-    formData.append("image", file);
+    formData.append('image', file);
 
     const response = await fetch(
       `${import.meta.env.VITE_BACKEND_URL}/api/${origin}/${item.id}/image`,
       {
-        method: "PUT",
+        method: 'PUT',
         body: formData,
       }
     );
@@ -74,8 +72,8 @@ function AdminItemsCard({ item, origin, onUpdate, closeModal }) {
     const data = await response.json();
 
     if (!response.ok) {
-      console.error("❌ Erreur Cloudinary :", data);
-      throw new Error(data.message || "Upload failed");
+      console.error('❌ Erreur Cloudinary :', data);
+      throw new Error(data.message || 'Upload failed');
     }
 
     return data.url;
@@ -113,15 +111,15 @@ function AdminItemsCard({ item, origin, onUpdate, closeModal }) {
         const response = await fetch(
           `${import.meta.env.VITE_BACKEND_URL}/api/${origin}/${item.id}`,
           {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data),
           }
         );
 
         if (!response.ok) {
           const err = await response.json();
-          throw new Error(err.message || "Update failed");
+          throw new Error(err.message || 'Update failed');
         }
       }
 
@@ -135,7 +133,7 @@ function AdminItemsCard({ item, origin, onUpdate, closeModal }) {
       }
 
       toast.success(`${origin} successfully updated`, {
-        className: "custom-toast",
+        className: 'custom-toast',
       });
 
       setIsModify(false);
@@ -144,7 +142,7 @@ function AdminItemsCard({ item, origin, onUpdate, closeModal }) {
       onUpdate();
       closeModal();
     } catch (err) {
-      toast.error(`Erreur : ${err.message}`, { className: "custom-toast" });
+      toast.error(`Erreur : ${err.message}`, { className: 'custom-toast' });
     } finally {
       setIsLoading(false);
     }
@@ -152,7 +150,7 @@ function AdminItemsCard({ item, origin, onUpdate, closeModal }) {
 
   // Fonctions pour filtrer les caractères interdits
   const regexInput = (value) => {
-    return value.replace(/[/\\]/g, "-");
+    return value.replace(/[/\\]/g, '-');
   };
 
   const handleNameChange = (e) => {
@@ -196,20 +194,18 @@ function AdminItemsCard({ item, origin, onUpdate, closeModal }) {
   const modules = {
     toolbar: [
       [{ header: [1, 2, 3, false] }],
-      ["bold", "italic", "underline"],
-      [{ list: "ordered" }, { list: "bullet" }],
-      ["clean"],
+      ['bold', 'italic', 'underline'],
+      [{ list: 'ordered' }, { list: 'bullet' }],
+      ['clean'],
     ],
   };
 
-  const formats = ["header", "bold", "italic", "underline", "list", "bullet"];
+  const formats = ['header', 'bold', 'italic', 'underline', 'list', 'bullet'];
 
   return (
     <article className="ItemsCard">
       <section className="ItemsCard_Col_0">
-        {item && image && (
-          <img className="ItemImage" src={image} alt={`${item.name}`} />
-        )}
+        {item && image && <img className="ItemImage" src={image} alt={`${item.name}`} />}
         {isModify && (
           <>
             <input
@@ -217,18 +213,12 @@ function AdminItemsCard({ item, origin, onUpdate, closeModal }) {
               accept="image/*"
               onChange={handleFileUpload}
               ref={fileInputRef}
-              style={{ display: "none" }}
+              style={{ display: 'none' }}
             />
             {showUploadButton ? (
-              <FileUploadIcon
-                className="Item_uploadButton"
-                onClick={handleUploadClick}
-              />
+              <FileUploadIcon className="Item_uploadButton" onClick={handleUploadClick} />
             ) : (
-              <CachedIcon
-                className="Item_reset_img_Button"
-                onClick={handleResetImage}
-              />
+              <CachedIcon className="Item_reset_img_Button" onClick={handleResetImage} />
             )}
           </>
         )}
@@ -253,11 +243,7 @@ function AdminItemsCard({ item, origin, onUpdate, closeModal }) {
           <div className="Info_item_line">
             <h2 className="ItemsCard_title">BIRTH: </h2>
             {isModify ? (
-              <input
-                type="text"
-                value={birthDate}
-                onChange={(e) => setBirthDate(e.target.value)}
-              />
+              <input type="text" value={birthDate} onChange={(e) => setBirthDate(e.target.value)} />
             ) : (
               <p className="Items_info">{birthDate}</p>
             )}
@@ -288,7 +274,7 @@ function AdminItemsCard({ item, origin, onUpdate, closeModal }) {
                   modules={modules}
                   formats={formats}
                   style={{
-                    width: "91%",
+                    width: '91%',
                     // minHeight: "200px",
                   }}
                   className="Items_info"
@@ -305,11 +291,7 @@ function AdminItemsCard({ item, origin, onUpdate, closeModal }) {
             <div className="Info_item_line">
               <h2 className="ItemsCard_title">WIKIPEDIA: </h2>
               {isModify ? (
-                <input
-                  type="text"
-                  value={wikilink}
-                  onChange={(e) => setWikilink(e.target.value)}
-                />
+                <input type="text" value={wikilink} onChange={(e) => setWikilink(e.target.value)} />
               ) : (
                 <p className="Items_info word-break">{wikilink}</p>
               )}
@@ -317,11 +299,7 @@ function AdminItemsCard({ item, origin, onUpdate, closeModal }) {
             <div className="Info_item_line">
               <h2 className="ItemsCard_title">IMDB: </h2>
               {isModify ? (
-                <input
-                  type="text"
-                  value={imdblink}
-                  onChange={(e) => setImdblink(e.target.value)}
-                />
+                <input type="text" value={imdblink} onChange={(e) => setImdblink(e.target.value)} />
               ) : (
                 <p className="Items_info word-break">{imdblink}</p>
               )}
@@ -362,7 +340,7 @@ function AdminItemsCard({ item, origin, onUpdate, closeModal }) {
                   }
                 />
               ) : (
-                <p className="Items_info">{isFocus ? "OUI" : "NON"}</p>
+                <p className="Items_info">{isFocus ? 'OUI' : 'NON'}</p>
               )}
             </div>
           </>
@@ -379,32 +357,21 @@ function AdminItemsCard({ item, origin, onUpdate, closeModal }) {
                   className="Item_loader_mui"
                 />
               ) : (
-                <DoneOutlineIcon
-                  className="Item_validateButton"
-                  onClick={handleValidate}
-                />
+                <DoneOutlineIcon className="Item_validateButton" onClick={handleValidate} />
               )}
               <UndoIcon className="Item_UndoButton" onClick={handleUndo} />
             </section>
           ) : (
             <section className="Item_Editing_Buttons">
-              <KeyboardReturnIcon
-                className="item_return_ico"
-                onClick={handleReturn}
-              />
-              <ModeIcon
-                className="item_tools_ico"
-                onClick={() => openModif()}
-              />
+              <KeyboardReturnIcon className="item_return_ico" onClick={handleReturn} />
+              <ModeIcon className="item_tools_ico" onClick={() => openModif()} />
             </section>
           )}
         </div>
       </section>
 
       <section className="ItemsCard_Col2">
-        {item && image && (
-          <img className="ItemImage" src={image} alt={`${item.name}`} />
-        )}
+        {item && image && <img className="ItemImage" src={image} alt={`${item.name}`} />}
         {isModify && (
           <>
             <input
@@ -412,18 +379,12 @@ function AdminItemsCard({ item, origin, onUpdate, closeModal }) {
               accept="image/*"
               onChange={handleFileUpload}
               ref={fileInputRef}
-              style={{ display: "none" }}
+              style={{ display: 'none' }}
             />
             {showUploadButton ? (
-              <FileUploadIcon
-                className="Item_uploadButton"
-                onClick={handleUploadClick}
-              />
+              <FileUploadIcon className="Item_uploadButton" onClick={handleUploadClick} />
             ) : (
-              <CachedIcon
-                className="Item_reset_img_Button"
-                onClick={handleResetImage}
-              />
+              <CachedIcon className="Item_reset_img_Button" onClick={handleResetImage} />
             )}
           </>
         )}

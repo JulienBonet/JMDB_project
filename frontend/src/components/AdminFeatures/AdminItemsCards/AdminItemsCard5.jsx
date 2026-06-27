@@ -1,39 +1,39 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-alert */
-import { useState } from "react";
-import { toast } from "react-toastify";
-import DoneOutlineIcon from "@mui/icons-material/DoneOutline";
-import UndoIcon from "@mui/icons-material/Undo";
-import "./adminItemsCard.css";
+import { useState } from 'react';
+import { toast } from 'react-toastify';
+import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
+import UndoIcon from '@mui/icons-material/Undo';
+import './adminItemsCard.css';
 
 function AdminItemsCard5({ item, onUpdate, closeModal }) {
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmNewPassword, setConfirmNewPassword] = useState("");
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleUndo = () => {
-    setNewPassword("");
-    setConfirmNewPassword("");
+    setNewPassword('');
+    setConfirmNewPassword('');
     closeModal();
   };
 
   const handleValidate = async () => {
     // validations simples
     if (!newPassword || !confirmNewPassword) {
-      toast.error("Merci de renseigner les deux champs", {
-        className: "custom-toast",
+      toast.error('Merci de renseigner les deux champs', {
+        className: 'custom-toast',
       });
       return;
     }
     if (newPassword !== confirmNewPassword) {
-      toast.error("Les mots de passe ne correspondent pas", {
-        className: "custom-toast",
+      toast.error('Les mots de passe ne correspondent pas', {
+        className: 'custom-toast',
       });
       return;
     }
     if (newPassword.length < 6) {
-      toast.error("Le mot de passe doit contenir au moins 6 caractères", {
-        className: "custom-toast",
+      toast.error('Le mot de passe doit contenir au moins 6 caractères', {
+        className: 'custom-toast',
       });
       return;
     }
@@ -44,10 +44,10 @@ function AdminItemsCard5({ item, onUpdate, closeModal }) {
       const response = await fetch(
         `${import.meta.env.VITE_BACKEND_URL}/api/auth/user/${item.id}/password`,
         {
-          method: "PATCH",
+          method: 'PATCH',
           headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
           body: JSON.stringify({ password: newPassword }),
         }
@@ -55,19 +55,19 @@ function AdminItemsCard5({ item, onUpdate, closeModal }) {
 
       if (!response.ok) {
         const txt = await response.text().catch(() => null);
-        console.error("Error change password:", txt || response.statusText);
-        toast.error(txt || "Erreur lors du changement de mot de passe");
+        console.error('Error change password:', txt || response.statusText);
+        toast.error(txt || 'Erreur lors du changement de mot de passe');
         setIsSubmitting(false);
         return;
       }
 
-      toast.success("Mot de passe mis à jour", { className: "custom-toast" });
+      toast.success('Mot de passe mis à jour', { className: 'custom-toast' });
       setIsSubmitting(false);
       onUpdate(); // refresh parent
       closeModal();
     } catch (err) {
       console.error(err);
-      toast.error("Erreur réseau");
+      toast.error('Erreur réseau');
       setIsSubmitting(false);
     }
   };
@@ -112,7 +112,7 @@ function AdminItemsCard5({ item, onUpdate, closeModal }) {
               onClick={handleValidate}
               style={{
                 opacity: isSubmitting ? 0.6 : 1,
-                pointerEvents: isSubmitting ? "none" : "auto",
+                pointerEvents: isSubmitting ? 'none' : 'auto',
               }}
             />
             <UndoIcon className="Item_UndoButton" onClick={handleUndo} />
