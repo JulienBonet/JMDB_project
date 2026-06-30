@@ -1,10 +1,17 @@
+// backend/index.js
 // Load environment variables from .env file
-require('dotenv').config({
-  path:
-    process.env.NODE_ENV === 'production'
-      ? `${__dirname}/.env.production`
-      : `${__dirname}/.env.development`,
-});
+// require('dotenv').config({
+//   path:
+//     process.env.NODE_ENV === 'production'
+//       ? `${__dirname}/.env.production`
+//       : `${__dirname}/.env.development`,
+// });
+
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config({
+    path: `${__dirname}/.env.development`,
+  });
+}
 
 // Import app from app.js
 const app = require('./src/app');
