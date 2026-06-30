@@ -1,6 +1,5 @@
 /* eslint-disable camelcase */
 /* eslint-disable consistent-return */
-const fetch = require('node-fetch');
 
 // Helper générique pour un fetch TMDB
 const fetchTMDB = async (url) => {

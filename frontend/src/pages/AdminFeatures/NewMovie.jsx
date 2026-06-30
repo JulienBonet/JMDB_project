@@ -1,25 +1,25 @@
-import { useState, useRef } from "react";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { Button } from "@mui/material";
-import Box from "@mui/material/Box";
-import Modal from "@mui/material/Modal";
-import InputLabel from "@mui/material/InputLabel";
-import InputAdornment from "@mui/material/InputAdornment";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
-import TextField from "@mui/material/TextField";
-import Stack from "@mui/material/Stack";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import ItemsList from "../../components/ItemsList/ItemsList";
+import { useState, useRef } from 'react';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { Button } from '@mui/material';
+import Box from '@mui/material/Box';
+import Modal from '@mui/material/Modal';
+import InputLabel from '@mui/material/InputLabel';
+import InputAdornment from '@mui/material/InputAdornment';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import TextField from '@mui/material/TextField';
+import Stack from '@mui/material/Stack';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import ItemsList from '../../components/ItemsList/ItemsList';
 
-import "./newMovie.css";
+import './newMovie.css';
 
 function NewMovie() {
   const [data, setData] = useState([]);
-  const [dataType, setDataType] = useState("");
-  const [support, setSupport] = useState("");
-  const [format, setFormat] = useState("");
+  const [dataType, setDataType] = useState('');
+  const [support, setSupport] = useState('');
+  const [format, setFormat] = useState('');
   const [fileSize, setFileSize] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [openModal, setOpenModal] = useState(false);
@@ -31,7 +31,7 @@ function NewMovie() {
     fetch(`${import.meta.env.VITE_BACKEND_URL}/api/${route}/`)
       .then((response) => {
         if (!response.ok) {
-          throw new Error("Network response was not ok");
+          throw new Error('Network response was not ok');
         }
         return response.json();
       })
@@ -51,7 +51,7 @@ function NewMovie() {
 
   const handleCloseModal = () => {
     setOpenModal(false);
-    setDataType("");
+    setDataType('');
   };
 
   const fileInputRef = useRef(null);
@@ -65,10 +65,10 @@ function NewMovie() {
     const fileSizeInBytes = file.size;
     const fileSizeInGigabytes = fileSizeInBytes / (1024 * 1024 * 1024);
     setFileSize(fileSizeInGigabytes.toFixed(2)); // Arrondir à 2 décimales
-    const fileNameParts = file.name.split(".");
+    const fileNameParts = file.name.split('.');
     const fileExtension = fileNameParts[fileNameParts.length - 1];
     setFormat(fileExtension); // Obtenir l'extension du fichier
-    setSupport("FICHIER MULTIMEDIA");
+    setSupport('FICHIER MULTIMEDIA');
   };
 
   const supportsHandleChange = (event) => {
@@ -91,23 +91,23 @@ function NewMovie() {
   const theme = createTheme({
     palette: {
       primary: {
-        main: "#1e1612",
+        main: '#1e1612',
       },
       secondary: {
-        main: "#00d9c0",
+        main: '#00d9c0',
       },
     },
   });
 
   // MODAL STYLE
   const style = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: "50%",
-    bgcolor: "background.paper",
-    border: "2px solid #000",
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: '50%',
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
     boxShadow: 24,
     p: 4,
   };
@@ -124,7 +124,7 @@ function NewMovie() {
             {/* movie idTheMovieDb - idImDB */}
             <Box
               component="form"
-              sx={{ "& > :not(style)": { width: "15ch" } }}
+              sx={{ '& > :not(style)': { width: '15ch' } }}
               noValidate
               autoComplete="off"
               display="flex"
@@ -138,7 +138,7 @@ function NewMovie() {
             {/* movie TITLE */}
             <Box
               component="form"
-              sx={{ "& > :not(style)": { width: "150ch" } }}
+              sx={{ '& > :not(style)': { width: '150ch' } }}
               noValidate
               autoComplete="off"
               display="flex"
@@ -146,16 +146,12 @@ function NewMovie() {
               gap={4}
               p={2}
             >
-              <TextField
-                id="filled-basic"
-                label="Titre du film"
-                variant="outlined"
-              />
+              <TextField id="filled-basic" label="Titre du film" variant="outlined" />
             </Box>
             {/* movie alt TITLE */}
             <Box
               component="form"
-              sx={{ "& > :not(style)": { width: "100ch" } }}
+              sx={{ '& > :not(style)': { width: '100ch' } }}
               noValidate
               autoComplete="off"
               display="flex"
@@ -163,16 +159,12 @@ function NewMovie() {
               gap={4}
               p={2}
             >
-              <TextField
-                id="filled-basic"
-                label="Titre alternatif"
-                variant="outlined"
-              />
+              <TextField id="filled-basic" label="Titre alternatif" variant="outlined" />
             </Box>
             {/* movie YEAR - DURATION */}
             <Box
               component="form"
-              sx={{ "& > :not(style)": { width: "25ch" } }}
+              sx={{ '& > :not(style)': { width: '25ch' } }}
               noValidate
               autoComplete="off"
               display="flex"
@@ -187,7 +179,7 @@ function NewMovie() {
             {/* movie PITCH */}
             <Box
               component="form"
-              sx={{ "& > :not(style)": { width: "100ch" } }}
+              sx={{ '& > :not(style)': { width: '100ch' } }}
               noValidate
               autoComplete="off"
               display="flex"
@@ -200,7 +192,7 @@ function NewMovie() {
             {/* movie STORY */}
             <Box
               component="form"
-              sx={{ "& > :not(style)": { width: "100ch" } }}
+              sx={{ '& > :not(style)': { width: '100ch' } }}
               noValidate
               autoComplete="off"
               display="flex"
@@ -219,7 +211,7 @@ function NewMovie() {
             {/* movie TRAILER */}
             <Box
               component="form"
-              sx={{ "& > :not(style)": { width: "100ch" } }}
+              sx={{ '& > :not(style)': { width: '100ch' } }}
               noValidate
               autoComplete="off"
               display="flex"
@@ -233,7 +225,7 @@ function NewMovie() {
             <div className="adm-l1_item">
               <Box
                 component="form"
-                sx={{ "& > :not(style)": { width: "88ch" } }}
+                sx={{ '& > :not(style)': { width: '88ch' } }}
                 noValidate
                 autoComplete="off"
                 display="flex"
@@ -258,7 +250,7 @@ function NewMovie() {
             <div className="adm-l1_item">
               <Box
                 component="form"
-                sx={{ "& > :not(style)": { width: "75ch" } }}
+                sx={{ '& > :not(style)': { width: '75ch' } }}
                 noValidate
                 autoComplete="off"
                 display="flex"
@@ -269,19 +261,19 @@ function NewMovie() {
                 <TextField
                   id="outlined-read-only-input"
                   label="Genre(s)"
-                  value={left.join(", ")} // Mettre à jour la valeur du champ avec les éléments sélectionnés
+                  value={left.join(', ')} // Mettre à jour la valeur du champ avec les éléments sélectionnés
                   InputProps={{
                     readOnly: true,
                   }}
                 />
               </Box>
-              <AddCircleOutlineIcon onClick={() => handleOpenModal("kinds")} />
+              <AddCircleOutlineIcon onClick={() => handleOpenModal('kinds')} />
             </div>
             {/* movie DIRECTOR */}
             <div className="adm-l1_item">
               <Box
                 component="form"
-                sx={{ "& > :not(style)": { width: "75ch" } }}
+                sx={{ '& > :not(style)': { width: '75ch' } }}
                 noValidate
                 autoComplete="off"
                 display="flex"
@@ -298,15 +290,13 @@ function NewMovie() {
                   }}
                 />
               </Box>
-              <AddCircleOutlineIcon
-                onClick={() => handleOpenModal("directors")}
-              />
+              <AddCircleOutlineIcon onClick={() => handleOpenModal('directors')} />
             </div>
             {/* movie SCREENWRITERS */}
             <div className="adm-l1_item">
               <Box
                 component="form"
-                sx={{ "& > :not(style)": { width: "75ch" } }}
+                sx={{ '& > :not(style)': { width: '75ch' } }}
                 noValidate
                 autoComplete="off"
                 display="flex"
@@ -323,15 +313,13 @@ function NewMovie() {
                   }}
                 />
               </Box>
-              <AddCircleOutlineIcon
-                onClick={() => handleOpenModal("screenwriters")}
-              />
+              <AddCircleOutlineIcon onClick={() => handleOpenModal('screenwriters')} />
             </div>
             {/* movie COMPOSITOR */}
             <div className="adm-l1_item">
               <Box
                 component="form"
-                sx={{ "& > :not(style)": { width: "75ch" } }}
+                sx={{ '& > :not(style)': { width: '75ch' } }}
                 noValidate
                 autoComplete="off"
                 display="flex"
@@ -348,13 +336,13 @@ function NewMovie() {
                   }}
                 />
               </Box>
-              <AddCircleOutlineIcon onClick={() => handleOpenModal("music")} />
+              <AddCircleOutlineIcon onClick={() => handleOpenModal('music')} />
             </div>
             {/* movie CASTING */}
             <div className="adm-l1_item">
               <Box
                 component="form"
-                sx={{ "& > :not(style)": { width: "75ch" } }}
+                sx={{ '& > :not(style)': { width: '75ch' } }}
                 noValidate
                 autoComplete="off"
                 display="flex"
@@ -371,15 +359,13 @@ function NewMovie() {
                   }}
                 />
               </Box>
-              <AddCircleOutlineIcon
-                onClick={() => handleOpenModal("casting")}
-              />
+              <AddCircleOutlineIcon onClick={() => handleOpenModal('casting')} />
             </div>
             {/* movie STUDIO */}
             <div className="adm-l1_item">
               <Box
                 component="form"
-                sx={{ "& > :not(style)": { width: "75ch" } }}
+                sx={{ '& > :not(style)': { width: '75ch' } }}
                 noValidate
                 autoComplete="off"
                 display="flex"
@@ -396,13 +382,13 @@ function NewMovie() {
                   }}
                 />
               </Box>
-              <AddCircleOutlineIcon onClick={() => handleOpenModal("studio")} />
+              <AddCircleOutlineIcon onClick={() => handleOpenModal('studio')} />
             </div>
             {/* movie COUNTRY */}
             <div className="adm-l1_item">
               <Box
                 component="form"
-                sx={{ "& > :not(style)": { width: "75ch" } }}
+                sx={{ '& > :not(style)': { width: '75ch' } }}
                 noValidate
                 autoComplete="off"
                 display="flex"
@@ -426,7 +412,7 @@ function NewMovie() {
             <div className="adm-l1_item">
               <Box
                 component="form"
-                sx={{ "& > :not(style)": { width: "75ch" } }}
+                sx={{ '& > :not(style)': { width: '75ch' } }}
                 noValidate
                 autoComplete="off"
                 display="flex"
@@ -466,16 +452,14 @@ function NewMovie() {
                 </MenuItem>
                 <MenuItem value="DVD R/RW">DVD</MenuItem>
                 <MenuItem value="DVD R/RW">DVD R/RW</MenuItem>
-                <MenuItem value="FICHIER MULTIMEDIA">
-                  FICHIER MULTIMEDIA
-                </MenuItem>
+                <MenuItem value="FICHIER MULTIMEDIA">FICHIER MULTIMEDIA</MenuItem>
               </Select>
             </FormControl>
             <div>
               {/* movie VIDEOFORMAT */}
               <Box
                 component="form"
-                sx={{ "& > :not(style)": { width: "25ch" } }}
+                sx={{ '& > :not(style)': { width: '25ch' } }}
                 noValidate
                 autoComplete="off"
                 display="flex"
@@ -504,11 +488,9 @@ function NewMovie() {
                 <TextField
                   label="fileSize"
                   id="outlined-start-adornment"
-                  sx={{ m: 1, width: "25ch" }}
+                  sx={{ m: 1, width: '25ch' }}
                   InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">Go</InputAdornment>
-                    ),
+                    startAdornment: <InputAdornment position="start">Go</InputAdornment>,
                     value: fileSize,
                   }}
                 />
@@ -517,7 +499,7 @@ function NewMovie() {
             {/* movie LOCAL FILE */}
             <Box
               component="form"
-              sx={{ "& > :not(style)": { width: "75ch" } }}
+              sx={{ '& > :not(style)': { width: '75ch' } }}
               noValidate
               autoComplete="off"
               display="flex"
@@ -529,18 +511,18 @@ function NewMovie() {
                 id="filled-basic"
                 label="fichier Local"
                 variant="outlined"
-                value={selectedFile ? selectedFile.name : ""}
+                value={selectedFile ? selectedFile.name : ''}
               />
               <input
                 type="file"
-                style={{ display: "none" }}
+                style={{ display: 'none' }}
                 onChange={handleFileChange}
                 ref={fileInputRef}
               />
               <button
                 type="button"
                 onClick={() => fileInputRef.current.click()}
-                style={{ width: "100px" }}
+                style={{ width: '100px' }}
               >
                 fichier +
               </button>
@@ -568,7 +550,7 @@ function NewMovie() {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          {dataType === "kinds" && (
+          {dataType === 'kinds' && (
             <ItemsList
               dataType={dataType}
               items={data}

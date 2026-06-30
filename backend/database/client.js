@@ -1,3 +1,4 @@
+// backend/database/client.js
 // Get variables from .env file for database connection
 const { DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
 

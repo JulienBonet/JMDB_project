@@ -1,3 +1,5 @@
+// backend/src/routes/authRoutes.js
+
 const router = require('express').Router();
 const authController = require('../controllers/authController');
 const auth = require('../middlewares/authMiddleware');

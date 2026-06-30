@@ -9,7 +9,12 @@ const app = express();
 // CORS
 app.use(
   cors({
-    origin: ['http://localhost:5173', 'https://jmdb.julienbonet.fr'],
+    origin: [
+      'http://localhost:5173',
+      'http://localhost:8080',
+      'http://localhost',
+      'https://jmdb.julienbonet.fr',
+    ],
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
@@ -29,11 +34,11 @@ const router = require('./router');
 app.use('/api', router);
 
 // Build React
-const reactBuildPath = path.join(__dirname, '../../frontend/dist');
-app.use(express.static(reactBuildPath));
-
-app.get('*', (req, res) => {
-  res.sendFile(path.join(reactBuildPath, 'index.html'));
+app.get('/', (req, res) => {
+  res.json({
+    status: 'ok',
+    service: 'jmdb-backend',
+  });
 });
 
 // Error handler

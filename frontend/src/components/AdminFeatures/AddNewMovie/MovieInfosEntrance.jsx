@@ -1,14 +1,14 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/button-has-type */
 /* eslint-disable no-shadow */
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import FormGroup from "@mui/material/FormGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import { alpha, styled } from "@mui/material/styles";
-import { pink } from "@mui/material/colors";
-import Switch from "@mui/material/Switch";
-import "./movieInfosEntrance.css";
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import { alpha, styled } from '@mui/material/styles';
+import { pink } from '@mui/material/colors';
+import Switch from '@mui/material/Switch';
+import './movieInfosEntrance.css';
 
 function MovieInfosEntrance({ title, onMovieClick, handleCloseModalMIE }) {
   const [data, setData] = useState([]);
@@ -28,11 +28,11 @@ function MovieInfosEntrance({ title, onMovieClick, handleCloseModalMIE }) {
   const getMovieGenres = (movie) => {
     // Vérifier si genres est chargé ou non
     if (!genresLoaded) {
-      return "Chargement des genres...";
+      return 'Chargement des genres...';
     }
     // Vérifier si movie.genre_ids est défini
     if (!movie.genre_ids) {
-      return "";
+      return '';
     }
     const genreNames = [];
     movie.genre_ids.forEach((id) => {
@@ -41,7 +41,7 @@ function MovieInfosEntrance({ title, onMovieClick, handleCloseModalMIE }) {
         genreNames.push(genre.name);
       }
     });
-    return genreNames.join(", ");
+    return genreNames.join(', ');
   };
 
   // --------------------------------------------
@@ -54,13 +54,13 @@ function MovieInfosEntrance({ title, onMovieClick, handleCloseModalMIE }) {
   };
 
   const PinkSwitch = styled(Switch)(({ theme }) => ({
-    "& .MuiSwitch-switchBase.Mui-checked": {
+    '& .MuiSwitch-switchBase.Mui-checked': {
       color: pink[600],
-      "&:hover": {
+      '&:hover': {
         backgroundColor: alpha(pink[600], theme.palette.action.hoverOpacity),
       },
     },
-    "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
+    '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
       backgroundColor: pink[600],
     },
   }));
@@ -83,11 +83,11 @@ function MovieInfosEntrance({ title, onMovieClick, handleCloseModalMIE }) {
 
         const movieResults = movieRes.results.map((m) => ({
           ...m,
-          media_type: "movie",
+          media_type: 'movie',
         }));
         const tvResults = tvRes.results.map((t) => ({
           ...t,
-          media_type: "tv",
+          media_type: 'tv',
         }));
 
         const combined = [...movieResults, ...tvResults].sort(
@@ -102,14 +102,12 @@ function MovieInfosEntrance({ title, onMovieClick, handleCloseModalMIE }) {
 
         setGenres([
           ...genresMovie.genres,
-          ...genresTV.genres.filter(
-            (tvG) => !genresMovie.genres.some((mG) => mG.id === tvG.id)
-          ),
+          ...genresTV.genres.filter((tvG) => !genresMovie.genres.some((mG) => mG.id === tvG.id)),
         ]);
         setGenresLoaded(true);
       } catch (err) {
         console.error(err);
-        setError("Erreur lors de la récupération des données");
+        setError('Erreur lors de la récupération des données');
       }
     };
 
@@ -117,10 +115,10 @@ function MovieInfosEntrance({ title, onMovieClick, handleCloseModalMIE }) {
   }, [page, adult, encodedTitle]);
 
   const scrollToTop = () => {
-    const topElement = document.getElementById("top");
+    const topElement = document.getElementById('top');
     if (topElement) {
       topElement.scrollIntoView({
-        behavior: "smooth",
+        behavior: 'smooth',
       });
     }
   };
@@ -130,7 +128,7 @@ function MovieInfosEntrance({ title, onMovieClick, handleCloseModalMIE }) {
   // --------------------------------------------
   const getYear = (releaseDate) => {
     if (!releaseDate) {
-      return "";
+      return '';
     }
     return releaseDate.substring(0, 4);
   };
@@ -198,10 +196,7 @@ function MovieInfosEntrance({ title, onMovieClick, handleCloseModalMIE }) {
         </div>
         <ul>
           {data.map((item) => (
-            <li
-              key={`${item.media_type}-${item.id}`}
-              className="MIE_movie_bloc"
-            >
+            <li key={`${item.media_type}-${item.id}`} className="MIE_movie_bloc">
               <div className="MIE_movie_bloc_A1">
                 {item.poster_path && (
                   <img
@@ -213,16 +208,14 @@ function MovieInfosEntrance({ title, onMovieClick, handleCloseModalMIE }) {
               </div>
               <div className="MIE_movie_bloc_A2">
                 <h2 className="MIE_movie_title">
-                  {item.title || item.name}{" "}
+                  {item.title || item.name}{' '}
                   <span className="MIE_type_tag">
-                    [{item.media_type === "movie" ? "Film" : "Série"}]
+                    [{item.media_type === 'movie' ? 'Film' : 'Série'}]
                   </span>
                 </h2>
                 {(item.original_title || item.original_name) && (
                   <h3 className="MIE_movie_alt_title">
-                    <span className="MIE_italic">
-                      {item.original_title || item.original_name}
-                    </span>
+                    <span className="MIE_italic">{item.original_title || item.original_name}</span>
                   </h3>
                 )}
                 {item.adult && <p className="MIE_adult">X ADULTE X</p>}
@@ -260,10 +253,7 @@ function MovieInfosEntrance({ title, onMovieClick, handleCloseModalMIE }) {
             <p className="MIE_PagesCounter">
               [ {page} / {fullData.total_pages} ]
             </p>
-            <button
-              onClick={handleNextPage}
-              disabled={page === fullData.total_pages}
-            >
+            <button onClick={handleNextPage} disabled={page === fullData.total_pages}>
               Suivant
             </button>
           </section>

@@ -1,3 +1,4 @@
+// backend/src/controllers/authController.js
 /* eslint-disable consistent-return */
 require('dotenv').config();
 const bcrypt = require('bcrypt');

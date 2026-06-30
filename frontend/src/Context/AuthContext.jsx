@@ -1,16 +1,16 @@
+// frontend/src/Context/AuthContext.jsx
 /* eslint-disable react/prop-types */
 /* eslint-disable no-param-reassign */
 /* eslint-disable react/jsx-no-constructed-context-values */
-import { createContext, useContext, useState, useEffect } from "react";
-import axios from "axios";
+import { createContext, useContext, useState, useEffect } from 'react';
+import axios from 'axios';
+import api from '../api/apiClient';
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [token, setToken] = useState(localStorage.getItem("token") || null);
-  const [user, setUser] = useState(
-    JSON.parse(localStorage.getItem("user")) || null
-  );
+  const [token, setToken] = useState(localStorage.getItem('token') || null);
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')) || null);
   const [authReady, setAuthReady] = useState(false);
 
   const isAuthenticated = !!token;
@@ -20,12 +20,12 @@ export function AuthProvider({ children }) {
   // LOGIN
   // -------------------------------------------------------
   const login = async (name, password) => {
-    const response = await axios.post("/api/auth/login", { name, password });
+    const response = await api.post('/api/auth/login', { name, password });
 
     const receivedToken = response.data.token;
 
     // Décoder le token pour récupérer infos utilisateur
-    const payload = JSON.parse(atob(receivedToken.split(".")[1]));
+    const payload = JSON.parse(atob(receivedToken.split('.')[1]));
 
     const userData = {
       id: payload.id,
@@ -34,8 +34,8 @@ export function AuthProvider({ children }) {
     };
 
     // Stockage
-    localStorage.setItem("token", receivedToken);
-    localStorage.setItem("user", JSON.stringify(userData));
+    localStorage.setItem('token', receivedToken);
+    localStorage.setItem('user', JSON.stringify(userData));
 
     setToken(receivedToken);
     setUser(userData);
@@ -45,8 +45,8 @@ export function AuthProvider({ children }) {
   // LOGOUT
   // -------------------------------------------------------
   const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
 
     setToken(null);
     setUser(null);
