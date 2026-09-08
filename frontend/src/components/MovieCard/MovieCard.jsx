@@ -3,52 +3,52 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable react/prop-types */
 /* eslint-disable camelcase */
-import { useState, useEffect, useRef } from "react";
-import { toast } from "react-toastify";
-import "./movieCard.css";
-import "./movieCardMediaQueries.css";
-import "./movieCard_videoPlayer_MediaQueries.css";
-import ReactPlayer from "react-player";
-import Box from "@mui/material/Box";
-import { Container } from "@mui/material";
-import Alert from "@mui/material/Alert";
-import Modal from "@mui/material/Modal";
-import ModeIcon from "@mui/icons-material/Mode";
-import DoneOutlineIcon from "@mui/icons-material/DoneOutline";
-import UndoIcon from "@mui/icons-material/Undo";
-import FileUploadIcon from "@mui/icons-material/FileUpload";
-import CachedIcon from "@mui/icons-material/Cached";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import DeleteIcon from "@mui/icons-material/Delete";
-import TextField from "@mui/material/TextField";
-import InputLabel from "@mui/material/InputLabel";
-import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
-import RadioGroup from "@mui/material/RadioGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Radio from "@mui/material/Radio";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
-import Backdrop from "@mui/material/Backdrop";
-import CircularProgress from "@mui/material/CircularProgress";
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogActions from "@mui/material/DialogActions";
-import Button from "@mui/material/Button";
-import CloudSyncIcon from "@mui/icons-material/CloudSync";
-import Checkbox from "@mui/material/Checkbox";
-import ListItemText from "@mui/material/ListItemText";
-import OutlinedInput from "@mui/material/OutlinedInput";
-import MovieOutlinedIcon from "@mui/icons-material/MovieOutlined";
-import TvOutlinedIcon from "@mui/icons-material/TvOutlined";
-import IconButton from "@mui/material/IconButton";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import Tooltip from "@mui/material/Tooltip";
-import { useAuth } from "../../Context/AuthContext";
-import TransferList from "../AdminFeatures/AddNewMovie/MovieItemList";
+import { useState, useEffect, useRef } from 'react';
+import { toast } from 'react-toastify';
+import './movieCard.css';
+import './movieCardMediaQueries.css';
+import './movieCard_videoPlayer_MediaQueries.css';
+import ReactPlayer from 'react-player';
+import Box from '@mui/material/Box';
+import { Container } from '@mui/material';
+import Alert from '@mui/material/Alert';
+import Modal from '@mui/material/Modal';
+import ModeIcon from '@mui/icons-material/Mode';
+import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
+import UndoIcon from '@mui/icons-material/Undo';
+import FileUploadIcon from '@mui/icons-material/FileUpload';
+import CachedIcon from '@mui/icons-material/Cached';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import DeleteIcon from '@mui/icons-material/Delete';
+import TextField from '@mui/material/TextField';
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Radio from '@mui/material/Radio';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogActions from '@mui/material/DialogActions';
+import Button from '@mui/material/Button';
+import CloudSyncIcon from '@mui/icons-material/CloudSync';
+import Checkbox from '@mui/material/Checkbox';
+import ListItemText from '@mui/material/ListItemText';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import MovieOutlinedIcon from '@mui/icons-material/MovieOutlined';
+import TvOutlinedIcon from '@mui/icons-material/TvOutlined';
+import IconButton from '@mui/material/IconButton';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import Tooltip from '@mui/material/Tooltip';
+import { useAuth } from '../../Context/AuthContext';
+import TransferList from '../AdminFeatures/AddNewMovie/MovieItemList';
 import {
   refetchMovieTMDB,
   // refetchTitle,
@@ -66,8 +66,8 @@ import {
   refetchTags,
   refetchTrailer,
   refetchMovieCoverFromTMDB,
-} from "../../utils/refetchMovieTMDB";
-import purgeOrphanRecords from "../../utils/purgeOrphanRecords";
+} from '../../utils/refetchMovieTMDB';
+import purgeOrphanRecords from '../../utils/purgeOrphanRecords';
 import {
   searchGenreInDatabase,
   createGenreInDatabase,
@@ -85,16 +85,12 @@ import {
   createCastingInDatabase,
   searchTagInDatabase,
   createTagInDatabase,
-} from "../../utils/movieEntranceSearchInsert";
+} from '../../utils/movieEntranceSearchInsert';
+// refacto
+import { getFavoriteStatus, addFavorite, removeFavorite } from '../../services/favoriteService';
+import { getMovie, updateMovie, deleteMovie } from '../../services/movieService';
 
-function MovieCard({
-  movie,
-  origin,
-  closeModal,
-  onUpdateMovie,
-  onDeleteMovie,
-  onFavoriteRemoved,
-}) {
+function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, onFavoriteRemoved }) {
   const { isAdmin } = useAuth();
   const { user } = useAuth();
   const backendUrl = `${import.meta.env.VITE_BACKEND_URL}`;
@@ -103,7 +99,7 @@ function MovieCard({
   const CLOUDINARY_BASE_URL = import.meta.env.VITE_CLOUDINARY_BASE_URL;
 
   const getImageUrl = (publicId) => {
-    if (!publicId) return getImageUrl("00_cover_default.jpg");
+    if (!publicId) return getImageUrl('00_cover_default.jpg');
     return `${CLOUDINARY_BASE_URL}/${publicId}`;
   };
 
@@ -116,113 +112,68 @@ function MovieCard({
   const [selectedMusic, setSelectedMusic] = useState([]);
   const [selectedStudios, setSelectedStudios] = useState([]);
   const [selectedCountries, setSelectedCountries] = useState([]);
-  const [version, setVersion] = useState(
-    movie.vostfr ? "VOSTFR" : movie.multi ? "MULTI" : "none"
-  );
+  const [version, setVersion] = useState(movie.vostfr ? 'VOSTFR' : movie.multi ? 'MULTI' : 'none');
   const [selectedTags, setSelectedTags] = useState([]);
   const [selectedFocus, setSelectedFocus] = useState([]);
-  const [trailerMessage, setTrailerMessage] = useState("");
+  const [trailerMessage, setTrailerMessage] = useState('');
 
   // Datas dans le front
   const [movieData, setMovieData] = useState({
-    id: movie.id || "",
-    title: movie.title || "",
-    altTitle: movie.altTitle || "",
-    year: movie.year || "",
-    duration: movie.duration || "",
+    id: movie.id || '',
+    title: movie.title || '',
+    altTitle: movie.altTitle || '',
+    year: movie.year || '',
+    duration: movie.duration || '',
     videoSupport:
-      movie.videoSupport === "Fichier multimédia"
-        ? "FICHIER MULTIMEDIA"
-        : movie.videoSupport || "",
+      movie.videoSupport === 'Fichier multimédia' ? 'FICHIER MULTIMEDIA' : movie.videoSupport || '',
     multi: movie.multi || 0,
     vostfr: movie.vostfr || 0,
-    story: movie.story || "",
-    location: movie.location || "",
-    fileSize: movie.fileSize || "",
-    comment: movie.comment || "",
-    isTvShow: movie.isTvShow || "",
-    tvSeasons: movie.tvSeasons || "",
-    nbTvEpisodes: movie.nbTvEpisodes || "",
-    episodeDuration: movie.episodeDuration || "",
-    idTheMovieDb: movie.idTheMovieDb || "",
+    story: movie.story || '',
+    location: movie.location || '',
+    fileSize: movie.fileSize || '',
+    comment: movie.comment || '',
+    isTvShow: movie.isTvShow || '',
+    tvSeasons: movie.tvSeasons || '',
+    nbTvEpisodes: movie.nbTvEpisodes || '',
+    episodeDuration: movie.episodeDuration || '',
+    idTheMovieDb: movie.idTheMovieDb || '',
   });
 
-  // useEffect(() => {
-  //   console.info("movie in MovieCard", movie);
-  // }, [movie]);
-
-  // useEffect(() => {
-  //   console.info("movieData1 in MovieCard", movieData);
-  // }, [movieData]);
-
-  const {
-    genres,
-    countries,
-    directors,
-    screenwriters,
-    music,
-    studios,
-    casting,
-    tags,
-    focus,
-  } = movieData;
+  const { genres, countries, directors, screenwriters, music, studios, casting, tags, focus } =
+    movieData;
 
   const { idTheMovieDb } = movie;
   const isTvShow = movieData.isTvShow === 1;
   const tvSeason = movieData.tvSeasons;
-  const safeValue = (val) => val ?? "";
+  const safeValue = (val) => val ?? '';
 
   //-----------------------------------------------
   // UX FIELDS
   //-----------------------------------------------
 
   const textFieldSx = {
-    width: "80%",
-    "& .MuiInputLabel-root": { color: "white" },
-    "& .MuiInputBase-input": { color: "white" },
-    "& .MuiOutlinedInput-root": {
-      "& fieldset": { borderColor: "white" },
-      "&:hover fieldset": { borderColor: "orange" },
-      "&.Mui-focused fieldset": { borderColor: "cyan" },
+    width: '80%',
+    '& .MuiInputLabel-root': { color: 'white' },
+    '& .MuiInputBase-input': { color: 'white' },
+    '& .MuiOutlinedInput-root': {
+      '& fieldset': { borderColor: 'white' },
+      '&:hover fieldset': { borderColor: 'orange' },
+      '&.Mui-focused fieldset': { borderColor: 'cyan' },
     },
   };
 
   //-----------------------------------------------
   // FETCH MOVIE DATAS from backend
   //-----------------------------------------------
-  const fetchMovieData = () => {
-    if (origin === "country") {
-      fetch(`${import.meta.env.VITE_BACKEND_URL}/api/movies/${movie.movieId}`)
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
-          return response.json();
-        })
-        .then((data) => {
-          setMovieData(data);
-        })
-        .catch((error) => {
-          console.error("Error fetching user data:", error);
-        });
-    } else {
-      fetch(`${import.meta.env.VITE_BACKEND_URL}/api/movies/${movieData.id}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
-          return response.json();
-        })
-        .then((data) => {
-          setMovieData(data);
-        })
-        .catch((error) => {
-          console.error("Error fetching user data:", error);
-        });
+  const fetchMovieData = async () => {
+    try {
+      const movieId = origin === 'country' ? movie.movieId : movieData.id;
+
+      const data = await getMovie(movieId);
+
+      setMovieData(data);
+    } catch (error) {
+      console.error('Error fetching movie data:', error);
     }
   };
 
@@ -261,19 +212,10 @@ function MovieCard({
 
     const fetchFavoriteStatus = async () => {
       try {
-        const res = await fetch(
-          `${backendUrl}/api/favorites/${user.id}/${movie.id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        const data = await res.json();
+        const data = await getFavoriteStatus(user.id, movie.id);
         setIsFavorite(data.isFavorite);
       } catch (err) {
-        console.error("Erreur récupération favori", err);
+        console.error('Erreur récupération favori', err);
       }
     };
 
@@ -284,33 +226,26 @@ function MovieCard({
     if (!user) return;
 
     try {
-      const method = isFavorite ? "DELETE" : "POST";
+      if (isFavorite) {
+        await removeFavorite(user.id, movie.id);
 
-      await fetch(`${backendUrl}/api/favorites`, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify({
-          userId: user.id,
-          movieId: movie.id,
-        }),
-      });
+        setIsFavorite(false);
 
-      // Met à jour le cœur
-      setIsFavorite(!isFavorite);
+        onFavoriteRemoved?.();
 
-      // Rafraîchit la liste dans Favorites.jsx
-      onFavoriteRemoved?.();
+        toast.info('Retiré des favoris');
+      } else {
+        await addFavorite(user.id, movie.id);
 
-      // Affiche le toast approprié
-      toast[isFavorite ? "info" : "success"](
-        isFavorite ? "Retiré des favoris" : "Ajouté aux favoris ❤️"
-      );
+        setIsFavorite(true);
+
+        onFavoriteRemoved?.();
+
+        toast.success('Ajouté aux favoris ❤️');
+      }
     } catch (err) {
-      console.error("Erreur favoris", err);
-      toast.error("Erreur favoris");
+      console.error('Erreur favoris', err);
+      toast.error('Erreur favoris');
     }
   };
 
@@ -320,7 +255,7 @@ function MovieCard({
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name === "idTheMovieDb" && value && !/^(movie|tv)\/\d*$/.test(value)) {
+    if (name === 'idTheMovieDb' && value && !/^(movie|tv)\/\d*$/.test(value)) {
       return; // ignore les caractères invalides pendant la saisie
     }
 
@@ -338,8 +273,8 @@ function MovieCard({
     // Met à jour movieData en fonction de la version sélectionnée
     setMovieData((prevData) => ({
       ...prevData,
-      vostfr: selectedVersion === "VOSTFR" ? 1 : 0,
-      multi: selectedVersion === "MULTI" ? 1 : 0,
+      vostfr: selectedVersion === 'VOSTFR' ? 1 : 0,
+      multi: selectedVersion === 'MULTI' ? 1 : 0,
     }));
   };
 
@@ -390,17 +325,17 @@ function MovieCard({
     if (!file) return null;
 
     const formData = new FormData();
-    formData.append("cover", file);
+    formData.append('cover', file);
 
-    const res = await fetch(
-      `${import.meta.env.VITE_BACKEND_URL}/api/movie/${movie.id}/image`,
-      { method: "PUT", body: formData }
-    );
+    const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/movie/${movie.id}/image`, {
+      method: 'PUT',
+      body: formData,
+    });
 
     const data = await res.json();
 
     if (!res.ok) {
-      throw new Error(data.message || "Upload failed");
+      throw new Error(data.message || 'Upload failed');
     }
 
     // 🔥 AFFICHAGE = URL Cloudinary
@@ -416,7 +351,7 @@ function MovieCard({
 
   const [selectedSeasons, setSelectedSeasons] = useState([]);
   const [seasonsInfo, setSeasonsInfo] = useState([]);
-  const [tvSeasons, setTvSeasons] = useState(movieData.tvSeasons || "");
+  const [tvSeasons, setTvSeasons] = useState(movieData.tvSeasons || '');
   const [nbTvEpisodes, setNbTvEpisodes] = useState(movieData.nbTvEpisodes || 0);
 
   // Parse tvSeasons de movieData dès le mode modify
@@ -427,11 +362,11 @@ function MovieCard({
     if (!movieData.tvSeasons) return;
 
     const parsed = movieData.tvSeasons
-      .split(",") // ex: "1-3,5"
+      .split(',') // ex: "1-3,5"
       .map((block) => block.trim())
       .flatMap((block) => {
-        if (block.includes("-")) {
-          const [start, end] = block.split("-").map(Number);
+        if (block.includes('-')) {
+          const [start, end] = block.split('-').map(Number);
           return Array.from({ length: end - start + 1 }, (_, i) => start + i);
         }
         return [Number(block)];
@@ -446,17 +381,15 @@ function MovieCard({
 
     const fetchSeasonsInfo = async () => {
       try {
-        const [mediaType, movieId] = idTheMovieDb.split("/");
-        const res = await fetch(
-          `${backendUrl}/api/tmdb/${mediaType}/${movieId}/seasons`
-        );
+        const [mediaType, movieId] = idTheMovieDb.split('/');
+        const res = await fetch(`${backendUrl}/api/tmdb/${mediaType}/${movieId}/seasons`);
         const data = await res.json();
 
         if (data.seasons && data.seasons.length > 0) {
           setSeasonsInfo(data.seasons);
         }
       } catch (err) {
-        console.error("Erreur récupération saisons via backend :", err);
+        console.error('Erreur récupération saisons via backend :', err);
         setSeasonsInfo([]);
       }
     };
@@ -488,7 +421,7 @@ function MovieCard({
     if (!isTvShow) return;
 
     if (!movieData.episodeDuration || movieData.episodeDuration === 0) {
-      setMovieData((prev) => ({ ...prev, duration: "" }));
+      setMovieData((prev) => ({ ...prev, duration: '' }));
       return;
     }
 
@@ -496,7 +429,7 @@ function MovieCard({
       const total = nbTvEpisodes * movieData.episodeDuration;
       setMovieData((prev) => ({ ...prev, duration: total }));
     } else {
-      setMovieData((prev) => ({ ...prev, duration: "" }));
+      setMovieData((prev) => ({ ...prev, duration: '' }));
     }
   }, [nbTvEpisodes, movieData.episodeDuration, isTvShow]);
 
@@ -505,20 +438,18 @@ function MovieCard({
     if (!isTvShow) return;
 
     if (!Array.isArray(selectedSeasons) || selectedSeasons.length === 0) {
-      setTvSeasons("");
-      setMovieData((prev) => ({ ...prev, tvSeasons: "" }));
+      setTvSeasons('');
+      setMovieData((prev) => ({ ...prev, tvSeasons: '' }));
       return;
     }
 
     // Trie les saisons sélectionnées
     const sortedSeasons = [...selectedSeasons].sort((a, b) => a - b);
 
-    let displayValue = "";
+    let displayValue = '';
 
     // Si elles sont consécutives → format "1-3"
-    const isConsecutive = sortedSeasons.every(
-      (num, i, arr) => i === 0 || num === arr[i - 1] + 1
-    );
+    const isConsecutive = sortedSeasons.every((num, i, arr) => i === 0 || num === arr[i - 1] + 1);
 
     if (isConsecutive) {
       displayValue =
@@ -527,7 +458,7 @@ function MovieCard({
           : `${sortedSeasons[0]}-${sortedSeasons[sortedSeasons.length - 1]}`;
     } else {
       // Saisons non consécutives → "1, 3, 5"
-      displayValue = sortedSeasons.join(", ");
+      displayValue = sortedSeasons.join(', ');
     }
 
     setTvSeasons(displayValue);
@@ -553,7 +484,7 @@ function MovieCard({
           name="nbTvEpisodes"
           label="Nombre d’épisodes"
           type="number"
-          value={nbTvEpisodes || ""}
+          value={nbTvEpisodes || ''}
           onChange={(e) => {
             const value = Number(e.target.value);
             setNbTvEpisodes(value);
@@ -565,7 +496,7 @@ function MovieCard({
           name="episodeDuration"
           label="Durée d’un épisode (min)"
           type="number"
-          value={movieData.episodeDuration || ""}
+          value={movieData.episodeDuration || ''}
           onChange={(e) => {
             const value = Number(e.target.value);
             setMovieData((prev) => {
@@ -581,7 +512,7 @@ function MovieCard({
         <TextField
           name="duration"
           label="Durée totale (minutes)"
-          value={movieData.duration || ""}
+          value={movieData.duration || ''}
           InputProps={{ readOnly: true }}
           sx={textFieldSx}
         />
@@ -605,13 +536,10 @@ function MovieCard({
                 setSelectedSeasons(value);
               }}
               input={<OutlinedInput label="Saisons" />}
-              renderValue={(selected) => selected.join(", ")}
+              renderValue={(selected) => selected.join(', ')}
             >
               {seasonsInfo.map((season) => (
-                <MenuItem
-                  key={season.season_number}
-                  value={season.season_number}
-                >
+                <MenuItem key={season.season_number} value={season.season_number}>
                   <Checkbox
                     checked={
                       Array.isArray(selectedSeasons) &&
@@ -643,37 +571,31 @@ function MovieCard({
   useEffect(() => {
     if (!movieData) return;
 
-    const support = movieData.videoSupport?.toLowerCase() || "";
+    const support = movieData.videoSupport?.toLowerCase() || '';
 
     // 🎬 Cas 1 : Fichier unique (film ou équivalent)
     if (
       !movieData.isTvShow &&
-      support.includes("fichier multimédia") &&
+      support.includes('fichier multimédia') &&
       movieData.location &&
       !movieData.path
     ) {
       // On déduit le chemin et le nom de fichier à partir du chemin complet
-      const segments = movieData.location.split("\\");
+      const segments = movieData.location.split('\\');
       const filename = segments.pop();
-      const folderPath = segments.join("\\");
+      const folderPath = segments.join('\\');
 
       setMovieData((prev) => ({
         ...prev,
-        path: folderPath || prev.path || "",
-        location: filename || prev.location || "",
+        path: folderPath || prev.path || '',
+        location: filename || prev.location || '',
       }));
     }
 
     // 📺 Cas 2 : Série TV (dossier complet)
-    if (
-      movieData.isTvShow &&
-      support.includes("fichier multimédia") &&
-      !movieData.path
-    ) {
+    if (movieData.isTvShow && support.includes('fichier multimédia') && !movieData.path) {
       // Si le path n’est pas défini, on essaie de le déduire du nom de la série
-      const folderName =
-        movieData.title?.replace(/[^\w\s]/g, "").trim() ||
-        "Série non identifiée";
+      const folderName = movieData.title?.replace(/[^\w\s]/g, '').trim() || 'Série non identifiée';
 
       setMovieData((prev) => ({
         ...prev,
@@ -690,13 +612,11 @@ function MovieCard({
 
     setSelectedFile(file);
 
-    const extension = file.name.split(".").pop().toLowerCase();
-    const validFormats = ["avi", "mkv", "mp4"];
+    const extension = file.name.split('.').pop().toLowerCase();
+    const validFormats = ['avi', 'mkv', 'mp4'];
 
     if (!validFormats.includes(extension)) {
-      toast.warn(
-        "Veuillez sélectionner un fichier vidéo valide (avi, mkv, mp4)."
-      );
+      toast.warn('Veuillez sélectionner un fichier vidéo valide (avi, mkv, mp4).');
       return;
     }
 
@@ -705,9 +625,9 @@ function MovieCard({
     setMovieData((prev) => ({
       ...prev,
       location: file.name,
-      path: "",
+      path: '',
       videoFormat: extension,
-      videoSupport: "Fichier multimédia",
+      videoSupport: 'Fichier multimédia',
       fileSize: `${sizeGB.toFixed(2)} GB`,
     }));
 
@@ -720,13 +640,13 @@ function MovieCard({
     if (!files.length) return;
 
     // Filtrer uniquement les fichiers vidéo
-    const videoExtensions = ["avi", "mkv", "mp4"];
+    const videoExtensions = ['avi', 'mkv', 'mp4'];
     const videoFiles = files.filter((f) =>
-      videoExtensions.includes(f.name.split(".").pop().toLowerCase())
+      videoExtensions.includes(f.name.split('.').pop().toLowerCase())
     );
 
     if (videoFiles.length === 0) {
-      toast.warn("Aucun fichier vidéo trouvé dans ce dossier.");
+      toast.warn('Aucun fichier vidéo trouvé dans ce dossier.');
       return;
     }
 
@@ -734,20 +654,18 @@ function MovieCard({
     const totalBytes = videoFiles.reduce((acc, file) => acc + file.size, 0);
     const totalGB = totalBytes / (1024 * 1024 * 1024);
     const totalSizeDisplay =
-      totalGB < 1
-        ? `${(totalBytes / (1024 * 1024)).toFixed(2)} MB`
-        : `${totalGB.toFixed(2)} GB`;
+      totalGB < 1 ? `${(totalBytes / (1024 * 1024)).toFixed(2)} MB` : `${totalGB.toFixed(2)} GB`;
 
     // Détermination du chemin commun de base
     const firstPath = videoFiles[0].webkitRelativePath;
-    const rootPath = firstPath.split("/")[0];
+    const rootPath = firstPath.split('/')[0];
 
     // ✅ Mise à jour partielle et sûre
     setMovieData((prev) => ({
       ...prev,
       path: rootPath,
       location: rootPath, // chemin relatif principal
-      videoSupport: "Fichier multimédia",
+      videoSupport: 'Fichier multimédia',
       fileSize: totalSizeDisplay,
       isTvShow: true, // au cas où ce ne serait pas déjà vrai
     }));
@@ -762,13 +680,13 @@ function MovieCard({
 
     setMovieData((prevData) => {
       // Si le support sélectionné est "DVD original" ou "DVD R/RW"
-      if (newSupport === "DVD original" || newSupport === "DVD R/RW") {
+      if (newSupport === 'DVD original' || newSupport === 'DVD R/RW') {
         return {
           ...prevData,
           videoSupport: newSupport,
-          location: "", // Réinitialise location
-          videoFormat: "", // Réinitialise videoFormat
-          fileSize: "", // Réinitialise fileSize
+          location: '', // Réinitialise location
+          videoFormat: '', // Réinitialise videoFormat
+          fileSize: '', // Réinitialise fileSize
           vostfr: 0,
           multi: 0,
         };
@@ -783,15 +701,15 @@ function MovieCard({
   //-----------------------------------------------
   const [openModal, setOpenModal] = useState(false);
   const [data, setData] = useState([]);
-  const [dataType, setDataType] = useState("");
+  const [dataType, setDataType] = useState('');
 
   const transferListStyle = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    bgcolor: "background.paper",
-    border: "2px solid #000",
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
     boxShadow: 24,
     pt: 0,
     pb: 4,
@@ -801,10 +719,8 @@ function MovieCard({
   // FONCTION GÉNÉRIQUE FETCH DE LISTE
   const fetchData = async (route) => {
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/api/${route}`
-      );
-      if (!response.ok) throw new Error("Network response was not ok");
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/${route}`);
+      if (!response.ok) throw new Error('Network response was not ok');
       const datas = await response.json();
       setData(datas);
     } catch (error) {
@@ -821,7 +737,7 @@ function MovieCard({
 
   const handleCloseModal = () => {
     setOpenModal(false);
-    setDataType("");
+    setDataType('');
     setData([]);
   };
 
@@ -829,15 +745,11 @@ function MovieCard({
   const fetchByNames = async (namesString, endpoint, setter) => {
     if (!namesString) return;
     try {
-      const namesArray = namesString.split(", ").map(async (name) => {
+      const namesArray = namesString.split(', ').map(async (name) => {
         try {
-          const response = await fetch(
-            `${backendUrl}/api/${endpoint}/byname/${name}`
-          );
+          const response = await fetch(`${backendUrl}/api/${endpoint}/byname/${name}`);
           if (!response.ok) {
-            console.warn(
-              `Error fetching ${endpoint} ${name}: ${response.statusText}`
-            );
+            console.warn(`Error fetching ${endpoint} ${name}: ${response.statusText}`);
             return null;
           }
           return await response.json();
@@ -855,7 +767,7 @@ function MovieCard({
   };
 
   // FONCTION GÉNÉRIQUE POUR NOMS
-  const getSelectedNames = (list) => list.map((item) => item.name).join(", ");
+  const getSelectedNames = (list) => list.map((item) => item.name).join(', ');
 
   // UTILITAIRE POUR CRÉER UN HOOK DE FETCH AUTOMATIQUE
   const useAutoFetch = (value, endpoint, setter) => {
@@ -865,15 +777,15 @@ function MovieCard({
   };
 
   // UTILISATION POUR CHAQUE TYPE
-  useAutoFetch(genres, "kind", setSelectedKinds);
-  useAutoFetch(directors, "director", setSelectedDirectors);
-  useAutoFetch(casting, "casting", setSelectedCasting);
-  useAutoFetch(screenwriters, "screenwriter", setSelectedScreenwriters);
-  useAutoFetch(music, "music", setSelectedMusic);
-  useAutoFetch(studios, "studio", setSelectedStudios);
-  useAutoFetch(countries, "country", setSelectedCountries);
-  useAutoFetch(tags, "tags", setSelectedTags);
-  useAutoFetch(focus, "focus", setSelectedFocus);
+  useAutoFetch(genres, 'kind', setSelectedKinds);
+  useAutoFetch(directors, 'director', setSelectedDirectors);
+  useAutoFetch(casting, 'casting', setSelectedCasting);
+  useAutoFetch(screenwriters, 'screenwriter', setSelectedScreenwriters);
+  useAutoFetch(music, 'music', setSelectedMusic);
+  useAutoFetch(studios, 'studio', setSelectedStudios);
+  useAutoFetch(countries, 'country', setSelectedCountries);
+  useAutoFetch(tags, 'tags', setSelectedTags);
+  useAutoFetch(focus, 'focus', setSelectedFocus);
 
   // HANDLERS POUR CHAQUE TYPE
   const handleSelectedKindsUpdate = setSelectedKinds;
@@ -905,15 +817,15 @@ function MovieCard({
     setImage(getImageUrl(movie.cover));
 
     // re-fetch des listes sélectionnées via la fonction générique
-    fetchByNames(genres, "kind", setSelectedKinds);
-    fetchByNames(directors, "director", setSelectedDirectors);
-    fetchByNames(casting, "casting", setSelectedCasting);
-    fetchByNames(screenwriters, "screenwriter", setSelectedScreenwriters);
-    fetchByNames(music, "music", setSelectedMusic);
-    fetchByNames(studios, "studio", setSelectedStudios);
-    fetchByNames(countries, "country", setSelectedCountries);
-    fetchByNames(tags, "tags", setSelectedTags);
-    fetchByNames(focus, "focus", setSelectedFocus);
+    fetchByNames(genres, 'kind', setSelectedKinds);
+    fetchByNames(directors, 'director', setSelectedDirectors);
+    fetchByNames(casting, 'casting', setSelectedCasting);
+    fetchByNames(screenwriters, 'screenwriter', setSelectedScreenwriters);
+    fetchByNames(music, 'music', setSelectedMusic);
+    fetchByNames(studios, 'studio', setSelectedStudios);
+    fetchByNames(countries, 'country', setSelectedCountries);
+    fetchByNames(tags, 'tags', setSelectedTags);
+    fetchByNames(focus, 'focus', setSelectedFocus);
 
     closeModifyMode();
   };
@@ -942,8 +854,8 @@ function MovieCard({
       const response = await fetch(
         `${import.meta.env.VITE_BACKEND_URL}/api/movie/${movieData.id}`,
         {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             title: movieData.title,
             altTitle: movieData.altTitle,
@@ -961,9 +873,7 @@ function MovieCard({
             genres: selectedKinds.map((genre) => genre.id),
             directors: selectedDirectors.map((director) => director.id),
             castings: selectedCasting.map((cast) => cast.id),
-            screenwriters: selectedScreenwriters.map(
-              (screenwriter) => screenwriter.id
-            ),
+            screenwriters: selectedScreenwriters.map((screenwriter) => screenwriter.id),
             musics: selectedMusic.map((compositor) => compositor.id),
             studios: selectedStudios.map((studio) => studio.id),
             countries: selectedCountries.map((country) => country.id),
@@ -979,24 +889,19 @@ function MovieCard({
       );
 
       if (response.ok) {
-        toast.success("Film mis à jour avec succès");
+        toast.success('Film mis à jour avec succès');
         const updatedMovie = await response.json();
-        const newMovie = Array.isArray(updatedMovie)
-          ? updatedMovie[0]
-          : updatedMovie;
+        const newMovie = Array.isArray(updatedMovie) ? updatedMovie[0] : updatedMovie;
         setMovieData(newMovie);
         onUpdateMovie(newMovie);
         closeModifyMode();
         // closeModal();
-        if (typeof closeModal === "function") closeModal();
+        if (typeof closeModal === 'function') closeModal();
       } else {
-        console.error("Erreur lors de la mise à jour");
+        console.error('Erreur lors de la mise à jour');
       }
     } catch (error) {
-      console.error(
-        "Erreur lors de la mise à jour du film et de l'image",
-        error
-      );
+      console.error("Erreur lors de la mise à jour du film et de l'image", error);
     } finally {
       setIsUpdating(false); // Masque le Backdrop une fois terminé
     }
@@ -1025,22 +930,19 @@ function MovieCard({
     try {
       const response = await fetch(
         `${import.meta.env.VITE_BACKEND_URL}/api/movie/${movieData.id}`,
-        { method: "DELETE" }
+        { method: 'DELETE' }
       );
 
       if (response.ok) {
-        toast.info("Film supprimé avec succès");
+        toast.info('Film supprimé avec succès');
         onDeleteMovie(movieData.id); // Appeler la fonction de rappel
         closeModal();
       } else {
-        toast.error("Erreur lors de la suppression du film");
-        console.error(
-          "Erreur lors de la suppression du film",
-          await response.text()
-        );
+        toast.error('Erreur lors de la suppression du film');
+        console.error('Erreur lors de la suppression du film', await response.text());
       }
     } catch (error) {
-      console.error("Erreur durant la suppression:", error);
+      console.error('Erreur durant la suppression:', error);
     }
   };
 
@@ -1054,11 +956,7 @@ function MovieCard({
         <section className="MC_line1">
           {/* COVER BLOCK */}
           <div className="MovieCard_Cover_Position">
-            <img
-              className="MovieCard_cover"
-              src={image}
-              alt={`Cover ${movieData.title}`}
-            />
+            <img className="MovieCard_cover" src={image} alt={`Cover ${movieData.title}`} />
             {isModify && (
               <>
                 <input
@@ -1067,7 +965,7 @@ function MovieCard({
                   accept="image/*"
                   onChange={handleCoverUpload}
                   ref={fileCoverRef}
-                  style={{ display: "none" }}
+                  style={{ display: 'none' }}
                 />
 
                 {/* Cover Boutons Upload / Reset */}
@@ -1079,14 +977,14 @@ function MovieCard({
                         <Button
                           variant="outlined"
                           sx={{
-                            color: "var(--color-03)",
-                            borderColor: "var(--color-03)",
-                            transition: "all 0.2s ease-in-out",
-                            borderRadius: "10px",
-                            "&:hover": {
-                              borderColor: "var(--color-06)",
-                              color: "var(--color-06)",
-                              transform: "scale(1.02)",
+                            color: 'var(--color-03)',
+                            borderColor: 'var(--color-03)',
+                            transition: 'all 0.2s ease-in-out',
+                            borderRadius: '10px',
+                            '&:hover': {
+                              borderColor: 'var(--color-06)',
+                              color: 'var(--color-06)',
+                              transform: 'scale(1.02)',
                             },
                           }}
                           onClick={handleUploadClick}
@@ -1098,14 +996,14 @@ function MovieCard({
                         <Button
                           variant="outlined"
                           sx={{
-                            color: "var(--color-01)",
-                            borderColor: "var(--color-01)",
-                            transition: "all 0.2s ease-in-out",
-                            borderRadius: "10px",
-                            "&:hover": {
-                              borderColor: "var(--color-06)",
-                              color: "var(--color-06)",
-                              transform: "scale(1.02)",
+                            color: 'var(--color-01)',
+                            borderColor: 'var(--color-01)',
+                            transition: 'all 0.2s ease-in-out',
+                            borderRadius: '10px',
+                            '&:hover': {
+                              borderColor: 'var(--color-06)',
+                              color: 'var(--color-06)',
+                              transform: 'scale(1.02)',
                             },
                           }}
                           onClick={handleResetImage}
@@ -1121,14 +1019,14 @@ function MovieCard({
                         <Button
                           variant="outlined"
                           sx={{
-                            color: "var(--color-02)",
-                            borderColor: "var(--color-02)",
-                            transition: "all 0.2s ease-in-out",
-                            borderRadius: "10px",
-                            "&:hover": {
-                              borderColor: "var(--color-06)",
-                              color: "var(--color-06)",
-                              transform: "scale(1.02)",
+                            color: 'var(--color-02)',
+                            borderColor: 'var(--color-02)',
+                            transition: 'all 0.2s ease-in-out',
+                            borderRadius: '10px',
+                            '&:hover': {
+                              borderColor: 'var(--color-06)',
+                              color: 'var(--color-06)',
+                              transform: 'scale(1.02)',
                             },
                           }}
                           onClick={() => {
@@ -1164,12 +1062,9 @@ function MovieCard({
               <div className="movieCard_Type_Line">
                 {/* ICO movie or tvShow type (modify) */}
                 {!isTvShow ? (
-                  <MovieOutlinedIcon
-                    sx={{ color: "white", mr: 1 }}
-                    fontSize="large"
-                  />
+                  <MovieOutlinedIcon sx={{ color: 'white', mr: 1 }} fontSize="large" />
                 ) : (
-                  <TvOutlinedIcon sx={{ color: "white" }} fontSize="large" />
+                  <TvOutlinedIcon sx={{ color: 'white' }} fontSize="large" />
                 )}
                 {/* ENd ICO movie or tvShow type (modify) */}
 
@@ -1178,18 +1073,18 @@ function MovieCard({
                   <Button
                     variant="outlined"
                     sx={{
-                      color: "var(--color-02)",
-                      borderColor: "var(--color-02)",
-                      transition: "all 0.2s ease-in-out",
-                      "&:hover": {
-                        borderColor: "var(--color-03)",
-                        color: "var(--color-03)",
-                        transform: "scale(1.02)",
+                      color: 'var(--color-02)',
+                      borderColor: 'var(--color-02)',
+                      transition: 'all 0.2s ease-in-out',
+                      '&:hover': {
+                        borderColor: 'var(--color-03)',
+                        color: 'var(--color-03)',
+                        transform: 'scale(1.02)',
                       },
                     }}
                     onClick={() => {
                       const confirmReload = window.confirm(
-                        "⚠️ Êtes-vous sûr de vouloir recharger les informations du film ?\nLes données actuelles seront remplacées."
+                        '⚠️ Êtes-vous sûr de vouloir recharger les informations du film ?\nLes données actuelles seront remplacées.'
                       );
                       if (confirmReload) {
                         refetchMovieTMDB(idTheMovieDb, {
@@ -1267,7 +1162,7 @@ function MovieCard({
                 </Box>
                 <AddCircleOutlineIcon
                   className="Btn_Add_itemsPopUp_MovieCard"
-                  onClick={() => handleOpenModal("focus")}
+                  onClick={() => handleOpenModal('focus')}
                 />
               </div>
               <div className="divider" />
@@ -1285,9 +1180,7 @@ function MovieCard({
                 {idTheMovieDb && (
                   <CloudSyncIcon
                     className="Btn_Refresh_items_MovieCard"
-                    onClick={() =>
-                      refetchAltTitle(idTheMovieDb, { movieData, setMovieData })
-                    }
+                    onClick={() => refetchAltTitle(idTheMovieDb, { movieData, setMovieData })}
                   />
                 )}
               </div>
@@ -1312,7 +1205,7 @@ function MovieCard({
                 </Box>
                 <AddCircleOutlineIcon
                   className="Btn_Add_itemsPopUp_MovieCard"
-                  onClick={() => handleOpenModal("kinds")}
+                  onClick={() => handleOpenModal('kinds')}
                 />
                 {idTheMovieDb && (
                   <CloudSyncIcon
@@ -1342,9 +1235,7 @@ function MovieCard({
                 {idTheMovieDb && (
                   <CloudSyncIcon
                     className="Btn_Refresh_items_MovieCard"
-                    onClick={() =>
-                      refetchYear(idTheMovieDb, { movieData, setMovieData })
-                    }
+                    onClick={() => refetchYear(idTheMovieDb, { movieData, setMovieData })}
                   />
                 )}
               </div>
@@ -1388,10 +1279,8 @@ function MovieCard({
             // BLOCK 1 LISTEN MODE
             <div className="infos_bloc_1">
               <p className="MovieCard_title">
-                {movieData.title}{" "}
-                {isTvShow && tvSeason && (
-                  <span className="tvSeasonsBadge">/Saison {tvSeason}</span>
-                )}
+                {movieData.title}{' '}
+                {isTvShow && tvSeason && <span className="tvSeasonsBadge">/Saison {tvSeason}</span>}
               </p>
               <div className="divider" />
               {/* trailer */}
@@ -1399,7 +1288,7 @@ function MovieCard({
                 <>
                   <Backdrop
                     sx={{
-                      color: "#fff",
+                      color: '#fff',
                       zIndex: (theme) => theme.zIndex.drawer + 1,
                     }}
                     open={isTrailerLoading}
@@ -1420,9 +1309,7 @@ function MovieCard({
                 <>
                   {/* altTitle */}
                   {movieData.altTitle && (
-                    <p className="MovieCard_info">
-                      {movieData.altTitle} (Titre original)
-                    </p>
+                    <p className="MovieCard_info">{movieData.altTitle} (Titre original)</p>
                   )}
                   {/* end altTitle */}
                   {/* Genre */}
@@ -1432,8 +1319,7 @@ function MovieCard({
                   {/* end Genre */}
                   {/* Année */}
                   <p className="MovieCard_info">
-                    <span className="paraph_bolder">Année:</span>{" "}
-                    {movieData.year || ""}
+                    <span className="paraph_bolder">Année:</span> {movieData.year || ''}
                   </p>
                   {/* end Année */}
                   {/* Pays */}
@@ -1442,40 +1328,32 @@ function MovieCard({
                   </p>
                   {/* end Pays */}
                   {/* TV saisons */}
-                  {isTvShow &&
-                    movieData.tvSeasons &&
-                    movieData.tvSeasons.trim() !== "" && (
-                      <p className="MovieCard_info">
-                        <span className="paraph_bolder">saisons:</span>{" "}
-                        {movieData.tvSeasons || ""}
-                      </p>
-                    )}
+                  {isTvShow && movieData.tvSeasons && movieData.tvSeasons.trim() !== '' && (
+                    <p className="MovieCard_info">
+                      <span className="paraph_bolder">saisons:</span> {movieData.tvSeasons || ''}
+                    </p>
+                  )}
                   {/* end TV saisons */}
                   {/* TV episodes */}
-                  {isTvShow &&
-                    movieData.nbTvEpisodes &&
-                    movieData.nbTvEpisodes > 0 && (
-                      <p className="MovieCard_info">
-                        <span className="paraph_bolder">Nb d'épisodes:</span>{" "}
-                        {movieData.nbTvEpisodes || ""}
-                      </p>
-                    )}
+                  {isTvShow && movieData.nbTvEpisodes && movieData.nbTvEpisodes > 0 && (
+                    <p className="MovieCard_info">
+                      <span className="paraph_bolder">Nb d'épisodes:</span>{' '}
+                      {movieData.nbTvEpisodes || ''}
+                    </p>
+                  )}
                   {/* end TV episodes */}
                   {/* TV Durée d'épisode */}
-                  {isTvShow &&
-                    movieData.episodeDuration &&
-                    movieData.episodeDuration > 0 && (
-                      <p className="MovieCard_info">
-                        <span className="paraph_bolder">Durée d'épisode:</span>{" "}
-                        {movieData.episodeDuration || ""} mn
-                      </p>
-                    )}
+                  {isTvShow && movieData.episodeDuration && movieData.episodeDuration > 0 && (
+                    <p className="MovieCard_info">
+                      <span className="paraph_bolder">Durée d'épisode:</span>{' '}
+                      {movieData.episodeDuration || ''} mn
+                    </p>
+                  )}
                   {/* end TV Durée d'épisode */}
                   {/* Durée */}
                   {!isTvShow && (
                     <p className="MovieCard_info">
-                      <span className="paraph_bolder">Durée:</span>{" "}
-                      {movieData.duration || ""}mn
+                      <span className="paraph_bolder">Durée:</span> {movieData.duration || ''}mn
                     </p>
                   )}
                   {/* end Durée */}
@@ -1484,8 +1362,8 @@ function MovieCard({
                   {directors && (
                     <p className="MovieCard_info">
                       <span className="paraph_bolder paraph_color_2">
-                        {isTvShow ? "Créateur:" : "Réalisateur:"}
-                      </span>{" "}
+                        {isTvShow ? 'Créateur:' : 'Réalisateur:'}
+                      </span>{' '}
                       {directors}
                     </p>
                   )}
@@ -1493,9 +1371,7 @@ function MovieCard({
                   {/* Scénariste */}
                   {screenwriters && (
                     <p className="MovieCard_info">
-                      <span className="paraph_bolder paraph_color_2">
-                        Scénariste:
-                      </span>{" "}
+                      <span className="paraph_bolder paraph_color_2">Scénariste:</span>{' '}
                       {screenwriters}
                     </p>
                   )}
@@ -1503,30 +1379,21 @@ function MovieCard({
                   {/* Compositeur */}
                   {music && (
                     <p className="MovieCard_info">
-                      <span className="paraph_bolder paraph_color_2">
-                        Musique:
-                      </span>{" "}
-                      {music}
+                      <span className="paraph_bolder paraph_color_2">Musique:</span> {music}
                     </p>
                   )}
                   {/* end Compositeur */}
                   {/* Studio */}
                   {studios && (
                     <p className="MovieCard_info">
-                      <span className="paraph_bolder paraph_color_2">
-                        Studio:
-                      </span>{" "}
-                      {studios}
+                      <span className="paraph_bolder paraph_color_2">Studio:</span> {studios}
                     </p>
                   )}
                   {/* end Studio */}
                   {/* casting */}
                   {casting && (
                     <p className="MovieCard_info MovieCard_casting paraph_height">
-                      <span className="paraph_bolder paraph_color_2">
-                        Casting:
-                      </span>{" "}
-                      {casting}
+                      <span className="paraph_bolder paraph_color_2">Casting:</span> {casting}
                     </p>
                   )}
                   {/* end casting */}
@@ -1565,7 +1432,7 @@ function MovieCard({
                 </Box>
                 <AddCircleOutlineIcon
                   className="Btn_Add_itemsPopUp_MovieCard"
-                  onClick={() => handleOpenModal("country")}
+                  onClick={() => handleOpenModal('country')}
                 />
                 {idTheMovieDb && (
                   <CloudSyncIcon
@@ -1594,7 +1461,7 @@ function MovieCard({
                 >
                   <TextField
                     id="outlined-read-only-input"
-                    label={isTvShow ? "Créateur:" : "Réalisateur:"}
+                    label={isTvShow ? 'Créateur:' : 'Réalisateur:'}
                     value={getSelectedNames(selectedDirectors)}
                     InputProps={{ readOnly: true }}
                     fullWidth
@@ -1602,7 +1469,7 @@ function MovieCard({
                 </Box>
                 <AddCircleOutlineIcon
                   className="Btn_Add_itemsPopUp_MovieCard"
-                  onClick={() => handleOpenModal("directors")}
+                  onClick={() => handleOpenModal('directors')}
                 />
                 {idTheMovieDb && (
                   <CloudSyncIcon
@@ -1639,7 +1506,7 @@ function MovieCard({
                   </Box>
                   <AddCircleOutlineIcon
                     className="Btn_Add_itemsPopUp_MovieCard"
-                    onClick={() => handleOpenModal("screenwriters")}
+                    onClick={() => handleOpenModal('screenwriters')}
                   />
                   {idTheMovieDb && (
                     <CloudSyncIcon
@@ -1676,7 +1543,7 @@ function MovieCard({
                 </Box>
                 <AddCircleOutlineIcon
                   className="Btn_Add_itemsPopUp_MovieCard"
-                  onClick={() => handleOpenModal("music")}
+                  onClick={() => handleOpenModal('music')}
                 />
                 {idTheMovieDb && (
                   <CloudSyncIcon
@@ -1712,7 +1579,7 @@ function MovieCard({
                 </Box>
                 <AddCircleOutlineIcon
                   className="Btn_Add_itemsPopUp_MovieCard"
-                  onClick={() => handleOpenModal("studio")}
+                  onClick={() => handleOpenModal('studio')}
                 />
                 {idTheMovieDb && (
                   <CloudSyncIcon
@@ -1748,7 +1615,7 @@ function MovieCard({
                 </Box>
                 <AddCircleOutlineIcon
                   className="Btn_Add_itemsPopUp_MovieCard"
-                  onClick={() => handleOpenModal("casting")}
+                  onClick={() => handleOpenModal('casting')}
                 />
                 {idTheMovieDb && (
                   <CloudSyncIcon
@@ -1784,7 +1651,7 @@ function MovieCard({
                 </Box>
                 <AddCircleOutlineIcon
                   className="Btn_Add_itemsPopUp_MovieCard"
-                  onClick={() => handleOpenModal("tags")}
+                  onClick={() => handleOpenModal('tags')}
                 />
                 {idTheMovieDb && (
                   <CloudSyncIcon
@@ -1815,9 +1682,7 @@ function MovieCard({
                 {idTheMovieDb && (
                   <CloudSyncIcon
                     className="Btn_Refresh_items_MovieCard"
-                    onClick={() =>
-                      refetchStory(idTheMovieDb, { movieData, setMovieData })
-                    }
+                    onClick={() => refetchStory(idTheMovieDb, { movieData, setMovieData })}
                   />
                 )}
               </div>
@@ -1835,22 +1700,14 @@ function MovieCard({
                 >
                   <MenuItem value="DVD original">DVD original</MenuItem>
                   <MenuItem value="DVD R/RW">DVD R/RW</MenuItem>
-                  <MenuItem value="Fichier multimédia">
-                    Fichier multimédia
-                  </MenuItem>
+                  <MenuItem value="Fichier multimédia">Fichier multimédia</MenuItem>
                 </Select>
               </FormControl>
-              {movieData.videoSupport === "Fichier multimédia" && (
+              {movieData.videoSupport === 'Fichier multimédia' && (
                 <>
                   {movie.isTvShow ? (
                     // ----- CAS SÉRIE (dossier complet)
-                    <Box
-                      display="flex"
-                      alignItems="center"
-                      gap={2}
-                      p={1}
-                      sx={textFieldSx}
-                    >
+                    <Box display="flex" alignItems="center" gap={2} p={1} sx={textFieldSx}>
                       <TextField
                         label="Dossier sélectionné"
                         variant="outlined"
@@ -1862,7 +1719,7 @@ function MovieCard({
                       {/* Input caché (sélection dossier) */}
                       <input
                         type="file"
-                        style={{ display: "none" }}
+                        style={{ display: 'none' }}
                         ref={fileInputRef}
                         multiple
                         onChange={handleFolderChange}
@@ -1872,11 +1729,11 @@ function MovieCard({
                       <Button
                         variant="outlined"
                         sx={{
-                          color: "var(--color-03)",
-                          borderColor: "var(--color-03)",
-                          "&:hover": {
-                            color: "var(--color-06)",
-                            borderColor: "var(--color-06)",
+                          color: 'var(--color-03)',
+                          borderColor: 'var(--color-03)',
+                          '&:hover': {
+                            color: 'var(--color-06)',
+                            borderColor: 'var(--color-06)',
                           },
                         }}
                         onClick={() => fileInputRef.current?.click()}
@@ -1903,14 +1760,12 @@ function MovieCard({
                         onChange={(e) => {
                           const inputPath = e.target.value;
                           const cleaned = inputPath
-                            .replace(/^[A-Za-z]:[\\/]+/, "")
-                            .replace(/[\\/]+$/, "");
+                            .replace(/^[A-Za-z]:[\\/]+/, '')
+                            .replace(/[\\/]+$/, '');
                           setMovieData((prev) => ({
                             ...prev,
                             path: inputPath,
-                            location: selectedFile
-                              ? `${cleaned}\\${selectedFile.name}`
-                              : "",
+                            location: selectedFile ? `${cleaned}\\${selectedFile.name}` : '',
                           }));
                         }}
                         fullWidth
@@ -1919,7 +1774,7 @@ function MovieCard({
                       <TextField
                         label="Fichier sélectionné"
                         variant="outlined"
-                        value={selectedFile ? selectedFile.name : ""}
+                        value={selectedFile ? selectedFile.name : ''}
                         fullWidth
                         InputProps={{ readOnly: true }}
                       />
@@ -1927,11 +1782,11 @@ function MovieCard({
                       <Button
                         variant="outlined"
                         sx={{
-                          color: "var(--color-03)",
-                          borderColor: "var(--color-03)",
-                          "&:hover": {
-                            color: "var(--color-06)",
-                            borderColor: "var(--color-06)",
+                          color: 'var(--color-03)',
+                          borderColor: 'var(--color-03)',
+                          '&:hover': {
+                            color: 'var(--color-06)',
+                            borderColor: 'var(--color-06)',
                           },
                         }}
                         onClick={() => fileInputRef.current?.click()}
@@ -1942,7 +1797,7 @@ function MovieCard({
                       {/* Input caché (fichier unique) */}
                       <input
                         type="file"
-                        style={{ display: "none" }}
+                        style={{ display: 'none' }}
                         ref={fileInputRef}
                         onChange={handleFileChange}
                       />
@@ -1960,12 +1815,12 @@ function MovieCard({
                     sx={textFieldSx}
                   />
 
-                  <FormControl sx={{ m: 1, color: "white" }}>
+                  <FormControl sx={{ m: 1, color: 'white' }}>
                     <FormLabel
                       // id="demo-row-radio-buttons-group-label"
                       sx={{
-                        color: "white",
-                        "&.Mui-focused": { color: "white" },
+                        color: 'white',
+                        '&.Mui-focused': { color: 'white' },
                       }}
                     >
                       version:
@@ -1979,34 +1834,34 @@ function MovieCard({
                     >
                       <FormControlLabel
                         value="none"
-                        control={<Radio sx={{ color: "white" }} />}
+                        control={<Radio sx={{ color: 'white' }} />}
                         label="none"
                         sx={{
-                          color: "white",
-                          "& .MuiRadio-root.Mui-checked": {
-                            color: "var(--color-03)",
+                          color: 'white',
+                          '& .MuiRadio-root.Mui-checked': {
+                            color: 'var(--color-03)',
                           },
                         }}
                       />
                       <FormControlLabel
                         value="VOSTFR"
-                        control={<Radio sx={{ color: "white" }} />}
+                        control={<Radio sx={{ color: 'white' }} />}
                         label="VOSTFR"
                         sx={{
-                          color: "white",
-                          "& .MuiRadio-root.Mui-checked": {
-                            color: "var(--color-03)",
+                          color: 'white',
+                          '& .MuiRadio-root.Mui-checked': {
+                            color: 'var(--color-03)',
                           },
                         }}
                       />
                       <FormControlLabel
                         value="MULTI"
-                        control={<Radio sx={{ color: "white" }} />}
+                        control={<Radio sx={{ color: 'white' }} />}
                         label="MULTI"
                         sx={{
-                          color: "white",
-                          "& .MuiRadio-root.Mui-checked": {
-                            color: "var(--color-03)",
+                          color: 'white',
+                          '& .MuiRadio-root.Mui-checked': {
+                            color: 'var(--color-03)',
                           },
                         }}
                       />
@@ -2040,7 +1895,7 @@ function MovieCard({
                 )}
               </div>
               {trailerMessage && (
-                <Alert severity="info" sx={{ mt: 1, width: "50%" }}>
+                <Alert severity="info" sx={{ mt: 1, width: '50%' }}>
                   {trailerMessage}
                 </Alert>
               )}
@@ -2075,15 +1930,15 @@ function MovieCard({
                     control={
                       <Checkbox
                         sx={{
-                          color: "white",
-                          "&.Mui-checked": { color: "var(--color-03)" },
+                          color: 'white',
+                          '&.Mui-checked': { color: 'var(--color-03)' },
                         }}
                         checked={allowEdit}
                         onChange={(e) => setAllowEdit(e.target.checked)}
                       />
                     }
                     label="Autoriser la saisie manuelle de l'ID IMDb"
-                    sx={{ color: "white" }}
+                    sx={{ color: 'white' }}
                   />
                 </div>
               ) : (
@@ -2109,9 +1964,7 @@ function MovieCard({
                 <>
                   {/* Résumé */}
                   <p className="MovieCard_info paraph_bolder">Résumé:</p>
-                  <p className="MovieCard_info MovieCard_story  paraph_height">
-                    {movieData.story}
-                  </p>
+                  <p className="MovieCard_info MovieCard_story  paraph_height">{movieData.story}</p>
                   {/* end Résumé */}
                   <div className="divider_dashed" />
                   {/* focus */}
@@ -2127,8 +1980,7 @@ function MovieCard({
 
                   {/* Support */}
                   <p className="MovieCard_info">
-                    <span className="paraph_bolder">Support:</span>{" "}
-                    {movieData.videoSupport}
+                    <span className="paraph_bolder">Support:</span> {movieData.videoSupport}
                   </p>
                   {/* end Support */}
                   {/* Version VOSTFR - MULTI */}
@@ -2139,26 +1991,23 @@ function MovieCard({
                   ) : null}
                   {movieData.multi ? (
                     <p className="MovieCard_info paraph_height">
-                      <span className="paraph_bolder">Version:</span>{" "}
-                      Multi-langues
+                      <span className="paraph_bolder">Version:</span> Multi-langues
                     </p>
                   ) : null}
                   {/* end Version VOSTFR - MULTI */}
                   {/* Support */}
-                  {(movieData.videoSupport === "Fichier multimédia" ||
-                    movieData.videoSupport === "FICHIER MULTIMEDIA") &&
+                  {(movieData.videoSupport === 'Fichier multimédia' ||
+                    movieData.videoSupport === 'FICHIER MULTIMEDIA') &&
                     isAdmin && (
                       <>
                         {movieData.location && (
                           <p className="MovieCard_info paraph_height">
-                            <span className="paraph_bolder">Emplacement:</span>{" "}
-                            {movieData.location}
+                            <span className="paraph_bolder">Emplacement:</span> {movieData.location}
                           </p>
                         )}
                         {movieData.fileSize && (
                           <p className="MovieCard_info">
-                            <span className="paraph_bolder">Size:</span>{" "}
-                            {movieData.fileSize}
+                            <span className="paraph_bolder">Size:</span> {movieData.fileSize}
                           </p>
                         )}
                       </>
@@ -2169,8 +2018,7 @@ function MovieCard({
                     <>
                       <div className="divider_dashed" />
                       <p className="MovieCard_info">
-                        <span className="paraph_bolder">Commentaire:</span>{" "}
-                        {movieData.comment}
+                        <span className="paraph_bolder">Commentaire:</span> {movieData.comment}
                       </p>
                     </>
                   )}
@@ -2187,15 +2035,13 @@ function MovieCard({
                     tabIndex={0}
                     onClick={toggleTrailerVideo}
                     onKeyDown={(event) => {
-                      if (event.key === "Enter" || event.key === " ") {
+                      if (event.key === 'Enter' || event.key === ' ') {
                         toggleTrailerVideo();
                       }
                     }}
                   >
                     <p className="MovieCard_info Toggle_video_btn">
-                      {isTrailerVisible
-                        ? "VOIR FICHE DU FILM"
-                        : "VOIR BANDE ANNONCE"}
+                      {isTrailerVisible ? 'VOIR FICHE DU FILM' : 'VOIR BANDE ANNONCE'}
                     </p>
                   </div>
                 </div>
@@ -2229,17 +2075,14 @@ function MovieCard({
           </Tooltip>
         )} */}
 
-        {!isAdmin && <section style={{ height: "2rem" }} />}
+        {!isAdmin && <section style={{ height: '2rem' }} />}
 
         {/* EDITING BUTTON */}
         {isAdmin ? (
           <section className="Movie_editing_btn-container">
             {isModify ? (
               <section className="Item_Movie_Editing_Buttons">
-                <UndoIcon
-                  className="item_movie_undo_ico"
-                  onClick={() => handleUndo()}
-                />
+                <UndoIcon className="item_movie_undo_ico" onClick={() => handleUndo()} />
                 <DoneOutlineIcon
                   className="item_movie_done_ico"
                   onClick={handleOpenUpdateConfirm}
@@ -2248,27 +2091,23 @@ function MovieCard({
             ) : (
               <section className="Item_Movie_Editing_Buttons">
                 <Tooltip
-                  title={
-                    isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"
-                  }
+                  title={isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'}
                   placement="top"
                 >
                   <IconButton
                     onClick={toggleFavorite}
                     size="small"
                     className="item_movie_favorite_ico"
-                    aria-label={
-                      isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"
-                    }
+                    aria-label={isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'}
                     sx={{
-                      border: "solid 1px",
-                      borderRadius: "10px",
-                      padding: "0.3rem 0.5rem",
-                      color: isFavorite ? "error.main" : "whitesmoke",
-                      transition: "transform 0.15s ease, color 0.15s ease",
-                      "&:hover": {
-                        color: "error.main",
-                        transform: "scale(1.15)",
+                      border: 'solid 1px',
+                      borderRadius: '10px',
+                      padding: '0.3rem 0.5rem',
+                      color: isFavorite ? 'error.main' : 'whitesmoke',
+                      transition: 'transform 0.15s ease, color 0.15s ease',
+                      '&:hover': {
+                        color: 'error.main',
+                        transform: 'scale(1.15)',
                       },
                     }}
                   >
@@ -2276,10 +2115,7 @@ function MovieCard({
                   </IconButton>
                 </Tooltip>
                 <div className="Item_Movie_Editing_Buttons_2">
-                  <ModeIcon
-                    className="item_movie_mode_ico"
-                    onClick={() => isModifyMode()}
-                  />
+                  <ModeIcon className="item_movie_mode_ico" onClick={() => isModifyMode()} />
                   <DeleteIcon
                     className="item_movie_delete_ico"
                     onClick={() => handleOpenDeleteConfirm(movieData.id)}
@@ -2288,15 +2124,10 @@ function MovieCard({
               </section>
             )}
 
-            <Dialog
-              open={isConfirmUpdateOpen}
-              onClose={handleCloseUpdateConfirm}
-            >
+            <Dialog open={isConfirmUpdateOpen} onClose={handleCloseUpdateConfirm}>
               <DialogTitle>Confirmer la mise à jour</DialogTitle>
               <DialogContent>
-                <DialogContentText>
-                  Es-tu sûr de vouloir mettre à jour ce film ?
-                </DialogContentText>
+                <DialogContentText>Es-tu sûr de vouloir mettre à jour ce film ?</DialogContentText>
               </DialogContent>
               <DialogActions>
                 <Button onClick={handleCloseUpdateConfirm} color="primary">
@@ -2308,15 +2139,10 @@ function MovieCard({
               </DialogActions>
             </Dialog>
 
-            <Dialog
-              open={isConfirmDeleteOpen}
-              onClose={handleCloseDeleteConfirm}
-            >
+            <Dialog open={isConfirmDeleteOpen} onClose={handleCloseDeleteConfirm}>
               <DialogTitle>Confirmer Delete</DialogTitle>
               <DialogContent>
-                <DialogContentText>
-                  Es-tu sûr de vouloir effacer ce film ?
-                </DialogContentText>
+                <DialogContentText>Es-tu sûr de vouloir effacer ce film ?</DialogContentText>
               </DialogContent>
               <DialogActions>
                 <Button onClick={handleCloseDeleteConfirm} color="primary">
@@ -2330,7 +2156,7 @@ function MovieCard({
 
             <Backdrop
               sx={(theme) => ({
-                color: "#fff",
+                color: '#fff',
                 zIndex: theme.zIndex.drawer + 1,
               })}
               open={isUpdating} // Contrôle l'affichage avec isUpdating
@@ -2341,25 +2167,23 @@ function MovieCard({
         ) : (
           <section className="Item_Movie_Editing_Buttons_user">
             <Tooltip
-              title={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
+              title={isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'}
               placement="top"
             >
               <IconButton
                 onClick={toggleFavorite}
                 size="small"
                 className="item_movie_favorite_ico"
-                aria-label={
-                  isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"
-                }
+                aria-label={isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'}
                 sx={{
-                  border: "solid 1px",
-                  borderRadius: "10px",
-                  padding: "0.3rem 0.5rem",
-                  color: isFavorite ? "error.main" : "var(--color-01)",
-                  transition: "transform 0.15s ease, color 0.15s ease",
-                  "&:hover": {
-                    color: "error.main",
-                    transform: "scale(1.15)",
+                  border: 'solid 1px',
+                  borderRadius: '10px',
+                  padding: '0.3rem 0.5rem',
+                  color: isFavorite ? 'error.main' : 'var(--color-01)',
+                  transition: 'transform 0.15s ease, color 0.15s ease',
+                  '&:hover': {
+                    color: 'error.main',
+                    transform: 'scale(1.15)',
                   },
                 }}
               >
@@ -2381,7 +2205,7 @@ function MovieCard({
             <div
               onClick={handleCloseModal}
               onKeyDown={(event) => {
-                if (event.key === "Enter" || event.key === " ") {
+                if (event.key === 'Enter' || event.key === ' ') {
                   handleCloseModal();
                 }
               }}
@@ -2403,9 +2227,7 @@ function MovieCard({
                 selectedCasting={selectedCasting}
                 onSelectedCastingUpdate={handleSelectedCastingUpdate}
                 selectedScreenwriters={selectedScreenwriters}
-                onSelectedScreenwritersUpdate={
-                  handleSelectedScreenwritersUpdate
-                }
+                onSelectedScreenwritersUpdate={handleSelectedScreenwritersUpdate}
                 selectedMusic={selectedMusic}
                 onSelectedMusicUpdate={handleSelectedMusicUpdate}
                 selectedStudios={selectedStudios}
