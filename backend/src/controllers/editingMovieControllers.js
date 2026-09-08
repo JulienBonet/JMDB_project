@@ -17,12 +17,12 @@ const editingMovieModel = require('../models/editingMovieModel');
 const purgeModel = require('../models/purgeModel');
 
 const DEFAULT_COVER = '00_cover_default.jpg';
-const CLOUD_FOLDER = 'jmdb/covers';
+const CLOUD_FOLDER = process.env.CLOUDINARY_FOLDER;
 
 // -------------------------- Fonctions Cloudinary --------------------------
 
 const uploadLocalCover = async (localFilePath, movieId = null) => {
-  const folder = movieId ? `jmdb/covers/${movieId}` : 'jmdb/covers';
+  const folder = movieId ? `${CLOUD_FOLDER}/${movieId}` : CLOUD_FOLDER;
   const result = await cloudinary.uploader.upload(localFilePath, {
     folder,
     public_id: movieId ? 'cover' : undefined,
@@ -51,7 +51,7 @@ const updateImageFromUrl = async (req, res) => {
     const resizedBuffer = await resizeAndCropBuffer(buffer, 306, 459);
 
     // 3️⃣ Upload sur Cloudinary via ta fonction existante
-    const folder = 'jmdb/covers';
+    const folder = CLOUD_FOLDER;
     const { publicId, url } = await uploadBufferToCloudinary(resizedBuffer, folder, 'cover');
 
     // 4️⃣ Stocker uniquement le nom du fichier (publicId + extension) en DB
@@ -61,7 +61,9 @@ const updateImageFromUrl = async (req, res) => {
     // 5️⃣ Supprimer ancienne image si pas par défaut
     if (oldCover && oldCover !== DEFAULT_COVER) {
       const oldPublicId = oldCover.replace(/\.[^.]+$/, '');
-      const fullPublicId = oldPublicId.includes('/') ? oldPublicId : `jmdb/covers/${oldPublicId}`;
+      const fullPublicId = oldPublicId.includes('/')
+        ? oldPublicId
+        : `${CLOUD_FOLDER}/${oldPublicId}`;
 
       await cloudinary.uploader.destroy(fullPublicId);
     }
@@ -323,7 +325,7 @@ const deleteMovie = async (req, res) => {
     if (movie.cover && movie.cover !== DEFAULT_COVER) {
       // movie.cover = "cover-uuid.jpg"
       const baseName = movie.cover.replace(/\.[^.]+$/, '');
-      const publicId = `jmdb/covers/${baseName}`;
+      const publicId = `${CLOUD_FOLDER}/${baseName}`;
 
       const result = await cloudinary.uploader.destroy(publicId, {
         resource_type: 'image',

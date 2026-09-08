@@ -1,12 +1,6 @@
 // backend/index.js
-// Load environment variables from .env file
-// require('dotenv').config({
-//   path:
-//     process.env.NODE_ENV === 'production'
-//       ? `${__dirname}/.env.production`
-//       : `${__dirname}/.env.development`,
-// });
 
+// Load environment variables from .env file
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config({
     path: `${__dirname}/.env.development`,

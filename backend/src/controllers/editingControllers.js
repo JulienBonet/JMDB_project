@@ -10,7 +10,7 @@ const { resizeAndCropBuffer } = require('../utils/imageUtils');
 const editingModel = require('../models/editingModel');
 
 const DEFAULT_IMAGE = '00_item_default.png';
-const CLOUD_FOLDER = 'jmdb/covers';
+const CLOUD_FOLDER = process.env.CLOUDINARY_FOLDER;
 
 //-----------------------------
 // EDIT DIRECTOR
@@ -1024,7 +1024,7 @@ const uploadFocusImage = async (req, res) => {
     // 2️⃣ SUPPRESSION de l’ancienne image Cloudinary si ce n'est pas l'image par défaut
     if (oldImage && oldImage !== '00_jmtb_item_default.jpg') {
       try {
-        const publicId = `jmdb/covers/${oldImage.replace(/\.[^.]+$/, '')}`;
+        const publicId = `${CLOUD_FOLDER}/${oldImage.replace(/\.[^.]+$/, '')}`;
         await cloudinary.uploader.destroy(publicId);
 
         // console.log("✔️ Ancienne image supprimée de Cloudinary");
@@ -1038,11 +1038,9 @@ const uploadFocusImage = async (req, res) => {
     // 3️⃣ UPLOAD Cloudinary de la nouvelle image
     const { publicId: newPublicId, url } = await uploadBufferToCloudinary(
       bufferToUpload,
-      'jmdb/covers',
+      CLOUD_FOLDER,
       'focus'
     );
-
-    // public_id ressemble à : jmdb/covers/focus-xxxx-xxxx
     const filenameOnly = newPublicId.split('/').pop();
     const filenameWithExt = `${filenameOnly}.jpg`;
 
@@ -1078,7 +1076,7 @@ const eraseFocus = async (req, res = null) => {
     if (imageUrl && imageUrl !== '00_jmtb_item_default.jpg') {
       try {
         // Supprimer l'extension pour obtenir le public_id Cloudinary
-        const publicId = `jmdb/covers/${imageUrl.replace(/\.[^.]+$/, '')}`;
+        const publicId = `${CLOUD_FOLDER}/${imageUrl.replace(/\.[^.]+$/, '')}`;
         console.log('➡️ Suppression Cloudinary public_id =', publicId);
 
         await cloudinary.uploader.destroy(publicId);

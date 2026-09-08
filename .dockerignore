@@ -37,3 +37,7 @@ Dockerfile
 .DS_Store
 .vscode
 .idea
+
+workflow JMDB dev.pdf
+structure.txt
+/scripts
