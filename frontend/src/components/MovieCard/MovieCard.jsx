@@ -88,7 +88,15 @@ import {
 } from '../../utils/movieEntranceSearchInsert';
 // refacto
 import { getFavoriteStatus, addFavorite, removeFavorite } from '../../services/favoriteService';
-import { getMovie, updateMovie, deleteMovie } from '../../services/movieService';
+import { getSeasons } from '../../services/tmdbService';
+import {
+  getMovie,
+  updateMovie,
+  deleteMovie,
+  updateMovieImage,
+  getCollection,
+  getByName,
+} from '../../services/movieService';
 
 function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, onFavoriteRemoved }) {
   const { isAdmin } = useAuth();
@@ -322,26 +330,13 @@ function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, on
 
   const handleUpdateImage = async () => {
     const file = fileCoverRef.current.files[0];
+
     if (!file) return null;
 
-    const formData = new FormData();
-    formData.append('cover', file);
+    const data = await updateMovieImage(movie.id, file);
 
-    const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/movie/${movie.id}/image`, {
-      method: 'PUT',
-      body: formData,
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      throw new Error(data.message || 'Upload failed');
-    }
-
-    // 🔥 AFFICHAGE = URL Cloudinary
     setImage(data.url);
 
-    // 🔥 MAIS la DB contient seulement data.publicId
     return data.publicId;
   };
 
@@ -382,8 +377,7 @@ function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, on
     const fetchSeasonsInfo = async () => {
       try {
         const [mediaType, movieId] = idTheMovieDb.split('/');
-        const res = await fetch(`${backendUrl}/api/tmdb/${mediaType}/${movieId}/seasons`);
-        const data = await res.json();
+        const data = await getSeasons(mediaType, movieId);
 
         if (data.seasons && data.seasons.length > 0) {
           setSeasonsInfo(data.seasons);
@@ -719,9 +713,7 @@ function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, on
   // FONCTION GÉNÉRIQUE FETCH DE LISTE
   const fetchData = async (route) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/${route}`);
-      if (!response.ok) throw new Error('Network response was not ok');
-      const datas = await response.json();
+      const datas = await getCollection(route);
       setData(datas);
     } catch (error) {
       console.error(`Error fetching ${route}:`, error);
@@ -747,12 +739,7 @@ function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, on
     try {
       const namesArray = namesString.split(', ').map(async (name) => {
         try {
-          const response = await fetch(`${backendUrl}/api/${endpoint}/byname/${name}`);
-          if (!response.ok) {
-            console.warn(`Error fetching ${endpoint} ${name}: ${response.statusText}`);
-            return null;
-          }
-          return await response.json();
+          return await getByName(endpoint, name);
         } catch (err) {
           console.warn(`Error fetching ${endpoint} ${name}:`, err);
           return null;
@@ -851,52 +838,48 @@ function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, on
       }
 
       // Mettre à jour les autres informations du film
-      const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/api/movie/${movieData.id}`,
-        {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            title: movieData.title,
-            altTitle: movieData.altTitle,
-            year: movieData.year,
-            duration: movieData.duration || null,
-            trailer: movieData.trailer,
-            story: movieData.story,
-            location: movieData.location,
-            videoFormat: movieData.videoFormat,
-            videoSupport: movieData.videoSupport,
-            fileSize: movieData.fileSize,
-            vostfr: movieData.vostfr,
-            multi: movieData.multi,
-            comment: movieData.comment,
-            genres: selectedKinds.map((genre) => genre.id),
-            directors: selectedDirectors.map((director) => director.id),
-            castings: selectedCasting.map((cast) => cast.id),
-            screenwriters: selectedScreenwriters.map((screenwriter) => screenwriter.id),
-            musics: selectedMusic.map((compositor) => compositor.id),
-            studios: selectedStudios.map((studio) => studio.id),
-            countries: selectedCountries.map((country) => country.id),
-            tags: selectedTags.map((tag) => tag.id),
-            focus: selectedFocus.map((f) => f.id),
-            isTvShow: movieData.isTvShow,
-            tvSeasons: movieData.tvSeasons || null,
-            nbTvEpisodes: movieData.nbTvEpisodes || null,
-            episodeDuration: movieData.episodeDuration || null,
-            idTheMovieDb: movieData.idTheMovieDb,
-          }),
-        }
-      );
+      const payload = {
+        title: movieData.title,
+        altTitle: movieData.altTitle,
+        year: movieData.year,
+        duration: movieData.duration || null,
+        trailer: movieData.trailer,
+        story: movieData.story,
+        location: movieData.location,
+        videoFormat: movieData.videoFormat,
+        videoSupport: movieData.videoSupport,
+        fileSize: movieData.fileSize,
+        vostfr: movieData.vostfr,
+        multi: movieData.multi,
+        comment: movieData.comment,
+        genres: selectedKinds.map((genre) => genre.id),
+        directors: selectedDirectors.map((director) => director.id),
+        castings: selectedCasting.map((cast) => cast.id),
+        screenwriters: selectedScreenwriters.map((screenwriter) => screenwriter.id),
+        musics: selectedMusic.map((compositor) => compositor.id),
+        studios: selectedStudios.map((studio) => studio.id),
+        countries: selectedCountries.map((country) => country.id),
+        tags: selectedTags.map((tag) => tag.id),
+        focus: selectedFocus.map((f) => f.id),
+        isTvShow: movieData.isTvShow,
+        tvSeasons: movieData.tvSeasons || null,
+        nbTvEpisodes: movieData.nbTvEpisodes || null,
+        episodeDuration: movieData.episodeDuration || null,
+        idTheMovieDb: movieData.idTheMovieDb,
+      };
 
-      if (response.ok) {
-        toast.success('Film mis à jour avec succès');
-        const updatedMovie = await response.json();
-        const newMovie = Array.isArray(updatedMovie) ? updatedMovie[0] : updatedMovie;
-        setMovieData(newMovie);
-        onUpdateMovie(newMovie);
-        closeModifyMode();
-        // closeModal();
-        if (typeof closeModal === 'function') closeModal();
+      const updatedMovie = await updateMovie(movieData.id, payload);
+
+      toast.success('Film mis à jour avec succès');
+
+      const newMovie = Array.isArray(updatedMovie) ? updatedMovie[0] : updatedMovie;
+
+      setMovieData(newMovie);
+      onUpdateMovie(newMovie);
+      closeModifyMode();
+
+      if (typeof closeModal === 'function') {
+        closeModal();
       } else {
         console.error('Erreur lors de la mise à jour');
       }
@@ -928,20 +911,15 @@ function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, on
     setIsConfirmDeleteOpen(false);
 
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/api/movie/${movieData.id}`,
-        { method: 'DELETE' }
-      );
+      await deleteMovie(movieData.id);
 
-      if (response.ok) {
-        toast.info('Film supprimé avec succès');
-        onDeleteMovie(movieData.id); // Appeler la fonction de rappel
+      toast.info('Film supprimé avec succès');
+      onDeleteMovie(movieData.id);
+      if (typeof closeModal === 'function') {
         closeModal();
-      } else {
-        toast.error('Erreur lors de la suppression du film');
-        console.error('Erreur lors de la suppression du film', await response.text());
       }
     } catch (error) {
+      toast.error('Erreur lors de la suppression du film');
       console.error('Erreur durant la suppression:', error);
     }
   };
