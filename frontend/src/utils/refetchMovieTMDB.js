@@ -1,17 +1,16 @@
-/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-restricted-syntax */
 // -----------------/ MOVIE DATA FETCH IN MovieCard.jsx/----------------- //
-import axios from "axios";
-import countries from "i18n-iso-countries";
-import frLocale from "i18n-iso-countries/langs/fr.json";
-import { translateCountry } from "./countries";
+import axios from 'axios';
+import countries from 'i18n-iso-countries';
+import frLocale from 'i18n-iso-countries/langs/fr.json';
+import { translateCountry } from './countries';
 
 countries.registerLocale(frLocale);
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 const CLOUDINARY_BASE_URL = import.meta.env.VITE_CLOUDINARY_BASE_URL;
 
 const getImageUrl = (publicId) => {
-  if (!publicId) return "00_cover_default.jpg";
+  if (!publicId) return '00_cover_default.jpg';
   return `${CLOUDINARY_BASE_URL}/${publicId}`;
 };
 
@@ -26,10 +25,7 @@ const fetchMovieViaBackend = async (mediaType, id) => {
 
     const res = await axios.get(url);
 
-    console.log(
-      "🎬 Données reçues du backend :",
-      res.data.title || res.data.name
-    );
+    console.log('🎬 Données reçues du backend :', res.data.title || res.data.name);
 
     // Normalisation des données
     const genres = Array.isArray(res.data.genres) ? res.data.genres : [];
@@ -40,7 +36,7 @@ const fetchMovieViaBackend = async (mediaType, id) => {
 
     return { ...res.data, genres, cast, crew, videos, keywords };
   } catch (err) {
-    console.error("❌ Erreur fetch via backend :", err);
+    console.error('❌ Erreur fetch via backend :', err);
     return null;
   }
 };
@@ -75,15 +71,15 @@ const refetchMovieTMDB = async (idTheMovieDb, deps) => {
     setSelectedTags,
   } = deps;
 
-  const [mediaType, movieId] = idTheMovieDb.split("/");
+  const [mediaType, movieId] = idTheMovieDb.split('/');
 
   const moviefetchData = await fetchMovieViaBackend(mediaType, movieId);
   if (!moviefetchData) return;
 
-  const isTV = mediaType === "tv";
+  const isTV = mediaType === 'tv';
 
   // Titre alternatif
-  let altTitle = "";
+  let altTitle = '';
   if (
     isTV &&
     moviefetchData.original_name &&
@@ -98,18 +94,15 @@ const refetchMovieTMDB = async (idTheMovieDb, deps) => {
     altTitle = moviefetchData.original_title;
   }
 
-  if (typeof setMovieData === "function") {
+  if (typeof setMovieData === 'function') {
     setMovieData({
       ...movieData,
       title: isTV ? moviefetchData.name : moviefetchData.title,
       altTitle,
       year:
-        (isTV
-          ? moviefetchData.first_air_date
-          : moviefetchData.release_date
-        )?.substring(0, 4) || "",
-      pitch: moviefetchData.tagline || "",
-      story: moviefetchData.overview || "",
+        (isTV ? moviefetchData.first_air_date : moviefetchData.release_date)?.substring(0, 4) || '',
+      pitch: moviefetchData.tagline || '',
+      story: moviefetchData.overview || '',
       idTheMovieDb: `${mediaType}/${moviefetchData.id}`,
       idIMDB: isTV ? null : moviefetchData.imdb_id,
       isTvShow: isTV ? 1 : 0,
@@ -129,7 +122,7 @@ const refetchMovieTMDB = async (idTheMovieDb, deps) => {
   };
 
   const genresToFetch = moviefetchData.genres.map((g) => g.name);
-  if (moviefetchData.adult) genresToFetch.push("adulte");
+  if (moviefetchData.adult) genresToFetch.push('adulte');
   const genresData = await Promise.all(genresToFetch.map(fetchGenre));
   setSelectedKinds(genresData);
 
@@ -180,14 +173,8 @@ const refetchMovieTMDB = async (idTheMovieDb, deps) => {
   } else {
     directorsData = await Promise.all(
       (moviefetchData.crew || [])
-        .filter((c) => c.job === "Director")
-        .map((d) =>
-          fetchOrCreateEntity(
-            d,
-            searchDirectorInDatabase,
-            createDirectorInDatabase
-          )
-        )
+        .filter((c) => c.job === 'Director')
+        .map((d) => fetchOrCreateEntity(d, searchDirectorInDatabase, createDirectorInDatabase))
     );
   }
   setSelectedDirectors(directorsData);
@@ -195,13 +182,9 @@ const refetchMovieTMDB = async (idTheMovieDb, deps) => {
   // SCREENWRITERS
   const screenwritersData = await Promise.all(
     (moviefetchData.crew || [])
-      .filter((c) => ["Screenplay", "Writer", "Author"].includes(c.job))
+      .filter((c) => ['Screenplay', 'Writer', 'Author'].includes(c.job))
       .map((sw) =>
-        fetchOrCreateEntity(
-          sw,
-          searchScreenwriterInDatabase,
-          createScreenwriterInDatabase
-        )
+        fetchOrCreateEntity(sw, searchScreenwriterInDatabase, createScreenwriterInDatabase)
       )
   );
   setSelectedScreenwriters(screenwritersData);
@@ -209,13 +192,9 @@ const refetchMovieTMDB = async (idTheMovieDb, deps) => {
   // COMPOSITORS
   const compositorsData = await Promise.all(
     (moviefetchData.crew || [])
-      .filter((c) => ["Original Music Composer", "Music"].includes(c.job))
+      .filter((c) => ['Original Music Composer', 'Music'].includes(c.job))
       .map((comp) =>
-        fetchOrCreateEntity(
-          comp,
-          searchCompositorInDatabase,
-          createCompositorInDatabase
-        )
+        fetchOrCreateEntity(comp, searchCompositorInDatabase, createCompositorInDatabase)
       )
   );
   setSelectedMusic(compositorsData);
@@ -225,33 +204,23 @@ const refetchMovieTMDB = async (idTheMovieDb, deps) => {
     (moviefetchData.cast || [])
       .sort((a, b) => a.order - b.order)
       .slice(0, 5)
-      .map((cast) =>
-        fetchOrCreateEntity(
-          cast,
-          searchCastingInDatabase,
-          createCastingInDatabase
-        )
-      )
+      .map((cast) => fetchOrCreateEntity(cast, searchCastingInDatabase, createCastingInDatabase))
   );
   setSelectedCasting(castingsData);
 
   // -----------------/ TRAILER /-----------------
   const trailerData = moviefetchData.videos.find(
-    (v) => v.type === "Trailer" && v.site === "YouTube"
+    (v) => v.type === 'Trailer' && v.site === 'YouTube'
   );
-  const videoUrl = trailerData
-    ? `https://www.youtube.com/watch?v=${trailerData.key}`
-    : "";
+  const videoUrl = trailerData ? `https://www.youtube.com/watch?v=${trailerData.key}` : '';
   setMovieData((prev) => ({ ...prev, trailer: videoUrl }));
 
   // -----------------/ TAGS /-----------------
   try {
-    const response = await fetch(
-      `${backendUrl}/api/tmdb/${mediaType}/${movieId}/keywords`
-    );
+    const response = await fetch(`${backendUrl}/api/tmdb/${mediaType}/${movieId}/keywords`);
     const data = await response.json();
 
-    console.log("🏷️ data reçu du backend :", data);
+    console.log('🏷️ data reçu du backend :', data);
 
     const keywordsData = Array.isArray(data.keywordsData)
       ? data.keywordsData
@@ -259,13 +228,13 @@ const refetchMovieTMDB = async (idTheMovieDb, deps) => {
 
     if (!keywordsData.length) {
       setSelectedTags([]);
-      console.info("🏷️ Aucun tag trouvé pour ce film");
+      console.info('🏷️ Aucun tag trouvé pour ce film');
     } else {
       // Split + nettoyage des tags contenant des virgules
       const cleanedTags = keywordsData
         .flatMap((kw) =>
           kw.name
-            .split(",")
+            .split(',')
             .map((t) => t.trim())
             .filter(Boolean)
         )
@@ -288,13 +257,10 @@ const refetchMovieTMDB = async (idTheMovieDb, deps) => {
 
       setSelectedTags(tagsData.filter(Boolean));
 
-      console.info(
-        `🏷️ Tags rechargés pour ${idTheMovieDb} :`,
-        tagsData.filter(Boolean)
-      );
+      console.info(`🏷️ Tags rechargés pour ${idTheMovieDb} :`, tagsData.filter(Boolean));
     }
   } catch (err) {
-    console.error("💥 Erreur refetchTags :", err);
+    console.error('💥 Erreur refetchTags :', err);
     setSelectedTags([]);
   }
 };
@@ -308,20 +274,20 @@ const refetchMovieTMDB = async (idTheMovieDb, deps) => {
 const getTmdbData = async (idTheMovieDb) => {
   try {
     const res = await fetch(`${backendUrl}/api/tmdb/${idTheMovieDb}`);
-    if (!res.ok) throw new Error("Erreur fetch backend TMDB");
+    if (!res.ok) throw new Error('Erreur fetch backend TMDB');
 
     const data = await res.json();
-    console.log("💾 Données TMDB récupérées :", data);
+    console.log('💾 Données TMDB récupérées :', data);
     return data;
   } catch (err) {
-    console.error("Erreur fetch TMDB backend :", err);
+    console.error('Erreur fetch TMDB backend :', err);
     return null;
   }
 };
 
 const fetchOrCreateEntity = async (entity, searchFunc, createFunc) => {
   if (!entity?.name) {
-    console.warn("⚠️ fetchOrCreateEntity appelé sans nom valide :", entity);
+    console.warn('⚠️ fetchOrCreateEntity appelé sans nom valide :', entity);
     return null;
   }
 
@@ -331,7 +297,7 @@ const fetchOrCreateEntity = async (entity, searchFunc, createFunc) => {
 
   if (!entityData) {
     const created = await createFunc(cleanName);
-    console.info("🆕 Entité créée :", created);
+    console.info('🆕 Entité créée :', created);
 
     // Si la création ne renvoie pas d'id, on refait un search
     if (!created?.id) {
@@ -362,20 +328,12 @@ const refetchAltTitle = async (idTheMovieDb, { movieData, setMovieData }) => {
   const data = await getTmdbData(idTheMovieDb);
   if (!data) return;
 
-  const mediaType = data.first_air_date ? "tv" : "movie";
-  let altTitle = "";
+  const mediaType = data.first_air_date ? 'tv' : 'movie';
+  let altTitle = '';
 
-  if (
-    mediaType === "tv" &&
-    data.original_name &&
-    data.original_name !== data.name
-  ) {
+  if (mediaType === 'tv' && data.original_name && data.original_name !== data.name) {
     altTitle = data.original_name;
-  } else if (
-    mediaType === "movie" &&
-    data.original_title &&
-    data.original_title !== data.title
-  ) {
+  } else if (mediaType === 'movie' && data.original_title && data.original_title !== data.title) {
     altTitle = data.original_title;
   }
 
@@ -387,12 +345,9 @@ const refetchYear = async (idTheMovieDb, { movieData, setMovieData }) => {
   const data = await getTmdbData(idTheMovieDb);
   if (!data) return;
 
-  const mediaType = data.first_air_date ? "tv" : "movie";
+  const mediaType = data.first_air_date ? 'tv' : 'movie';
   const year =
-    (mediaType === "tv" ? data.first_air_date : data.release_date)?.substring(
-      0,
-      4
-    ) || "";
+    (mediaType === 'tv' ? data.first_air_date : data.release_date)?.substring(0, 4) || '';
 
   setMovieData({ ...movieData, year });
 };
@@ -402,9 +357,8 @@ const refetchDuration = async (idTheMovieDb, { movieData, setMovieData }) => {
   const data = await getTmdbData(idTheMovieDb);
   if (!data) return;
 
-  const mediaType = data.first_air_date ? "tv" : "movie";
-  const duration =
-    mediaType === "tv" ? data.episode_run_time?.[0] || 0 : data.runtime || 0;
+  const mediaType = data.first_air_date ? 'tv' : 'movie';
+  const duration = mediaType === 'tv' ? data.episode_run_time?.[0] || 0 : data.runtime || 0;
 
   setMovieData({ ...movieData, duration });
 };
@@ -412,7 +366,7 @@ const refetchDuration = async (idTheMovieDb, { movieData, setMovieData }) => {
 // refetchStory
 const refetchStory = async (idTheMovieDb, { movieData, setMovieData }) => {
   const data = await getTmdbData(idTheMovieDb);
-  setMovieData({ ...movieData, story: data?.overview || "" });
+  setMovieData({ ...movieData, story: data?.overview || '' });
 };
 
 // ------------------
@@ -426,7 +380,7 @@ const refetchGenres = async (
   const moviefetchData = await getTmdbData(idTheMovieDb); // ← pas de destructuring
 
   if (!moviefetchData || !moviefetchData.genres) {
-    console.warn("⚠️ Pas de genres dans les données TMDB", moviefetchData);
+    console.warn('⚠️ Pas de genres dans les données TMDB', moviefetchData);
     setSelectedKinds([]);
     return;
   }
@@ -439,11 +393,11 @@ const refetchGenres = async (
   };
 
   const genresToFetch = moviefetchData.genres.map((g) => g.name);
-  if (moviefetchData.adult) genresToFetch.push("adulte");
+  if (moviefetchData.adult) genresToFetch.push('adulte');
 
   const genresData = await Promise.all(genresToFetch.map(fetchGenre));
   setSelectedKinds(genresData);
-  console.info("🎨 Genres rechargés :", genresData);
+  console.info('🎨 Genres rechargés :', genresData);
 };
 
 // ------------------
@@ -481,15 +435,11 @@ const refetchDirectors = async (
   { searchDirectorInDatabase, createDirectorInDatabase, setSelectedDirectors }
 ) => {
   const data = await getTmdbData(idTheMovieDb);
-  const directors = (data.crew || []).filter((c) => c.job === "Director");
+  const directors = (data.crew || []).filter((c) => c.job === 'Director');
 
   const directorsData = await Promise.all(
     directors.map((director) =>
-      fetchOrCreateEntity(
-        director,
-        searchDirectorInDatabase,
-        createDirectorInDatabase
-      )
+      fetchOrCreateEntity(director, searchDirectorInDatabase, createDirectorInDatabase)
     )
   );
 
@@ -502,24 +452,16 @@ const refetchDirectors = async (
 
 const refetchScreenwriters = async (
   idTheMovieDb,
-  {
-    searchScreenwriterInDatabase,
-    createScreenwriterInDatabase,
-    setSelectedScreenwriters,
-  }
+  { searchScreenwriterInDatabase, createScreenwriterInDatabase, setSelectedScreenwriters }
 ) => {
   const data = await getTmdbData(idTheMovieDb);
   const screenwriters = (data.crew || []).filter((c) =>
-    ["Screenplay", "Writer", "Author"].includes(c.job)
+    ['Screenplay', 'Writer', 'Author'].includes(c.job)
   );
 
   const screenwritersData = await Promise.all(
     screenwriters.map((sw) =>
-      fetchOrCreateEntity(
-        sw,
-        searchScreenwriterInDatabase,
-        createScreenwriterInDatabase
-      )
+      fetchOrCreateEntity(sw, searchScreenwriterInDatabase, createScreenwriterInDatabase)
     )
   );
 
@@ -536,16 +478,12 @@ const refetchCompositors = async (
 ) => {
   const data = await getTmdbData(idTheMovieDb);
   const compositors = (data.crew || []).filter((c) =>
-    ["Original Music Composer", "Music"].includes(c.job)
+    ['Original Music Composer', 'Music'].includes(c.job)
   );
 
   const compositorsData = await Promise.all(
     compositors.map((c) =>
-      fetchOrCreateEntity(
-        c,
-        searchCompositorInDatabase,
-        createCompositorInDatabase
-      )
+      fetchOrCreateEntity(c, searchCompositorInDatabase, createCompositorInDatabase)
     )
   );
 
@@ -568,11 +506,7 @@ const refetchStudios = async (
 
   const studiosData = await Promise.all(
     data.production_companies.map((studio) =>
-      fetchOrCreateEntity(
-        studio,
-        searchStudioInDatabase,
-        createStudioInDatabase
-      )
+      fetchOrCreateEntity(studio, searchStudioInDatabase, createStudioInDatabase)
     )
   );
 
@@ -597,9 +531,7 @@ const refetchCasting = async (
     data.cast
       .sort((a, b) => a.order - b.order)
       .slice(0, 5)
-      .map((c) =>
-        fetchOrCreateEntity(c, searchCastingInDatabase, createCastingInDatabase)
-      )
+      .map((c) => fetchOrCreateEntity(c, searchCastingInDatabase, createCastingInDatabase))
   );
 
   setSelectedCasting(castingsData);
@@ -614,16 +546,14 @@ const refetchTags = async (
   { searchTagInDatabase, createTagInDatabase, setSelectedTags }
 ) => {
   try {
-    const [mediaType, movieId] = idTheMovieDb.split("/");
+    const [mediaType, movieId] = idTheMovieDb.split('/');
 
     // 1️⃣ Appel au BACKEND pour récupérer les keywords TMDB
-    const response = await fetch(
-      `${backendUrl}/api/tmdb/${mediaType}/${movieId}/keywords`
-    );
+    const response = await fetch(`${backendUrl}/api/tmdb/${mediaType}/${movieId}/keywords`);
     const data = await response.json();
 
     // vérifier ce que l'on a vraiment
-    console.log("data:", data);
+    console.log('data:', data);
 
     // le tableau réel
     const keywordsData = Array.isArray(data.keywordsData)
@@ -632,7 +562,7 @@ const refetchTags = async (
 
     if (!keywordsData || keywordsData.length === 0) {
       setSelectedTags([]);
-      console.info("🏷️ Aucun tag trouvé pour ce film");
+      console.info('🏷️ Aucun tag trouvé pour ce film');
       return;
     }
 
@@ -640,7 +570,7 @@ const refetchTags = async (
     const cleanedTags = keywordsData
       .flatMap((kw) =>
         kw.name
-          .split(",")
+          .split(',')
           .map((t) => t.trim())
           .filter(Boolean)
       )
@@ -667,43 +597,35 @@ const refetchTags = async (
     // 4️⃣ Nettoyer
     setSelectedTags(tagsData.filter(Boolean));
 
-    console.info(
-      `🏷️ Tags rechargés pour ${idTheMovieDb} :`,
-      tagsData.filter(Boolean)
-    );
+    console.info(`🏷️ Tags rechargés pour ${idTheMovieDb} :`, tagsData.filter(Boolean));
   } catch (error) {
-    console.error("Erreur refetchTags :", error);
+    console.error('Erreur refetchTags :', error);
     setSelectedTags([]);
   }
 };
 
-const refetchTrailer = async (
-  idTheMovieDb,
-  { setMovieData, setTrailerMessage }
-) => {
+const refetchTrailer = async (idTheMovieDb, { setMovieData, setTrailerMessage }) => {
   try {
-    const [mediaType, movieId] = idTheMovieDb.split("/");
+    const [mediaType, movieId] = idTheMovieDb.split('/');
 
-    const res = await fetch(
-      `${backendUrl}/api/tmdb/${mediaType}/${movieId}/trailer`
-    );
+    const res = await fetch(`${backendUrl}/api/tmdb/${mediaType}/${movieId}/trailer`);
 
-    if (!res.ok) throw new Error("Erreur fetch backend TMDB trailer");
+    if (!res.ok) throw new Error('Erreur fetch backend TMDB trailer');
 
     const { trailer } = await res.json();
 
     if (!trailer) {
-      setTrailerMessage("⚠️ Aucun trailer disponible sur TMDB");
+      setTrailerMessage('⚠️ Aucun trailer disponible sur TMDB');
       setMovieData((prev) => ({ ...prev, trailer: null }));
       return;
     }
 
     const videoUrl = `https://www.youtube.com/watch?v=${trailer.key}`;
     setMovieData((prev) => ({ ...prev, trailer: videoUrl }));
-    setTrailerMessage("Trailer rechargé !");
+    setTrailerMessage('Trailer rechargé !');
   } catch (error) {
-    console.error("Erreur refetchTrailer :", error);
-    setTrailerMessage("Erreur lors de la récupération du trailer");
+    console.error('Erreur refetchTrailer :', error);
+    setTrailerMessage('Erreur lors de la récupération du trailer');
   }
 };
 
@@ -715,13 +637,11 @@ const refetchMovieCoverFromTMDB = async (
   idTheMovieDb,
   { movieId, setImage, setShowImageButton }
 ) => {
-  const [mediaType, movieIdTMDB] = idTheMovieDb.split("/");
+  const [mediaType, movieIdTMDB] = idTheMovieDb.split('/');
 
   try {
     // fetch poster_path depuis TMDB
-    const response = await axios.get(
-      `${backendUrl}/api/tmdb/${mediaType}/${movieIdTMDB}/cover`
-    );
+    const response = await axios.get(`${backendUrl}/api/tmdb/${mediaType}/${movieIdTMDB}/cover`);
 
     const moviefetchData = response.data;
 
@@ -730,26 +650,23 @@ const refetchMovieCoverFromTMDB = async (
     const posterUrl = `https://image.tmdb.org/t/p/original${moviefetchData.poster_path}`;
 
     // envoyer au backend avec ID interne
-    const backendResponse = await fetch(
-      `${backendUrl}/api/movie/${movieId}/image-from-url`,
-      {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ imageUrl: posterUrl }),
-      }
-    );
+    const backendResponse = await fetch(`${backendUrl}/api/movie/${movieId}/image-from-url`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ imageUrl: posterUrl }),
+    });
 
     const data = await backendResponse.json();
     if (!data.movie) {
-      console.error("Film non trouvé ou backend ne renvoie pas de movie");
+      console.error('Film non trouvé ou backend ne renvoie pas de movie');
       return;
     }
 
     setImage(getImageUrl(data.movie.cover));
     setShowImageButton(false);
-    console.info("✅ Image mise à jour :", data.movie.cover);
+    console.info('✅ Image mise à jour :', data.movie.cover);
   } catch (error) {
-    console.error("Erreur lors de la récupération de la cover TMDB :", error);
+    console.error('Erreur lors de la récupération de la cover TMDB :', error);
   }
 };
 

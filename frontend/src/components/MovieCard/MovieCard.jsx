@@ -97,11 +97,17 @@ import {
   getCollection,
   getByName,
 } from '../../services/movieService';
+import {
+  parseTvSeasons,
+  formatTvSeasons,
+  calculateTotalEpisodes,
+  calculateTotalDuration,
+} from '../../utils/tvShowUtils';
+import TvShowFields from './TvShowFields';
 
 function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, onFavoriteRemoved }) {
   const { isAdmin } = useAuth();
   const { user } = useAuth();
-  const backendUrl = `${import.meta.env.VITE_BACKEND_URL}`;
 
   // const DEFAULT_COVER = "00_cover_default.jpg";
   const CLOUDINARY_BASE_URL = import.meta.env.VITE_CLOUDINARY_BASE_URL;
@@ -356,16 +362,7 @@ function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, on
     // On attend que movieData.tvSeasons soit défini (et non vide)
     if (!movieData.tvSeasons) return;
 
-    const parsed = movieData.tvSeasons
-      .split(',') // ex: "1-3,5"
-      .map((block) => block.trim())
-      .flatMap((block) => {
-        if (block.includes('-')) {
-          const [start, end] = block.split('-').map(Number);
-          return Array.from({ length: end - start + 1 }, (_, i) => start + i);
-        }
-        return [Number(block)];
-      });
+    const parsed = parseTvSeasons(movieData.tvSeasons);
 
     setSelectedSeasons(parsed);
   }, [isModify, isTvShow, movieData.tvSeasons]);
@@ -401,10 +398,7 @@ function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, on
       return;
     }
 
-    const totalEpisodes = selectedSeasons.reduce((sum, seasonNumber) => {
-      const season = seasonsInfo.find((s) => s.season_number === seasonNumber);
-      return sum + (season ? season.episode_count : 0);
-    }, 0);
+    const totalEpisodes = calculateTotalEpisodes(selectedSeasons, seasonsInfo);
 
     setNbTvEpisodes(totalEpisodes);
     setMovieData((prev) => ({ ...prev, nbTvEpisodes: totalEpisodes }));
@@ -420,7 +414,7 @@ function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, on
     }
 
     if (nbTvEpisodes > 0) {
-      const total = nbTvEpisodes * movieData.episodeDuration;
+      const total = calculateTotalDuration(nbTvEpisodes, movieData.episodeDuration);
       setMovieData((prev) => ({ ...prev, duration: total }));
     } else {
       setMovieData((prev) => ({ ...prev, duration: '' }));
@@ -437,124 +431,11 @@ function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, on
       return;
     }
 
-    // Trie les saisons sélectionnées
-    const sortedSeasons = [...selectedSeasons].sort((a, b) => a - b);
-
-    let displayValue = '';
-
-    // Si elles sont consécutives → format "1-3"
-    const isConsecutive = sortedSeasons.every((num, i, arr) => i === 0 || num === arr[i - 1] + 1);
-
-    if (isConsecutive) {
-      displayValue =
-        sortedSeasons.length === 1
-          ? `${sortedSeasons[0]}`
-          : `${sortedSeasons[0]}-${sortedSeasons[sortedSeasons.length - 1]}`;
-    } else {
-      // Saisons non consécutives → "1, 3, 5"
-      displayValue = sortedSeasons.join(', ');
-    }
+    const displayValue = formatTvSeasons(selectedSeasons);
 
     setTvSeasons(displayValue);
     setMovieData((prev) => ({ ...prev, tvSeasons: displayValue }));
   }, [selectedSeasons, isTvShow]);
-
-  // fonction de rendu des items TV seasons - episodes - duration
-  const renderTvShowFields = () => {
-    const renderEpisodeDurationFields = () => (
-      <>
-        <TextField
-          name="tvSeasons"
-          label="Saisons sélectionnées"
-          value={tvSeasons}
-          onChange={(e) => {
-            const { value } = e.target;
-            setTvSeasons(value);
-            setMovieData((prev) => ({ ...prev, tvSeasons: value }));
-          }}
-          sx={textFieldSx}
-        />
-        <TextField
-          name="nbTvEpisodes"
-          label="Nombre d’épisodes"
-          type="number"
-          value={nbTvEpisodes || ''}
-          onChange={(e) => {
-            const value = Number(e.target.value);
-            setNbTvEpisodes(value);
-            setMovieData((prev) => ({ ...prev, nbTvEpisodes: value }));
-          }}
-          sx={textFieldSx}
-        />
-        <TextField
-          name="episodeDuration"
-          label="Durée d’un épisode (min)"
-          type="number"
-          value={movieData.episodeDuration || ''}
-          onChange={(e) => {
-            const value = Number(e.target.value);
-            setMovieData((prev) => {
-              const updated = { ...prev, episodeDuration: value };
-              if (nbTvEpisodes > 0) {
-                updated.duration = nbTvEpisodes * value;
-              }
-              return updated;
-            });
-          }}
-          sx={textFieldSx}
-        />
-        <TextField
-          name="duration"
-          label="Durée totale (minutes)"
-          value={movieData.duration || ''}
-          InputProps={{ readOnly: true }}
-          sx={textFieldSx}
-        />
-      </>
-    );
-
-    if (seasonsInfo.length > 0) {
-      return (
-        <>
-          <div className="divider" />
-          <FormControl sx={textFieldSx}>
-            <InputLabel id="season-select-label">Saisons</InputLabel>
-            <Select
-              labelId="season-select-label"
-              multiple
-              value={Array.isArray(selectedSeasons) ? selectedSeasons : []}
-              onChange={(e) => {
-                let { value } = e.target;
-                if (!Array.isArray(value)) value = [value];
-                value = value.map((v) => Number(v));
-                setSelectedSeasons(value);
-              }}
-              input={<OutlinedInput label="Saisons" />}
-              renderValue={(selected) => selected.join(', ')}
-            >
-              {seasonsInfo.map((season) => (
-                <MenuItem key={season.season_number} value={season.season_number}>
-                  <Checkbox
-                    checked={
-                      Array.isArray(selectedSeasons) &&
-                      selectedSeasons.includes(season.season_number)
-                    }
-                  />
-                  <ListItemText
-                    primary={`Saison ${season.season_number} (${season.episode_count} épisodes)`}
-                  />
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-
-          {renderEpisodeDurationFields()}
-        </>
-      );
-    }
-
-    return renderEpisodeDurationFields();
-  };
 
   //-----------------------------------------------
   // INPUT FILE
@@ -1220,7 +1101,18 @@ function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, on
               {/* END Year (modify) */}
               {/* TV saison - episode /+/ duration (modify) */}
               {isTvShow ? (
-                renderTvShowFields()
+                <TvShowFields
+                  selectedSeasons={selectedSeasons}
+                  setSelectedSeasons={setSelectedSeasons}
+                  seasonsInfo={seasonsInfo}
+                  tvSeasons={tvSeasons}
+                  setTvSeasons={setTvSeasons}
+                  nbTvEpisodes={nbTvEpisodes}
+                  setNbTvEpisodes={setNbTvEpisodes}
+                  movieData={movieData}
+                  setMovieData={setMovieData}
+                  textFieldSx={textFieldSx}
+                />
               ) : (
                 <div className="box_item_form">
                   <TextField
