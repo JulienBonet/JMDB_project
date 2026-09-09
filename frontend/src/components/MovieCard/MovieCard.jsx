@@ -8,7 +8,6 @@ import { toast } from 'react-toastify';
 import './movieCard.css';
 import './movieCardMediaQueries.css';
 import './movieCard_videoPlayer_MediaQueries.css';
-import ReactPlayer from 'react-player';
 import Box from '@mui/material/Box';
 import { Container } from '@mui/material';
 import Alert from '@mui/material/Alert';
@@ -39,8 +38,6 @@ import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
 import CloudSyncIcon from '@mui/icons-material/CloudSync';
 import Checkbox from '@mui/material/Checkbox';
-import ListItemText from '@mui/material/ListItemText';
-import OutlinedInput from '@mui/material/OutlinedInput';
 import MovieOutlinedIcon from '@mui/icons-material/MovieOutlined';
 import TvOutlinedIcon from '@mui/icons-material/TvOutlined';
 import IconButton from '@mui/material/IconButton';
@@ -104,6 +101,8 @@ import {
   calculateTotalDuration,
 } from '../../utils/tvShowUtils';
 import TvShowFields from './TvShowFields';
+import MovieCardView from './MovieCardView';
+import MovieCardView02 from './MovieCardView02';
 
 function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, onFavoriteRemoved }) {
   const { isAdmin } = useAuth();
@@ -1147,131 +1146,22 @@ function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, on
             </div>
           ) : (
             // BLOCK 1 LISTEN MODE
-            <div className="infos_bloc_1">
-              <p className="MovieCard_title">
-                {movieData.title}{' '}
-                {isTvShow && tvSeason && <span className="tvSeasonsBadge">/Saison {tvSeason}</span>}
-              </p>
-              <div className="divider" />
-              {/* trailer */}
-              {isTrailerVisible ? (
-                <>
-                  <Backdrop
-                    sx={{
-                      color: '#fff',
-                      zIndex: (theme) => theme.zIndex.drawer + 1,
-                    }}
-                    open={isTrailerLoading}
-                  >
-                    <CircularProgress color="inherit" />
-                  </Backdrop>
-                  <div className="MovieCard_trailer">
-                    <ReactPlayer
-                      url={movieData.trailer}
-                      className="video_player"
-                      controls
-                      onReady={handleTrailerReady} // Appelé quand la vidéo est prête
-                      onStart={() => setIsTrailerLoading(false)}
-                    />
-                  </div>
-                </>
-              ) : (
-                <>
-                  {/* altTitle */}
-                  {movieData.altTitle && (
-                    <p className="MovieCard_info">{movieData.altTitle} (Titre original)</p>
-                  )}
-                  {/* end altTitle */}
-                  {/* Genre */}
-                  <p className="MovieCard_info">
-                    <span className="paraph_bolder">Genre:</span> {genres}
-                  </p>
-                  {/* end Genre */}
-                  {/* Année */}
-                  <p className="MovieCard_info">
-                    <span className="paraph_bolder">Année:</span> {movieData.year || ''}
-                  </p>
-                  {/* end Année */}
-                  {/* Pays */}
-                  <p className="MovieCard_info">
-                    <span className="paraph_bolder">Pays:</span> {countries}
-                  </p>
-                  {/* end Pays */}
-                  {/* TV saisons */}
-                  {isTvShow && movieData.tvSeasons && movieData.tvSeasons.trim() !== '' && (
-                    <p className="MovieCard_info">
-                      <span className="paraph_bolder">saisons:</span> {movieData.tvSeasons || ''}
-                    </p>
-                  )}
-                  {/* end TV saisons */}
-                  {/* TV episodes */}
-                  {isTvShow && movieData.nbTvEpisodes && movieData.nbTvEpisodes > 0 && (
-                    <p className="MovieCard_info">
-                      <span className="paraph_bolder">Nb d'épisodes:</span>{' '}
-                      {movieData.nbTvEpisodes || ''}
-                    </p>
-                  )}
-                  {/* end TV episodes */}
-                  {/* TV Durée d'épisode */}
-                  {isTvShow && movieData.episodeDuration && movieData.episodeDuration > 0 && (
-                    <p className="MovieCard_info">
-                      <span className="paraph_bolder">Durée d'épisode:</span>{' '}
-                      {movieData.episodeDuration || ''} mn
-                    </p>
-                  )}
-                  {/* end TV Durée d'épisode */}
-                  {/* Durée */}
-                  {!isTvShow && (
-                    <p className="MovieCard_info">
-                      <span className="paraph_bolder">Durée:</span> {movieData.duration || ''}mn
-                    </p>
-                  )}
-                  {/* end Durée */}
-                  <div className="divider_dashed" />
-                  {/* Réalisateur / créateur */}
-                  {directors && (
-                    <p className="MovieCard_info">
-                      <span className="paraph_bolder paraph_color_2">
-                        {isTvShow ? 'Créateur:' : 'Réalisateur:'}
-                      </span>{' '}
-                      {directors}
-                    </p>
-                  )}
-                  {/* end Réalisateur / créateur */}
-                  {/* Scénariste */}
-                  {screenwriters && (
-                    <p className="MovieCard_info">
-                      <span className="paraph_bolder paraph_color_2">Scénariste:</span>{' '}
-                      {screenwriters}
-                    </p>
-                  )}
-                  {/* end Scénariste */}
-                  {/* Compositeur */}
-                  {music && (
-                    <p className="MovieCard_info">
-                      <span className="paraph_bolder paraph_color_2">Musique:</span> {music}
-                    </p>
-                  )}
-                  {/* end Compositeur */}
-                  {/* Studio */}
-                  {studios && (
-                    <p className="MovieCard_info">
-                      <span className="paraph_bolder paraph_color_2">Studio:</span> {studios}
-                    </p>
-                  )}
-                  {/* end Studio */}
-                  {/* casting */}
-                  {casting && (
-                    <p className="MovieCard_info MovieCard_casting paraph_height">
-                      <span className="paraph_bolder paraph_color_2">Casting:</span> {casting}
-                    </p>
-                  )}
-                  {/* end casting */}
-                  <div className="divider" />
-                </>
-                // END BLOCK 1 LISTEN MODE
-              )}
-            </div>
+            <MovieCardView
+              movieData={movieData}
+              isTvShow={isTvShow}
+              tvSeason={tvSeason}
+              isTrailerVisible={isTrailerVisible}
+              isTrailerLoading={isTrailerLoading}
+              genres={genres}
+              countries={countries}
+              directors={directors}
+              screenwriters={screenwriters}
+              music={music}
+              studios={studios}
+              casting={casting}
+              handleTrailerReady={handleTrailerReady}
+              setIsTrailerLoading={setIsTrailerLoading}
+            />
           )}
         </section>
         {/* END INFO BLOCK 1 */}
@@ -1827,123 +1717,16 @@ function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, on
             </div>
           ) : (
             // BLOCK 2 LISTEN MODE
-            <div className="MC_line2">
-              {isTrailerVisible ? (
-                <div className="MovieCard_trailer" />
-              ) : (
-                <>
-                  {/* Résumé */}
-                  <p className="MovieCard_info paraph_bolder">Résumé:</p>
-                  <p className="MovieCard_info MovieCard_story  paraph_height">{movieData.story}</p>
-                  {/* end Résumé */}
-                  <div className="divider_dashed" />
-                  {/* focus */}
-                  {movieData.focus && (
-                    <>
-                      <p className="MovieCard_info">
-                        <span className="paraph_bolder">focus:</span> {focus}
-                      </p>
-                      <div className="divider_dashed" />
-                    </>
-                  )}
-                  {/* end focus */}
-
-                  {/* Support */}
-                  <p className="MovieCard_info">
-                    <span className="paraph_bolder">Support:</span> {movieData.videoSupport}
-                  </p>
-                  {/* end Support */}
-                  {/* Version VOSTFR - MULTI */}
-                  {movieData.vostfr ? (
-                    <p className="MovieCard_info paraph_height">
-                      <span className="paraph_bolder">Version:</span> VOSTFR
-                    </p>
-                  ) : null}
-                  {movieData.multi ? (
-                    <p className="MovieCard_info paraph_height">
-                      <span className="paraph_bolder">Version:</span> Multi-langues
-                    </p>
-                  ) : null}
-                  {/* end Version VOSTFR - MULTI */}
-                  {/* Support */}
-                  {(movieData.videoSupport === 'Fichier multimédia' ||
-                    movieData.videoSupport === 'FICHIER MULTIMEDIA') &&
-                    isAdmin && (
-                      <>
-                        {movieData.location && (
-                          <p className="MovieCard_info paraph_height">
-                            <span className="paraph_bolder">Emplacement:</span> {movieData.location}
-                          </p>
-                        )}
-                        {movieData.fileSize && (
-                          <p className="MovieCard_info">
-                            <span className="paraph_bolder">Size:</span> {movieData.fileSize}
-                          </p>
-                        )}
-                      </>
-                    )}
-                  {/* end Support */}
-                  {/* Commentaire */}
-                  {movieData.comment && (
-                    <>
-                      <div className="divider_dashed" />
-                      <p className="MovieCard_info">
-                        <span className="paraph_bolder">Commentaire:</span> {movieData.comment}
-                      </p>
-                    </>
-                  )}
-                  {/* end Commentaire */}
-                </>
-              )}
-
-              {movieData.trailer && (
-                <div className="MovieCard_trailer">
-                  <div className="divider_dashed divider_trailer" />
-                  <div
-                    className="Toggle_video_player"
-                    role="button"
-                    tabIndex={0}
-                    onClick={toggleTrailerVideo}
-                    onKeyDown={(event) => {
-                      if (event.key === 'Enter' || event.key === ' ') {
-                        toggleTrailerVideo();
-                      }
-                    }}
-                  >
-                    <p className="MovieCard_info Toggle_video_btn">
-                      {isTrailerVisible ? 'VOIR FICHE DU FILM' : 'VOIR BANDE ANNONCE'}
-                    </p>
-                  </div>
-                </div>
-                // BLOCK 2 LISTEN MODE
-              )}
-            </div>
+            <MovieCardView02
+              movieData={movieData}
+              isTrailerVisible={isTrailerVisible}
+              focus={focus}
+              isAdmin={isAdmin}
+              toggleTrailerVideo={toggleTrailerVideo}
+            />
           )}
           {/* END INFO BLOCK 2 */}
         </section>
-        {/* {user && (
-          <Tooltip
-            title={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
-            placement="top"
-          >
-            <IconButton
-              onClick={toggleFavorite}
-              aria-label={
-                isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"
-              }
-              sx={{
-                color: isFavorite ? "error.main" : "text.secondary",
-                transition: "transform 0.15s ease, color 0.15s ease",
-                "&:hover": {
-                  color: "error.main",
-                  transform: "scale(1.15)",
-                },
-              }}
-            >
-              {isFavorite ? <FavoriteIcon /> : <FavoriteBorderIcon />}
-            </IconButton>
-          </Tooltip>
-        )} */}
 
         {!isAdmin && <section style={{ height: '2rem' }} />}
 
