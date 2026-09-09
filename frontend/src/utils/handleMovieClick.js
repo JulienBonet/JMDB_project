@@ -1,9 +1,9 @@
 // -----------------/ MOVIE DATA FETCH IN addNewMovie.jsx/----------------- //
-import axios from "axios";
-import countries from "i18n-iso-countries";
-import frLocale from "i18n-iso-countries/langs/fr.json";
-import { translateCountry } from "./countries";
-import { translateLanguage } from "./languages";
+import axios from 'axios';
+import countries from 'i18n-iso-countries';
+import frLocale from 'i18n-iso-countries/langs/fr.json';
+import { translateCountry } from './countries';
+import { translateLanguage } from './languages';
 
 countries.registerLocale(frLocale);
 
@@ -58,14 +58,12 @@ const handleMovieClick = async (movieId, mediaType, deps, backendUrl) => {
       keywords = [],
     } = response.data;
 
-    const isTV = mediaType === "tv";
+    const isTV = mediaType === 'tv';
 
     const nbTvSeasons = isTV ? movieData.number_of_seasons || 0 : null;
     const nbTvEpisodes = isTV ? movieData.number_of_episodes || 0 : null;
     const episodeDuration =
-      isTV &&
-      Array.isArray(movieData.episode_run_time) &&
-      movieData.episode_run_time.length > 0
+      isTV && Array.isArray(movieData.episode_run_time) && movieData.episode_run_time.length > 0
         ? movieData.episode_run_time[0]
         : null;
 
@@ -78,33 +76,21 @@ const handleMovieClick = async (movieId, mediaType, deps, backendUrl) => {
         : [];
     setSeasonsInfo(seasonsInfo);
 
-    let altTitle = "";
+    let altTitle = '';
 
-    if (
-      isTV &&
-      movieData.original_name &&
-      movieData.original_name !== movieData.name
-    ) {
+    if (isTV && movieData.original_name && movieData.original_name !== movieData.name) {
       altTitle = movieData.original_name;
-    } else if (
-      !isTV &&
-      movieData.original_title &&
-      movieData.original_title !== movieData.title
-    ) {
+    } else if (!isTV && movieData.original_title && movieData.original_title !== movieData.title) {
       altTitle = movieData.original_title;
     }
 
     setMovie({
       ...movie,
-      title: isTV ? movieData.name || "" : movieData.title || "",
+      title: isTV ? movieData.name || '' : movieData.title || '',
       altTitle,
-      year:
-        (isTV ? movieData.first_air_date : movieData.release_date)?.substring(
-          0,
-          4
-        ) || "",
-      pitch: movieData.tagline || "",
-      story: movieData.overview || "",
+      year: (isTV ? movieData.first_air_date : movieData.release_date)?.substring(0, 4) || '',
+      pitch: movieData.tagline || '',
+      story: movieData.overview || '',
       idTheMovieDb: `${mediaType}/${movieData.id || movieId}`,
       idIMDB: isTV ? null : movieData.imdb_id || null,
       isTvShow: isTV,
@@ -124,11 +110,9 @@ const handleMovieClick = async (movieId, mediaType, deps, backendUrl) => {
 
     // -------------------
     // GENRES
-    const genreNames = Array.isArray(movieData.genres)
-      ? movieData.genres.map((g) => g.name)
-      : [];
+    const genreNames = Array.isArray(movieData.genres) ? movieData.genres.map((g) => g.name) : [];
     // if (movieData.adult) genreNames.push("adulte");
-    if (movieData.adult) genreNames.push("Xadulte");
+    if (movieData.adult) genreNames.push('Xadulte');
     const genresData = await Promise.all(
       genreNames.map((name) =>
         fetchOrCreateEntity(name, searchGenreInDatabase, createGenreInDatabase)
@@ -140,11 +124,7 @@ const handleMovieClick = async (movieId, mediaType, deps, backendUrl) => {
     // STUDIOS
     const studiosData = await Promise.all(
       (movieData.production_companies || []).map((s) =>
-        fetchOrCreateEntity(
-          s.name,
-          searchStudioInDatabase,
-          createStudioInDatabase
-        )
+        fetchOrCreateEntity(s.name, searchStudioInDatabase, createStudioInDatabase)
       )
     );
     setSelectedStudios(studiosData);
@@ -191,18 +171,13 @@ const handleMovieClick = async (movieId, mediaType, deps, backendUrl) => {
     // setSelectedLanguages(languagesData);
 
     const fetchLanguage = async (language) => {
-      const languageNameFr = translateLanguage(
-        language.iso_639_1,
-        language.name
-      );
+      const languageNameFr = translateLanguage(language.iso_639_1, language.name);
       let data = await searchLanguageInDatabase(languageNameFr);
       if (!data) data = await createLanguageInDatabase(languageNameFr);
       return { id: data.id, name: languageNameFr };
     };
 
-    const languagesData = await Promise.all(
-      (movieData.spoken_languages || []).map(fetchLanguage)
-    );
+    const languagesData = await Promise.all((movieData.spoken_languages || []).map(fetchLanguage));
     setSelectedLanguages(languagesData);
 
     // -------------------
@@ -214,16 +189,12 @@ const handleMovieClick = async (movieId, mediaType, deps, backendUrl) => {
         : [];
     } else {
       directors = (credits.crew || [])
-        .filter((c) => c.job === "Director")
+        .filter((c) => c.job === 'Director')
         .map((d) => ({ name: d.name }));
     }
     const directorsData = await Promise.all(
       directors.map((d) =>
-        fetchOrCreateEntity(
-          d.name,
-          searchDirectorInDatabase,
-          createDirectorInDatabase
-        )
+        fetchOrCreateEntity(d.name, searchDirectorInDatabase, createDirectorInDatabase)
       )
     );
     setSelectedDirectors(directorsData);
@@ -231,15 +202,11 @@ const handleMovieClick = async (movieId, mediaType, deps, backendUrl) => {
     // -------------------
     // SCREENWRITERS
     const screenwriters = (credits.crew || []).filter((c) =>
-      ["Screenplay", "Writer", "Author"].includes(c.job)
+      ['Screenplay', 'Writer', 'Author'].includes(c.job)
     );
     const screenwritersData = await Promise.all(
       screenwriters.map((s) =>
-        fetchOrCreateEntity(
-          s.name,
-          searchScreenwriterInDatabase,
-          createScreenwriterInDatabase
-        )
+        fetchOrCreateEntity(s.name, searchScreenwriterInDatabase, createScreenwriterInDatabase)
       )
     );
     setSelectedScreenwriters(screenwritersData);
@@ -247,31 +214,21 @@ const handleMovieClick = async (movieId, mediaType, deps, backendUrl) => {
     // -------------------
     // COMPOSITORS
     const compositors = (credits.crew || []).filter((c) =>
-      ["Original Music Composer", "Music"].includes(c.job)
+      ['Original Music Composer', 'Music'].includes(c.job)
     );
     const compositorsData = await Promise.all(
       compositors.map((m) =>
-        fetchOrCreateEntity(
-          m.name,
-          searchCompositorInDatabase,
-          createCompositorInDatabase
-        )
+        fetchOrCreateEntity(m.name, searchCompositorInDatabase, createCompositorInDatabase)
       )
     );
     setSelectedMusic(compositorsData);
 
     // -------------------
     // CASTING
-    const castings = Array.isArray(credits.cast)
-      ? credits.cast.slice(0, 5)
-      : [];
+    const castings = Array.isArray(credits.cast) ? credits.cast.slice(0, 5) : [];
     const castingsData = await Promise.all(
       castings.map((c) =>
-        fetchOrCreateEntity(
-          c.name,
-          searchCastingInDatabase,
-          createCastingInDatabase
-        )
+        fetchOrCreateEntity(c.name, searchCastingInDatabase, createCastingInDatabase)
       )
     );
     setSelectedCasting(castingsData);
@@ -279,11 +236,11 @@ const handleMovieClick = async (movieId, mediaType, deps, backendUrl) => {
     // -------------------
     // TRAILER
     const trailer = Array.isArray(videos)
-      ? videos.find((v) => v.type === "Trailer" && v.site === "YouTube")
+      ? videos.find((v) => v.type === 'Trailer' && v.site === 'YouTube')
       : null;
     setMovie((prev) => ({
       ...prev,
-      trailer: trailer ? `https://www.youtube.com/watch?v=${trailer.key}` : "",
+      trailer: trailer ? `https://www.youtube.com/watch?v=${trailer.key}` : '',
     }));
 
     // -------------------
@@ -303,7 +260,7 @@ const handleMovieClick = async (movieId, mediaType, deps, backendUrl) => {
     setCoverPreview(posterUrl);
     setMovie((prev) => ({ ...prev, posterUrl }));
   } catch (err) {
-    console.error("Error in handleMovieClick:", err);
+    console.error('Error in handleMovieClick:', err);
   }
 };
 
