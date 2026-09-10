@@ -18,7 +18,7 @@ const MovieCardView = ({
   studios,
   casting,
   handleTrailerReady,
-  setIsTrailerLoading,
+  handleTrailerStart,
 }) => {
   return (
     <>
@@ -51,7 +51,7 @@ const MovieCardView = ({
                   className="video_player"
                   controls
                   onReady={handleTrailerReady}
-                  onStart={() => setIsTrailerLoading(false)}
+                  onStart={handleTrailerStart}
                 />
               </div>
             </>
