@@ -77,7 +77,6 @@ import {
   updateMovie,
   deleteMovie,
   updateMovieImage,
-  getCollection,
   getByName,
 } from '../../services/movieService';
 import {
@@ -91,6 +90,7 @@ import MovieCardView02 from './MovieCardView02';
 import MovieCardEdit from './MovieCardEdit';
 import MovieCardEdit02 from './MovieCardEdit02';
 import { useTransferList } from '../../hooks/useTransferList';
+import { useTrailer } from '../../hooks/useTrailer';
 
 function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, onFavoriteRemoved }) {
   const { isAdmin } = useAuth();
@@ -190,17 +190,13 @@ function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, on
   // TRAILER
   //-----------------------------------------------
 
-  const [isTrailerVisible, setIsTrailerVisible] = useState(false);
-  const [isTrailerLoading, setIsTrailerLoading] = useState(false);
-
-  const toggleTrailerVideo = () => {
-    setIsTrailerVisible(!isTrailerVisible);
-    setIsTrailerLoading(true); // Active le chargement lors de l'ouverture du trailer
-  };
-
-  const handleTrailerReady = () => {
-    setIsTrailerLoading(false); // Cache le loader quand la vidéo est prête
-  };
+  const {
+    isTrailerVisible,
+    isTrailerLoading,
+    toggleTrailerVideo,
+    handleTrailerReady,
+    handleTrailerStart,
+  } = useTrailer();
 
   //-----------------------------------------------
   // FAVORITE
@@ -948,7 +944,7 @@ function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, on
               studios={studios}
               casting={casting}
               handleTrailerReady={handleTrailerReady}
-              setIsTrailerLoading={setIsTrailerLoading}
+              handleTrailerStart={handleTrailerStart}
             />
           )}
         </section>
