@@ -31,7 +31,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import Tooltip from '@mui/material/Tooltip';
 import { useAuth } from '../../Context/AuthContext';
-import TransferList from '../AdminFeatures/AddNewMovie/MovieItemList';
+import TransferList from '../TransferList/TransferList';
 import {
   refetchMovieTMDB,
   // refetchTitle,
