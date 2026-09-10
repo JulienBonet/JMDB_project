@@ -91,6 +91,7 @@ import MovieCardEdit02 from './MovieCardEdit02';
 import { useTransferList } from '../../hooks/useTransferList';
 import { useTrailer } from '../../hooks/useTrailer';
 import { useFavorites } from '../../hooks/useFavorites';
+import { useMovieData } from '../../hooks/useMovieData';
 
 function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, onFavoriteRemoved }) {
   const { isAdmin } = useAuth();
@@ -117,29 +118,8 @@ function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, on
   const [selectedTags, setSelectedTags] = useState([]);
   const [selectedFocus, setSelectedFocus] = useState([]);
   const [trailerMessage, setTrailerMessage] = useState('');
-
-  // Datas dans le front
-  const [movieData, setMovieData] = useState({
-    id: movie.id || '',
-    title: movie.title || '',
-    altTitle: movie.altTitle || '',
-    year: movie.year || '',
-    duration: movie.duration || '',
-    videoSupport:
-      movie.videoSupport === 'Fichier multimédia' ? 'FICHIER MULTIMEDIA' : movie.videoSupport || '',
-    multi: movie.multi || 0,
-    vostfr: movie.vostfr || 0,
-    story: movie.story || '',
-    location: movie.location || '',
-    fileSize: movie.fileSize || '',
-    comment: movie.comment || '',
-    isTvShow: movie.isTvShow || '',
-    tvSeasons: movie.tvSeasons || '',
-    nbTvEpisodes: movie.nbTvEpisodes || '',
-    episodeDuration: movie.episodeDuration || '',
-    idTheMovieDb: movie.idTheMovieDb || '',
-  });
-
+  // movie data
+  const { movieData, setMovieData, refetchMovieData } = useMovieData(movie, origin);
   const { genres, countries, directors, screenwriters, music, studios, casting, tags, focus } =
     movieData;
 
@@ -162,29 +142,6 @@ function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, on
       '&.Mui-focused fieldset': { borderColor: 'cyan' },
     },
   };
-
-  //-----------------------------------------------
-  // FETCH MOVIE DATAS from backend
-  //-----------------------------------------------
-  const fetchMovieData = async () => {
-    try {
-      const movieId = origin === 'country' ? movie.movieId : movieData.id;
-
-      const data = await getMovie(movieId);
-
-      setMovieData(data);
-    } catch (error) {
-      console.error('Error fetching movie data:', error);
-    }
-  };
-
-  useEffect(() => {
-    fetchMovieData();
-  }, [movie.id, movieData.id]);
-
-  useEffect(() => {
-    setMovieData(movie);
-  }, [movie]);
 
   //-----------------------------------------------
   // TRAILER
@@ -616,7 +573,7 @@ function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, on
   };
 
   const handleUndo = () => {
-    fetchMovieData(); // recharge les infos du film
+    refetchMovieData(); // recharge les infos du film
     setImage(getImageUrl(movie.cover));
 
     // re-fetch des listes sélectionnées via la fonction générique
