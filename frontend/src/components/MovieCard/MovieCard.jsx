@@ -90,6 +90,7 @@ import MovieCardView from './MovieCardView';
 import MovieCardView02 from './MovieCardView02';
 import MovieCardEdit from './MovieCardEdit';
 import MovieCardEdit02 from './MovieCardEdit02';
+import { useTransferList } from '../../hooks/useTransferList';
 
 function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, onFavoriteRemoved }) {
   const { isAdmin } = useAuth();
@@ -560,9 +561,7 @@ function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, on
   //-----------------------------------------------
   // TRANSFERT LIST
   //-----------------------------------------------
-  const [openModal, setOpenModal] = useState(false);
-  const [data, setData] = useState([]);
-  const [dataType, setDataType] = useState('');
+  const { openModal, data, dataType, handleOpenModal, handleCloseModal } = useTransferList();
 
   const transferListStyle = {
     position: 'absolute',
@@ -575,29 +574,6 @@ function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, on
     pt: 0,
     pb: 4,
     px: 0,
-  };
-
-  // FONCTION GÉNÉRIQUE FETCH DE LISTE
-  const fetchData = async (route) => {
-    try {
-      const datas = await getCollection(route);
-      setData(datas);
-    } catch (error) {
-      console.error(`Error fetching ${route}:`, error);
-    }
-  };
-
-  // MODAL HANDLERS
-  const handleOpenModal = (type) => {
-    setDataType(type);
-    setOpenModal(true);
-    fetchData(type);
-  };
-
-  const handleCloseModal = () => {
-    setOpenModal(false);
-    setDataType('');
-    setData([]);
   };
 
   // FONCTION GÉNÉRIQUE FETCH PAR NOM
