@@ -70,7 +70,6 @@ import {
   createTagInDatabase,
 } from '../../utils/movieEntranceSearchInsert';
 // refacto
-import { getFavoriteStatus, addFavorite, removeFavorite } from '../../services/favoriteService';
 import { getSeasons } from '../../services/tmdbService';
 import {
   getMovie,
@@ -91,6 +90,7 @@ import MovieCardEdit from './MovieCardEdit';
 import MovieCardEdit02 from './MovieCardEdit02';
 import { useTransferList } from '../../hooks/useTransferList';
 import { useTrailer } from '../../hooks/useTrailer';
+import { useFavorites } from '../../hooks/useFavorites';
 
 function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, onFavoriteRemoved }) {
   const { isAdmin } = useAuth();
@@ -202,43 +202,20 @@ function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, on
   // FAVORITE
   //-----------------------------------------------
 
-  const [isFavorite, setIsFavorite] = useState(false);
+  const { isFavorite, toggleFavorite } = useFavorites(user?.id, movie?.id);
 
-  useEffect(() => {
-    if (!user || !movie?.id) return;
-
-    const fetchFavoriteStatus = async () => {
-      try {
-        const data = await getFavoriteStatus(user.id, movie.id);
-        setIsFavorite(data.isFavorite);
-      } catch (err) {
-        console.error('Erreur récupération favori', err);
-      }
-    };
-
-    fetchFavoriteStatus();
-  }, [user?.id, movie?.id]);
-
-  const toggleFavorite = async () => {
-    if (!user) return;
-
+  const handleToggleFavorite = async () => {
     try {
-      if (isFavorite) {
-        await removeFavorite(user.id, movie.id);
+      const added = await toggleFavorite();
 
-        setIsFavorite(false);
+      if (added === null) return;
 
-        onFavoriteRemoved?.();
+      onFavoriteRemoved?.();
 
-        toast.info('Retiré des favoris');
-      } else {
-        await addFavorite(user.id, movie.id);
-
-        setIsFavorite(true);
-
-        onFavoriteRemoved?.();
-
+      if (added) {
         toast.success('Ajouté aux favoris ❤️');
+      } else {
+        toast.info('Retiré des favoris');
       }
     } catch (err) {
       console.error('Erreur favoris', err);
@@ -1046,7 +1023,7 @@ function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, on
                   placement="top"
                 >
                   <IconButton
-                    onClick={toggleFavorite}
+                    onClick={handleToggleFavorite}
                     size="small"
                     className="item_movie_favorite_ico"
                     aria-label={isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'}
