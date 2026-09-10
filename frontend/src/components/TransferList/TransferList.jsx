@@ -1,23 +1,23 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-shadow */
 /* eslint-disable react/prop-types */
-import * as React from "react";
-import axios from "axios";
-import { createTheme, useTheme, ThemeProvider } from "@mui/material/styles";
-import useMediaQuery from "@mui/material/useMediaQuery";
-import { useState, useEffect } from "react";
-import { FixedSizeList } from "react-window";
-import Grid from "@mui/material/Grid";
-import { Modal, Box, Container } from "@mui/material";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import Checkbox from "@mui/material/Checkbox";
-import Button from "@mui/material/Button";
-import Paper from "@mui/material/Paper";
-import TextField from "@mui/material/TextField";
-import MenuItem from "@mui/material/MenuItem";
-import CreateItemCard from "../CreateItemCard/CreateItemCard";
+import * as React from 'react';
+import axios from 'axios';
+import { createTheme, useTheme, ThemeProvider } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useState, useEffect } from 'react';
+import { FixedSizeList } from 'react-window';
+import Grid from '@mui/material/Grid';
+import { Modal, Box, Container } from '@mui/material';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import Checkbox from '@mui/material/Checkbox';
+import Button from '@mui/material/Button';
+import Paper from '@mui/material/Paper';
+import TextField from '@mui/material/TextField';
+import MenuItem from '@mui/material/MenuItem';
+import CreateItemCard from '../AdminFeatures/CreateItemCard/CreateItemCard';
 
 function not(a, b) {
   return a.filter((value) => b.indexOf(value) === -1);
@@ -55,47 +55,47 @@ export default function TransferList({
   let onSelectedItemsUpdate;
 
   switch (dataType) {
-    case "kinds":
+    case 'kinds':
       selectedItems = selectedKinds || [];
       onSelectedItemsUpdate = onSelectedKindsUpdate || (() => {});
       break;
-    case "directors":
+    case 'directors':
       selectedItems = selectedDirectors || [];
       onSelectedItemsUpdate = onSelectedDirectorsUpdate || (() => {});
       break;
-    case "screenwriters":
+    case 'screenwriters':
       selectedItems = selectedScreenwriters || [];
       onSelectedItemsUpdate = onSelectedScreenwritersUpdate || (() => {});
       break;
-    case "music":
+    case 'music':
       selectedItems = selectedMusic || [];
       onSelectedItemsUpdate = onSelectedMusicUpdate || (() => {});
       break;
-    case "casting":
+    case 'casting':
       selectedItems = selectedCasting || [];
       onSelectedItemsUpdate = onSelectedCastingUpdate || (() => {});
       break;
-    case "studio":
-    case "studios":
+    case 'studio':
+    case 'studios':
       selectedItems = selectedStudios || [];
       onSelectedItemsUpdate = onSelectedStudiosUpdate || (() => {});
       break;
-    case "country":
-    case "countries":
+    case 'country':
+    case 'countries':
       selectedItems = selectedCountries || [];
       onSelectedItemsUpdate = onSelectedCountriesUpdate || (() => {});
       break;
-    case "languages/sorted_id":
-    case "languages":
+    case 'languages/sorted_id':
+    case 'languages':
       selectedItems = selectedLanguages || [];
       onSelectedItemsUpdate = onSelectedLanguagesUpdate || (() => {});
       break;
-    case "tags/sorted_id":
-    case "tags":
+    case 'tags/sorted_id':
+    case 'tags':
       selectedItems = selectedTags || [];
       onSelectedItemsUpdate = onSelectedTagsUpdate || (() => {});
       break;
-    case "focus":
+    case 'focus':
       selectedItems = selectedFocus || [];
       onSelectedItemsUpdate = onSelectedFocusUpdate || (() => {});
       break;
@@ -106,65 +106,60 @@ export default function TransferList({
 
   const getOriginFromDataType = (dataType) => {
     switch (dataType) {
-      case "directors":
-        return "director";
-      case "casting":
-        return "casting";
-      case "screenwriters":
-        return "screenwriter";
-      case "music":
-        return "compositor";
-      case "studio":
-        return "studio";
-      case "country":
-        return "country";
-      case "kinds":
-        return "kind";
-      case "languages/sorted_id":
-        return "language";
-      case "tags/sorted_id":
-      case "tags":
-        return "tag";
-      case "focus":
-        return "focus";
+      case 'directors':
+        return 'director';
+      case 'casting':
+        return 'casting';
+      case 'screenwriters':
+        return 'screenwriter';
+      case 'music':
+        return 'compositor';
+      case 'studio':
+        return 'studio';
+      case 'country':
+        return 'country';
+      case 'kinds':
+        return 'kind';
+      case 'languages/sorted_id':
+        return 'language';
+      case 'tags/sorted_id':
+      case 'tags':
+        return 'tag';
+      case 'focus':
+        return 'focus';
       default:
-        return "";
+        return '';
     }
   };
 
   // État pour la barre de recherche dans la liste de droite
-  const [searchTermRight, setSearchTermRight] = useState("");
-  const [focusCategory, setFocusCategory] = useState("all");
+  const [searchTermRight, setSearchTermRight] = useState('');
+  const [focusCategory, setFocusCategory] = useState('all');
 
   // Modal createdItemCard
   const [showModal, setShowModal] = useState(false);
   const closeModal = () => {
     setShowModal(false);
   };
-  const [modalOrigin, setModalOrigin] = useState(""); // <- stocke le type d'item
+  const [modalOrigin, setModalOrigin] = useState(''); // <- stocke le type d'item
 
   const openModal = (dt) => {
     setShowModal(true); // ouvre le modal
     setModalOrigin(dt); // stocke le dataType actuel
-    setSearchTermRight(""); // reset search si besoin
+    setSearchTermRight(''); // reset search si besoin
   };
 
   // Item List
   const [checked, setChecked] = useState([]);
   const [left, setLeft] = useState(selectedItems || []);
   const [right, setRight] = useState(
-    (items || []).filter(
-      (item) => !(selectedItems || []).some((kind) => kind.id === item.id)
-    )
+    (items || []).filter((item) => !(selectedItems || []).some((kind) => kind.id === item.id))
   );
 
   useEffect(() => {
     setRight(
       (items || []).filter(
-        (item) =>
-          !(selectedItems || []).some(
-            (selectedItem) => selectedItem.id === item.id
-          )
+        (item) => !(selectedItems || []).some((selectedItem) => selectedItem.id === item.id)
       )
     );
   }, [items, selectedItems]);
@@ -200,8 +195,7 @@ export default function TransferList({
     setLeft(left.concat(rightChecked));
     setRight(
       not(right, rightChecked).filter(
-        (item) =>
-          !selectedItems.some((selectedItem) => selectedItem.id === item.id)
+        (item) => !selectedItems.some((selectedItem) => selectedItem.id === item.id)
       )
     );
     setChecked(not(checked, rightChecked));
@@ -210,31 +204,26 @@ export default function TransferList({
 
   // Fonction pour filtrer les items de droite en fonction de la recherche ou focus
 
-  const cleanedRight = (right || []).filter(
-    (item) => item && item.name && item.name.trim() !== ""
-  );
+  const cleanedRight = (right || []).filter((item) => item && item.name && item.name.trim() !== '');
 
   const focusCategories = React.useMemo(() => {
-    if (dataType !== "focus") return [];
+    if (dataType !== 'focus') return [];
 
     const categories = cleanedRight
       .map((item) => item.categoryName) // <- ici
       .filter(Boolean);
 
-    return ["all", ...new Set(categories)];
+    return ['all', ...new Set(categories)];
   }, [cleanedRight, dataType]);
 
   const filteredRightItems = cleanedRight.filter((item) => {
-    const matchSearch = item.name
-      .toLowerCase()
-      .includes(searchTermRight.toLowerCase());
+    const matchSearch = item.name.toLowerCase().includes(searchTermRight.toLowerCase());
 
-    if (dataType !== "focus") {
+    if (dataType !== 'focus') {
       return matchSearch;
     }
 
-    const matchCategory =
-      focusCategory === "all" || item.categoryName === focusCategory; // <- ici
+    const matchCategory = focusCategory === 'all' || item.categoryName === focusCategory; // <- ici
 
     return matchSearch && matchCategory;
   });
@@ -254,7 +243,7 @@ export default function TransferList({
         console.info("L'élément existe déjà dans right.");
       }
       setSearchTermRight(newItem.name);
-      console.info("right in handleNewItem", right);
+      console.info('right in handleNewItem', right);
     } catch (error) {
       console.error("Erreur lors de la récupération de l'élément :", error);
     }
@@ -272,28 +261,23 @@ export default function TransferList({
     },
   });
 
-  const isSmall = useMediaQuery(theme.breakpoints.down("sm"));
+  const isSmall = useMediaQuery(theme.breakpoints.down('sm'));
   const listHeight = isSmall ? 170 : 460;
 
-  const customList = (
-    items,
-    showSearch = false,
-    searchTerm = "",
-    onSearchChange = () => {}
-  ) => (
+  const customList = (items, showSearch = false, searchTerm = '', onSearchChange = () => {}) => (
     <Paper
       sx={{
         width: 350,
         height: { listHeight },
-        overflow: "auto",
-        overflowX: "hidden",
-        overflowY: "hidden",
-        border: "solid 1px var(--color-04)",
+        overflow: 'auto',
+        overflowX: 'hidden',
+        overflowY: 'hidden',
+        border: 'solid 1px var(--color-04)',
       }}
     >
       {showSearch && (
         <TextField
-          sx={{ m: 1, width: "95%" }}
+          sx={{ m: 1, width: '95%' }}
           fullWidth
           label="Search"
           variant="outlined"
@@ -306,7 +290,7 @@ export default function TransferList({
         width={350}
         itemCount={items.length}
         itemSize={50}
-        style={{ overflowX: "hidden", overflowY: "auto" }}
+        style={{ overflowX: 'hidden', overflowY: 'auto' }}
       >
         {({ index, style }) => (
           <ListItemButton
@@ -336,16 +320,16 @@ export default function TransferList({
         justifyContent="center"
         alignItems="center"
         sx={{
-          width: "95%",
-          maxWidth: "100%",
-          margin: "0 auto",
-          padding: "0",
-          flexWrap: "nowrap",
-          flexDirection: "row",
+          width: '95%',
+          maxWidth: '100%',
+          margin: '0 auto',
+          padding: '0',
+          flexWrap: 'nowrap',
+          flexDirection: 'row',
           gap: 2,
-          "@media (max-width: 768px)": {
-            flexDirection: "column",
-            alignItems: "center",
+          '@media (max-width: 768px)': {
+            flexDirection: 'column',
+            alignItems: 'center',
           },
         }}
       >
@@ -355,12 +339,12 @@ export default function TransferList({
           sx={{
             flexShrink: 1,
             flexGrow: 1,
-            minWidth: { xs: "90%", sm: "40%", md: "40%", lg: "350px" },
+            minWidth: { xs: '90%', sm: '40%', md: '40%', lg: '350px' },
             maxWidth: 500,
-            display: "flex",
-            justifyContent: "center",
-            paddingLeft: "10px",
-            "@media (max-width: 768px)": {
+            display: 'flex',
+            justifyContent: 'center',
+            paddingLeft: '10px',
+            '@media (max-width: 768px)': {
               paddingLeft: 0,
             },
           }}
@@ -371,7 +355,7 @@ export default function TransferList({
         <Grid item>
           <Grid
             container
-            direction={{ xs: "row", sm: "row", md: "column" }}
+            direction={{ xs: 'row', sm: 'row', md: 'column' }}
             alignItems="center"
             justifyContent="center"
             gap="0 1rem"
@@ -384,7 +368,7 @@ export default function TransferList({
               disabled={leftChecked.length === 0}
               aria-label="move selected right"
             >
-              {isSmall ? "↓" : ">"}
+              {isSmall ? '↓' : '>'}
             </Button>
             <Button
               sx={{ my: 0.5 }}
@@ -403,7 +387,7 @@ export default function TransferList({
               disabled={rightChecked.length === 0}
               aria-label="move selected left"
             >
-              {isSmall ? "↑" : "<"}
+              {isSmall ? '↑' : '<'}
             </Button>
           </Grid>
         </Grid>
@@ -433,12 +417,12 @@ export default function TransferList({
           sx={{
             flexShrink: 1,
             flexGrow: 1,
-            minWidth: { xs: "90%", sm: "40%", md: "40%", lg: "350px" },
+            minWidth: { xs: '90%', sm: '40%', md: '40%', lg: '350px' },
             maxWidth: 500,
-            display: "flex",
-            justifyContent: "center",
-            paddingRight: "10px",
-            "@media (max-width: 768px)": {
+            display: 'flex',
+            justifyContent: 'center',
+            paddingRight: '10px',
+            '@media (max-width: 768px)': {
               paddingRight: 0,
             },
           }}
@@ -447,24 +431,24 @@ export default function TransferList({
             sx={{
               width: 350,
               height: { listHeight },
-              overflow: "auto",
-              overflowX: "hidden",
-              overflowY: "hidden",
-              border: "solid 1px var(--color-04)",
+              overflow: 'auto',
+              overflowX: 'hidden',
+              overflowY: 'hidden',
+              border: 'solid 1px var(--color-04)',
             }}
           >
             {/* Barre de filtre uniquement pour focus */}
-            {dataType === "focus" && (
+            {dataType === 'focus' && (
               <TextField
                 select
                 label="Focus category"
                 value={focusCategory}
                 onChange={(e) => setFocusCategory(e.target.value)}
-                sx={{ m: 1, width: "95%" }}
+                sx={{ m: 1, width: '95%' }}
               >
                 {focusCategories.map((cat) => (
                   <MenuItem key={cat} value={cat}>
-                    {cat === "all" ? "Toutes les catégories" : cat}
+                    {cat === 'all' ? 'Toutes les catégories' : cat}
                   </MenuItem>
                 ))}
               </TextField>
@@ -472,7 +456,7 @@ export default function TransferList({
 
             {/* Search */}
             <TextField
-              sx={{ m: 1, width: "95%" }}
+              sx={{ m: 1, width: '95%' }}
               fullWidth
               label="Search"
               variant="outlined"
@@ -486,7 +470,7 @@ export default function TransferList({
               width={350}
               itemCount={filteredRightItems.length}
               itemSize={50}
-              style={{ overflowX: "hidden", overflowY: "auto" }}
+              style={{ overflowX: 'hidden', overflowY: 'auto' }}
             >
               {({ index, style }) => (
                 <ListItemButton
@@ -497,9 +481,7 @@ export default function TransferList({
                 >
                   <ListItemIcon>
                     <Checkbox
-                      checked={
-                        checked.indexOf(filteredRightItems[index]) !== -1
-                      }
+                      checked={checked.indexOf(filteredRightItems[index]) !== -1}
                       tabIndex={-1}
                       disableRipple
                     />
@@ -517,7 +499,7 @@ export default function TransferList({
             <div
               onClick={closeModal}
               onKeyDown={(event) => {
-                if (event.key === "Enter" || event.key === " ") {
+                if (event.key === 'Enter' || event.key === ' ') {
                   closeModal();
                 }
               }}

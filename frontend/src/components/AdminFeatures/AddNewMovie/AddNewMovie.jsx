@@ -1,35 +1,35 @@
 /* eslint-disable no-alert */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-shadow */
-import { useState, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { Button, Container, IconButton } from "@mui/material";
-import Box from "@mui/material/Box";
-import Modal from "@mui/material/Modal";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import Radio from "@mui/material/Radio";
-import RadioGroup from "@mui/material/RadioGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
-import Select from "@mui/material/Select";
-import TextField from "@mui/material/TextField";
-import Stack from "@mui/material/Stack";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import Backdrop from "@mui/material/Backdrop";
-import CircularProgress from "@mui/material/CircularProgress";
-import Checkbox from "@mui/material/Checkbox";
-import ListItemText from "@mui/material/ListItemText";
-import OutlinedInput from "@mui/material/OutlinedInput";
-import Switch from "@mui/material/Switch";
-import RestartAltIcon from "@mui/icons-material/RestartAlt";
-import CloseIcon from "@mui/icons-material/Close";
-import TransferList from "./MovieItemList";
-import MovieInfosEntrance from "./MovieInfosEntrance";
-import handleMovieClick from "../../../utils/handleMovieClick";
+import { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { Button, Container, IconButton } from '@mui/material';
+import Box from '@mui/material/Box';
+import Modal from '@mui/material/Modal';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
+import Select from '@mui/material/Select';
+import TextField from '@mui/material/TextField';
+import Stack from '@mui/material/Stack';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
+import Checkbox from '@mui/material/Checkbox';
+import ListItemText from '@mui/material/ListItemText';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import Switch from '@mui/material/Switch';
+import RestartAltIcon from '@mui/icons-material/RestartAlt';
+import CloseIcon from '@mui/icons-material/Close';
+import TransferList from '../../TransferList/TransferList';
+import MovieInfosEntrance from './MovieInfosEntrance';
+import handleMovieClick from '../../../utils/handleMovieClick';
 import {
   searchGenreInDatabase,
   createGenreInDatabase,
@@ -49,9 +49,9 @@ import {
   createCastingInDatabase,
   searchTagInDatabase,
   createTagInDatabase,
-} from "../../../utils/movieEntranceSearchInsert";
-import purgeOrphanRecords from "../../../utils/purgeOrphanRecords";
-import "./addNewMovie.css";
+} from '../../../utils/movieEntranceSearchInsert';
+import purgeOrphanRecords from '../../../utils/purgeOrphanRecords';
+import './addNewMovie.css';
 
 function AddNewMovie() {
   // const backendUrl = `${import.meta.env.VITE_BACKEND_URL}/images`;
@@ -59,12 +59,12 @@ function AddNewMovie() {
   const initialCoverPreview = `${CLOUDINARY_BASE_URL}/00_cover_default.jpg`;
 
   const [data, setData] = useState([]);
-  const [dataType, setDataType] = useState("");
-  const [videoSupport, setvideoSupport] = useState("");
-  const [format, setFormat] = useState("");
+  const [dataType, setDataType] = useState('');
+  const [videoSupport, setvideoSupport] = useState('');
+  const [format, setFormat] = useState('');
   const [fileSize, setFileSize] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
-  const [selectedCoverFile, setSelectedCoverFile] = useState("");
+  const [selectedCoverFile, setSelectedCoverFile] = useState('');
   const [coverPreview, setCoverPreview] = useState(initialCoverPreview);
   const [openModal, setOpenModal] = useState(false);
   const [openModalMIE, setOpenModalMIE] = useState(false);
@@ -78,36 +78,36 @@ function AddNewMovie() {
   const [selectedLanguages, setSelectedLanguages] = useState([]);
   const [selectedTags, setSelectedTags] = useState([]);
   const [selectedFocus, setSelectedFocus] = useState([]);
-  const [version, setVersion] = useState("none");
-  const [tvSeasons, setTvSeasons] = useState("");
+  const [version, setVersion] = useState('none');
+  const [tvSeasons, setTvSeasons] = useState('');
   const [seasonsInfo, setSeasonsInfo] = useState([]);
   const [selectedSeasons, setSelectedSeasons] = useState([]); // saison choisie
   const [nbTvEpisodes, setNbTvEpisodes] = useState(0);
   const [movie, setMovie] = useState({
-    title: "",
-    altTitle: "",
-    year: "",
+    title: '',
+    altTitle: '',
+    year: '',
     duration: 0,
-    pitch: "",
-    story: "",
-    comment: "",
-    posterUrl: "",
-    trailer: "",
-    location: "",
-    videoFormat: "",
-    videoSupport: "",
-    fileSize: "",
-    idTheMovieDb: "",
-    idIMDB: "",
+    pitch: '',
+    story: '',
+    comment: '',
+    posterUrl: '',
+    trailer: '',
+    location: '',
+    videoFormat: '',
+    videoSupport: '',
+    fileSize: '',
+    idTheMovieDb: '',
+    idIMDB: '',
     isTvShow: false,
-    nbTvSeasons: "",
-    tvSeasons: "",
+    nbTvSeasons: '',
+    tvSeasons: '',
     nbTvEpisodes: null,
     episodeDuration: 0,
   });
   useEffect(() => {
-    console.info("data", data);
-    console.info("movie", movie);
+    console.info('data', data);
+    console.info('movie', movie);
   }, [movie, data]);
 
   //-----------------------------------------------
@@ -138,7 +138,7 @@ function AddNewMovie() {
     if (!movie.isTvShow) return; // ne rien faire pour les films
 
     if (!movie.episodeDuration || movie.episodeDuration === 0) {
-      setMovie((prev) => ({ ...prev, duration: "" }));
+      setMovie((prev) => ({ ...prev, duration: '' }));
       return;
     }
 
@@ -146,7 +146,7 @@ function AddNewMovie() {
       const total = nbTvEpisodes * movie.episodeDuration;
       setMovie((prev) => ({ ...prev, duration: total }));
     } else {
-      setMovie((prev) => ({ ...prev, duration: "" }));
+      setMovie((prev) => ({ ...prev, duration: '' }));
     }
   }, [nbTvEpisodes, movie.episodeDuration, movie.isTvShow]);
 
@@ -155,20 +155,18 @@ function AddNewMovie() {
     if (!movie.isTvShow) return; // ne rien faire pour les films
 
     if (!Array.isArray(selectedSeasons) || selectedSeasons.length === 0) {
-      setTvSeasons("");
-      setMovie((prev) => ({ ...prev, tvSeasons: "" }));
+      setTvSeasons('');
+      setMovie((prev) => ({ ...prev, tvSeasons: '' }));
       return;
     }
 
     // Trie les saisons sélectionnées
     const sortedSeasons = [...selectedSeasons].sort((a, b) => a - b);
 
-    let displayValue = "";
+    let displayValue = '';
 
     // Si elles sont consécutives → format "1-3"
-    const isConsecutive = sortedSeasons.every(
-      (num, i, arr) => i === 0 || num === arr[i - 1] + 1
-    );
+    const isConsecutive = sortedSeasons.every((num, i, arr) => i === 0 || num === arr[i - 1] + 1);
 
     if (isConsecutive) {
       displayValue =
@@ -177,7 +175,7 @@ function AddNewMovie() {
           : `${sortedSeasons[0]}-${sortedSeasons[sortedSeasons.length - 1]}`;
     } else {
       // Saisons non consécutives → "1, 3, 5"
-      displayValue = sortedSeasons.join(", ");
+      displayValue = sortedSeasons.join(', ');
     }
 
     setTvSeasons(displayValue);
@@ -193,7 +191,7 @@ function AddNewMovie() {
         <TextField
           name="tvSeasons"
           label="Saisons sélectionnées"
-          value={tvSeasons || ""}
+          value={tvSeasons || ''}
           onChange={(e) => {
             const { value } = e.target;
             setTvSeasons(value);
@@ -205,7 +203,7 @@ function AddNewMovie() {
           name="nbTvEpisodes"
           label="Nombre d’épisodes"
           type="number"
-          value={nbTvEpisodes || ""}
+          value={nbTvEpisodes || ''}
           onChange={(e) => {
             const value = Number(e.target.value);
             setNbTvEpisodes(value);
@@ -218,7 +216,7 @@ function AddNewMovie() {
           name="episodeDuration"
           type="number"
           label="Durée d’un épisode (min)"
-          value={movie.episodeDuration || ""}
+          value={movie.episodeDuration || ''}
           onChange={(e) => {
             const value = Number(e.target.value);
             setMovie((prev) => {
@@ -236,7 +234,7 @@ function AddNewMovie() {
         <TextField
           name="duration"
           label="Durée totale (minutes)"
-          value={movie.duration || ""}
+          value={movie.duration || ''}
           InputProps={{ readOnly: true }}
           sx={{ flexGrow: 1 }}
         />
@@ -260,24 +258,19 @@ function AddNewMovie() {
                 setSelectedSeasons(value);
 
                 const totalEpisodes = value.reduce((sum, seasonNumber) => {
-                  const season = seasonsInfo.find(
-                    (s) => s.season_number === seasonNumber
-                  );
+                  const season = seasonsInfo.find((s) => s.season_number === seasonNumber);
                   return sum + (season ? season.episode_count : 0);
                 }, 0);
 
                 setMovie((prev) => ({ ...prev, nbTvEpisodes: totalEpisodes }));
               }}
               input={<OutlinedInput label="Saisons" />}
-              renderValue={(selected) => selected.join(", ")}
+              renderValue={(selected) => selected.join(', ')}
             >
               {Array.from({ length: movie.nbTvSeasons || 0 }, (_, i) => (
                 <MenuItem key={i + 1} value={i + 1}>
                   <Checkbox
-                    checked={
-                      Array.isArray(selectedSeasons) &&
-                      selectedSeasons.includes(i + 1)
-                    }
+                    checked={Array.isArray(selectedSeasons) && selectedSeasons.includes(i + 1)}
                   />
                   <ListItemText primary={`Saison ${i + 1}`} />
                 </MenuItem>
@@ -296,7 +289,7 @@ function AddNewMovie() {
         <TextField
           name="tvSeasons"
           label="Saisons sélectionnées"
-          value={tvSeasons || ""}
+          value={tvSeasons || ''}
           onChange={(e) => {
             const { value } = e.target;
             setTvSeasons(value);
@@ -316,13 +309,13 @@ function AddNewMovie() {
   const navigate = useNavigate();
 
   const handleReturn = async () => {
-    navigate("/admin_feat");
+    navigate('/admin_feat');
     // 🧹 Appeler la purge
     try {
       await purgeOrphanRecords(); // ✅ on attend que la purge se termine
-      console.info("Purge exécutée avec succès après le reset.");
+      console.info('Purge exécutée avec succès après le reset.');
     } catch (error) {
-      console.error("Erreur lors de la purge :", error);
+      console.error('Erreur lors de la purge :', error);
     }
   };
 
@@ -343,30 +336,30 @@ function AddNewMovie() {
   const resetStates = async (isTvShow = false, withPurge = true) => {
     // Vider le formulaire
     setMovie({
-      title: "",
-      altTitle: "",
-      year: "",
+      title: '',
+      altTitle: '',
+      year: '',
       duration: 0,
-      pitch: "",
-      story: "",
-      posterUrl: "",
-      trailer: "",
+      pitch: '',
+      story: '',
+      posterUrl: '',
+      trailer: '',
       location: null,
-      videoFormat: "",
-      videoSupport: "",
+      videoFormat: '',
+      videoSupport: '',
       fileSize: null,
-      idTheMovieDb: "",
-      idIMDB: "",
+      idTheMovieDb: '',
+      idIMDB: '',
       isTvShow,
-      nbTvSeasons: "",
-      tvSeasons: "",
+      nbTvSeasons: '',
+      tvSeasons: '',
       nbTvEpisodes: null,
       episodeDuration: 0,
     });
 
     // Réinitialiser les états du front
-    setFormat("");
-    setvideoSupport("");
+    setFormat('');
+    setvideoSupport('');
     setFileSize(null);
     setSelectedFile(null);
     setSelectedKinds([]);
@@ -380,21 +373,21 @@ function AddNewMovie() {
     setSelectedTags([]);
     setSelectedFocus([]);
     setCoverPreview(initialCoverPreview);
-    setSelectedCoverFile("");
+    setSelectedCoverFile('');
     setSeasonsInfo([]);
     setSelectedSeasons([]);
-    setTvSeasons("");
-    setNbTvEpisodes("");
-    setVersion("none");
+    setTvSeasons('');
+    setNbTvEpisodes('');
+    setVersion('none');
 
     // 🧹 Appeler la purge
     // 🧹 Purge conditionnelle
     if (withPurge) {
       try {
         await purgeOrphanRecords();
-        console.info("Purge exécutée avec succès après le reset.");
+        console.info('Purge exécutée avec succès après le reset.');
       } catch (error) {
-        console.error("Erreur lors de la purge :", error);
+        console.error('Erreur lors de la purge :', error);
       }
     }
   };
@@ -406,7 +399,7 @@ function AddNewMovie() {
     if (movie.title) {
       setOpenModalMIE(true);
     } else {
-      toast.warn("Saisir un titre à rechercher");
+      toast.warn('Saisir un titre à rechercher');
     }
   };
 
@@ -421,10 +414,8 @@ function AddNewMovie() {
   // --- FETCH DATA GENERIQUE ---
   const fetchData = async (route) => {
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/api/${route}`
-      );
-      if (!response.ok) throw new Error("Network response was not ok");
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/${route}`);
+      if (!response.ok) throw new Error('Network response was not ok');
       const datas = await response.json();
       setData(datas);
     } catch (error) {
@@ -441,13 +432,13 @@ function AddNewMovie() {
 
   // --- HANDLER FERMETURE MODAL ---
   const handleCloseModal = () => {
-    setDataType("");
+    setDataType('');
     setOpenModal(false);
     setData([]);
   };
 
   // --- GENERER LES NOMS
-  const getSelectedNames = (items) => items.map((item) => item.name).join(", ");
+  const getSelectedNames = (items) => items.map((item) => item.name).join(', ');
 
   //-----------------------------------------------
   // INPUT FILE
@@ -462,8 +453,8 @@ function AddNewMovie() {
     setSelectedFile(file);
 
     const cleanedPath = movie.path
-      ? movie.path.replace(/^[A-Za-z]:[\\/]+/, "").replace(/[\\/]+$/, "")
-      : "";
+      ? movie.path.replace(/^[A-Za-z]:[\\/]+/, '').replace(/[\\/]+$/, '')
+      : '';
     const fullPath = cleanedPath ? `${cleanedPath}\\${file.name}` : file.name;
 
     const fileSizeGB = file.size / (1024 * 1024 * 1024);
@@ -472,16 +463,16 @@ function AddNewMovie() {
         ? `${(file.size / (1024 * 1024)).toFixed(2)} MB`
         : `${fileSizeGB.toFixed(2)} GB`;
 
-    const ext = file.name.split(".").pop().toLowerCase();
-    const validFormats = ["avi", "mkv", "mp4"];
+    const ext = file.name.split('.').pop().toLowerCase();
+    const validFormats = ['avi', 'mkv', 'mp4'];
 
     if (!validFormats.includes(ext)) {
-      toast.warn("Veuillez sélectionner un fichier vidéo valide.");
+      toast.warn('Veuillez sélectionner un fichier vidéo valide.');
       return;
     }
 
     setFormat(ext);
-    setvideoSupport("Fichier multimédia");
+    setvideoSupport('Fichier multimédia');
     setFileSize(fileSizeDisplay); // valeur affichée locale
 
     setMovie((prev) => ({
@@ -489,7 +480,7 @@ function AddNewMovie() {
       location: fullPath,
       fileSize: fileSizeDisplay, // valeur dans l'objet movie
       videoFormat: ext,
-      videoSupport: "Fichier multimédia",
+      videoSupport: 'Fichier multimédia',
     }));
 
     toast.success(`fichier "${fullPath}" chargé, ${fileSizeDisplay})`);
@@ -500,13 +491,13 @@ function AddNewMovie() {
     if (!files.length) return;
 
     // Filtrer uniquement les fichiers vidéo
-    const videoExtensions = ["avi", "mkv", "mp4"];
+    const videoExtensions = ['avi', 'mkv', 'mp4'];
     const videoFiles = files.filter((f) =>
-      videoExtensions.includes(f.name.split(".").pop().toLowerCase())
+      videoExtensions.includes(f.name.split('.').pop().toLowerCase())
     );
 
     if (videoFiles.length === 0) {
-      toast.warn("Aucun fichier vidéo trouvé dans ce dossier.");
+      toast.warn('Aucun fichier vidéo trouvé dans ce dossier.');
       return;
     }
 
@@ -514,13 +505,11 @@ function AddNewMovie() {
     const totalBytes = videoFiles.reduce((acc, file) => acc + file.size, 0);
     const totalGB = totalBytes / (1024 * 1024 * 1024);
     const totalSizeDisplay =
-      totalGB < 1
-        ? `${(totalBytes / (1024 * 1024)).toFixed(2)} MB`
-        : `${totalGB.toFixed(2)} GB`;
+      totalGB < 1 ? `${(totalBytes / (1024 * 1024)).toFixed(2)} MB` : `${totalGB.toFixed(2)} GB`;
 
     // Détermination du chemin commun de base
     const firstPath = videoFiles[0].webkitRelativePath;
-    const rootPath = firstPath.split("/")[0];
+    const rootPath = firstPath.split('/')[0];
 
     // Mise à jour du state
     setFileSize(totalSizeDisplay);
@@ -528,7 +517,7 @@ function AddNewMovie() {
       ...prev,
       path: rootPath,
       location: rootPath, // chemin relatif principal
-      videoSupport: "Fichier multimédia",
+      videoSupport: 'Fichier multimédia',
       fileSize: totalSizeDisplay,
     }));
 
@@ -578,9 +567,9 @@ function AddNewMovie() {
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    if (name === "idIMDb") {
+    if (name === 'idIMDb') {
       setMovie((prevMovie) => ({ ...prevMovie, [name]: parseInt(value, 10) }));
-    } else if (name === "location") {
+    } else if (name === 'location') {
       setMovie((prevMovie) => ({
         ...prevMovie,
         [name]: event.target.files[0],
@@ -596,7 +585,7 @@ function AddNewMovie() {
     event.preventDefault();
 
     if (!movie.title) {
-      toast.warn("Merci de saisir un titre");
+      toast.warn('Merci de saisir un titre');
       return;
     }
 
@@ -608,8 +597,8 @@ function AddNewMovie() {
       // 1️⃣ Préparer tous les champs à envoyer
       const bodyData = {
         ...movie,
-        vostfr: version === "VOSTFR" ? 1 : 0,
-        multi: version === "MULTI" ? 1 : 0,
+        vostfr: version === 'VOSTFR' ? 1 : 0,
+        multi: version === 'MULTI' ? 1 : 0,
         isTvShow: movie.isTvShow ? 1 : 0,
         focus: selectedFocus,
         genres: selectedKinds,
@@ -632,24 +621,21 @@ function AddNewMovie() {
 
       // 3️⃣ Image locale ou TMDB
       if (selectedCoverFile) {
-        formData.append("cover", selectedCoverFile);
+        formData.append('cover', selectedCoverFile);
       } else if (movie.posterUrl) {
-        formData.append("coverUrl", movie.posterUrl);
+        formData.append('coverUrl', movie.posterUrl);
       }
 
       // 4️⃣ Envoi POST
-      const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/api/movie`,
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/movie`, {
+        method: 'POST',
+        body: formData,
+      });
 
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       // const data = await response.json();
       // console.info("Film créé :", data);
-      toast.success("Le film a été ajouté avec succès !");
+      toast.success('Le film a été ajouté avec succès !');
       handleReturn();
     } catch (error) {
       console.error(error);
@@ -666,16 +652,16 @@ function AddNewMovie() {
   const theme = createTheme({
     palette: {
       primary: {
-        main: "#1e1612",
+        main: '#1e1612',
       },
       secondary: {
-        main: "#00d9c0",
+        main: '#00d9c0',
       },
       validBtn: {
-        main: "#076834",
+        main: '#076834',
       },
       abortBtn: {
-        main: "#ad1f2b",
+        main: '#ad1f2b',
       },
     },
   });
@@ -684,13 +670,13 @@ function AddNewMovie() {
   // MODALS STYLE
   //-----------------------------------------------
   const transferListStyle = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    bgcolor: "background.paper",
-    border: "2px solid #000",
-    borderRadius: "10px",
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    borderRadius: '10px',
     boxShadow: 24,
     pt: 0,
     pb: 4,
@@ -698,13 +684,13 @@ function AddNewMovie() {
   };
 
   const styleMIEmodal = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: "70%",
-    bgcolor: "background.paper",
-    border: "2px solid #000",
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: '70%',
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
     boxShadow: 24,
     p: 0,
   };
@@ -715,7 +701,7 @@ function AddNewMovie() {
   return (
     <main>
       <section className="Adm_form_box">
-        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <IconButton onClick={handleReturn}>
             <CloseIcon />
           </IconButton>
@@ -754,13 +740,13 @@ function AddNewMovie() {
                   <IconButton
                     onClick={() => resetStates()}
                     sx={{
-                      color: "#ff9900",
-                      "&:hover": {
-                        color: "#00d9c0",
-                        backgroundColor: "rgba(255, 170, 0, 0.1)",
+                      color: '#ff9900',
+                      '&:hover': {
+                        color: '#00d9c0',
+                        backgroundColor: 'rgba(255, 170, 0, 0.1)',
                       },
-                      border: "solid 1px grey",
-                      alignSelf: "flex-end",
+                      border: 'solid 1px grey',
+                      alignSelf: 'flex-end',
                     }}
                   >
                     <RestartAltIcon />
@@ -770,7 +756,7 @@ function AddNewMovie() {
               {/* movie TITLE */}
               <Box
                 component="form"
-                sx={{ "& > :not(style)": { width: "150ch" } }}
+                sx={{ '& > :not(style)': { width: '150ch' } }}
                 noValidate
                 autoComplete="off"
                 display="flex"
@@ -790,7 +776,7 @@ function AddNewMovie() {
               {/* movie alt TITLE */}
               <Box
                 component="form"
-                sx={{ "& > :not(style)": { width: "100ch" } }}
+                sx={{ '& > :not(style)': { width: '100ch' } }}
                 noValidate
                 autoComplete="off"
                 display="flex"
@@ -822,8 +808,8 @@ function AddNewMovie() {
                 <div
                   className={
                     movie.isTvShow
-                      ? "year_duration_Btn_AddNewtvShow"
-                      : "year_duration_Btn_AddNewMovie"
+                      ? 'year_duration_Btn_AddNewtvShow'
+                      : 'year_duration_Btn_AddNewMovie'
                   }
                 >
                   {/* movie year */}
@@ -853,7 +839,7 @@ function AddNewMovie() {
               {/* movie PITCH */}
               <Box
                 component="form"
-                sx={{ "& > :not(style)": { width: "100ch" } }}
+                sx={{ '& > :not(style)': { width: '100ch' } }}
                 noValidate
                 autoComplete="off"
                 display="flex"
@@ -873,7 +859,7 @@ function AddNewMovie() {
               {/* movie STORY */}
               <Box
                 component="form"
-                sx={{ "& > :not(style)": { width: "100ch" } }}
+                sx={{ '& > :not(style)': { width: '100ch' } }}
                 noValidate
                 autoComplete="off"
                 display="flex"
@@ -894,7 +880,7 @@ function AddNewMovie() {
               {/* movie TRAILER */}
               <Box
                 component="form"
-                sx={{ "& > :not(style)": { width: "100ch" } }}
+                sx={{ '& > :not(style)': { width: '100ch' } }}
                 noValidate
                 autoComplete="off"
                 display="flex"
@@ -914,7 +900,7 @@ function AddNewMovie() {
               {/* movie COMMENTAIRE */}
               <Box
                 component="form"
-                sx={{ "& > :not(style)": { width: "100ch" } }}
+                sx={{ '& > :not(style)': { width: '100ch' } }}
                 noValidate
                 autoComplete="off"
                 display="flex"
@@ -938,7 +924,7 @@ function AddNewMovie() {
               {/* movie idTheMovieDb */}
               <Box
                 component="form"
-                sx={{ width: "30%" }}
+                sx={{ width: '30%' }}
                 noValidate
                 autoComplete="off"
                 display="flex"
@@ -977,7 +963,7 @@ function AddNewMovie() {
                 </Box>
                 <AddCircleOutlineIcon
                   className="Btn_Add_itemsPopUp"
-                  onClick={() => handleOpenModal("kinds")}
+                  onClick={() => handleOpenModal('kinds')}
                 />
               </div>
               {/* movie DIRECTOR */}
@@ -1016,7 +1002,7 @@ function AddNewMovie() {
                 </Box>
                 <AddCircleOutlineIcon
                   className="Btn_Add_itemsPopUp"
-                  onClick={() => handleOpenModal("directors")}
+                  onClick={() => handleOpenModal('directors')}
                 />
               </div>
               {/* movie SCREENWRITERS */}
@@ -1043,7 +1029,7 @@ function AddNewMovie() {
                 </Box>
                 <AddCircleOutlineIcon
                   className="Btn_Add_itemsPopUp"
-                  onClick={() => handleOpenModal("screenwriters")}
+                  onClick={() => handleOpenModal('screenwriters')}
                 />
               </div>
               {/* movie COMPOSITOR */}
@@ -1070,7 +1056,7 @@ function AddNewMovie() {
                 </Box>
                 <AddCircleOutlineIcon
                   className="Btn_Add_itemsPopUp"
-                  onClick={() => handleOpenModal("music")}
+                  onClick={() => handleOpenModal('music')}
                 />
               </div>
               {/* movie CASTING */}
@@ -1097,7 +1083,7 @@ function AddNewMovie() {
                 </Box>
                 <AddCircleOutlineIcon
                   className="Btn_Add_itemsPopUp"
-                  onClick={() => handleOpenModal("casting")}
+                  onClick={() => handleOpenModal('casting')}
                 />
               </div>
               {/* movie STUDIO */}
@@ -1124,7 +1110,7 @@ function AddNewMovie() {
                 </Box>
                 <AddCircleOutlineIcon
                   className="Btn_Add_itemsPopUp"
-                  onClick={() => handleOpenModal("studio")}
+                  onClick={() => handleOpenModal('studio')}
                 />
               </div>
               {/* movie COUNTRY */}
@@ -1151,7 +1137,7 @@ function AddNewMovie() {
                 </Box>
                 <AddCircleOutlineIcon
                   className="Btn_Add_itemsPopUp"
-                  onClick={() => handleOpenModal("country")}
+                  onClick={() => handleOpenModal('country')}
                 />
               </div>
               {/* movie LANGUAGES */}
@@ -1178,7 +1164,7 @@ function AddNewMovie() {
                 </Box>
                 <AddCircleOutlineIcon
                   className="Btn_Add_itemsPopUp"
-                  onClick={() => handleOpenModal("languages/sorted_id")}
+                  onClick={() => handleOpenModal('languages/sorted_id')}
                 />
               </div>
               {/* movie TAG */}
@@ -1205,7 +1191,7 @@ function AddNewMovie() {
                 </Box>
                 <AddCircleOutlineIcon
                   className="Btn_Add_itemsPopUp"
-                  onClick={() => handleOpenModal("tags/sorted_id")}
+                  onClick={() => handleOpenModal('tags/sorted_id')}
                 />
               </div>
               {/* movie FOCUS */}
@@ -1232,7 +1218,7 @@ function AddNewMovie() {
                 </Box>
                 <AddCircleOutlineIcon
                   className="Btn_Add_itemsPopUp"
-                  onClick={() => handleOpenModal("focus")}
+                  onClick={() => handleOpenModal('focus')}
                 />
               </div>
             </div>
@@ -1258,18 +1244,16 @@ function AddNewMovie() {
                 </MenuItem>
                 <MenuItem value="DVD original">DVD</MenuItem>
                 <MenuItem value="DVD R/RW">DVD R/RW</MenuItem>
-                <MenuItem value="Fichier multimédia">
-                  FICHIER MULTIMEDIA
-                </MenuItem>
+                <MenuItem value="Fichier multimédia">FICHIER MULTIMEDIA</MenuItem>
               </Select>
             </FormControl>
-            {videoSupport === "Fichier multimédia" && (
+            {videoSupport === 'Fichier multimédia' && (
               <>
                 <div>
                   {/* movie VIDEOFORMAT */}
                   <Box
                     component="form"
-                    sx={{ "& > :not(style)": { width: "25ch" } }}
+                    sx={{ '& > :not(style)': { width: '25ch' } }}
                     noValidate
                     autoComplete="off"
                     display="flex"
@@ -1297,8 +1281,8 @@ function AddNewMovie() {
                     <TextField
                       label="File Size"
                       id="outlined-start-adornment"
-                      sx={{ m: 1, width: "25ch" }}
-                      value={fileSize || ""}
+                      sx={{ m: 1, width: '25ch' }}
+                      value={fileSize || ''}
                       onChange={(event) => setFileSize(event.target.value)}
                     />
                   </Box>
@@ -1307,17 +1291,11 @@ function AddNewMovie() {
                 {movie.isTvShow ? (
                   <>
                     {/* Sélection d’un dossier complet */}
-                    <Box
-                      display="flex"
-                      alignItems="center"
-                      gap={2}
-                      p={1}
-                      sx={{ flexGrow: 1 }}
-                    >
+                    <Box display="flex" alignItems="center" gap={2} p={1} sx={{ flexGrow: 1 }}>
                       <TextField
                         label="Dossier sélectionné"
                         variant="outlined"
-                        value={movie.path || ""}
+                        value={movie.path || ''}
                         InputProps={{ readOnly: true }}
                         fullWidth
                       />
@@ -1325,17 +1303,14 @@ function AddNewMovie() {
                       {/* Input caché pour sélectionner un dossier */}
                       <input
                         type="file"
-                        style={{ display: "none" }}
+                        style={{ display: 'none' }}
                         ref={fileInputRef}
                         webkitdirectory="true"
                         multiple
                         onChange={handleFolderChange}
                       />
 
-                      <Button
-                        variant="outlined"
-                        onClick={() => fileInputRef.current?.click()}
-                      >
+                      <Button variant="outlined" onClick={() => fileInputRef.current?.click()}>
                         Sélectionner un dossier
                       </Button>
                     </Box>
@@ -1355,28 +1330,26 @@ function AddNewMovie() {
                     <TextField
                       label="Chemin du dossier"
                       variant="outlined"
-                      value={movie.path || ""}
+                      value={movie.path || ''}
                       onChange={(e) => {
                         const userPathInput = e.target.value;
                         const cleanedPath = userPathInput
-                          .replace(/^[A-Za-z]:[\\/]+/, "")
-                          .replace(/[\\/]+$/, "");
+                          .replace(/^[A-Za-z]:[\\/]+/, '')
+                          .replace(/[\\/]+$/, '');
 
                         setMovie((prev) => ({
                           ...prev,
                           path: userPathInput,
-                          location: selectedFile
-                            ? `${cleanedPath}\\${selectedFile.name}`
-                            : "",
+                          location: selectedFile ? `${cleanedPath}\\${selectedFile.name}` : '',
                         }));
                       }}
                       fullWidth
                     />
-                    {/* Sélection d’un fichier unique */}{" "}
+                    {/* Sélection d’un fichier unique */}{' '}
                     <TextField
                       label="Fichier sélectionné"
                       variant="outlined"
-                      value={selectedFile ? selectedFile.name : ""}
+                      value={selectedFile ? selectedFile.name : ''}
                       fullWidth
                       InputProps={{ readOnly: true }}
                     />
@@ -1386,9 +1359,7 @@ function AddNewMovie() {
                         if (fileInputRef.current) {
                           fileInputRef.current.click();
                         } else {
-                          console.warn(
-                            "fileInputRef is not attached to any input element"
-                          );
+                          console.warn('fileInputRef is not attached to any input element');
                         }
                       }}
                     >
@@ -1397,7 +1368,7 @@ function AddNewMovie() {
                     {/* Input caché pour le vrai fichier */}
                     <input
                       type="file"
-                      style={{ display: "none" }}
+                      style={{ display: 'none' }}
                       ref={fileInputRef}
                       onChange={handleFileChange}
                     />
@@ -1405,9 +1376,7 @@ function AddNewMovie() {
                 )}
                 {/* movie VERSION (vostfr or multi) */}
                 <FormControl sx={{ m: 1 }}>
-                  <FormLabel id="demo-row-radio-buttons-group-label">
-                    version:
-                  </FormLabel>
+                  <FormLabel id="demo-row-radio-buttons-group-label">version:</FormLabel>
                   <RadioGroup
                     row
                     aria-labelledby="demo-row-radio-buttons-group-label"
@@ -1415,21 +1384,9 @@ function AddNewMovie() {
                     value={version}
                     onChange={(e) => setVersion(e.target.value)}
                   >
-                    <FormControlLabel
-                      value="none"
-                      control={<Radio />}
-                      label="none"
-                    />
-                    <FormControlLabel
-                      value="VOSTFR"
-                      control={<Radio />}
-                      label="VOSTFR"
-                    />
-                    <FormControlLabel
-                      value="MULTI"
-                      control={<Radio />}
-                      label="MULTI"
-                    />
+                    <FormControlLabel value="none" control={<Radio />} label="none" />
+                    <FormControlLabel value="VOSTFR" control={<Radio />} label="VOSTFR" />
+                    <FormControlLabel value="MULTI" control={<Radio />} label="MULTI" />
                   </RadioGroup>
                 </FormControl>
               </>
@@ -1437,15 +1394,11 @@ function AddNewMovie() {
           </div>
           {/* movie COVER */}
           <div className="Adm_l2b">
-            <img
-              className="preview_cover"
-              src={coverPreview}
-              alt="Couverture"
-            />
+            <img className="preview_cover" src={coverPreview} alt="Couverture" />
             <input
               type="file"
               name="cover"
-              style={{ display: "none" }}
+              style={{ display: 'none' }}
               onChange={handleCoverChange}
               ref={fileCoverRef}
               accept="image/*"
@@ -1461,27 +1414,17 @@ function AddNewMovie() {
           {/* VALIDATION */}
           <ThemeProvider theme={theme}>
             <Stack spacing={2} direction="row">
-              <Button
-                onClick={handleFormSubmit}
-                size="large"
-                variant="outlined"
-                color="validBtn"
-              >
+              <Button onClick={handleFormSubmit} size="large" variant="outlined" color="validBtn">
                 VALIDER
               </Button>
-              <Button
-                onClick={handleReturn}
-                size="large"
-                variant="outlined"
-                color="abortBtn"
-              >
+              <Button onClick={handleReturn} size="large" variant="outlined" color="abortBtn">
                 ANNULER
               </Button>
             </Stack>
           </ThemeProvider>
 
           <Backdrop
-            sx={(theme) => ({ color: "#fff", zIndex: theme.zIndex.drawer + 1 })}
+            sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
             open={isSubmitting} // Affiche le Backdrop pendant la soumission
           >
             <CircularProgress color="inherit" />
@@ -1499,7 +1442,7 @@ function AddNewMovie() {
           <div
             onClick={handleCloseModal}
             onKeyDown={(event) => {
-              if (event.key === "Enter" || event.key === " ") {
+              if (event.key === 'Enter' || event.key === ' ') {
                 handleCloseModal();
               }
             }}
