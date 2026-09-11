@@ -68,7 +68,6 @@ import {
 } from '../../utils/movieEntranceSearchInsert';
 // refacto
 import { getSeasons } from '../../services/tmdbService';
-import { updateMovie, deleteMovie, getByName } from '../../services/movieService';
 import {
   parseTvSeasons,
   formatTvSeasons,
@@ -87,6 +86,7 @@ import { useMovieCover } from '../../hooks/useMovieCover';
 import MovieCardCover from './MovieCardCover';
 import { useMovieMedia } from '../../hooks/useMovieMedia';
 import { useMovieActions } from '../../hooks/useMovieActions';
+import { useMovieRelations } from '../../hooks/useMovieRelations';
 
 function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, onFavoriteRemoved }) {
   const { isAdmin } = useAuth();
@@ -102,21 +102,44 @@ function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, on
 
   const [isModify, setIsModify] = useState(false);
   const [allowEdit, setAllowEdit] = useState(false);
-  const [selectedKinds, setSelectedKinds] = useState([]);
-  const [selectedDirectors, setSelectedDirectors] = useState([]);
-  const [selectedCasting, setSelectedCasting] = useState([]);
-  const [selectedScreenwriters, setSelectedScreenwriters] = useState([]);
-  const [selectedMusic, setSelectedMusic] = useState([]);
-  const [selectedStudios, setSelectedStudios] = useState([]);
-  const [selectedCountries, setSelectedCountries] = useState([]);
   const [version, setVersion] = useState(movie.vostfr ? 'VOSTFR' : movie.multi ? 'MULTI' : 'none');
-  const [selectedTags, setSelectedTags] = useState([]);
-  const [selectedFocus, setSelectedFocus] = useState([]);
   const [trailerMessage, setTrailerMessage] = useState('');
   // movie data
   const { movieData, setMovieData, refetchMovieData } = useMovieData(movie, origin);
   const { genres, countries, directors, screenwriters, music, studios, casting, tags, focus } =
     movieData;
+  const {
+    selectedKinds,
+    selectedDirectors,
+    selectedCasting,
+    selectedScreenwriters,
+    selectedMusic,
+    selectedStudios,
+    selectedCountries,
+    selectedTags,
+    selectedFocus,
+    setSelectedKinds,
+    setSelectedDirectors,
+    setSelectedCasting,
+    setSelectedScreenwriters,
+    setSelectedMusic,
+    setSelectedStudios,
+    setSelectedCountries,
+    setSelectedTags,
+    setSelectedFocus,
+    fetchByNames,
+    getSelectedNames,
+  } = useMovieRelations({
+    genres,
+    directors,
+    casting,
+    screenwriters,
+    music,
+    studios,
+    countries,
+    tags,
+    focus,
+  });
 
   const { idTheMovieDb } = movie;
   const isTvShow = movieData.isTvShow === 1;
@@ -345,58 +368,6 @@ function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, on
     pb: 4,
     px: 0,
   };
-
-  // FONCTION GÉNÉRIQUE FETCH PAR NOM
-  const fetchByNames = async (namesString, endpoint, setter) => {
-    if (!namesString) return;
-    try {
-      const namesArray = namesString.split(', ').map(async (name) => {
-        try {
-          return await getByName(endpoint, name);
-        } catch (err) {
-          console.warn(`Error fetching ${endpoint} ${name}:`, err);
-          return null;
-        }
-      });
-
-      const result = (await Promise.all(namesArray)).filter(Boolean);
-      setter(result);
-    } catch (error) {
-      console.error(`Error fetching ${endpoint}:`, error);
-    }
-  };
-
-  // FONCTION GÉNÉRIQUE POUR NOMS
-  const getSelectedNames = (list) => list.map((item) => item.name).join(', ');
-
-  // UTILITAIRE POUR CRÉER UN HOOK DE FETCH AUTOMATIQUE
-  const useAutoFetch = (value, endpoint, setter) => {
-    useEffect(() => {
-      fetchByNames(value, endpoint, setter);
-    }, [value]);
-  };
-
-  // UTILISATION POUR CHAQUE TYPE
-  useAutoFetch(genres, 'kind', setSelectedKinds);
-  useAutoFetch(directors, 'director', setSelectedDirectors);
-  useAutoFetch(casting, 'casting', setSelectedCasting);
-  useAutoFetch(screenwriters, 'screenwriter', setSelectedScreenwriters);
-  useAutoFetch(music, 'music', setSelectedMusic);
-  useAutoFetch(studios, 'studio', setSelectedStudios);
-  useAutoFetch(countries, 'country', setSelectedCountries);
-  useAutoFetch(tags, 'tags', setSelectedTags);
-  useAutoFetch(focus, 'focus', setSelectedFocus);
-
-  // HANDLERS POUR CHAQUE TYPE
-  const handleSelectedKindsUpdate = setSelectedKinds;
-  const handleSelectedDirectorsUpdate = setSelectedDirectors;
-  const handleSelectedCastingUpdate = setSelectedCasting;
-  const handleSelectedScreenwritersUpdate = setSelectedScreenwriters;
-  const handleSelectedMusicUpdate = setSelectedMusic;
-  const handleSelectedStudiosUpdate = setSelectedStudios;
-  const handleSelectedCountriesUpdate = setSelectedCountries;
-  const handleSelectedTagsUpdate = setSelectedTags;
-  const handleSelectedFocusUpdate = setSelectedFocus;
 
   //-----------------------------------------------
   // UPDATE MODE
@@ -806,23 +777,23 @@ function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, on
                 dataType={dataType}
                 items={data}
                 selectedKinds={selectedKinds}
-                onSelectedKindsUpdate={handleSelectedKindsUpdate}
+                onSelectedKindsUpdate={setSelectedKinds}
                 selectedDirectors={selectedDirectors}
-                onSelectedDirectorsUpdate={handleSelectedDirectorsUpdate}
+                onSelectedDirectorsUpdate={setSelectedDirectors}
                 selectedCasting={selectedCasting}
-                onSelectedCastingUpdate={handleSelectedCastingUpdate}
+                onSelectedCastingUpdate={setSelectedCasting}
                 selectedScreenwriters={selectedScreenwriters}
-                onSelectedScreenwritersUpdate={handleSelectedScreenwritersUpdate}
+                onSelectedScreenwritersUpdate={setSelectedScreenwriters}
                 selectedMusic={selectedMusic}
-                onSelectedMusicUpdate={handleSelectedMusicUpdate}
+                onSelectedMusicUpdate={setSelectedMusic}
                 selectedStudios={selectedStudios}
-                onSelectedStudiosUpdate={handleSelectedStudiosUpdate}
+                onSelectedStudiosUpdate={setSelectedStudios}
                 selectedCountries={selectedCountries}
-                onSelectedCountriesUpdate={handleSelectedCountriesUpdate}
+                onSelectedCountriesUpdate={setSelectedCountries}
                 selectedTags={selectedTags}
-                onSelectedTagsUpdate={handleSelectedTagsUpdate}
+                onSelectedTagsUpdate={setSelectedTags}
                 selectedFocus={selectedFocus}
-                onSelectedFocusUpdate={handleSelectedFocusUpdate}
+                onSelectedFocusUpdate={setSelectedFocus}
               />
             </Container>
           </Box>
