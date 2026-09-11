@@ -14,8 +14,6 @@ import Modal from '@mui/material/Modal';
 import ModeIcon from '@mui/icons-material/Mode';
 import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
 import UndoIcon from '@mui/icons-material/Undo';
-import FileUploadIcon from '@mui/icons-material/FileUpload';
-import CachedIcon from '@mui/icons-material/Cached';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -25,7 +23,6 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
-import CloudSyncIcon from '@mui/icons-material/CloudSync';
 import IconButton from '@mui/material/IconButton';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
@@ -87,6 +84,7 @@ import { useTrailer } from '../../hooks/useTrailer';
 import { useFavorites } from '../../hooks/useFavorites';
 import { useMovieData } from '../../hooks/useMovieData';
 import { useMovieCover } from '../../hooks/useMovieCover';
+import MovieCardCover from './MovieCardCover';
 
 function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, onFavoriteRemoved }) {
   const { isAdmin } = useAuth();
@@ -661,6 +659,24 @@ function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, on
   };
 
   //-----------------------------------------------
+  // SYNC COVER FROM TMDB
+  //-----------------------------------------------
+
+  const handleSyncFromTMDB = async () => {
+    const confirmReplace = window.confirm(
+      "Êtes-vous sûr de vouloir remplacer définitivement l'image ?"
+    );
+
+    if (!confirmReplace) return;
+
+    await refetchMovieCoverFromTMDB(idTheMovieDb, {
+      movieId: movieData.id,
+      setImage,
+      setShowImageButton,
+    });
+  };
+
+  //-----------------------------------------------
   // RETURN
   //-----------------------------------------------
 
@@ -669,103 +685,19 @@ function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, on
       <div className="MovieCard_container">
         <section className="MC_line1">
           {/* COVER BLOCK */}
-          <div className="MovieCard_Cover_Position">
-            <img className="MovieCard_cover" src={image} alt={`Cover ${movieData.title}`} />
-            {isModify && (
-              <>
-                <input
-                  type="file"
-                  name="cover"
-                  accept="image/*"
-                  onChange={handleCoverUpload}
-                  ref={fileCoverRef}
-                  style={{ display: 'none' }}
-                />
-
-                {/* Cover Boutons Upload / Reset */}
-                {showImageButton && (
-                  <div className="movie_cover_modify_buttons_wrapper">
-                    <div className="movie_cover_modify_button">
-                      {showUploadButton ? (
-                        // cover upload btn
-                        <Button
-                          variant="outlined"
-                          sx={{
-                            color: 'var(--color-03)',
-                            borderColor: 'var(--color-03)',
-                            transition: 'all 0.2s ease-in-out',
-                            borderRadius: '10px',
-                            '&:hover': {
-                              borderColor: 'var(--color-06)',
-                              color: 'var(--color-06)',
-                              transform: 'scale(1.02)',
-                            },
-                          }}
-                          onClick={handleUploadClick}
-                        >
-                          <FileUploadIcon />
-                        </Button>
-                      ) : (
-                        // cover reset btn
-                        <Button
-                          variant="outlined"
-                          sx={{
-                            color: 'var(--color-01)',
-                            borderColor: 'var(--color-01)',
-                            transition: 'all 0.2s ease-in-out',
-                            borderRadius: '10px',
-                            '&:hover': {
-                              borderColor: 'var(--color-06)',
-                              color: 'var(--color-06)',
-                              transform: 'scale(1.02)',
-                            },
-                          }}
-                          onClick={handleResetImage}
-                        >
-                          <CachedIcon />
-                        </Button>
-                      )}
-                    </div>
-
-                    {idTheMovieDb && (
-                      // cover TMDB Sync btn
-                      <div className="movie_cover_modify_button">
-                        <Button
-                          variant="outlined"
-                          sx={{
-                            color: 'var(--color-02)',
-                            borderColor: 'var(--color-02)',
-                            transition: 'all 0.2s ease-in-out',
-                            borderRadius: '10px',
-                            '&:hover': {
-                              borderColor: 'var(--color-06)',
-                              color: 'var(--color-06)',
-                              transform: 'scale(1.02)',
-                            },
-                          }}
-                          onClick={() => {
-                            const confirmReplace = window.confirm(
-                              "Êtes-vous sûr de vouloir remplacer définitivement l'image ?"
-                            );
-                            if (confirmReplace) {
-                              refetchMovieCoverFromTMDB(idTheMovieDb, {
-                                movieId: movieData.id,
-                                setImage,
-                                setShowImageButton,
-                              });
-                            }
-                          }}
-                        >
-                          <CloudSyncIcon />
-                        </Button>
-                      </div>
-                    )}
-                  </div>
-                )}
-                <div className="divider divider_movie_cover_modify_button" />
-              </>
-            )}
-          </div>
+          <MovieCardCover
+            image={image}
+            title={movieData.title}
+            isModify={isModify}
+            fileCoverRef={fileCoverRef}
+            handleCoverUpload={handleCoverUpload}
+            showImageButton={showImageButton}
+            showUploadButton={showUploadButton}
+            handleUploadClick={handleUploadClick}
+            handleResetImage={handleResetImage}
+            idTheMovieDb={idTheMovieDb}
+            handleSyncFromTMDB={handleSyncFromTMDB}
+          />
           {/* END COVER BLOCK */}
 
           {/* INFO BLOCK 1 */}
