@@ -71,13 +71,7 @@ import {
 } from '../../utils/movieEntranceSearchInsert';
 // refacto
 import { getSeasons } from '../../services/tmdbService';
-import {
-  getMovie,
-  updateMovie,
-  deleteMovie,
-  updateMovieImage,
-  getByName,
-} from '../../services/movieService';
+import { updateMovie, deleteMovie, getByName } from '../../services/movieService';
 import {
   parseTvSeasons,
   formatTvSeasons,
@@ -92,6 +86,7 @@ import { useTransferList } from '../../hooks/useTransferList';
 import { useTrailer } from '../../hooks/useTrailer';
 import { useFavorites } from '../../hooks/useFavorites';
 import { useMovieData } from '../../hooks/useMovieData';
+import { useMovieCover } from '../../hooks/useMovieCover';
 
 function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, onFavoriteRemoved }) {
   const { isAdmin } = useAuth();
@@ -213,55 +208,23 @@ function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, on
   // MODIFY MODE - MODIFICATION DE L'AFFICHE
   //-----------------------------------------------
 
-  const [image, setImage] = useState(getImageUrl(movie.cover));
-  const [showUploadButton, setShowUploadButton] = useState(true);
-  const [showImageButton, setShowImageButton] = useState(true);
-  const fileCoverRef = useRef(null);
-
-  useEffect(() => {
-    if (!isModify) return;
-
-    const originalImageUrl = getImageUrl(movie.cover);
-
-    if (image === originalImageUrl) {
-      // Image inchangée → bouton upload
-      setShowUploadButton(true);
-    } else {
-      // Image modifiée (preview ou nouvelle image)
-      setShowUploadButton(false);
-    }
-  }, [isModify, image, movie.cover]);
-
-  // Handle Cover Upload
-  const handleCoverUpload = (event) => {
-    const file = event.target.files[0];
-    const newImageUrl = URL.createObjectURL(file);
-    setImage(newImageUrl);
-    setShowUploadButton(false);
-  };
-
-  const handleUploadClick = () => {
-    fileCoverRef.current.click();
-  };
-
-  const handleResetImage = () => {
-    setImage(getImageUrl(movie.cover));
-    setShowUploadButton(true);
-  };
-
-  // Update Affiche
-
-  const handleUpdateImage = async () => {
-    const file = fileCoverRef.current.files[0];
-
-    if (!file) return null;
-
-    const data = await updateMovieImage(movie.id, file);
-
-    setImage(data.url);
-
-    return data.publicId;
-  };
+  const {
+    image,
+    setImage,
+    showUploadButton,
+    setShowUploadButton,
+    showImageButton,
+    setShowImageButton,
+    fileCoverRef,
+    handleCoverUpload,
+    handleUploadClick,
+    handleResetImage,
+    handleUpdateImage,
+  } = useMovieCover({
+    movie,
+    isModify,
+    getImageUrl,
+  });
 
   //-----------------------------------------------
   // GESTION DES FIELDS SAISONS - EPISODES - DUREE
