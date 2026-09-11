@@ -86,6 +86,7 @@ import { useMovieData } from '../../hooks/useMovieData';
 import { useMovieCover } from '../../hooks/useMovieCover';
 import MovieCardCover from './MovieCardCover';
 import { useMovieMedia } from '../../hooks/useMovieMedia';
+import { useMovieActions } from '../../hooks/useMovieActions';
 
 function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, onFavoriteRemoved }) {
   const { isAdmin } = useAuth();
@@ -430,111 +431,37 @@ function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, on
   };
 
   //-----------------------------------------------
-  // UPDATE MOVIE
+  // UPDATE / DELETE MOVIE
   //-----------------------------------------------
-  const [isConfirmUpdateOpen, setIsConfirmUpdateOpen] = useState(false);
-  const [isUpdating, setIsUpdating] = useState(false);
-
-  const handleOpenUpdateConfirm = () => setIsConfirmUpdateOpen(true);
-  const handleCloseUpdateConfirm = () => setIsConfirmUpdateOpen(false);
-
-  const handleUpdateMovie = async () => {
-    setIsConfirmUpdateOpen(false);
-
-    setIsUpdating(true); // Affiche le Backdrop
-
-    try {
-      // Mettre à jour l'image (s'il y a un fichier sélectionné)
-      if (fileCoverRef.current.files[0]) {
-        await handleUpdateImage();
-      }
-
-      // Mettre à jour les autres informations du film
-      const payload = {
-        title: movieData.title,
-        altTitle: movieData.altTitle,
-        year: movieData.year,
-        duration: movieData.duration || null,
-        trailer: movieData.trailer,
-        story: movieData.story,
-        location: movieData.location,
-        videoFormat: movieData.videoFormat,
-        videoSupport: movieData.videoSupport,
-        fileSize: movieData.fileSize,
-        vostfr: movieData.vostfr,
-        multi: movieData.multi,
-        comment: movieData.comment,
-        genres: selectedKinds.map((genre) => genre.id),
-        directors: selectedDirectors.map((director) => director.id),
-        castings: selectedCasting.map((cast) => cast.id),
-        screenwriters: selectedScreenwriters.map((screenwriter) => screenwriter.id),
-        musics: selectedMusic.map((compositor) => compositor.id),
-        studios: selectedStudios.map((studio) => studio.id),
-        countries: selectedCountries.map((country) => country.id),
-        tags: selectedTags.map((tag) => tag.id),
-        focus: selectedFocus.map((f) => f.id),
-        isTvShow: movieData.isTvShow,
-        tvSeasons: movieData.tvSeasons || null,
-        nbTvEpisodes: movieData.nbTvEpisodes || null,
-        episodeDuration: movieData.episodeDuration || null,
-        idTheMovieDb: movieData.idTheMovieDb,
-      };
-
-      const updatedMovie = await updateMovie(movieData.id, payload);
-
-      toast.success('Film mis à jour avec succès');
-
-      const newMovie = Array.isArray(updatedMovie) ? updatedMovie[0] : updatedMovie;
-
-      setMovieData(newMovie);
-      onUpdateMovie(newMovie);
-      closeModifyMode();
-
-      if (typeof closeModal === 'function') {
-        closeModal();
-      } else {
-        console.error('Erreur lors de la mise à jour');
-      }
-    } catch (error) {
-      console.error("Erreur lors de la mise à jour du film et de l'image", error);
-    } finally {
-      setIsUpdating(false); // Masque le Backdrop une fois terminé
-    }
-  };
-
-  // DELETE MOVIE
-
-  const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
-  const [movieIdToDelete, setMovieIdToDelete] = useState(null);
-
-  const handleOpenDeleteConfirm = (id) => {
-    setMovieIdToDelete(id); // Stocke l'ID du film à supprimer
-    setIsConfirmDeleteOpen(true); // Ouvre le dialogue
-  };
-
-  const handleCloseDeleteConfirm = () => {
-    setIsConfirmDeleteOpen(false);
-    setMovieIdToDelete(null);
-  };
-
-  const handleDeleteMovie = async () => {
-    if (!movieIdToDelete) return;
-
-    setIsConfirmDeleteOpen(false);
-
-    try {
-      await deleteMovie(movieData.id);
-
-      toast.info('Film supprimé avec succès');
-      onDeleteMovie(movieData.id);
-      if (typeof closeModal === 'function') {
-        closeModal();
-      }
-    } catch (error) {
-      toast.error('Erreur lors de la suppression du film');
-      console.error('Erreur durant la suppression:', error);
-    }
-  };
+  const {
+    isConfirmUpdateOpen,
+    isUpdating,
+    handleOpenUpdateConfirm,
+    handleCloseUpdateConfirm,
+    handleUpdateMovie,
+    isConfirmDeleteOpen,
+    handleOpenDeleteConfirm,
+    handleCloseDeleteConfirm,
+    handleDeleteMovie,
+  } = useMovieActions({
+    movieData,
+    selectedKinds,
+    selectedDirectors,
+    selectedCasting,
+    selectedScreenwriters,
+    selectedMusic,
+    selectedStudios,
+    selectedCountries,
+    selectedTags,
+    selectedFocus,
+    fileCoverRef,
+    handleUpdateImage,
+    setMovieData,
+    onUpdateMovie,
+    onDeleteMovie,
+    closeModifyMode,
+    closeModal,
+  });
 
   //-----------------------------------------------
   // SYNC COVER FROM TMDB
