@@ -3,7 +3,7 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable react/prop-types */
 /* eslint-disable camelcase */
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import './movieCard.css';
 import './movieCardMediaQueries.css';
@@ -85,6 +85,7 @@ import { useFavorites } from '../../hooks/useFavorites';
 import { useMovieData } from '../../hooks/useMovieData';
 import { useMovieCover } from '../../hooks/useMovieCover';
 import MovieCardCover from './MovieCardCover';
+import { useMovieMedia } from '../../hooks/useMovieMedia';
 
 function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, onFavoriteRemoved }) {
   const { isAdmin } = useAuth();
@@ -318,136 +319,13 @@ function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, on
   //-----------------------------------------------
   // INPUT FILE
   //-----------------------------------------------
-  const fileInputRef = useRef(null);
-  const [selectedFile, setSelectedFile] = useState(null);
-
-  useEffect(() => {
-    if (!movieData) return;
-
-    const support = movieData.videoSupport?.toLowerCase() || '';
-
-    // 🎬 Cas 1 : Fichier unique (film ou équivalent)
-    if (
-      !movieData.isTvShow &&
-      support.includes('fichier multimédia') &&
-      movieData.location &&
-      !movieData.path
-    ) {
-      // On déduit le chemin et le nom de fichier à partir du chemin complet
-      const segments = movieData.location.split('\\');
-      const filename = segments.pop();
-      const folderPath = segments.join('\\');
-
-      setMovieData((prev) => ({
-        ...prev,
-        path: folderPath || prev.path || '',
-        location: filename || prev.location || '',
-      }));
-    }
-
-    // 📺 Cas 2 : Série TV (dossier complet)
-    if (movieData.isTvShow && support.includes('fichier multimédia') && !movieData.path) {
-      // Si le path n’est pas défini, on essaie de le déduire du nom de la série
-      const folderName = movieData.title?.replace(/[^\w\s]/g, '').trim() || 'Série non identifiée';
-
-      setMovieData((prev) => ({
-        ...prev,
-        path: prev.path || folderName,
-        location: prev.location || folderName,
-      }));
-    }
-  }, [movieData?.id]);
-
-  // 🎬 Gestion fichier unique (film)
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    setSelectedFile(file);
-
-    const extension = file.name.split('.').pop().toLowerCase();
-    const validFormats = ['avi', 'mkv', 'mp4'];
-
-    if (!validFormats.includes(extension)) {
-      toast.warn('Veuillez sélectionner un fichier vidéo valide (avi, mkv, mp4).');
-      return;
-    }
-
-    const sizeGB = file.size / (1024 * 1024 * 1024);
-
-    setMovieData((prev) => ({
-      ...prev,
-      location: file.name,
-      path: '',
-      videoFormat: extension,
-      videoSupport: 'Fichier multimédia',
-      fileSize: `${sizeGB.toFixed(2)} GB`,
-    }));
-
-    toast.success(`Fichier "${file.name}" chargé (${sizeGB.toFixed(2)} GB)`);
-  };
-
-  // 📁 Gestion dossier complet (série)
-  const handleFolderChange = (e) => {
-    const files = Array.from(e.target.files);
-    if (!files.length) return;
-
-    // Filtrer uniquement les fichiers vidéo
-    const videoExtensions = ['avi', 'mkv', 'mp4'];
-    const videoFiles = files.filter((f) =>
-      videoExtensions.includes(f.name.split('.').pop().toLowerCase())
-    );
-
-    if (videoFiles.length === 0) {
-      toast.warn('Aucun fichier vidéo trouvé dans ce dossier.');
-      return;
-    }
-
-    // Calcul du poids total
-    const totalBytes = videoFiles.reduce((acc, file) => acc + file.size, 0);
-    const totalGB = totalBytes / (1024 * 1024 * 1024);
-    const totalSizeDisplay =
-      totalGB < 1 ? `${(totalBytes / (1024 * 1024)).toFixed(2)} MB` : `${totalGB.toFixed(2)} GB`;
-
-    // Détermination du chemin commun de base
-    const firstPath = videoFiles[0].webkitRelativePath;
-    const rootPath = firstPath.split('/')[0];
-
-    // ✅ Mise à jour partielle et sûre
-    setMovieData((prev) => ({
-      ...prev,
-      path: rootPath,
-      location: rootPath, // chemin relatif principal
-      videoSupport: 'Fichier multimédia',
-      fileSize: totalSizeDisplay,
-      isTvShow: true, // au cas où ce ne serait pas déjà vrai
-    }));
-
-    toast.success(
-      `📁 Dossier "${rootPath}" chargé (${videoFiles.length} vidéos, ${totalSizeDisplay})`
-    );
-  };
-
-  const handleFormatSupportChange = (event) => {
-    const newSupport = event.target.value;
-
-    setMovieData((prevData) => {
-      // Si le support sélectionné est "DVD original" ou "DVD R/RW"
-      if (newSupport === 'DVD original' || newSupport === 'DVD R/RW') {
-        return {
-          ...prevData,
-          videoSupport: newSupport,
-          location: '', // Réinitialise location
-          videoFormat: '', // Réinitialise videoFormat
-          fileSize: '', // Réinitialise fileSize
-          vostfr: 0,
-          multi: 0,
-        };
-      }
-      // Sinon, on met juste à jour videoSupport
-      return { ...prevData, videoSupport: newSupport };
-    });
-  };
+  const {
+    fileInputRef,
+    selectedFile,
+    handleFileChange,
+    handleFolderChange,
+    handleFormatSupportChange,
+  } = useMovieMedia(movieData, setMovieData);
 
   //-----------------------------------------------
   // TRANSFERT LIST
