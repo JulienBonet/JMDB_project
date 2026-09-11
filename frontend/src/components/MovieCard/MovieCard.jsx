@@ -5,14 +5,24 @@
 /* eslint-disable camelcase */
 import { useState } from 'react';
 import { toast } from 'react-toastify';
-import './movieCard.css';
-import './movieCardMediaQueries.css';
-import './movieCard_videoPlayer_MediaQueries.css';
 import Box from '@mui/material/Box';
 import { Container } from '@mui/material';
 import Modal from '@mui/material/Modal';
+// context
 import { useAuth } from '../../Context/AuthContext';
+// CSS
+import './movieCard.css';
+import './movieCardMediaQueries.css';
+import './movieCard_videoPlayer_MediaQueries.css';
+// component
+import MovieCardView from './MovieCardView';
+import MovieCardView02 from './MovieCardView02';
+import MovieCardEdit from './MovieCardEdit';
+import MovieCardEdit02 from './MovieCardEdit02';
+import MovieCardCover from './MovieCardCover';
+import MovieCardActions from './MovieCardActions';
 import TransferList from '../TransferList/TransferList';
+// utils
 import {
   refetchMovieTMDB,
   // refetchTitle,
@@ -50,28 +60,21 @@ import {
   searchTagInDatabase,
   createTagInDatabase,
 } from '../../utils/movieEntranceSearchInsert';
-// refacto
-import MovieCardView from './MovieCardView';
-import MovieCardView02 from './MovieCardView02';
-import MovieCardEdit from './MovieCardEdit';
-import MovieCardEdit02 from './MovieCardEdit02';
+// hooks
 import { useTransferList } from '../../hooks/useTransferList';
 import { useTrailer } from '../../hooks/useTrailer';
 import { useFavorites } from '../../hooks/useFavorites';
 import { useMovieData } from '../../hooks/useMovieData';
 import { useMovieCover } from '../../hooks/useMovieCover';
-import MovieCardCover from './MovieCardCover';
 import { useMovieMedia } from '../../hooks/useMovieMedia';
 import { useMovieActions } from '../../hooks/useMovieActions';
 import { useMovieRelations } from '../../hooks/useMovieRelations';
 import { useTvSeasons } from '../../hooks/useTvSeasons';
-import MovieCardActions from './MovieCardActions';
 
 function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, onFavoriteRemoved }) {
   const { isAdmin } = useAuth();
   const { user } = useAuth();
 
-  // const DEFAULT_COVER = "00_cover_default.jpg";
   const CLOUDINARY_BASE_URL = import.meta.env.VITE_CLOUDINARY_BASE_URL;
 
   const getImageUrl = (publicId) => {
@@ -79,11 +82,13 @@ function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, on
     return `${CLOUDINARY_BASE_URL}/${publicId}`;
   };
 
+  // states
   const [isModify, setIsModify] = useState(false);
   const [allowEdit, setAllowEdit] = useState(false);
   const [version, setVersion] = useState(movie.vostfr ? 'VOSTFR' : movie.multi ? 'MULTI' : 'none');
   const [trailerMessage, setTrailerMessage] = useState('');
-  // movie data
+
+  // movie datas
   const { movieData, setMovieData, refetchMovieData } = useMovieData(movie, origin);
   const { genres, countries, directors, screenwriters, music, studios, casting, tags, focus } =
     movieData;
@@ -209,7 +214,6 @@ function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, on
   //-----------------------------------------------
   // MODIFY MODE - MODIFICATION DE L'AFFICHE
   //-----------------------------------------------
-
   const {
     image,
     setImage,
@@ -231,7 +235,6 @@ function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, on
   //-----------------------------------------------
   // TV SHOW : SAISONS - EPISODES - DUREE
   //-----------------------------------------------
-
   const {
     selectedSeasons,
     setSelectedSeasons,
@@ -441,8 +444,6 @@ function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, on
               setNbTvEpisodes={setNbTvEpisodes}
             />
           ) : (
-            // END BLOCK 1 MODIFY MODE
-
             // BLOCK 1 LISTEN MODE
             <MovieCardView
               movieData={movieData}
@@ -461,8 +462,8 @@ function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, on
               handleTrailerStart={handleTrailerStart}
             />
           )}
+          {/* END INFO BLOCK 1 */}
         </section>
-        {/* END INFO BLOCK 1 */}
 
         {/* INFO BLOCK 2 */}
         <section>
@@ -537,8 +538,8 @@ function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, on
               toggleTrailerVideo={toggleTrailerVideo}
             />
           )}
-          {/* END INFO BLOCK 2 */}
         </section>
+        {/* END INFO BLOCK 2 */}
 
         {!isAdmin && <section style={{ height: '2rem' }} />}
 
