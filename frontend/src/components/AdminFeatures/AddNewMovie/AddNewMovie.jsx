@@ -29,7 +29,6 @@ import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import CloseIcon from '@mui/icons-material/Close';
 import TransferList from '../../TransferList/TransferList';
 import MovieInfosEntrance from './MovieInfosEntrance';
-import handleMovieClick from '../../../utils/handleMovieClick';
 import {
   searchGenreInDatabase,
   createGenreInDatabase,
@@ -57,6 +56,7 @@ import { useTvSeasons } from '../../../hooks/useTvSeasons';
 import { useMovieMedia } from '../../../hooks/useMovieMedia';
 import { useAddMovieCover } from '../../../hooks/useAddMovieCover';
 import { createMovie } from '../../../services/movieService';
+import { useTmdbMovieSelection } from '../../../hooks/useTmdbMovieSelection';
 
 function AddNewMovie() {
   // const backendUrl = `${import.meta.env.VITE_BACKEND_URL}/images`;
@@ -354,6 +354,42 @@ function AddNewMovie() {
   const handleCloseModalMIE = () => {
     setOpenModalMIE(false);
   };
+
+  const { handleTmdbMovieClick } = useTmdbMovieSelection({
+    resetStates,
+    setTmdbSeasonsInfo,
+    setMovie,
+    movie,
+    tvSeasons,
+    searchGenreInDatabase,
+    createGenreInDatabase,
+    setSelectedKinds,
+    searchStudioInDatabase,
+    createStudioInDatabase,
+    setSelectedStudios,
+    searchCountryInDatabase,
+    createCountryInDatabase,
+    setSelectedCountries,
+    searchLanguageInDatabase,
+    createLanguageInDatabase,
+    setSelectedLanguages,
+    searchDirectorInDatabase,
+    createDirectorInDatabase,
+    setSelectedDirectors,
+    searchScreenwriterInDatabase,
+    createScreenwriterInDatabase,
+    setSelectedScreenwriters,
+    searchCompositorInDatabase,
+    createCompositorInDatabase,
+    setSelectedMusic,
+    searchCastingInDatabase,
+    createCastingInDatabase,
+    setSelectedCasting,
+    searchTagInDatabase,
+    createTagInDatabase,
+    setSelectedTags,
+    setCoverPreview,
+  });
 
   //-----------------------------------------------
   // ITEMS MODAL FETCH
@@ -1334,43 +1370,7 @@ function AddNewMovie() {
         <Box sx={styleMIEmodal}>
           <MovieInfosEntrance
             title={movie.title}
-            onMovieClick={(id, type) =>
-              handleMovieClick(id, type, {
-                resetStates,
-                setTmdbSeasonsInfo,
-                setMovie,
-                movie,
-                tvSeasons,
-                searchGenreInDatabase,
-                createGenreInDatabase,
-                setSelectedKinds,
-                searchStudioInDatabase,
-                createStudioInDatabase,
-                setSelectedStudios,
-                searchCountryInDatabase,
-                createCountryInDatabase,
-                setSelectedCountries,
-                searchLanguageInDatabase,
-                createLanguageInDatabase,
-                setSelectedLanguages,
-                searchDirectorInDatabase,
-                createDirectorInDatabase,
-                setSelectedDirectors,
-                searchScreenwriterInDatabase,
-                createScreenwriterInDatabase,
-                setSelectedScreenwriters,
-                searchCompositorInDatabase,
-                createCompositorInDatabase,
-                setSelectedMusic,
-                searchCastingInDatabase,
-                createCastingInDatabase,
-                setSelectedCasting,
-                searchTagInDatabase,
-                createTagInDatabase,
-                setSelectedTags,
-                setCoverPreview,
-              })
-            }
+            onMovieClick={handleTmdbMovieClick}
             handleCloseModalMIE={handleCloseModalMIE}
           />
         </Box>
