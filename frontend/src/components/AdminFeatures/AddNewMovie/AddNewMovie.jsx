@@ -32,8 +32,8 @@ import MovieInfosEntrance from './MovieInfosEntrance';
 import {
   searchGenreInDatabase,
   createGenreInDatabase,
-  createStudioInDatabase,
   searchStudioInDatabase,
+  createStudioInDatabase,
   searchCountryInDatabase,
   createCountryInDatabase,
   searchLanguageInDatabase,
@@ -48,7 +48,7 @@ import {
   createCastingInDatabase,
   searchTagInDatabase,
   createTagInDatabase,
-} from '../../../utils/movieEntranceSearchInsert';
+} from '../../../services/movieRelationService';
 import purgeOrphanRecords from '../../../utils/purgeOrphanRecords';
 import './addNewMovie.css';
 // refactor
