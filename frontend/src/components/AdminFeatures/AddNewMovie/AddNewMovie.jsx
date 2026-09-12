@@ -1,7 +1,7 @@
 /* eslint-disable no-alert */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-shadow */
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -56,6 +56,7 @@ import './addNewMovie.css';
 import { useTvSeasons } from '../../../hooks/useTvSeasons';
 import { useMovieMedia } from '../../../hooks/useMovieMedia';
 import { useAddMovieCover } from '../../../hooks/useAddMovieCover';
+import { createMovie } from '../../../services/movieService';
 
 function AddNewMovie() {
   // const backendUrl = `${import.meta.env.VITE_BACKEND_URL}/images`;
@@ -468,14 +469,8 @@ function AddNewMovie() {
       }
 
       // 4️⃣ Envoi POST
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/movie`, {
-        method: 'POST',
-        body: formData,
-      });
+      await createMovie(formData);
 
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      // const data = await response.json();
-      // console.info("Film créé :", data);
       toast.success('Le film a été ajouté avec succès !');
       handleReturn();
     } catch (error) {
