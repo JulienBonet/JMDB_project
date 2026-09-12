@@ -52,6 +52,8 @@ import {
 } from '../../../utils/movieEntranceSearchInsert';
 import purgeOrphanRecords from '../../../utils/purgeOrphanRecords';
 import './addNewMovie.css';
+// refactor
+import { useTvSeasons } from '../../../hooks/useTvSeasons';
 
 function AddNewMovie() {
   // const backendUrl = `${import.meta.env.VITE_BACKEND_URL}/images`;
@@ -79,10 +81,7 @@ function AddNewMovie() {
   const [selectedTags, setSelectedTags] = useState([]);
   const [selectedFocus, setSelectedFocus] = useState([]);
   const [version, setVersion] = useState('none');
-  const [tvSeasons, setTvSeasons] = useState('');
-  const [seasonsInfo, setSeasonsInfo] = useState([]);
-  const [selectedSeasons, setSelectedSeasons] = useState([]); // saison choisie
-  const [nbTvEpisodes, setNbTvEpisodes] = useState(0);
+  const [tmdbSeasonsInfo, setTmdbSeasonsInfo] = useState([]);
   const [movie, setMovie] = useState({
     title: '',
     altTitle: '',
@@ -110,77 +109,25 @@ function AddNewMovie() {
     console.info('movie', movie);
   }, [movie, data]);
 
+  const {
+    selectedSeasons,
+    setSelectedSeasons,
+    seasonsInfo,
+    tvSeasons,
+    setTvSeasons,
+    nbTvEpisodes,
+    setNbTvEpisodes,
+  } = useTvSeasons({
+    isModify: false,
+    isTvShow: movie.isTvShow,
+    movieData: movie,
+    setMovieData: setMovie,
+    externalSeasonsInfo: tmdbSeasonsInfo,
+  });
+
   //-----------------------------------------------
   // GESTION DES FIELDS SAISONS - EPISODES - DUREE
   //-----------------------------------------------
-
-  // -- TVSHOW Mettre à jour le nombre d'épisodes en fonction des saisons sélectionnées
-  useEffect(() => {
-    if (!movie.isTvShow) return; // ne rien faire si ce n'est pas une série TV
-
-    if (!Array.isArray(selectedSeasons) || selectedSeasons.length === 0) {
-      setNbTvEpisodes(0);
-      setMovie((prev) => ({ ...prev, nbTvEpisodes: 0 }));
-      return;
-    }
-
-    const totalEpisodes = selectedSeasons.reduce((sum, seasonNumber) => {
-      const season = seasonsInfo.find((s) => s.season_number === seasonNumber);
-      return sum + (season ? season.episode_count : 0);
-    }, 0);
-
-    setNbTvEpisodes(totalEpisodes);
-    setMovie((prev) => ({ ...prev, nbTvEpisodes: totalEpisodes }));
-  }, [selectedSeasons, seasonsInfo, movie.isTvShow]);
-
-  // -- TVSHOW Mettre à jour la durée totale
-  useEffect(() => {
-    if (!movie.isTvShow) return; // ne rien faire pour les films
-
-    if (!movie.episodeDuration || movie.episodeDuration === 0) {
-      setMovie((prev) => ({ ...prev, duration: '' }));
-      return;
-    }
-
-    if (nbTvEpisodes > 0) {
-      const total = nbTvEpisodes * movie.episodeDuration;
-      setMovie((prev) => ({ ...prev, duration: total }));
-    } else {
-      setMovie((prev) => ({ ...prev, duration: '' }));
-    }
-  }, [nbTvEpisodes, movie.episodeDuration, movie.isTvShow]);
-
-  // -- TVSHOW Mettre à jour la plage de saisons sélectionnées
-  useEffect(() => {
-    if (!movie.isTvShow) return; // ne rien faire pour les films
-
-    if (!Array.isArray(selectedSeasons) || selectedSeasons.length === 0) {
-      setTvSeasons('');
-      setMovie((prev) => ({ ...prev, tvSeasons: '' }));
-      return;
-    }
-
-    // Trie les saisons sélectionnées
-    const sortedSeasons = [...selectedSeasons].sort((a, b) => a - b);
-
-    let displayValue = '';
-
-    // Si elles sont consécutives → format "1-3"
-    const isConsecutive = sortedSeasons.every((num, i, arr) => i === 0 || num === arr[i - 1] + 1);
-
-    if (isConsecutive) {
-      displayValue =
-        sortedSeasons.length === 1
-          ? `${sortedSeasons[0]}`
-          : `${sortedSeasons[0]}-${sortedSeasons[sortedSeasons.length - 1]}`;
-    } else {
-      // Saisons non consécutives → "1, 3, 5"
-      displayValue = sortedSeasons.join(', ');
-    }
-
-    setTvSeasons(displayValue);
-    setMovie((prev) => ({ ...prev, tvSeasons: displayValue }));
-  }, [selectedSeasons, movie.isTvShow]);
 
   // -- Rendus Front des Fields Saisons / episodes / durée
   const renderTvSeasonEpisodeDurationFields = () => {
@@ -219,13 +166,11 @@ function AddNewMovie() {
           value={movie.episodeDuration || ''}
           onChange={(e) => {
             const value = Number(e.target.value);
-            setMovie((prev) => {
-              const newMovie = { ...prev, episodeDuration: value };
-              if (nbTvEpisodes > 0) {
-                newMovie.duration = nbTvEpisodes * value;
-              }
-              return newMovie;
-            });
+
+            setMovie((prev) => ({
+              ...prev,
+              episodeDuration: value,
+            }));
           }}
           InputProps={{ readOnly: isReadOnly }}
           sx={{ flexGrow: 1 }}
@@ -253,16 +198,14 @@ function AddNewMovie() {
               value={Array.isArray(selectedSeasons) ? selectedSeasons : []}
               onChange={(e) => {
                 let { value } = e.target;
-                if (!Array.isArray(value)) value = [value];
+
+                if (!Array.isArray(value)) {
+                  value = [value];
+                }
+
                 value = value.map((v) => Number(v));
+
                 setSelectedSeasons(value);
-
-                const totalEpisodes = value.reduce((sum, seasonNumber) => {
-                  const season = seasonsInfo.find((s) => s.season_number === seasonNumber);
-                  return sum + (season ? season.episode_count : 0);
-                }, 0);
-
-                setMovie((prev) => ({ ...prev, nbTvEpisodes: totalEpisodes }));
               }}
               input={<OutlinedInput label="Saisons" />}
               renderValue={(selected) => selected.join(', ')}
@@ -374,7 +317,7 @@ function AddNewMovie() {
     setSelectedFocus([]);
     setCoverPreview(initialCoverPreview);
     setSelectedCoverFile('');
-    setSeasonsInfo([]);
+    setTmdbSeasonsInfo([]);
     setSelectedSeasons([]);
     setTvSeasons('');
     setNbTvEpisodes('');
@@ -1496,7 +1439,7 @@ function AddNewMovie() {
             onMovieClick={(id, type) =>
               handleMovieClick(id, type, {
                 resetStates,
-                setSeasonsInfo,
+                setTmdbSeasonsInfo,
                 setMovie,
                 movie,
                 tvSeasons,
