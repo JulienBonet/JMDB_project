@@ -59,7 +59,7 @@ import {
   createCastingInDatabase,
   searchTagInDatabase,
   createTagInDatabase,
-} from '../../utils/movieEntranceSearchInsert';
+} from '../../services/movieRelationService';
 // hooks
 import { useTransferList } from '../../hooks/useTransferList';
 import { useTrailer } from '../../hooks/useTrailer';
