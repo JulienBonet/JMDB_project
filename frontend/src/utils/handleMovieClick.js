@@ -12,7 +12,7 @@ const handleMovieClick = async (movieId, mediaType, deps, backendUrl) => {
 
   const {
     resetStates,
-    setSeasonsInfo,
+    setTmdbSeasonsInfo,
     setMovie,
     movie,
     tvSeasons,
@@ -74,7 +74,7 @@ const handleMovieClick = async (movieId, mediaType, deps, backendUrl) => {
             episode_count: s.episode_count,
           }))
         : [];
-    setSeasonsInfo(seasonsInfo);
+    setTmdbSeasonsInfo(seasonsInfo);
 
     let altTitle = '';
 

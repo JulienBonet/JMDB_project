@@ -7,26 +7,40 @@ import {
   calculateTotalDuration,
 } from '../utils/tvShowUtils';
 
-export function useTvSeasons({ isModify, isTvShow, idTheMovieDb, movieData, setMovieData }) {
+export function useTvSeasons({
+  isModify,
+  isTvShow,
+  idTheMovieDb,
+  movieData,
+  setMovieData,
+  externalSeasonsInfo = null,
+}) {
   const [selectedSeasons, setSelectedSeasons] = useState([]);
-  const [seasonsInfo, setSeasonsInfo] = useState([]);
+  const [seasonsInfo, setSeasonsInfo] = useState(externalSeasonsInfo || []);
   const [tvSeasons, setTvSeasons] = useState(movieData.tvSeasons || '');
   const [nbTvEpisodes, setNbTvEpisodes] = useState(movieData.nbTvEpisodes || 0);
+
+  // Utilise les informations de saisons fournies par le composant parent
+  useEffect(() => {
+    if (externalSeasonsInfo === null) return;
+
+    setSeasonsInfo(externalSeasonsInfo);
+  }, [externalSeasonsInfo]);
 
   // Parse tvSeasons de movieData dès le mode modify
   useEffect(() => {
     if (!isModify || !isTvShow) return;
-
     if (!movieData.tvSeasons) return;
 
     const parsed = parseTvSeasons(movieData.tvSeasons);
-
     setSelectedSeasons(parsed);
   }, [isModify, isTvShow, movieData.tvSeasons]);
 
-  // Récupération des infos season episodes TMDB
+  // Récupération des infos season episodes TMDB en mode modify
   useEffect(() => {
-    if (!isModify || !isTvShow || !idTheMovieDb) return;
+    if (externalSeasonsInfo !== null || !isModify || !isTvShow || !idTheMovieDb) {
+      return;
+    }
 
     const fetchSeasonsInfo = async () => {
       try {
@@ -43,11 +57,17 @@ export function useTvSeasons({ isModify, isTvShow, idTheMovieDb, movieData, setM
     };
 
     fetchSeasonsInfo();
-  }, [isModify, isTvShow, idTheMovieDb]);
+  }, [externalSeasonsInfo, isModify, isTvShow, idTheMovieDb]);
 
   // Mise à jour du nombre total d’épisodes
   useEffect(() => {
     if (!isTvShow) return;
+
+    // AddNewMovie en mode manuel :
+    // ne pas écraser le nombre d'épisodes saisi par l'utilisateur.
+    if (externalSeasonsInfo !== null && seasonsInfo.length === 0) {
+      return;
+    }
 
     if (!Array.isArray(selectedSeasons) || selectedSeasons.length === 0) {
       setNbTvEpisodes(0);
@@ -81,24 +101,23 @@ export function useTvSeasons({ isModify, isTvShow, idTheMovieDb, movieData, setM
         duration: total,
       }));
     } else {
-      setMovieData((prev) => ({
-        ...prev,
-        duration: '',
-      }));
+      setMovieData((prev) => ({ ...prev, duration: '' }));
     }
   }, [nbTvEpisodes, movieData.episodeDuration, isTvShow]);
 
-  // Mise à jour automatique de tvSeasons
-  // selon les saisons sélectionnées
+  // Mise à jour automatique de tvSeasons selon les saisons sélectionnées
   useEffect(() => {
     if (!isTvShow) return;
 
+    // AddNewMovie en mode manuel :
+    // ne pas écraser les saisons saisies par l'utilisateur.
+    if (externalSeasonsInfo !== null && seasonsInfo.length === 0) {
+      return;
+    }
+
     if (!Array.isArray(selectedSeasons) || selectedSeasons.length === 0) {
       setTvSeasons('');
-      setMovieData((prev) => ({
-        ...prev,
-        tvSeasons: '',
-      }));
+      setMovieData((prev) => ({ ...prev, tvSeasons: '' }));
       return;
     }
 

@@ -12,3 +12,4 @@ docker-compose.yml
 workflow JMDB dev.pdf
 structure.txt
 /scripts
+/frontend/src/components/AdminFeatures/AddNewMovie/AddNewMovie.jsx.backup
