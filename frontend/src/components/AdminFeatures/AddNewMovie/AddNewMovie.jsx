@@ -54,6 +54,7 @@ import purgeOrphanRecords from '../../../utils/purgeOrphanRecords';
 import './addNewMovie.css';
 // refactor
 import { useTvSeasons } from '../../../hooks/useTvSeasons';
+import { useMovieMedia } from '../../../hooks/useMovieMedia';
 
 function AddNewMovie() {
   // const backendUrl = `${import.meta.env.VITE_BACKEND_URL}/images`;
@@ -62,10 +63,6 @@ function AddNewMovie() {
 
   const [data, setData] = useState([]);
   const [dataType, setDataType] = useState('');
-  const [videoSupport, setvideoSupport] = useState('');
-  const [format, setFormat] = useState('');
-  const [fileSize, setFileSize] = useState(null);
-  const [selectedFile, setSelectedFile] = useState(null);
   const [selectedCoverFile, setSelectedCoverFile] = useState('');
   const [coverPreview, setCoverPreview] = useState(initialCoverPreview);
   const [openModal, setOpenModal] = useState(false);
@@ -104,10 +101,13 @@ function AddNewMovie() {
     nbTvEpisodes: null,
     episodeDuration: 0,
   });
-  useEffect(() => {
-    console.info('data', data);
-    console.info('movie', movie);
-  }, [movie, data]);
+  // -------------------
+  // controle DEV
+  // -------------------
+  // useEffect(() => {
+  //   console.info('data', data);
+  //   console.info('movie', movie);
+  // }, [movie, data]);
 
   const {
     selectedSeasons,
@@ -124,6 +124,14 @@ function AddNewMovie() {
     setMovieData: setMovie,
     externalSeasonsInfo: tmdbSeasonsInfo,
   });
+
+  const {
+    fileInputRef,
+    selectedFile,
+    handleFileChange,
+    handleFolderChange,
+    handleFormatSupportChange,
+  } = useMovieMedia(movie, setMovie);
 
   //-----------------------------------------------
   // GESTION DES FIELDS SAISONS - EPISODES - DUREE
@@ -301,10 +309,6 @@ function AddNewMovie() {
     });
 
     // Réinitialiser les états du front
-    setFormat('');
-    setvideoSupport('');
-    setFileSize(null);
-    setSelectedFile(null);
     setSelectedKinds([]);
     setSelectedDirectors([]);
     setSelectedCasting([]);
@@ -387,107 +391,11 @@ function AddNewMovie() {
   // INPUT FILE
   //-----------------------------------------------
 
-  const fileInputRef = useRef(null); // Référence pour le fichier vidéo
-
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    setSelectedFile(file);
-
-    const cleanedPath = movie.path
-      ? movie.path.replace(/^[A-Za-z]:[\\/]+/, '').replace(/[\\/]+$/, '')
-      : '';
-    const fullPath = cleanedPath ? `${cleanedPath}\\${file.name}` : file.name;
-
-    const fileSizeGB = file.size / (1024 * 1024 * 1024);
-    const fileSizeDisplay =
-      fileSizeGB < 1
-        ? `${(file.size / (1024 * 1024)).toFixed(2)} MB`
-        : `${fileSizeGB.toFixed(2)} GB`;
-
-    const ext = file.name.split('.').pop().toLowerCase();
-    const validFormats = ['avi', 'mkv', 'mp4'];
-
-    if (!validFormats.includes(ext)) {
-      toast.warn('Veuillez sélectionner un fichier vidéo valide.');
-      return;
-    }
-
-    setFormat(ext);
-    setvideoSupport('Fichier multimédia');
-    setFileSize(fileSizeDisplay); // valeur affichée locale
-
-    setMovie((prev) => ({
-      ...prev,
-      location: fullPath,
-      fileSize: fileSizeDisplay, // valeur dans l'objet movie
-      videoFormat: ext,
-      videoSupport: 'Fichier multimédia',
-    }));
-
-    toast.success(`fichier "${fullPath}" chargé, ${fileSizeDisplay})`);
-  };
-
-  const handleFolderChange = (e) => {
-    const files = Array.from(e.target.files);
-    if (!files.length) return;
-
-    // Filtrer uniquement les fichiers vidéo
-    const videoExtensions = ['avi', 'mkv', 'mp4'];
-    const videoFiles = files.filter((f) =>
-      videoExtensions.includes(f.name.split('.').pop().toLowerCase())
-    );
-
-    if (videoFiles.length === 0) {
-      toast.warn('Aucun fichier vidéo trouvé dans ce dossier.');
-      return;
-    }
-
-    // Calcul du poids total
-    const totalBytes = videoFiles.reduce((acc, file) => acc + file.size, 0);
-    const totalGB = totalBytes / (1024 * 1024 * 1024);
-    const totalSizeDisplay =
-      totalGB < 1 ? `${(totalBytes / (1024 * 1024)).toFixed(2)} MB` : `${totalGB.toFixed(2)} GB`;
-
-    // Détermination du chemin commun de base
-    const firstPath = videoFiles[0].webkitRelativePath;
-    const rootPath = firstPath.split('/')[0];
-
-    // Mise à jour du state
-    setFileSize(totalSizeDisplay);
-    setMovie((prev) => ({
-      ...prev,
-      path: rootPath,
-      location: rootPath, // chemin relatif principal
-      videoSupport: 'Fichier multimédia',
-      fileSize: totalSizeDisplay,
-    }));
-
-    toast.success(
-      `Dossier "${rootPath}" chargé (${videoFiles.length} vidéos, ${totalSizeDisplay})`
-    );
-  };
-
-  const supportsHandleChange = (event) => {
-    setvideoSupport(event.target.value);
-    setMovie((prevMovie) => ({
-      ...prevMovie,
-      videoSupport: event.target.value,
-    }));
-  };
-
   const formatsHandleChange = (event) => {
-    setFormat(event.target.value);
     setMovie((prevMovie) => ({
       ...prevMovie,
       videoFormat: event.target.value,
     }));
-  };
-
-  const handleFormatSupportChange = (event) => {
-    setMovie({ ...movie, videoSupport: event.target.value });
-    supportsHandleChange(event);
   };
 
   //-----------------------------------------------
@@ -1178,7 +1086,7 @@ function AddNewMovie() {
               <Select
                 labelId="demo-select-small-label"
                 id="demo-select-small"
-                value={videoSupport}
+                value={movie.videoSupport || ''}
                 label="Support"
                 onChange={handleFormatSupportChange}
               >
@@ -1190,7 +1098,7 @@ function AddNewMovie() {
                 <MenuItem value="Fichier multimédia">FICHIER MULTIMEDIA</MenuItem>
               </Select>
             </FormControl>
-            {videoSupport === 'Fichier multimédia' && (
+            {movie.videoSupport === 'Fichier multimédia' && (
               <>
                 <div>
                   {/* movie VIDEOFORMAT */}
@@ -1208,7 +1116,7 @@ function AddNewMovie() {
                       <Select
                         labelId="demo-select-small-label"
                         id="demo-select-small"
-                        value={format}
+                        value={movie.videoFormat || ''}
                         label="format"
                         onChange={formatsHandleChange}
                       >
@@ -1225,8 +1133,13 @@ function AddNewMovie() {
                       label="File Size"
                       id="outlined-start-adornment"
                       sx={{ m: 1, width: '25ch' }}
-                      value={fileSize || ''}
-                      onChange={(event) => setFileSize(event.target.value)}
+                      value={movie.fileSize || ''}
+                      onChange={(event) =>
+                        setMovie((prev) => ({
+                          ...prev,
+                          fileSize: event.target.value,
+                        }))
+                      }
                     />
                   </Box>
                 </div>
