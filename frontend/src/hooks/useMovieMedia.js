@@ -134,11 +134,19 @@ export function useMovieMedia(movieData, setMovieData) {
     });
   };
 
+  const formatsHandleChange = (event) => {
+    setMovieData((prev) => ({
+      ...prev,
+      videoFormat: event.target.value,
+    }));
+  };
+
   return {
     fileInputRef,
     selectedFile,
     handleFileChange,
     handleFolderChange,
     handleFormatSupportChange,
+    formatsHandleChange,
   };
 }
