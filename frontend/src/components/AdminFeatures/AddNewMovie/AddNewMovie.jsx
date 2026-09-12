@@ -1,7 +1,7 @@
 /* eslint-disable no-alert */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-shadow */
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -55,6 +55,7 @@ import './addNewMovie.css';
 // refactor
 import { useTvSeasons } from '../../../hooks/useTvSeasons';
 import { useMovieMedia } from '../../../hooks/useMovieMedia';
+import { useAddMovieCover } from '../../../hooks/useAddMovieCover';
 
 function AddNewMovie() {
   // const backendUrl = `${import.meta.env.VITE_BACKEND_URL}/images`;
@@ -63,7 +64,6 @@ function AddNewMovie() {
 
   const [data, setData] = useState([]);
   const [dataType, setDataType] = useState('');
-  const [selectedCoverFile, setSelectedCoverFile] = useState('');
   const [coverPreview, setCoverPreview] = useState(initialCoverPreview);
   const [openModal, setOpenModal] = useState(false);
   const [openModalMIE, setOpenModalMIE] = useState(false);
@@ -320,7 +320,7 @@ function AddNewMovie() {
     setSelectedTags([]);
     setSelectedFocus([]);
     setCoverPreview(initialCoverPreview);
-    setSelectedCoverFile('');
+    resetCoverFile();
     setTmdbSeasonsInfo([]);
     setSelectedSeasons([]);
     setTvSeasons('');
@@ -402,19 +402,9 @@ function AddNewMovie() {
   // INPUT COVER
   //-----------------------------------------------
 
-  const fileCoverRef = useRef(null); // Référence pour le fichier image
-
-  const handleCoverChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setCoverPreview(reader.result); // Affiche l'aperçu de l'image sélectionnée
-      };
-      reader.readAsDataURL(file);
-      setSelectedCoverFile(file); // Stocke le fichier sélectionné
-    }
-  }; // end handleCoverChange
+  const { fileCoverRef, selectedCoverFile, handleCoverChange, resetCoverFile } = useAddMovieCover({
+    setCoverPreview,
+  });
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
