@@ -58,6 +58,7 @@ import { createMovie } from '../../../services/movieService';
 import { useTmdbMovieSelection } from '../../../hooks/useTmdbMovieSelection';
 import { useTransferList } from '../../../hooks/useTransferList';
 import { useAddMovieForm } from '../../../hooks/useAddMovieForm';
+import { useAddMovieSubmit } from '../../../hooks/useAddMovieSubmit';
 
 function AddNewMovie() {
   // const backendUrl = `${import.meta.env.VITE_BACKEND_URL}/images`;
@@ -261,6 +262,10 @@ function AddNewMovie() {
     setCoverPreview,
   });
 
+  //-----------------------------------------------
+  // INPUT CHANGE
+  //----------------------------------------------
+
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     if (name === 'idIMDb') {
@@ -272,66 +277,6 @@ function AddNewMovie() {
       }));
     } else {
       setMovie((prevMovie) => ({ ...prevMovie, [name]: value }));
-    }
-  };
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handleFormSubmit = async (event) => {
-    event.preventDefault();
-
-    if (!movie.title) {
-      toast.warn('Merci de saisir un titre');
-      return;
-    }
-
-    setIsSubmitting(true);
-
-    try {
-      const formData = new FormData();
-
-      // 1️⃣ Préparer tous les champs à envoyer
-      const bodyData = {
-        ...movie,
-        vostfr: version === 'VOSTFR' ? 1 : 0,
-        multi: version === 'MULTI' ? 1 : 0,
-        isTvShow: movie.isTvShow ? 1 : 0,
-        focus: selectedFocus,
-        genres: selectedKinds,
-        directors: selectedDirectors.map((d) => d.name),
-        castings: selectedCasting.map((c) => c.name),
-        screenwriters: selectedScreenwriters.map((s) => s.name),
-        compositors: selectedMusic.map((m) => m.name),
-        studios: selectedStudios.map((s) => s.name),
-        countries: selectedCountries.map((c) => c.name),
-        languages: selectedLanguages.map((l) => l.name),
-        tags: selectedTags.map((t) => t.name),
-      };
-
-      // 2️⃣ Ajouter tous les champs au FormData
-      Object.entries(bodyData).forEach(([key, value]) => {
-        if (value !== undefined && value !== null) {
-          formData.append(key, JSON.stringify(value));
-        }
-      });
-
-      // 3️⃣ Image locale ou TMDB
-      if (selectedCoverFile) {
-        formData.append('cover', selectedCoverFile);
-      } else if (movie.posterUrl) {
-        formData.append('coverUrl', movie.posterUrl);
-      }
-
-      // 4️⃣ Envoi POST
-      await createMovie(formData);
-
-      toast.success('Le film a été ajouté avec succès !');
-      handleReturn();
-    } catch (error) {
-      console.error(error);
-      toast.error("Erreur lors de l'ajout du film 😱");
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -362,6 +307,27 @@ function AddNewMovie() {
     setTvSeasons,
     setNbTvEpisodes,
     setVersion,
+  });
+
+  //-----------------------------------------------
+  // FORM SUBMIT
+  //----------------------------------------------
+
+  const { isSubmitting, handleFormSubmit } = useAddMovieSubmit({
+    movie,
+    version,
+    selectedFocus,
+    selectedKinds,
+    selectedDirectors,
+    selectedCasting,
+    selectedScreenwriters,
+    selectedMusic,
+    selectedStudios,
+    selectedCountries,
+    selectedLanguages,
+    selectedTags,
+    selectedCoverFile,
+    handleReturn,
   });
 
   //-----------------------------------------------
