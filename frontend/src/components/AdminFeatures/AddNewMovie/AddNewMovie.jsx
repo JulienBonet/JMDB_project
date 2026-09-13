@@ -21,9 +21,6 @@ import Stack from '@mui/material/Stack';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
-import Checkbox from '@mui/material/Checkbox';
-import ListItemText from '@mui/material/ListItemText';
-import OutlinedInput from '@mui/material/OutlinedInput';
 import Switch from '@mui/material/Switch';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import CloseIcon from '@mui/icons-material/Close';
@@ -54,11 +51,11 @@ import './addNewMovie.css';
 import { useTvSeasons } from '../../../hooks/useTvSeasons';
 import { useMovieMedia } from '../../../hooks/useMovieMedia';
 import { useAddMovieCover } from '../../../hooks/useAddMovieCover';
-import { createMovie } from '../../../services/movieService';
 import { useTmdbMovieSelection } from '../../../hooks/useTmdbMovieSelection';
 import { useTransferList } from '../../../hooks/useTransferList';
 import { useAddMovieForm } from '../../../hooks/useAddMovieForm';
 import { useAddMovieSubmit } from '../../../hooks/useAddMovieSubmit';
+import TvSeasonEpisodeFields from './TvSeasonEpisodeFields';
 
 function AddNewMovie() {
   // const backendUrl = `${import.meta.env.VITE_BACKEND_URL}/images`;
@@ -133,126 +130,6 @@ function AddNewMovie() {
     handleFolderChange,
     handleFormatSupportChange,
   } = useMovieMedia(movie, setMovie);
-
-  //-----------------------------------------------
-  // GESTION DES FIELDS SAISONS - EPISODES - DUREE
-  //-----------------------------------------------
-
-  // -- Rendus Front des Fields Saisons / episodes / durée
-  const renderTvSeasonEpisodeDurationFields = () => {
-    const renderEpisodeAndDurationFields = (
-      isReadOnly = false // on garde cette option si on veut bloquer certains champs plus tard
-    ) => (
-      <>
-        <TextField
-          name="tvSeasons"
-          label="Saisons sélectionnées"
-          value={tvSeasons || ''}
-          onChange={(e) => {
-            const { value } = e.target;
-            setTvSeasons(value);
-            setMovie((prev) => ({ ...prev, tvSeasons: value }));
-          }}
-          sx={{ flexGrow: 1 }}
-        />
-        <TextField
-          name="nbTvEpisodes"
-          label="Nombre d’épisodes"
-          type="number"
-          value={nbTvEpisodes || ''}
-          onChange={(e) => {
-            const value = Number(e.target.value);
-            setNbTvEpisodes(value);
-            setMovie((prev) => ({ ...prev, nbTvEpisodes: value }));
-          }}
-          InputProps={{ readOnly: isReadOnly }}
-          sx={{ flexGrow: 1 }}
-        />
-        <TextField
-          name="episodeDuration"
-          type="number"
-          label="Durée d’un épisode (min)"
-          value={movie.episodeDuration || ''}
-          onChange={(e) => {
-            const value = Number(e.target.value);
-
-            setMovie((prev) => ({
-              ...prev,
-              episodeDuration: value,
-            }));
-          }}
-          InputProps={{ readOnly: isReadOnly }}
-          sx={{ flexGrow: 1 }}
-        />
-
-        <TextField
-          name="duration"
-          label="Durée totale (minutes)"
-          value={movie.duration || ''}
-          InputProps={{ readOnly: true }}
-          sx={{ flexGrow: 1 }}
-        />
-      </>
-    );
-
-    // --- Mode API ---
-    if (seasonsInfo.length > 0) {
-      return (
-        <>
-          <FormControl sx={{ flexGrow: 1 }}>
-            <InputLabel id="season-select-label">Saisons</InputLabel>
-            <Select
-              labelId="season-select-label"
-              multiple
-              value={Array.isArray(selectedSeasons) ? selectedSeasons : []}
-              onChange={(e) => {
-                let { value } = e.target;
-
-                if (!Array.isArray(value)) {
-                  value = [value];
-                }
-
-                value = value.map((v) => Number(v));
-
-                setSelectedSeasons(value);
-              }}
-              input={<OutlinedInput label="Saisons" />}
-              renderValue={(selected) => selected.join(', ')}
-            >
-              {Array.from({ length: movie.nbTvSeasons || 0 }, (_, i) => (
-                <MenuItem key={i + 1} value={i + 1}>
-                  <Checkbox
-                    checked={Array.isArray(selectedSeasons) && selectedSeasons.includes(i + 1)}
-                  />
-                  <ListItemText primary={`Saison ${i + 1}`} />
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-
-          {renderEpisodeAndDurationFields()}
-        </>
-      );
-    }
-
-    // --- Mode manuel ---
-    return (
-      <>
-        <TextField
-          name="tvSeasons"
-          label="Saisons sélectionnées"
-          value={tvSeasons || ''}
-          onChange={(e) => {
-            const { value } = e.target;
-            setTvSeasons(value);
-            setMovie((prev) => ({ ...prev, tvSeasons: value }));
-          }}
-          sx={{ flexGrow: 1 }}
-        />
-        {renderEpisodeAndDurationFields()}
-      </>
-    );
-  };
 
   //-----------------------------------------------
   // INPUT COVER
@@ -587,7 +464,19 @@ function AddNewMovie() {
                     />
                   )}
                   {/* Tv saison - epidsode - duration rendu la fonction renderTvSeasonEpisodeDurationFields */}
-                  {movie?.isTvShow && renderTvSeasonEpisodeDurationFields()}
+                  {movie?.isTvShow && (
+                    <TvSeasonEpisodeFields
+                      seasonsInfo={seasonsInfo}
+                      movie={movie}
+                      tvSeasons={tvSeasons}
+                      nbTvEpisodes={nbTvEpisodes}
+                      selectedSeasons={selectedSeasons}
+                      setMovie={setMovie}
+                      setTvSeasons={setTvSeasons}
+                      setNbTvEpisodes={setNbTvEpisodes}
+                      setSelectedSeasons={setSelectedSeasons}
+                    />
+                  )}
                 </div>
               </Box>
               {/* movie PITCH */}
