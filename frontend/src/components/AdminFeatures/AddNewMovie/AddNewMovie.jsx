@@ -49,7 +49,6 @@ import {
   searchTagInDatabase,
   createTagInDatabase,
 } from '../../../services/movieRelationService';
-import purgeOrphanRecords from '../../../utils/purgeOrphanRecords';
 import './addNewMovie.css';
 // refactor
 import { useTvSeasons } from '../../../hooks/useTvSeasons';
@@ -57,16 +56,16 @@ import { useMovieMedia } from '../../../hooks/useMovieMedia';
 import { useAddMovieCover } from '../../../hooks/useAddMovieCover';
 import { createMovie } from '../../../services/movieService';
 import { useTmdbMovieSelection } from '../../../hooks/useTmdbMovieSelection';
+import { useTransferList } from '../../../hooks/useTransferList';
+import { useAddMovieForm } from '../../../hooks/useAddMovieForm';
 
 function AddNewMovie() {
   // const backendUrl = `${import.meta.env.VITE_BACKEND_URL}/images`;
   const CLOUDINARY_BASE_URL = import.meta.env.VITE_CLOUDINARY_BASE_URL;
   const initialCoverPreview = `${CLOUDINARY_BASE_URL}/00_cover_default.jpg`;
 
-  const [data, setData] = useState([]);
-  const [dataType, setDataType] = useState('');
+  const { openModal, data, dataType, handleOpenModal, handleCloseModal } = useTransferList();
   const [coverPreview, setCoverPreview] = useState(initialCoverPreview);
-  const [openModal, setOpenModal] = useState(false);
   const [openModalMIE, setOpenModalMIE] = useState(false);
   const [selectedKinds, setSelectedKinds] = useState([]);
   const [selectedDirectors, setSelectedDirectors] = useState([]);
@@ -255,187 +254,6 @@ function AddNewMovie() {
   };
 
   //-----------------------------------------------
-  // ANNULATION - RETOUR VERS ADMIN MOVIE LIST
-  //-----------------------------------------------
-
-  const navigate = useNavigate();
-
-  const handleReturn = async () => {
-    navigate('/admin_feat');
-    // 🧹 Appeler la purge
-    try {
-      await purgeOrphanRecords(); // ✅ on attend que la purge se termine
-      console.info('Purge exécutée avec succès après le reset.');
-    } catch (error) {
-      console.error('Erreur lors de la purge :', error);
-    }
-  };
-
-  //-----------------------------------------------
-  // SOURCE
-  //-----------------------------------------------
-
-  const handleChangeMovieDb = (event) => {
-    setMovie((prevMovie) => ({
-      ...prevMovie,
-      idTheMovieDb: event.target.value,
-    }));
-  };
-
-  //-----------------------------------------------
-  // RESET FORM
-  //-----------------------------------------------
-  const resetStates = async (isTvShow = false, withPurge = true) => {
-    // Vider le formulaire
-    setMovie({
-      title: '',
-      altTitle: '',
-      year: '',
-      duration: 0,
-      pitch: '',
-      story: '',
-      posterUrl: '',
-      trailer: '',
-      location: null,
-      videoFormat: '',
-      videoSupport: '',
-      fileSize: null,
-      idTheMovieDb: '',
-      idIMDB: '',
-      isTvShow,
-      nbTvSeasons: '',
-      tvSeasons: '',
-      nbTvEpisodes: null,
-      episodeDuration: 0,
-    });
-
-    // Réinitialiser les états du front
-    setSelectedKinds([]);
-    setSelectedDirectors([]);
-    setSelectedCasting([]);
-    setSelectedScreenwriters([]);
-    setSelectedMusic([]);
-    setSelectedStudios([]);
-    setSelectedCountries([]);
-    setSelectedLanguages([]);
-    setSelectedTags([]);
-    setSelectedFocus([]);
-    setCoverPreview(initialCoverPreview);
-    resetCoverFile();
-    setTmdbSeasonsInfo([]);
-    setSelectedSeasons([]);
-    setTvSeasons('');
-    setNbTvEpisodes('');
-    setVersion('none');
-
-    // 🧹 Appeler la purge
-    // 🧹 Purge conditionnelle
-    if (withPurge) {
-      try {
-        await purgeOrphanRecords();
-        console.info('Purge exécutée avec succès après le reset.');
-      } catch (error) {
-        console.error('Erreur lors de la purge :', error);
-      }
-    }
-  };
-
-  //-----------------------------------------------
-  // MOVIE INFO ENTRANCE MODAL
-  //-----------------------------------------------
-  const handleOpenModalMIE = () => {
-    if (movie.title) {
-      setOpenModalMIE(true);
-    } else {
-      toast.warn('Saisir un titre à rechercher');
-    }
-  };
-
-  const handleCloseModalMIE = () => {
-    setOpenModalMIE(false);
-  };
-
-  const { handleTmdbMovieClick } = useTmdbMovieSelection({
-    resetStates,
-    setTmdbSeasonsInfo,
-    setMovie,
-    movie,
-    tvSeasons,
-    searchGenreInDatabase,
-    createGenreInDatabase,
-    setSelectedKinds,
-    searchStudioInDatabase,
-    createStudioInDatabase,
-    setSelectedStudios,
-    searchCountryInDatabase,
-    createCountryInDatabase,
-    setSelectedCountries,
-    searchLanguageInDatabase,
-    createLanguageInDatabase,
-    setSelectedLanguages,
-    searchDirectorInDatabase,
-    createDirectorInDatabase,
-    setSelectedDirectors,
-    searchScreenwriterInDatabase,
-    createScreenwriterInDatabase,
-    setSelectedScreenwriters,
-    searchCompositorInDatabase,
-    createCompositorInDatabase,
-    setSelectedMusic,
-    searchCastingInDatabase,
-    createCastingInDatabase,
-    setSelectedCasting,
-    searchTagInDatabase,
-    createTagInDatabase,
-    setSelectedTags,
-    setCoverPreview,
-  });
-
-  //-----------------------------------------------
-  // ITEMS MODAL FETCH
-  //-----------------------------------------------
-
-  // --- FETCH DATA GENERIQUE ---
-  const fetchData = async (route) => {
-    try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/${route}`);
-      if (!response.ok) throw new Error('Network response was not ok');
-      const datas = await response.json();
-      setData(datas);
-    } catch (error) {
-      console.error(`Error fetching ${route}:`, error);
-    }
-  };
-
-  // --- HANDLER OUVERTURE MODAL ---
-  const handleOpenModal = (type) => {
-    setDataType(type);
-    setOpenModal(true);
-    fetchData(type);
-  };
-
-  // --- HANDLER FERMETURE MODAL ---
-  const handleCloseModal = () => {
-    setDataType('');
-    setOpenModal(false);
-    setData([]);
-  };
-
-  // --- GENERER LES NOMS
-  const getSelectedNames = (items) => items.map((item) => item.name).join(', ');
-
-  //-----------------------------------------------
-  // INPUT FILE
-  //-----------------------------------------------
-
-  const formatsHandleChange = (event) => {
-    setMovie((prevMovie) => ({
-      ...prevMovie,
-      videoFormat: event.target.value,
-    }));
-  };
-
-  //-----------------------------------------------
   // INPUT COVER
   //-----------------------------------------------
 
@@ -515,6 +333,104 @@ function AddNewMovie() {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  //-----------------------------------------------
+  // FORM : ANNULATION - SOURCE - RESET
+  //-----------------------------------------------
+
+  const navigate = useNavigate();
+
+  const { handleReturn, handleChangeMovieDb, resetStates } = useAddMovieForm({
+    navigate,
+    setMovie,
+    setSelectedKinds,
+    setSelectedDirectors,
+    setSelectedCasting,
+    setSelectedScreenwriters,
+    setSelectedMusic,
+    setSelectedStudios,
+    setSelectedCountries,
+    setSelectedLanguages,
+    setSelectedTags,
+    setSelectedFocus,
+    setCoverPreview,
+    initialCoverPreview,
+    resetCoverFile,
+    setTmdbSeasonsInfo,
+    setSelectedSeasons,
+    setTvSeasons,
+    setNbTvEpisodes,
+    setVersion,
+  });
+
+  //-----------------------------------------------
+  // MOVIE INFO ENTRANCE MODAL
+  //-----------------------------------------------
+  const handleOpenModalMIE = () => {
+    if (movie.title) {
+      setOpenModalMIE(true);
+    } else {
+      toast.warn('Saisir un titre à rechercher');
+    }
+  };
+
+  const handleCloseModalMIE = () => {
+    setOpenModalMIE(false);
+  };
+
+  const { handleTmdbMovieClick } = useTmdbMovieSelection({
+    resetStates,
+    setTmdbSeasonsInfo,
+    setMovie,
+    movie,
+    tvSeasons,
+    searchGenreInDatabase,
+    createGenreInDatabase,
+    setSelectedKinds,
+    searchStudioInDatabase,
+    createStudioInDatabase,
+    setSelectedStudios,
+    searchCountryInDatabase,
+    createCountryInDatabase,
+    setSelectedCountries,
+    searchLanguageInDatabase,
+    createLanguageInDatabase,
+    setSelectedLanguages,
+    searchDirectorInDatabase,
+    createDirectorInDatabase,
+    setSelectedDirectors,
+    searchScreenwriterInDatabase,
+    createScreenwriterInDatabase,
+    setSelectedScreenwriters,
+    searchCompositorInDatabase,
+    createCompositorInDatabase,
+    setSelectedMusic,
+    searchCastingInDatabase,
+    createCastingInDatabase,
+    setSelectedCasting,
+    searchTagInDatabase,
+    createTagInDatabase,
+    setSelectedTags,
+    setCoverPreview,
+  });
+
+  //-----------------------------------------------
+  // ITEMS MODAL FETCH
+  //-----------------------------------------------
+
+  // --- GENERER LES NOMS
+  const getSelectedNames = (items) => items.map((item) => item.name).join(', ');
+
+  //-----------------------------------------------
+  // INPUT FILE
+  //-----------------------------------------------
+
+  const formatsHandleChange = (event) => {
+    setMovie((prevMovie) => ({
+      ...prevMovie,
+      videoFormat: event.target.value,
+    }));
   };
 
   //-----------------------------------------------
