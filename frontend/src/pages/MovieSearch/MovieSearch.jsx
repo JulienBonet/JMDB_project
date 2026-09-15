@@ -2,41 +2,42 @@
 /* eslint-disable no-shadow */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-undef */
-import { useState, useEffect } from "react";
-import { FixedSizeGrid as Grid } from "react-window";
-// eslint-disable-next-line import/no-unresolved
-import { useResizeDetector } from "react-resize-detector";
-import "./movieSearch.css";
-import "./movieSearchMediaQueries.css";
-import "../../assets/css/scrollButton.css";
-import CachedIcon from "@mui/icons-material/Cached";
-import { ToggleButton, ToggleButtonGroup } from "@mui/material";
-import TextField from "@mui/material/TextField";
-import InputAdornment from "@mui/material/InputAdornment";
-import IconButton from "@mui/material/IconButton";
-import SearchIcon from "@mui/icons-material/Search";
-import ClearIcon from "@mui/icons-material/Clear";
-import YearDropdown from "../../components/YearOption/YearDropdown";
-import CountryDropdown from "../../components/CountryOption/CountryDropdown";
-import KindsDropdown from "../../components/KindOption/KindsDropdown";
-import MovieThumbnail from "../../components/MovieThumbnail/MovieThumbnail";
-import MovieCount from "../../components/MovieCount/MovieCount";
-import LoaderCowardlySquid from "../../components/LoaderCowardlySquid/LoaderCowardlySquid";
-import ToggleSortedButton from "../../components/ToggleSortedBtn/ToggleSortedButton";
-import SideActionBar from "../../components/StickySideBar/StickySideBar";
+import { useState, useEffect } from 'react';
+import { FixedSizeGrid as Grid } from 'react-window';
+import { useResizeDetector } from 'react-resize-detector';
+import './movieSearch.css';
+import './movieSearchMediaQueries.css';
+import '../../assets/css/scrollButton.css';
+import CachedIcon from '@mui/icons-material/Cached';
+import { ToggleButton, ToggleButtonGroup } from '@mui/material';
+import TextField from '@mui/material/TextField';
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
+import SearchIcon from '@mui/icons-material/Search';
+import ClearIcon from '@mui/icons-material/Clear';
+import YearDropdown from '../../components/YearOption/YearDropdown';
+import CountryDropdown from '../../components/CountryOption/CountryDropdown';
+import KindsDropdown from '../../components/KindOption/KindsDropdown';
+import MovieThumbnail from '../../components/MovieThumbnail/MovieThumbnail';
+import MovieCount from '../../components/MovieCount/MovieCount';
+import LoaderCowardlySquid from '../../components/LoaderCowardlySquid/LoaderCowardlySquid';
+import ToggleSortedButton from '../../components/ToggleSortedBtn/ToggleSortedButton';
+import SideActionBar from '../../components/StickySideBar/StickySideBar';
+//refactor
+import { searchMovies } from '../../services/movieService';
 
 function MovieSearch() {
   const [movies, setMovies] = useState([]);
   const { width, height, ref } = useResizeDetector();
 
   // filtres / tri
-  const [search, setSearch] = useState("");
-  const [selectedKind, setSelectedKind] = useState("");
-  const [selectedCountry, setSelectedCountry] = useState("");
-  const [selectedYear, setSelectedYear] = useState("");
-  const [selectedTvShow, setSelectedTvShow] = useState("all");
-  const [orderby, setOrderby] = useState("id");
-  const [direction, setDirection] = useState("DESC");
+  const [search, setSearch] = useState('');
+  const [selectedKind, setSelectedKind] = useState('');
+  const [selectedCountry, setSelectedCountry] = useState('');
+  const [selectedYear, setSelectedYear] = useState('');
+  const [selectedTvShow, setSelectedTvShow] = useState('all');
+  const [orderby, setOrderby] = useState('id');
+  const [direction, setDirection] = useState('DESC');
   const [isLoading, setIsLoading] = useState(true);
   const [openSideBar, setOpenSideBar] = useState(false);
 
@@ -53,54 +54,32 @@ function MovieSearch() {
   //-----------------------------
   useEffect(() => {
     const handleResize = () => setIsNarrow(window.innerWidth < 768);
-    window.addEventListener("resize", handleResize);
+    window.addEventListener('resize', handleResize);
     handleResize();
-    return () => window.removeEventListener("resize", handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
-
-  // -----------------------------------------------------------
-  // Construction URL unifiée (utilise endpoint existant)
-  // -----------------------------------------------------------
-  const buildUrl = () => {
-    const p = new URLSearchParams();
-
-    if (search) p.append("search", search);
-    if (selectedKind) p.append("kind", selectedKind);
-    if (selectedCountry) p.append("country", selectedCountry);
-    if (selectedYear) p.append("year", selectedYear);
-
-    if (selectedTvShow !== "all") {
-      p.append("tvshow", selectedTvShow === "movies" ? 0 : 1);
-    }
-
-    p.append("orderby", orderby);
-    p.append("direction", direction);
-
-    return `${import.meta.env.VITE_BACKEND_URL}/api/movies/search-filter?${p.toString()}`;
-  };
 
   // ------------------------------------------------------------------
   // Fetch principal (appelé automatiquement via useEffect ci-dessous)
   // ------------------------------------------------------------------
+
   const fetchMovies = async () => {
     try {
       setIsLoading(true);
-      const res = await fetch(buildUrl(), {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
+
+      const moviesData = await searchMovies({
+        search,
+        kind: selectedKind,
+        country: selectedCountry,
+        year: selectedYear,
+        tvshow: selectedTvShow,
+        orderby,
+        direction,
       });
 
-      if (!res.ok) {
-        // tu peux adapter la gestion d'erreur
-        console.error("Erreur fetch movies:", res.statusText);
-        setMovies([]);
-        return;
-      }
-      const moviesData = await res.json();
       setMovies(moviesData);
     } catch (err) {
-      console.error("Erreur fetchMovies:", err);
+      console.error('Erreur fetchMovies:', err);
       setMovies([]);
     } finally {
       setIsLoading(false);
@@ -128,7 +107,7 @@ function MovieSearch() {
   // ------------------------
   const handleTyping = (e) => {
     let { value } = e.target;
-    value = value.replace(/-/g, "").toLowerCase();
+    value = value.replace(/-/g, '').toLowerCase();
     setSearch(value);
   };
 
@@ -138,32 +117,30 @@ function MovieSearch() {
 
   // TRI via SideActionBar -> change orderby/direction which déclenche fetch
   const handleAlphabeticBtnClick = () => {
-    setOrderby("title");
-    setDirection((d) => (d === "ASC" ? "DESC" : "ASC"));
+    setOrderby('title');
+    setDirection((d) => (d === 'ASC' ? 'DESC' : 'ASC'));
   };
 
   const handleChronologicBtnClick = () => {
-    setOrderby("year");
-    setDirection((d) => (d === "ASC" ? "DESC" : "ASC"));
+    setOrderby('year');
+    setDirection((d) => (d === 'ASC' ? 'DESC' : 'ASC'));
   };
 
   const handleResetSearch = () => {
-    setSearch("");
-    setSelectedKind("");
-    setSelectedCountry("");
-    setSelectedYear("");
-    setSelectedTvShow("all");
-    setOrderby("id");
-    setDirection("DESC");
+    setSearch('');
+    setSelectedKind('');
+    setSelectedCountry('');
+    setSelectedYear('');
+    setSelectedTvShow('all');
+    setOrderby('id');
+    setDirection('DESC');
   };
 
   // --------------------------------------------------------
   // UPDATE / DELETE MOVIE (modification locale de la liste)
   // --------------------------------------------------------
   const handleUpdateMovie = (updatedMovieData) => {
-    setMovies((prev) =>
-      prev.map((m) => (m.id === updatedMovieData.id ? updatedMovieData : m))
-    );
+    setMovies((prev) => prev.map((m) => (m.id === updatedMovieData.id ? updatedMovieData : m)));
   };
 
   const handleDeleteMovie = (movieId) => {
@@ -173,17 +150,17 @@ function MovieSearch() {
   //-----------------------------
   // SX STYLES
   //-----------------------------
-  const searchToggleGroupButtonSx = { borderRadius: "10px" };
+  const searchToggleGroupButtonSx = { borderRadius: '10px' };
   const searchToggleButtonSx = {
-    color: "var(--color-01)",
-    border: "solid 1px white",
-    borderRadius: "10px",
-    height: "40px",
-    textTransform: "none",
-    "&.Mui-selected": { color: "var(--color-03)" },
-    "&:hover": {
-      backgroundColor: "var(--color-05)",
-      border: "solid 1px white",
+    color: 'var(--color-01)',
+    border: 'solid 1px white',
+    borderRadius: '10px',
+    height: '40px',
+    textTransform: 'none',
+    '&.Mui-selected': { color: 'var(--color-03)' },
+    '&:hover': {
+      backgroundColor: 'var(--color-05)',
+      border: 'solid 1px white',
     },
   };
 
@@ -210,37 +187,37 @@ function MovieSearch() {
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <SearchIcon sx={{ color: "#aaa" }} />
+                    <SearchIcon sx={{ color: '#aaa' }} />
                   </InputAdornment>
                 ),
                 endAdornment: search && (
                   <InputAdornment position="end">
-                    <IconButton onClick={() => setSearch("")} size="small">
-                      <ClearIcon sx={{ color: "#888" }} />
+                    <IconButton onClick={() => setSearch('')} size="small">
+                      <ClearIcon sx={{ color: '#888' }} />
                     </IconButton>
                   </InputAdornment>
                 ),
               }}
               sx={{
                 borderRadius: 3,
-                "& .MuiOutlinedInput-root": {
+                '& .MuiOutlinedInput-root': {
                   borderRadius: 3,
-                  backgroundColor: "#f5f5f5",
-                  "& fieldset": {
-                    borderColor: "#ccc",
+                  backgroundColor: '#f5f5f5',
+                  '& fieldset': {
+                    borderColor: '#ccc',
                   },
-                  "&:hover fieldset": {
-                    borderColor: "var(--color-03)",
+                  '&:hover fieldset': {
+                    borderColor: 'var(--color-03)',
                   },
-                  "&.Mui-focused fieldset": {
-                    borderColor: "var(--color-03)",
-                    boxShadow: "0 0 8px rgba(0,0,0,0.1)",
+                  '&.Mui-focused fieldset': {
+                    borderColor: 'var(--color-03)',
+                    boxShadow: '0 0 8px rgba(0,0,0,0.1)',
                   },
                 },
                 input: {
-                  color: "#333",
-                  "&::placeholder": {
-                    color: "#aaa",
+                  color: '#333',
+                  '&::placeholder': {
+                    color: '#aaa',
                     opacity: 1,
                   },
                 },
@@ -254,15 +231,14 @@ function MovieSearch() {
             className="mobile_toggle_button"
             onClick={() => setMobileToggleOpen(!mobileToggleOpen)}
           >
-            <span>{mobileToggleOpen ? "▲" : "▼"}</span>
+            <span>{mobileToggleOpen ? '▲' : '▼'}</span>
           </button>
 
           {/* Dropdowns */}
           <div
             className="dropdown_search_container"
             style={{
-              display:
-                mobileToggleOpen || window.innerWidth > 768 ? "flex" : "none",
+              display: mobileToggleOpen || window.innerWidth > 768 ? 'flex' : 'none',
             }}
           >
             <KindsDropdown
@@ -290,17 +266,14 @@ function MovieSearch() {
           <div
             className="filter_container_MovieSearch"
             style={{
-              display:
-                mobileToggleOpen || window.innerWidth > 768 ? "flex" : "none",
+              display: mobileToggleOpen || window.innerWidth > 768 ? 'flex' : 'none',
             }}
           >
             <ToggleButtonGroup
               value={selectedTvShow}
               exclusive
               className="tvShowToggleGroup"
-              onChange={(e, newValue) =>
-                newValue && setSelectedTvShow(newValue)
-              }
+              onChange={(e, newValue) => newValue && setSelectedTvShow(newValue)}
               sx={searchToggleGroupButtonSx}
             >
               <ToggleButton value="all" sx={searchToggleButtonSx}>
@@ -328,7 +301,7 @@ function MovieSearch() {
       <section
         className="search_moviesList_position"
         ref={ref}
-        style={{ width: "100%", height: "100%" }}
+        style={{ width: '100%', height: '100%' }}
       >
         {isLoading ? (
           <div className="MovieThumbnails_container MovieThumbnails_Loader">
@@ -347,10 +320,7 @@ function MovieSearch() {
             {movies.length === 0 && (
               <div className="NoMovieMessageContainer">
                 <p>NO MOVIE FOUND ...</p>
-                <CachedIcon
-                  className="reset_search_btn_NoMovie"
-                  onClick={handleResetSearch}
-                />
+                <CachedIcon className="reset_search_btn_NoMovie" onClick={handleResetSearch} />
               </div>
             )}
 
@@ -363,8 +333,7 @@ function MovieSearch() {
                   );
 
                   const rowCount = Math.ceil(movies.length / columns);
-                  const totalRowWidth =
-                    columns * (THUMB_WIDTH + THUMB_GAP) - THUMB_GAP;
+                  const totalRowWidth = columns * (THUMB_WIDTH + THUMB_GAP) - THUMB_GAP;
 
                   const offsetX = Math.max(0, (width - totalRowWidth) / 2);
 
