@@ -41,3 +41,31 @@ export const getByName = async (endpoint, name) => {
 
   return response.data;
 };
+
+export const searchMovies = async ({
+  search = '',
+  kind = '',
+  country = '',
+  year = '',
+  tvshow = 'all',
+  orderby = 'id',
+  direction = 'DESC',
+}) => {
+  const params = new URLSearchParams();
+
+  if (search) params.append('search', search);
+  if (kind) params.append('kind', kind);
+  if (country) params.append('country', country);
+  if (year) params.append('year', year);
+
+  if (tvshow !== 'all') {
+    params.append('tvshow', tvshow === 'movies' ? 0 : 1);
+  }
+
+  params.append('orderby', orderby);
+  params.append('direction', direction);
+
+  const response = await api.get(`/api/movies/search-filter?${params.toString()}`);
+
+  return response.data;
+};
