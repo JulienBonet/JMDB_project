@@ -1,11 +1,13 @@
-import { useState, useEffect } from "react";
-import { useLoaderData } from "react-router-dom";
-import { createTheme } from "@mui/material/styles";
-import "./movieArtist.css";
-import "./movieArtistMediaQueries.css";
-import ArtistList from "../../components/ArtistList/ArtistList";
-import ArtistFilmo from "../../components/ArtistFilmo/ArtistFilmo";
-import MovieArtistSearchBar from "../../components/MovieArtistSearchBar/MovieArtistSearchBar";
+import { useState, useEffect } from 'react';
+import { useLoaderData } from 'react-router-dom';
+import { createTheme } from '@mui/material/styles';
+import './movieArtist.css';
+import './movieArtistMediaQueries.css';
+import ArtistList from '../../components/ArtistList/ArtistList';
+import ArtistFilmo from '../../components/ArtistFilmo/ArtistFilmo';
+import MovieArtistSearchBar from '../../components/MovieArtistSearchBar/MovieArtistSearchBar';
+// refactor
+import { getTagsByLetter, getTagMovies, getTagMoviesSorted } from '../../services/tagService';
 
 function MovieTag() {
   // ---------------------
@@ -14,12 +16,12 @@ function MovieTag() {
   const tagsData = useLoaderData();
   const [movies, setMovies] = useState([]);
   const [data, setData] = useState(movies);
-  const [search, setSearch] = useState("");
-  const [sortOrderA, setSortOrderA] = useState("asc");
-  const [sortOrderY, setSortOrderY] = useState("desc");
+  const [search, setSearch] = useState('');
+  const [sortOrderA, setSortOrderA] = useState('asc');
+  const [sortOrderY, setSortOrderY] = useState('desc');
   const [movieAmount, setMovieAmount] = useState(0);
-  const [selectedLetter, SetSelectedLetter] = useState("a");
-  const [selectedTag, setselectedTag] = useState("");
+  const [selectedLetter, SetSelectedLetter] = useState('a');
+  const [selectedTag, setselectedTag] = useState('');
   const [selectedTagByLetter, setSelectedStudioByLetter] = useState([]);
   const [openSideBar, setOpenSideBar] = useState(false);
 
@@ -27,41 +29,29 @@ function MovieTag() {
   // REQUEST ALL TAGS BY LETTER
   // --------------------------------------------
   useEffect(() => {
-    fetch(
-      `${import.meta.env.VITE_BACKEND_URL}/api/tags/sorted/${selectedLetter}`
-    )
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then((tagsDataLetter) => {
+    const fetchTagsByLetter = async () => {
+      try {
+        const tagsDataLetter = await getTagsByLetter(selectedLetter);
         setSelectedStudioByLetter(tagsDataLetter);
-      })
-      .catch((error) => {
-        console.error("Error fetching user data:", error);
-      });
+      } catch (error) {
+        console.error('Error fetching tag data:', error);
+      }
+    };
+
+    fetchTagsByLetter();
   }, [selectedLetter]);
 
   // --------------------------------------------
   // REQUEST ALL MOVIES by TAG
   // --------------------------------------------
-  const fetchMoviesByTag = () => {
-    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/tags/${selectedTag.id}`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then((moviesData) => {
-        setMovies(moviesData);
-        setMovieAmount(moviesData.length);
-      })
-      .catch((error) => {
-        console.error("Error fetching user data:", error);
-      });
+  const fetchMoviesByTag = async () => {
+    try {
+      const moviesData = await getTagMovies(selectedTag.id);
+      setMovies(moviesData);
+      setMovieAmount(moviesData.length);
+    } catch (error) {
+      console.error('Error fetching tag movies:', error);
+    }
   };
 
   useEffect(() => {
@@ -73,7 +63,7 @@ function MovieTag() {
   // --------------------------------------------
   const handleLetterChange = (letter) => {
     SetSelectedLetter(letter);
-    setSearch("");
+    setSearch('');
   };
 
   // --------------------------------------------
@@ -88,20 +78,16 @@ function MovieTag() {
   // --------------------------------------------
   const handleTyping = (e) => {
     let { value } = e.target;
-    value = value.replace(/-/g, "").toLowerCase();
+    value = value.replace(/-/g, '').toLowerCase();
     setSearch(value);
-    SetSelectedLetter("");
+    SetSelectedLetter('');
   };
 
   const filteredTag = tagsData
     ? tagsData.filter(
         (dataItem) =>
           dataItem.name &&
-          dataItem.name
-            .toString()
-            .toLowerCase()
-            .replace(/-/g, "")
-            .includes(search.toLowerCase())
+          dataItem.name.toString().toLowerCase().replace(/-/g, '').includes(search.toLowerCase())
       )
     : [];
 
@@ -123,19 +109,11 @@ function MovieTag() {
   // --------------------------------------------
   const movieSortedA = async () => {
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/api/tags/${
-          selectedTag.id
-        }/sorted/0`
-      );
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const newData = await response.json();
+      const newData = await getTagMoviesSorted(selectedTag.id, 0);
       setData(newData);
-      setSortOrderA("asc");
+      setSortOrderA('asc');
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error('Error fetching data:', error);
     }
   };
 
@@ -144,19 +122,11 @@ function MovieTag() {
   // --------------------------------------------
   const movieSortedZ = async () => {
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/api/tags/${
-          selectedTag.id
-        }/sorted/1`
-      );
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const newData = await response.json();
+      const newData = await getTagMoviesSorted(selectedTag.id, 1);
       setData(newData);
-      setSortOrderA("desc");
+      setSortOrderA('desc');
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error('Error fetching data:', error);
     }
   };
 
@@ -165,19 +135,11 @@ function MovieTag() {
   // --------------------------------------------
   const movieSortedYear = async () => {
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/api/tags/${
-          selectedTag.id
-        }/sorted/2`
-      );
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const newData = await response.json();
+      const newData = await getTagMoviesSorted(selectedTag.id, 2);
       setData(newData);
-      setSortOrderY("asc");
+      setSortOrderY('asc');
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error('Error fetching data:', error);
     }
   };
 
@@ -186,19 +148,11 @@ function MovieTag() {
   // --------------------------------------------
   const movieSortedYearDesc = async () => {
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/api/tags/${
-          selectedTag.id
-        }/sorted/3`
-      );
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const newData = await response.json();
+      const newData = await getTagMoviesSorted(selectedTag.id, 3);
       setData(newData);
-      setSortOrderY("desc");
+      setSortOrderY('desc');
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error('Error fetching data:', error);
     }
   };
 
@@ -208,16 +162,16 @@ function MovieTag() {
   const theme = createTheme({
     palette: {
       primary: {
-        main: "#fefee2",
-        light: "#ffa500",
-        dark: "#e59100",
-        contrastText: "#242105",
+        main: '#fefee2',
+        light: '#ffa500',
+        dark: '#e59100',
+        contrastText: '#242105',
       },
       artists_list: {
-        main: "#fefee2",
-        light: "#ffa500",
-        dark: "#e59100",
-        contrastText: "#242105",
+        main: '#fefee2',
+        light: '#ffa500',
+        dark: '#e59100',
+        contrastText: '#242105',
       },
     },
   });
@@ -225,7 +179,7 @@ function MovieTag() {
   // --------------------------------------------
   // PROPS FOR TEXTS & IMAGE
   // --------------------------------------------
-  const origin = "tags";
+  const origin = 'tags';
 
   // -----------------------------------------------------
   // MISE A JOUR AFFICHAGE SI DELETE MOVIE DANS MOVIECARD
@@ -238,9 +192,9 @@ function MovieTag() {
   // FONCTION POUR BTN RESET SEARCH
   // --------------------------------------------
   const handleResetSearch = () => {
-    setSearch("");
-    SetSelectedLetter("a"); // lettre par défaut
-    setselectedTag("");
+    setSearch('');
+    SetSelectedLetter('a'); // lettre par défaut
+    setselectedTag('');
     setMovies([]);
     setData([]);
     setMovieAmount(0);
