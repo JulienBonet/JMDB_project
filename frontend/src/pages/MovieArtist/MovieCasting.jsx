@@ -1,11 +1,17 @@
-import { useState, useEffect } from "react";
-import { useLoaderData } from "react-router-dom";
-import { createTheme } from "@mui/material/styles";
-import "./movieArtist.css";
-import "./movieArtistMediaQueries.css";
-import ArtistList from "../../components/ArtistList/ArtistList";
-import ArtistFilmo from "../../components/ArtistFilmo/ArtistFilmo";
-import MovieArtistSearchBar from "../../components/MovieArtistSearchBar/MovieArtistSearchBar";
+import { useState, useEffect } from 'react';
+import { useLoaderData } from 'react-router-dom';
+import { createTheme } from '@mui/material/styles';
+import './movieArtist.css';
+import './movieArtistMediaQueries.css';
+import ArtistList from '../../components/ArtistList/ArtistList';
+import ArtistFilmo from '../../components/ArtistFilmo/ArtistFilmo';
+import MovieArtistSearchBar from '../../components/MovieArtistSearchBar/MovieArtistSearchBar';
+// refactor
+import {
+  getArtistsByLetter,
+  getArtistMovies,
+  getArtistMoviesSorted,
+} from '../../services/artistService';
 
 function MovieCasting() {
   // ---------
@@ -14,12 +20,12 @@ function MovieCasting() {
   const castingData = useLoaderData();
   const [movies, setMovies] = useState([]);
   const [data, setData] = useState(movies);
-  const [selectedCasting, setSelectedCasting] = useState("");
-  const [search, setSearch] = useState("");
-  const [sortOrderA, setSortOrderA] = useState("asc");
-  const [sortOrderY, setSortOrderY] = useState("desc");
+  const [selectedCasting, setSelectedCasting] = useState('');
+  const [search, setSearch] = useState('');
+  const [sortOrderA, setSortOrderA] = useState('asc');
+  const [sortOrderY, setSortOrderY] = useState('desc');
   const [movieAmount, setMovieAmount] = useState(0);
-  const [selectedLetter, SetSelectedLetter] = useState("a");
+  const [selectedLetter, SetSelectedLetter] = useState('a');
   const [selectedCastingByLetter, setSelectedCastingByLetter] = useState([]);
   const [openSideBar, setOpenSideBar] = useState(false);
 
@@ -27,20 +33,12 @@ function MovieCasting() {
   // REQUEST ALL ARTIST BY LETTER
   // ----------------------------
   useEffect(() => {
-    fetch(
-      `${import.meta.env.VITE_BACKEND_URL}/api/casting/sorted/${selectedLetter}`
-    )
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
+    getArtistsByLetter('casting', selectedLetter)
       .then((castingDataLetter) => {
         setSelectedCastingByLetter(castingDataLetter);
       })
       .catch((error) => {
-        console.error("Error fetching user data:", error);
+        console.error('Error fetching user data:', error);
       });
   }, [selectedLetter]);
 
@@ -48,21 +46,13 @@ function MovieCasting() {
   // REQUEST ALL MOVIES by ARTIST
   // ----------------------------
   const fetchMoviesByCasting = () => {
-    fetch(
-      `${import.meta.env.VITE_BACKEND_URL}/api/casting/${selectedCasting.id}`
-    )
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
+    getArtistMovies('casting', selectedCasting.id)
       .then((moviesData) => {
         setMovies(moviesData);
         setMovieAmount(moviesData.length);
       })
       .catch((error) => {
-        console.error("Error fetching user data:", error);
+        console.error('Error fetching user data:', error);
       });
   };
 
@@ -75,7 +65,7 @@ function MovieCasting() {
   // ----------------------------
   const handleLetterChange = (letter) => {
     SetSelectedLetter(letter);
-    setSearch("");
+    setSearch('');
   };
 
   // ----------------------------
@@ -90,20 +80,16 @@ function MovieCasting() {
   // ----------------------------
   const handleTyping = (e) => {
     let { value } = e.target;
-    value = value.replace(/-/g, "").toLowerCase();
+    value = value.replace(/-/g, '').toLowerCase();
     setSearch(value);
-    SetSelectedLetter("");
+    SetSelectedLetter('');
   };
 
   const filteredCasting = castingData
     ? castingData.filter(
         (dataItem) =>
           dataItem.name &&
-          dataItem.name
-            .toString()
-            .toLowerCase()
-            .replace(/-/g, "")
-            .includes(search.toLowerCase())
+          dataItem.name.toString().toLowerCase().replace(/-/g, '').includes(search.toLowerCase())
       )
     : [];
 
@@ -125,19 +111,11 @@ function MovieCasting() {
   // ------------------------------------------
   const movieSortedA = async () => {
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/api/casting/${
-          selectedCasting.id
-        }/sorted/0`
-      );
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const newData = await response.json();
+      const newData = await getArtistMoviesSorted('casting', selectedCasting.id, 0);
       setData(newData);
-      setSortOrderA("asc");
+      setSortOrderA('asc');
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error('Error fetching data:', error);
     }
   };
 
@@ -146,19 +124,11 @@ function MovieCasting() {
   // ------------------------------------------
   const movieSortedZ = async () => {
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/api/casting/${
-          selectedCasting.id
-        }/sorted/1`
-      );
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const newData = await response.json();
+      const newData = await getArtistMoviesSorted('casting', selectedCasting.id, 1);
       setData(newData);
-      setSortOrderA("desc");
+      setSortOrderA('desc');
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error('Error fetching data:', error);
     }
   };
 
@@ -167,19 +137,11 @@ function MovieCasting() {
   // ------------------------------------------
   const movieSortedYear = async () => {
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/api/casting/${
-          selectedCasting.id
-        }/sorted/2`
-      );
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const newData = await response.json();
+      const newData = await getArtistMoviesSorted('casting', selectedCasting.id, 2);
       setData(newData);
-      setSortOrderY("asc");
+      setSortOrderY('asc');
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error('Error fetching data:', error);
     }
   };
 
@@ -188,19 +150,11 @@ function MovieCasting() {
   // ------------------------------------------
   const movieSortedYearDesc = async () => {
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/api/casting/${
-          selectedCasting.id
-        }/sorted/3`
-      );
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const newData = await response.json();
+      const newData = await getArtistMoviesSorted('casting', selectedCasting.id, 3);
       setData(newData);
-      setSortOrderY("desc");
+      setSortOrderY('desc');
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error('Error fetching data:', error);
     }
   };
 
@@ -210,16 +164,16 @@ function MovieCasting() {
   const theme = createTheme({
     palette: {
       primary: {
-        main: "#fefee2",
-        light: "#ffa500",
-        dark: "#e59100",
-        contrastText: "#242105",
+        main: '#fefee2',
+        light: '#ffa500',
+        dark: '#e59100',
+        contrastText: '#242105',
       },
       artists_list: {
-        main: "#fefee2",
-        light: "#ffa500",
-        dark: "#e59100",
-        contrastText: "#242105",
+        main: '#fefee2',
+        light: '#ffa500',
+        dark: '#e59100',
+        contrastText: '#242105',
       },
     }, // end palette
   }); // end const theme
@@ -227,7 +181,7 @@ function MovieCasting() {
   // ------------------------------------------
   // PROPS FOR TEXTS & IMAGE
   // ------------------------------------------
-  const origin = "casting";
+  const origin = 'casting';
 
   // ----------------------------------------------------
   // MISE A JOUR AFFICHAGE SI DELETE MOVIE DANS MOVIECARD
@@ -240,9 +194,9 @@ function MovieCasting() {
   // FONCTION POUR BTN RESET SEARCH
   // ------------------------------------------
   const handleResetSearch = () => {
-    setSearch("");
-    SetSelectedLetter("a"); // lettre par défaut
-    setSelectedCasting("");
+    setSearch('');
+    SetSelectedLetter('a'); // lettre par défaut
+    setSelectedCasting('');
     setMovies([]);
     setData([]);
     setMovieAmount(0);

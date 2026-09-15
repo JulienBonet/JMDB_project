@@ -1,11 +1,17 @@
-import { useState, useEffect } from "react";
-import { useLoaderData } from "react-router-dom";
-import { createTheme } from "@mui/material/styles";
-import "./movieArtist.css";
-import "./movieArtistMediaQueries.css";
-import ArtistList from "../../components/ArtistList/ArtistList";
-import ArtistFilmo from "../../components/ArtistFilmo/ArtistFilmo";
-import MovieArtistSearchBar from "../../components/MovieArtistSearchBar/MovieArtistSearchBar";
+import { useState, useEffect } from 'react';
+import { useLoaderData } from 'react-router-dom';
+import { createTheme } from '@mui/material/styles';
+import './movieArtist.css';
+import './movieArtistMediaQueries.css';
+import ArtistList from '../../components/ArtistList/ArtistList';
+import ArtistFilmo from '../../components/ArtistFilmo/ArtistFilmo';
+import MovieArtistSearchBar from '../../components/MovieArtistSearchBar/MovieArtistSearchBar';
+// refactor
+import {
+  getArtistsByLetter,
+  getArtistMovies,
+  getArtistMoviesSorted,
+} from '../../services/artistService';
 
 function MovieDirectors() {
   // ---------------
@@ -14,12 +20,12 @@ function MovieDirectors() {
   const directorsData = useLoaderData();
   const [movies, setMovies] = useState([]);
   const [data, setData] = useState(movies);
-  const [selectedDirector, setSelectedDirector] = useState("");
-  const [search, setSearch] = useState("");
-  const [sortOrderA, setSortOrderA] = useState("asc");
-  const [sortOrderY, setSortOrderY] = useState("desc");
+  const [selectedDirector, setSelectedDirector] = useState('');
+  const [search, setSearch] = useState('');
+  const [sortOrderA, setSortOrderA] = useState('asc');
+  const [sortOrderY, setSortOrderY] = useState('desc');
   const [movieAmount, setMovieAmount] = useState(0);
-  const [selectedLetter, SetSelectedLetter] = useState("a");
+  const [selectedLetter, SetSelectedLetter] = useState('a');
   const [selectedDirectorByLetter, setSelectedDirectorByLetter] = useState([]);
   const [openSideBar, setOpenSideBar] = useState(false);
 
@@ -27,22 +33,12 @@ function MovieDirectors() {
   // REQUEST ALL ARTIST BY LETTER
   // ----------------------------------
   useEffect(() => {
-    fetch(
-      `${
-        import.meta.env.VITE_BACKEND_URL
-      }/api/directors/sorted/${selectedLetter}`
-    )
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
+    getArtistsByLetter('directors', selectedLetter)
       .then((directorsDataLetter) => {
         setSelectedDirectorByLetter(directorsDataLetter);
       })
       .catch((error) => {
-        console.error("Error fetching user data:", error);
+        console.error('Error fetching user data:', error);
       });
   }, [selectedLetter]);
 
@@ -50,21 +46,13 @@ function MovieDirectors() {
   // REQUEST ALL MOVIES by ARTIST
   // ----------------------------------
   const fetchMoviesByDirector = () => {
-    fetch(
-      `${import.meta.env.VITE_BACKEND_URL}/api/directors/${selectedDirector.id}`
-    )
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
+    getArtistMovies('directors', selectedDirector.id)
       .then((moviesData) => {
         setMovies(moviesData);
         setMovieAmount(moviesData.length);
       })
       .catch((error) => {
-        console.error("Error fetching user data:", error);
+        console.error('Error fetching user data:', error);
       });
   };
 
@@ -77,7 +65,7 @@ function MovieDirectors() {
   // ----------------------------------
   const handleLetterChange = (letter) => {
     SetSelectedLetter(letter);
-    setSearch("");
+    setSearch('');
   };
 
   // ----------------------------------
@@ -92,20 +80,16 @@ function MovieDirectors() {
   // ----------------------------------
   const handleTyping = (e) => {
     let { value } = e.target;
-    value = value.replace(/-/g, "").toLowerCase();
+    value = value.replace(/-/g, '').toLowerCase();
     setSearch(value);
-    SetSelectedLetter("");
+    SetSelectedLetter('');
   };
 
   const filteredDirectors = directorsData
     ? directorsData.filter(
         (dataItem) =>
           dataItem.name &&
-          dataItem.name
-            .toString()
-            .toLowerCase()
-            .replace(/-/g, "")
-            .includes(search.toLowerCase())
+          dataItem.name.toString().toLowerCase().replace(/-/g, '').includes(search.toLowerCase())
       )
     : [];
 
@@ -127,19 +111,11 @@ function MovieDirectors() {
   // --------------------------------------------
   const movieSortedA = async () => {
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/api/directors/${
-          selectedDirector.id
-        }/sorted/0`
-      );
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const newData = await response.json();
+      const newData = await getArtistMoviesSorted('directors', selectedDirector.id, 0);
       setData(newData);
-      setSortOrderA("asc");
+      setSortOrderA('asc');
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error('Error fetching data:', error);
     }
   };
 
@@ -148,19 +124,11 @@ function MovieDirectors() {
   // --------------------------------------------
   const movieSortedZ = async () => {
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/api/directors/${
-          selectedDirector.id
-        }/sorted/1`
-      );
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const newData = await response.json();
+      const newData = await getArtistMoviesSorted('directors', selectedDirector.id, 1);
       setData(newData);
-      setSortOrderA("desc");
+      setSortOrderA('desc');
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error('Error fetching data:', error);
     }
   };
 
@@ -169,19 +137,11 @@ function MovieDirectors() {
   // --------------------------------------------
   const movieSortedYear = async () => {
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/api/directors/${
-          selectedDirector.id
-        }/sorted/2`
-      );
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const newData = await response.json();
+      const newData = await getArtistMoviesSorted('directors', selectedDirector.id, 2);
       setData(newData);
-      setSortOrderY("asc");
+      setSortOrderY('asc');
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error('Error fetching data:', error);
     }
   };
 
@@ -190,19 +150,11 @@ function MovieDirectors() {
   // --------------------------------------------
   const movieSortedYearDesc = async () => {
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/api/directors/${
-          selectedDirector.id
-        }/sorted/3`
-      );
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const newData = await response.json();
+      const newData = await getArtistMoviesSorted('directors', selectedDirector.id, 3);
       setData(newData);
-      setSortOrderY("desc");
+      setSortOrderY('desc');
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error('Error fetching data:', error);
     }
   };
 
@@ -212,16 +164,16 @@ function MovieDirectors() {
   const theme = createTheme({
     palette: {
       primary: {
-        main: "#fefee2",
-        light: "#ffa500",
-        dark: "#e59100",
-        contrastText: "#242105",
+        main: '#fefee2',
+        light: '#ffa500',
+        dark: '#e59100',
+        contrastText: '#242105',
       },
       artists_list: {
-        main: "#fefee2",
-        light: "#ffa500",
-        dark: "#e59100",
-        contrastText: "#242105",
+        main: '#fefee2',
+        light: '#ffa500',
+        dark: '#e59100',
+        contrastText: '#242105',
       },
     },
   });
@@ -229,7 +181,7 @@ function MovieDirectors() {
   // --------------------------------------------
   // PROPS FOR TEXTS & IMAGE
   // --------------------------------------------
-  const origin = "directors";
+  const origin = 'directors';
 
   // ----------------------------------------------------
   // MISE A JOUR AFFICHAGE SI DELETE MOVIE DANS MOVIECARD
@@ -242,9 +194,9 @@ function MovieDirectors() {
   // FONCTION POUR BTN RESET SEARCH
   // --------------------------------------------
   const handleResetSearch = () => {
-    setSearch("");
-    SetSelectedLetter("a"); // lettre par défaut
-    setSelectedDirector("");
+    setSearch('');
+    SetSelectedLetter('a'); // lettre par défaut
+    setSelectedDirector('');
     setMovies([]);
     setData([]);
     setMovieAmount(0);
