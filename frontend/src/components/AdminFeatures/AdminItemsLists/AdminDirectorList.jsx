@@ -1,33 +1,34 @@
 /* eslint-disable no-alert */
-/* eslint-disable jsx-a11y/control-has-associated-label */
-import { useState, useEffect } from "react";
-import { Button, Container } from "@mui/material";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import Modal from "@mui/material/Modal";
-import Box from "@mui/material/Box";
-import Pagination from "@mui/material/Pagination";
-import "./adminLists.css";
-import PreviewIcon from "@mui/icons-material/Preview";
-import DeleteIcon from "@mui/icons-material/Delete";
-import TextField from "@mui/material/TextField";
-import InputAdornment from "@mui/material/InputAdornment";
-import IconButton from "@mui/material/IconButton";
-import SearchIcon from "@mui/icons-material/Search";
-import ClearIcon from "@mui/icons-material/Clear";
-import AdminItemsCard from "../AdminItemsCards/AdminItemsCard";
-import CreateItemCard from "../CreateItemCard/CreateItemCard";
+import { useState, useEffect } from 'react';
+import { Button, Container } from '@mui/material';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Modal from '@mui/material/Modal';
+import Box from '@mui/material/Box';
+import Pagination from '@mui/material/Pagination';
+import './adminLists.css';
+import PreviewIcon from '@mui/icons-material/Preview';
+import DeleteIcon from '@mui/icons-material/Delete';
+import TextField from '@mui/material/TextField';
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
+import SearchIcon from '@mui/icons-material/Search';
+import ClearIcon from '@mui/icons-material/Clear';
+import AdminItemsCard from '../AdminItemsCards/AdminItemsCard';
+import CreateItemCard from '../CreateItemCard/CreateItemCard';
+// refactor
+import { getArtistsSortedById, deleteArtist } from '../../../services/artistService';
 
 function AdminDirectorList() {
   const [data, setData] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [filteredData, setFilteredData] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   const [newDirector, SetNewDirector] = useState(false);
 
-  const origin = "director";
+  const origin = 'director';
 
   const openModal = (DataItem) => {
     setSelectedItem(DataItem);
@@ -47,66 +48,45 @@ function AdminDirectorList() {
 
   // REQUEST ALL DIRECTORS sorted ID desc
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/directors/sorted_id`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
+    getArtistsSortedById('directors')
       .then((datas) => {
         setData(datas);
         setFilteredData(datas);
         setLoading(false);
       })
       .catch((error) => {
-        console.error("Error fetching user data:", error);
+        console.error('Error fetching user data:', error);
         setLoading(false);
       });
   }, []);
 
   // REFRESH DIRECTORS LIST
   const refreshDirectors = () => {
-    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/directors/sorted_id`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
+    getArtistsSortedById('directors')
       .then((datas) => {
         setData(datas);
         setFilteredData(datas);
       })
       .catch((error) => {
-        console.error("Error fetching user data:", error);
+        console.error('Error fetching user data:', error);
       });
   };
 
   // DELETE DIRECTOR
   const handleDelete = async (id) => {
-    // Display confirmation dialog
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this work?"
-    );
+    const confirmDelete = window.confirm('Are you sure you want to delete this work?');
 
-    // If user confirms deletion
     if (confirmDelete) {
       try {
-        const response = await fetch(
-          `${import.meta.env.VITE_BACKEND_URL}/api/director/delete/${id}`,
-          {
-            method: "delete",
-          }
-        );
-        if (response.status === 204) {
-          console.info("delete ok");
-          toast.success("director deleted", {
-            className: "custom-toast",
+        const status = await deleteArtist('directors', id);
+
+        if (status === 204) {
+          toast.success('director deleted', {
+            className: 'custom-toast',
           });
           refreshDirectors();
         } else {
-          console.error("error delete");
+          console.error('error delete');
         }
       } catch (error) {
         console.error(error);
@@ -117,9 +97,7 @@ function AdminDirectorList() {
   // SEARCH BAR
   useEffect(() => {
     const filtered = data.filter(
-      (itemData) =>
-        itemData.name &&
-        itemData.name.toLowerCase().includes(searchTerm.toLowerCase())
+      (itemData) => itemData.name && itemData.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredData(filtered);
   }, [searchTerm, data]);
@@ -128,10 +106,7 @@ function AdminDirectorList() {
   const artistsPerPage = 50;
   const indexOfLastArtist = currentPage * artistsPerPage;
   const indexOfFirstArtist = indexOfLastArtist - artistsPerPage;
-  const currentArtists = filteredData.slice(
-    indexOfFirstArtist,
-    indexOfLastArtist
-  );
+  const currentArtists = filteredData.slice(indexOfFirstArtist, indexOfLastArtist);
 
   const handlePageChange = (event, value) => {
     setCurrentPage(value);
@@ -155,13 +130,13 @@ function AdminDirectorList() {
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <SearchIcon sx={{ color: "#aaa" }} />
+                    <SearchIcon sx={{ color: '#aaa' }} />
                   </InputAdornment>
                 ),
                 endAdornment: searchTerm && (
                   <InputAdornment position="end">
-                    <IconButton onClick={() => setSearchTerm("")} size="small">
-                      <ClearIcon sx={{ color: "#888" }} />
+                    <IconButton onClick={() => setSearchTerm('')} size="small">
+                      <ClearIcon sx={{ color: '#888' }} />
                     </IconButton>
                   </InputAdornment>
                 ),
@@ -169,24 +144,24 @@ function AdminDirectorList() {
               sx={{
                 maxWidth: 300, // ajuste si besoin
                 borderRadius: 3,
-                "& .MuiOutlinedInput-root": {
+                '& .MuiOutlinedInput-root': {
                   borderRadius: 3,
-                  backgroundColor: "#f5f5f5",
-                  "& fieldset": {
-                    borderColor: "#ccc",
+                  backgroundColor: '#f5f5f5',
+                  '& fieldset': {
+                    borderColor: '#ccc',
                   },
-                  "&:hover fieldset": {
-                    borderColor: "var(--color-03)",
+                  '&:hover fieldset': {
+                    borderColor: 'var(--color-03)',
                   },
-                  "&.Mui-focused fieldset": {
-                    borderColor: "var(--color-03)",
-                    boxShadow: "0 0 8px rgba(0,0,0,0.1)",
+                  '&.Mui-focused fieldset': {
+                    borderColor: 'var(--color-03)',
+                    boxShadow: '0 0 8px rgba(0,0,0,0.1)',
                   },
                 },
                 input: {
-                  color: "#333",
-                  "&::placeholder": {
-                    color: "#aaa",
+                  color: '#333',
+                  '&::placeholder': {
+                    color: '#aaa',
                     opacity: 1,
                   },
                 },
@@ -214,10 +189,7 @@ function AdminDirectorList() {
                 <th scope="row">{DataItem.id}</th>
                 <td data-label="Réalisateur">{DataItem.name}</td>
                 <td data-label="Aperçu">
-                  <PreviewIcon
-                    className="admin_tools_ico"
-                    onClick={() => openModal(DataItem)}
-                  />
+                  <PreviewIcon className="admin_tools_ico" onClick={() => openModal(DataItem)} />
                 </td>
                 <td data-label="Supprimer">
                   <DeleteIcon
@@ -230,9 +202,7 @@ function AdminDirectorList() {
           )}
         </tbody>
       </table>
-      <Box
-        sx={{ display: "flex", justifyContent: "center", marginTop: "20px" }}
-      >
+      <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
         <Pagination
           count={Math.ceil(filteredData.length / artistsPerPage)}
           shape="rounded"
@@ -246,7 +216,7 @@ function AdminDirectorList() {
               <div
                 onClick={closeModal}
                 onKeyDown={(event) => {
-                  if (event.key === "Enter" || event.key === " ") {
+                  if (event.key === 'Enter' || event.key === ' ') {
                     closeModal();
                   }
                 }}
@@ -277,7 +247,7 @@ function AdminDirectorList() {
               <div
                 onClick={closeModalNewDirector}
                 onKeyDown={(event) => {
-                  if (event.key === "Enter" || event.key === " ") {
+                  if (event.key === 'Enter' || event.key === ' ') {
                     closeModalNewDirector();
                   }
                 }}
