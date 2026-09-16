@@ -38,3 +38,8 @@ export const deleteArtist = async (type, id) => {
 
   return response.status;
 };
+
+export const getRandomArtistFocus = async (type) => {
+  const response = await api.get(`/api/${type}/focus/random`);
+  return response.data;
+};
