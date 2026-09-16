@@ -16,6 +16,12 @@ import FileUploadIcon from '@mui/icons-material/FileUpload';
 import CachedIcon from '@mui/icons-material/Cached';
 import CircularProgress from '@mui/material/CircularProgress';
 import './adminItemsCard.css';
+// refacto
+import {
+  getFocusCategories,
+  updateAdminItem,
+  updateFocusImage,
+} from '../../../services/adminItemService';
 
 function AdminItemsCard4({ item, origin, onUpdate, closeModal }) {
   // console.info("origin", origin);
@@ -50,12 +56,11 @@ function AdminItemsCard4({ item, origin, onUpdate, closeModal }) {
   // Fetch catégories (origin === "focus")
   useEffect(() => {
     if (origin === 'focus') {
-      fetch(`${import.meta.env.VITE_BACKEND_URL}/api/focuscategory`)
-        .then((res) => res.json())
+      getFocusCategories()
         .then((data) => setCategories(data))
         .catch((err) => console.error('Error fetching categories:', err));
     }
-  }, []);
+  }, [origin]);
   // End Fetch catégories (origin === "focus")
 
   const handleUpdateImage = async () => {
@@ -64,25 +69,7 @@ function AdminItemsCard4({ item, origin, onUpdate, closeModal }) {
 
     if (!file) return null;
 
-    const imageData = new FormData();
-    imageData.append('image', file);
-
-    // Ajoute l'id du focus
-    imageData.append('focusId', item.id);
-
-    const response = await fetch(
-      `${import.meta.env.VITE_BACKEND_URL}/api/${origin}/${item.id}/image`,
-      {
-        method: 'PUT',
-        body: imageData,
-      }
-    );
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.message || 'Upload failed');
-    }
+    const data = await updateFocusImage(item.id, file);
 
     return data.url;
   };
@@ -97,20 +84,7 @@ function AdminItemsCard4({ item, origin, onUpdate, closeModal }) {
       // 1️⃣ Mettre à jour les infos
       if (hasChanges) {
         const data = { name, pitch, categoryId };
-        const response = await fetch(
-          `${import.meta.env.VITE_BACKEND_URL}/api/${origin}/${item.id}`,
-          {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data),
-          }
-        );
-
-        if (!response.ok) {
-          console.error('Error updating item image', data);
-          throw new Error(data.message || 'Upload failed');
-        }
-        console.info('Item successfully updated');
+        await updateAdminItem(origin, item.id, data);
       }
 
       // 2️⃣ Mettre à jour l'image
@@ -119,7 +93,6 @@ function AdminItemsCard4({ item, origin, onUpdate, closeModal }) {
         try {
           newImageUrl = await handleUpdateImage();
           setImage(newImageUrl);
-          console.info('Image successfully updated');
         } catch (err) {
           console.error('Erreur upload image :', err);
           toast.error(`Erreur upload image : ${err.message}`, {
@@ -291,7 +264,7 @@ function AdminItemsCard4({ item, origin, onUpdate, closeModal }) {
           ) : (
             <>
               <h2 className="ItemsCard_title">CATEGORY: </h2>
-              <p className="Items_info">{item.category_name}</p>
+              <p className="Items_info">{item.categoryName}</p>
             </>
           )}
         </div>

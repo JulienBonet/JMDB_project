@@ -12,3 +12,28 @@ export const createAdminItem = async (origin, data) => {
 
   return response.data;
 };
+
+export const updateAdminItem = async (origin, id, data) => {
+  const response = await api.put(`/api/${origin}/${id}`, data);
+
+  return response.data;
+};
+
+export const updateAdminItemImage = async (origin, id, file) => {
+  const formData = new FormData();
+  formData.append('image', file);
+
+  const response = await api.put(`/api/${origin}/${id}/image`, formData);
+
+  return response.data;
+};
+
+export const updateFocusImage = async (id, file) => {
+  const formData = new FormData();
+  formData.append('image', file);
+  formData.append('focusId', id);
+
+  const response = await api.put(`/api/focus/${id}/image`, formData);
+
+  return response.data;
+};
