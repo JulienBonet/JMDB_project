@@ -28,12 +28,10 @@ import MovieFocusDirectors from './pages/MovieFocus/MovieFocusDirectors.jsx';
 import MovieFocusCasting from './pages/MovieFocus/MovieFocusCasting.jsx';
 import MovieFavorite from './pages/MovieFocus/MovieFavorite.jsx';
 // refacto
-import { getArtists } from './services/artistService';
+import { getArtists, getRandomArtistFocus } from './services/artistService';
 import { getTags } from './services/tagService';
 import { getFocusByCategory } from './services/focusService';
 import { getMoviesSortedNox } from './services/movieService';
-
-const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 const router = createBrowserRouter([
   // ----------------
@@ -105,12 +103,12 @@ const router = createBrowserRouter([
           {
             path: 'movie_thema_directors',
             element: <MovieFocusDirectors />,
-            loader: () => fetch(`${backendUrl}/api/directors/focus/random`),
+            loader: () => getRandomArtistFocus('directors'),
           },
           {
             path: 'movie_thema_casting',
             element: <MovieFocusCasting />,
-            loader: () => fetch(`${backendUrl}/api/casting/focus/random`),
+            loader: () => getRandomArtistFocus('casting'),
           },
           {
             path: 'movie_favorites',
