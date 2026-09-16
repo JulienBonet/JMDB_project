@@ -30,6 +30,7 @@ import MovieFavorite from './pages/MovieFocus/MovieFavorite.jsx';
 // refacto
 import { getArtists } from './services/artistService';
 import { getTags } from './services/tagService';
+import { getFocusByCategory } from './services/focusService';
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -100,17 +101,17 @@ const router = createBrowserRouter([
           {
             path: 'movie_thema',
             element: <MovieThema />,
-            loader: () => fetch(`${backendUrl}/api/focus/1`),
+            loader: () => getFocusByCategory(1),
           },
           {
             path: 'movie_thema_festival',
             element: <MovieFestival />,
-            loader: () => fetch(`${backendUrl}/api/focus/2`),
+            loader: () => getFocusByCategory(2),
           },
           {
             path: 'movie_thema_collection',
             element: <MovieCollection />,
-            loader: () => fetch(`${backendUrl}/api/focus/3`),
+            loader: () => getFocusByCategory(3),
           },
           {
             path: 'movie_thema_directors',
