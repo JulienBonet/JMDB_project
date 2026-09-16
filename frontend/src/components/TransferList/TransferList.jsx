@@ -2,7 +2,6 @@
 /* eslint-disable no-shadow */
 /* eslint-disable react/prop-types */
 import * as React from 'react';
-import axios from 'axios';
 import { createTheme, useTheme, ThemeProvider } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useState, useEffect } from 'react';
@@ -18,6 +17,8 @@ import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 import CreateItemCard from '../AdminFeatures/CreateItemCard/CreateItemCard';
+// refactor
+import { getByName } from '../../services/movieService';
 
 function not(a, b) {
   return a.filter((value) => b.indexOf(value) === -1);
@@ -231,10 +232,7 @@ export default function TransferList({
   // Fonction pour gérer l'ajout d'un nouvel élément
   const handleNewItem = async (name) => {
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/api/${getOriginFromDataType(dataType)}/byname/${name}`
-      );
-      const newItem = response.data;
+      const newItem = await getByName(getOriginFromDataType(dataType), name);
 
       // Vérifie si l'item n'est pas déjà présent dans right
       if (!right.some((item) => item.id === newItem.id)) {
@@ -242,6 +240,7 @@ export default function TransferList({
       } else {
         console.info("L'élément existe déjà dans right.");
       }
+
       setSearchTermRight(newItem.name);
       console.info('right in handleNewItem', right);
     } catch (error) {
