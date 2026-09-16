@@ -1,19 +1,14 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
-import Modal from "@mui/material/Modal";
-import Box from "@mui/material/Box";
-import { Container } from "@mui/material";
-import "./movieThumbnail.css";
-import "./movieThumbnailMediaQueries.css";
-import MovieCard from "../MovieCard/MovieCard";
+import { useState } from 'react';
+import Modal from '@mui/material/Modal';
+import Box from '@mui/material/Box';
+import { Container } from '@mui/material';
+import './movieThumbnail.css';
+import './movieThumbnailMediaQueries.css';
+import MovieCard from '../MovieCard/MovieCard';
 
-function MovieThumbnail({
-  data,
-  onDeleteMovie,
-  onUpdateMovie,
-  onFavoriteRemoved,
-}) {
-  const origin = "movie";
+function MovieThumbnail({ data, onDeleteMovie, onUpdateMovie, onFavoriteRemoved }) {
+  const origin = 'movie';
   const CLOUDINARY_BASE_URL = import.meta.env.VITE_CLOUDINARY_BASE_URL;
 
   const { title, year, cover: coverName } = data;
@@ -32,7 +27,7 @@ function MovieThumbnail({
 
   const getCoverUrl = (cover) => {
     if (!cover) return `${CLOUDINARY_BASE_URL}/00_cover_default.jpg`;
-    if (cover.startsWith("http")) return cover;
+    if (cover.startsWith('http')) return cover;
     return `${CLOUDINARY_BASE_URL}/${cover}`;
   };
 
@@ -45,11 +40,7 @@ function MovieThumbnail({
         onClick={openModal}
         onKeyDown={openModal}
       >
-        <img
-          className="thumbail_cover"
-          src={getCoverUrl(coverName)}
-          alt={`Cover ${title}`}
-        />
+        <img className="thumbail_cover" src={getCoverUrl(coverName)} alt={`Cover ${title}`} />
         <p className="thumbail_title">
           {title} <span className="thumbail_year">({year})</span>
         </p>
@@ -62,7 +53,7 @@ function MovieThumbnail({
               <div
                 onClick={closeModal}
                 onKeyDown={(event) => {
-                  if (event.key === "Enter" || event.key === " ") {
+                  if (event.key === 'Enter' || event.key === ' ') {
                     closeModal();
                   }
                 }}
@@ -78,6 +69,7 @@ function MovieThumbnail({
                 onUpdateMovie={onUpdateMovie}
                 onDeleteMovie={onDeleteMovie}
                 onFavoriteRemoved={onFavoriteRemoved}
+                closeModal={closeModal}
               />
             </Container>
           </Box>

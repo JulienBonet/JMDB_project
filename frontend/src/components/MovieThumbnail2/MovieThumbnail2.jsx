@@ -1,14 +1,15 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
-import Modal from "@mui/material/Modal";
-import Box from "@mui/material/Box";
-import { Container } from "@mui/material";
-import "./movieThumbnail2.css";
-import MovieCard from "../MovieCard/MovieCard";
+import { useState } from 'react';
+import Modal from '@mui/material/Modal';
+import Box from '@mui/material/Box';
+import { Container } from '@mui/material';
+import './movieThumbnail2.css';
+import MovieCard from '../MovieCard/MovieCard';
+// refactor
+import { getMovie } from '../../services/movieService';
 
 function MovieThumbnail2({ data }) {
-  const origin = "movie";
-  const backendUrl = `${import.meta.env.VITE_BACKEND_URL}`;
+  const origin = 'movie';
   const CLOUDINARY_BASE_URL = import.meta.env.VITE_CLOUDINARY_BASE_URL;
 
   // Initialisation des données du film à partir des props
@@ -29,26 +30,16 @@ function MovieThumbnail2({ data }) {
   // Fonction de callback pour mettre à jour les données après modification dans MovieCard
   const handleUpdateMovie = async () => {
     try {
-      const response = await fetch(`${backendUrl}/api/movies/${data.id}`);
-      if (response.ok) {
-        const updatedMovie = await response.json();
-        setMovieData(updatedMovie); // Met à jour les données du film
-      } else {
-        console.error(
-          "Erreur lors de la récupération des données mises à jour"
-        );
-      }
+      const updatedMovie = await getMovie(data.id);
+      setMovieData(updatedMovie);
     } catch (error) {
-      console.error(
-        "Erreur lors de la récupération des données mises à jour:",
-        error
-      );
+      console.error('Erreur lors de la récupération des données mises à jour:', error);
     }
   };
 
   const getCoverUrl = (cover) => {
     if (!cover) return `${CLOUDINARY_BASE_URL}/00_cover_default.jpg`;
-    if (cover.startsWith("http")) return cover;
+    if (cover.startsWith('http')) return cover;
     return `${CLOUDINARY_BASE_URL}/${cover}`;
   };
 
@@ -61,11 +52,7 @@ function MovieThumbnail2({ data }) {
         onClick={openModal}
         onKeyDown={openModal}
       >
-        <img
-          className="thumbail_cover2"
-          src={getCoverUrl(coverName)}
-          alt={`Cover ${title}`}
-        />
+        <img className="thumbail_cover2" src={getCoverUrl(coverName)} alt={`Cover ${title}`} />
         <p className="thumbail_title2">
           {title} <span className="thumbail_year2">({year})</span>
         </p>
@@ -78,7 +65,7 @@ function MovieThumbnail2({ data }) {
               <div
                 onClick={closeModal}
                 onKeyDown={(event) => {
-                  if (event.key === "Enter" || event.key === " ") {
+                  if (event.key === 'Enter' || event.key === ' ') {
                     closeModal();
                   }
                 }}
@@ -92,6 +79,7 @@ function MovieThumbnail2({ data }) {
                 movie={selectedMovie}
                 origin={origin}
                 onUpdateMovie={handleUpdateMovie}
+                closeModal={closeModal}
               />
             </Container>
           </Box>
