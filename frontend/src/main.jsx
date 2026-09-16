@@ -27,6 +27,8 @@ import MovieCollection from './pages/MovieFocus/MovieCollection.jsx';
 import MovieFocusDirectors from './pages/MovieFocus/MovieFocusDirectors.jsx';
 import MovieFocusCasting from './pages/MovieFocus/MovieFocusCasting.jsx';
 import MovieFavorite from './pages/MovieFocus/MovieFavorite.jsx';
+// refacto
+import { getArtists } from './services/artistService';
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -67,27 +69,27 @@ const router = createBrowserRouter([
           {
             path: 'movie_directors',
             element: <MovieDirectors />,
-            loader: () => fetch(`${backendUrl}/api/directors`),
+            loader: () => getArtists('directors'),
           },
           {
             path: 'movie_casting',
             element: <MovieCasting />,
-            loader: () => fetch(`${backendUrl}/api/casting`),
+            loader: () => getArtists('casting'),
           },
           {
             path: 'movie_screenwriters',
             element: <MovieScreenwriters />,
-            loader: () => fetch(`${backendUrl}/api/screenwriters`),
+            loader: () => getArtists('screenwriters'),
           },
           {
             path: 'movie_music',
             element: <MovieMusic />,
-            loader: () => fetch(`${backendUrl}/api/music`),
+            loader: () => getArtists('music'),
           },
           {
             path: 'movie_studio',
             element: <MovieStudio />,
-            loader: () => fetch(`${backendUrl}/api/studio`),
+            loader: () => getArtists('studio'),
           },
           {
             path: 'movie_tag',
