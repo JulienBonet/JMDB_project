@@ -16,6 +16,8 @@ import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
 import AdminItemsCard from '../AdminItemsCards/AdminItemsCard';
 import CreateItemCard from '../CreateItemCard/CreateItemCard';
+// Refactor
+import { getArtistsSortedById, deleteArtist } from '../../../services/artistService';
 
 function AdminCastingList() {
   const [data, setData] = useState([]);
@@ -46,13 +48,7 @@ function AdminCastingList() {
 
   // REQUEST ALL CASTING sorted ID desc
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/casting/sorted_id`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
+    getArtistsSortedById('casting')
       .then((datas) => {
         setData(datas);
         setFilteredData(datas);
@@ -65,14 +61,8 @@ function AdminCastingList() {
   }, []);
 
   // REFRESH CASTING LIST
-  const refreshCasting = () => {
-    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/casting/sorted_id`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
+  const refreshCastings = () => {
+    getArtistsSortedById('casting')
       .then((datas) => {
         setData(datas);
         setFilteredData(datas);
@@ -90,15 +80,13 @@ function AdminCastingList() {
     // If user confirms deletion
     if (confirmDelete) {
       try {
-        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/casting/${id}`, {
-          method: 'delete',
-        });
-        if (response.status === 204) {
-          console.info('delete ok');
+        const status = await deleteArtist('casting', id);
+
+        if (status === 204) {
           toast.success('casting deleted', {
             className: 'custom-toast',
           });
-          refreshCasting();
+          refreshCastings();
         } else {
           console.error('error delete');
         }
@@ -243,7 +231,7 @@ function AdminCastingList() {
               <AdminItemsCard
                 item={selectedItem}
                 origin={origin}
-                onUpdate={refreshCasting}
+                onUpdate={refreshCastings}
                 closeModal={closeModal}
                 showImage
                 showPitch
@@ -273,7 +261,7 @@ function AdminCastingList() {
               </div>
               <CreateItemCard
                 origin={origin}
-                onUpdate={refreshCasting}
+                onUpdate={refreshCastings}
                 closeModal={closeModalNewCasting}
               />
             </Container>
