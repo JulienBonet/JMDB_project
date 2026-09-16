@@ -1,36 +1,37 @@
 /* eslint-disable no-alert */
-/* eslint-disable jsx-a11y/control-has-associated-label */
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import Box from "@mui/material/Box";
-import Pagination from "@mui/material/Pagination";
-import { Button, Container } from "@mui/material";
-import Modal from "@mui/material/Modal";
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogActions from "@mui/material/DialogActions";
-import "./adminLists.css";
-import PreviewIcon from "@mui/icons-material/Preview";
-import DeleteIcon from "@mui/icons-material/Delete";
-import TextField from "@mui/material/TextField";
-import InputAdornment from "@mui/material/InputAdornment";
-import IconButton from "@mui/material/IconButton";
-import SearchIcon from "@mui/icons-material/Search";
-import ClearIcon from "@mui/icons-material/Clear";
-import MovieCard from "../../MovieCard/MovieCard";
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import Box from '@mui/material/Box';
+import Pagination from '@mui/material/Pagination';
+import { Button, Container } from '@mui/material';
+import Modal from '@mui/material/Modal';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogActions from '@mui/material/DialogActions';
+import './adminLists.css';
+import PreviewIcon from '@mui/icons-material/Preview';
+import DeleteIcon from '@mui/icons-material/Delete';
+import TextField from '@mui/material/TextField';
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
+import SearchIcon from '@mui/icons-material/Search';
+import ClearIcon from '@mui/icons-material/Clear';
+import MovieCard from '../../MovieCard/MovieCard';
+// refactor
+import { getCollection, deleteMovie } from '../../../services/movieService';
 
 function AdminMovieList() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [filteredData, setFilteredData] = useState([]);
 
-  const origin = "movie";
+  const origin = 'movie';
 
   const openModal = (movieData) => {
     setSelectedMovie(movieData);
@@ -42,20 +43,14 @@ function AdminMovieList() {
 
   // REQUEST ALL MOVIES
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/movies`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
+    getCollection('movies')
       .then((datas) => {
         setData(datas);
-        setFilteredData(datas); // Set filtered data initially to all data
+        setFilteredData(datas);
         setLoading(false);
       })
       .catch((error) => {
-        console.error("Error fetching user data:", error);
+        console.error('Error fetching user data:', error);
         setLoading(false);
       });
   }, []);
@@ -82,20 +77,16 @@ function AdminMovieList() {
   const navigate = useNavigate();
 
   const handleAddNewMovie = () => {
-    navigate("/new_movie");
+    navigate('/new_movie');
   };
 
-  // Fonction pour Raffraichier l'affichage d'un film en cas d'update dans MovieCard
+  // Fonction pour Raffraichir l'affichage d'un film en cas d'update dans MovieCard
   const updateMovieData = (updatedMovie) => {
     setData((prevData) =>
-      prevData.map((movie) =>
-        movie.id === updatedMovie.id ? updatedMovie : movie
-      )
+      prevData.map((movie) => (movie.id === updatedMovie.id ? updatedMovie : movie))
     );
     setFilteredData((prevFilteredData) =>
-      prevFilteredData.map((movie) =>
-        movie.id === updatedMovie.id ? updatedMovie : movie
-      )
+      prevFilteredData.map((movie) => (movie.id === updatedMovie.id ? updatedMovie : movie))
     );
 
     // Mettre à jour aussi le film sélectionné pour refléter les modifications dans le modal
@@ -121,36 +112,24 @@ function AdminMovieList() {
   const handleDeleteMovie = async () => {
     if (!movieIdToDelete) return; // Vérifie si un ID est bien défini
 
-    console.info("Tentative de suppression du film avec ID:", movieIdToDelete);
+    console.info('Tentative de suppression du film avec ID:', movieIdToDelete);
     setIsConfirmDeleteOpen(false);
 
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/api/movie/${movieIdToDelete}`,
-        {
-          method: "DELETE",
-        }
-      );
+      const status = await deleteMovie(movieIdToDelete);
 
-      console.info("Réponse du serveur:", response); // Log de la réponse du serveur
-
-      if (response.ok) {
+      if (status >= 200 && status < 300) {
         setData(data.filter((movie) => movie.id !== movieIdToDelete)); // Met à jour la liste des films
-        setFilteredData(
-          filteredData.filter((movie) => movie.id !== movieIdToDelete)
-        ); // Met à jour les données filtrées
+        setFilteredData(filteredData.filter((movie) => movie.id !== movieIdToDelete)); // Met à jour les données filtrées
         setSelectedMovie(null);
         // Alerte pour confirmer la suppression
-        toast.info("Film supprimé avec succès");
+        toast.info('Film supprimé avec succès');
       } else {
-        toast.error("Erreur lors de la suppression du film");
-        console.error(
-          "Erreur lors de la suppression du film",
-          await response.text()
-        ); // Log l'erreur
+        toast.error('Erreur lors de la suppression du film');
+        console.error('Erreur lors de la suppression du film'); // Log l'erreur
       }
     } catch (error) {
-      console.error("Erreur durant la suppression:", error);
+      console.error('Erreur durant la suppression:', error);
     }
   };
 
@@ -177,13 +156,13 @@ function AdminMovieList() {
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <SearchIcon sx={{ color: "#aaa" }} />
+                    <SearchIcon sx={{ color: '#aaa' }} />
                   </InputAdornment>
                 ),
                 endAdornment: searchTerm && (
                   <InputAdornment position="end">
-                    <IconButton onClick={() => setSearchTerm("")} size="small">
-                      <ClearIcon sx={{ color: "#888" }} />
+                    <IconButton onClick={() => setSearchTerm('')} size="small">
+                      <ClearIcon sx={{ color: '#888' }} />
                     </IconButton>
                   </InputAdornment>
                 ),
@@ -191,24 +170,24 @@ function AdminMovieList() {
               sx={{
                 maxWidth: 300, // ajuste si besoin
                 borderRadius: 3,
-                "& .MuiOutlinedInput-root": {
+                '& .MuiOutlinedInput-root': {
                   borderRadius: 3,
-                  backgroundColor: "#f5f5f5",
-                  "& fieldset": {
-                    borderColor: "#ccc",
+                  backgroundColor: '#f5f5f5',
+                  '& fieldset': {
+                    borderColor: '#ccc',
                   },
-                  "&:hover fieldset": {
-                    borderColor: "var(--color-03)",
+                  '&:hover fieldset': {
+                    borderColor: 'var(--color-03)',
                   },
-                  "&.Mui-focused fieldset": {
-                    borderColor: "var(--color-03)",
-                    boxShadow: "0 0 8px rgba(0,0,0,0.1)",
+                  '&.Mui-focused fieldset': {
+                    borderColor: 'var(--color-03)',
+                    boxShadow: '0 0 8px rgba(0,0,0,0.1)',
                   },
                 },
                 input: {
-                  color: "#333",
-                  "&::placeholder": {
-                    color: "#aaa",
+                  color: '#333',
+                  '&::placeholder': {
+                    color: '#aaa',
                     opacity: 1,
                   },
                 },
@@ -246,10 +225,7 @@ function AdminMovieList() {
                 <td data-label="Durée">{movieData.duration}</td>
                 <td data-label="Support">{movieData.videoSupport}</td>
                 <td data-label="Aperçu">
-                  <PreviewIcon
-                    className="admin_tools_ico"
-                    onClick={() => openModal(movieData)}
-                  />
+                  <PreviewIcon className="admin_tools_ico" onClick={() => openModal(movieData)} />
                 </td>
                 <td data-label="Supprimer">
                   <DeleteIcon
@@ -265,9 +241,7 @@ function AdminMovieList() {
       <Dialog open={isConfirmDeleteOpen} onClose={handleCloseDeleteConfirm}>
         <DialogTitle>Confirmer Delete</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            Es-tu sûr de vouloir effacer ce film ?
-          </DialogContentText>
+          <DialogContentText>Es-tu sûr de vouloir effacer ce film ?</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDeleteConfirm} color="primary">
@@ -278,9 +252,7 @@ function AdminMovieList() {
           </Button>
         </DialogActions>
       </Dialog>
-      <Box
-        sx={{ display: "flex", justifyContent: "center", marginTop: "20px" }}
-      >
+      <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
         <Pagination
           count={Math.ceil(filteredData.length / moviesPerPage)}
           shape="rounded"
@@ -294,7 +266,7 @@ function AdminMovieList() {
               <div
                 onClick={closeModal}
                 onKeyDown={(event) => {
-                  if (event.key === "Enter" || event.key === " ") {
+                  if (event.key === 'Enter' || event.key === ' ') {
                     closeModal();
                   }
                 }}
