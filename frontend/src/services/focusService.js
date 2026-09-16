@@ -5,6 +5,11 @@ export const getFocusSortedById = async () => {
   return response.data;
 };
 
+export const getFocusByCategory = async (categoryId) => {
+  const response = await api.get(`/api/focus/${categoryId}`);
+  return response.data;
+};
+
 export const deleteFocus = async (id) => {
   const response = await api.delete(`/api/focus/${id}`);
   return response.status;
