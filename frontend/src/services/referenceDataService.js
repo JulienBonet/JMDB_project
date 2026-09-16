@@ -39,3 +39,9 @@ export const getLanguagesSortedById = async () => {
 export const deleteLanguage = async (id) => {
   return api.delete(`/api/language/${id}`);
 };
+
+// YEARS
+export const getDecades = async () => {
+  const response = await api.get('/api/decades');
+  return response.data;
+};
