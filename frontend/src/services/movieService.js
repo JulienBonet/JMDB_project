@@ -7,6 +7,11 @@ export const getMovie = async (id) => {
   return response.data;
 };
 
+export const getMoviesSortedNox = async () => {
+  const response = await api.get('/api/movies/sorted/nox');
+  return response.data;
+};
+
 export const createMovie = async (formData) => {
   const response = await api.post('/api/movie', formData);
   return response.data;

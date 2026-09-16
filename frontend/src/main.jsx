@@ -31,6 +31,7 @@ import MovieFavorite from './pages/MovieFocus/MovieFavorite.jsx';
 import { getArtists } from './services/artistService';
 import { getTags } from './services/tagService';
 import { getFocusByCategory } from './services/focusService';
+import { getMoviesSortedNox } from './services/movieService';
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -53,19 +54,7 @@ const router = createBrowserRouter([
           {
             index: true, // "/" par défaut -> Home
             element: <Home />,
-            loader: async () => {
-              try {
-                const response = await fetch(`${backendUrl}/api/movies/sorted/nox`);
-                if (!response.ok) {
-                  const text = await response.text();
-                  throw new Error(text);
-                }
-                return await response.json();
-              } catch (error) {
-                console.error('Fetch error: ', error);
-                throw error;
-              }
-            },
+            loader: () => getMoviesSortedNox(),
           },
           { path: 'movie_search', element: <MovieSearch /> },
           {
