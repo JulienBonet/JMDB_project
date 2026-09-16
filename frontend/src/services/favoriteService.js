@@ -26,3 +26,28 @@ export const removeFavorite = async (userId, movieId) => {
 
   return response.data;
 };
+
+export const getFavorites = async () => {
+  const response = await api.get('/api/favorites');
+  return response.data;
+};
+
+export const getFavoritesAlphaAsc = async () => {
+  const response = await api.get('/api/favorites/sorted0');
+  return response.data;
+};
+
+export const getFavoritesAlphaDesc = async () => {
+  const response = await api.get('/api/favorites/sorted1');
+  return response.data;
+};
+
+export const getFavoritesYearAsc = async () => {
+  const response = await api.get('/api/favorites/sorted2');
+  return response.data;
+};
+
+export const getFavoritesYearDesc = async () => {
+  const response = await api.get('/api/favorites/sorted3');
+  return response.data;
+};
