@@ -9,6 +9,8 @@ import UndoIcon from '@mui/icons-material/Undo';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import CachedIcon from '@mui/icons-material/Cached';
 import './adminItemsCard.css';
+// refactor
+import { updateAdminItem, updateAdminItemImage } from '../../../services/adminItemService';
 
 function AdminItemsCard3({ item, origin, onUpdate, closeModal }) {
   const CLOUDINARY_BASE_URL = import.meta.env.VITE_CLOUDINARY_BASE_URL;
@@ -39,25 +41,9 @@ function AdminItemsCard3({ item, origin, onUpdate, closeModal }) {
     const file = fileInputRef.current.files[0];
     if (!file) return null;
 
-    const formData = new FormData();
-    formData.append('image', file);
+    const data = await updateAdminItemImage(origin, item.id, file);
 
-    const response = await fetch(
-      `${import.meta.env.VITE_BACKEND_URL}/api/${origin}/${item.id}/image`,
-      {
-        method: 'PUT',
-        body: formData,
-      }
-    );
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      console.error('❌ Erreur Cloudinary :', data);
-      throw new Error(data.message || 'Upload failed');
-    }
-
-    return data.url; // URL Cloudinary
+    return data.url; // cloudinary url
   };
 
   const handleValidate = async () => {
@@ -70,29 +56,13 @@ function AdminItemsCard3({ item, origin, onUpdate, closeModal }) {
         };
 
         // 1. Mettre à jour les infos
-        const response = await fetch(
-          `${import.meta.env.VITE_BACKEND_URL}/api/${origin}/${item.id}`,
-          {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-          }
-        );
-
-        if (!response.ok) {
-          console.error('Error updating item');
-          return;
-        }
-        console.info('Item successfully updated');
+        await updateAdminItem(origin, item.id, data);
       }
 
       // 2. Mettre à jour l'image
       let newImageUrl = image;
       if (fileInputRef.current.files[0]) {
         newImageUrl = await handleUpdateImage();
-        console.info('Image successfully updated');
       }
 
       // Mettre à jour l'état avec la nouvelle URL d'image

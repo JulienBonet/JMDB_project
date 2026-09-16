@@ -1,6 +1,6 @@
 /* eslint-disable react/no-danger */
 /* eslint-disable react/prop-types */
-// /* eslint-disable react/prop-types */
+/* eslint-disable react/prop-types */
 import { useState, useRef } from 'react';
 import { toast } from 'react-toastify';
 import ReactQuill from 'react-quill';
@@ -19,6 +19,8 @@ import CachedIcon from '@mui/icons-material/Cached';
 import CircularProgress from '@mui/material/CircularProgress';
 import './adminItemsCard.css';
 import './adminItemsCardMediaQueries.css';
+// refactor
+import { updateAdminItem, updateAdminItemImage } from '../../../services/adminItemService';
 
 function AdminItemsCard({ item, origin, onUpdate, closeModal }) {
   const CLOUDINARY_BASE_URL = import.meta.env.VITE_CLOUDINARY_BASE_URL;
@@ -58,23 +60,7 @@ function AdminItemsCard({ item, origin, onUpdate, closeModal }) {
     const file = fileInputRef.current.files[0];
     if (!file) return null;
 
-    const formData = new FormData();
-    formData.append('image', file);
-
-    const response = await fetch(
-      `${import.meta.env.VITE_BACKEND_URL}/api/${origin}/${item.id}/image`,
-      {
-        method: 'PUT',
-        body: formData,
-      }
-    );
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      console.error('❌ Erreur Cloudinary :', data);
-      throw new Error(data.message || 'Upload failed');
-    }
+    const data = await updateAdminItemImage(origin, item.id, file);
 
     return data.url;
   };
@@ -108,19 +94,7 @@ function AdminItemsCard({ item, origin, onUpdate, closeModal }) {
           data.isFocus = Boolean(isFocus);
         }
 
-        const response = await fetch(
-          `${import.meta.env.VITE_BACKEND_URL}/api/${origin}/${item.id}`,
-          {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data),
-          }
-        );
-
-        if (!response.ok) {
-          const err = await response.json();
-          throw new Error(err.message || 'Update failed');
-        }
+        await updateAdminItem(origin, item.id, data);
       }
 
       // UPLOAD IMAGE CLOUDINARY

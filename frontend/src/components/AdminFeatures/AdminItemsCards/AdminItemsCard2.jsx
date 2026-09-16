@@ -7,6 +7,8 @@ import ModeIcon from '@mui/icons-material/Mode';
 import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
 import UndoIcon from '@mui/icons-material/Undo';
 import './adminItemsCard.css';
+// refactor
+import { updateAdminItem } from '../../../services/adminItemService';
 
 function AdminItemsCard2({ item, origin, onUpdate, closeModal }) {
   const [isModify, setIsModify] = useState(false);
@@ -32,22 +34,7 @@ function AdminItemsCard2({ item, origin, onUpdate, closeModal }) {
         };
 
         // 1. Mettre à jour les infos
-        const response = await fetch(
-          `${import.meta.env.VITE_BACKEND_URL}/api/${origin}/${item.id}`,
-          {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-          }
-        );
-
-        if (!response.ok) {
-          console.error('Error updating item');
-          return;
-        }
-        console.info('Item successfully updated');
+        await updateAdminItem(origin, item.id, data);
       }
 
       // 3. Réinitialiser les états locaux
