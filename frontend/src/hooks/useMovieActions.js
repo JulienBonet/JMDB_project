@@ -86,11 +86,7 @@ export function useMovieActions({
       onUpdateMovie(newMovie);
       closeModifyMode();
 
-      if (typeof closeModal === 'function') {
-        closeModal();
-      } else {
-        console.error('Erreur lors de la mise à jour');
-      }
+      closeModal?.();
     } catch (error) {
       console.error("Erreur lors de la mise à jour du film et de l'image", error);
     } finally {
