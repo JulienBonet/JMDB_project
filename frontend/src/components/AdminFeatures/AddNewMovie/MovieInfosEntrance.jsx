@@ -2,13 +2,14 @@
 /* eslint-disable react/button-has-type */
 /* eslint-disable no-shadow */
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { alpha, styled } from '@mui/material/styles';
 import { pink } from '@mui/material/colors';
 import Switch from '@mui/material/Switch';
 import './movieInfosEntrance.css';
+// refacto
+import { searchTmdb } from '../../../services/tmdbService';
 
 function MovieInfosEntrance({ title, onMovieClick, handleCloseModalMIE }) {
   const [data, setData] = useState([]);
@@ -19,7 +20,6 @@ function MovieInfosEntrance({ title, onMovieClick, handleCloseModalMIE }) {
   const [error, setError] = useState(null);
   const [genresLoaded, setGenresLoaded] = useState(false); // Nouvel état pour indiquer si les genres sont chargés
 
-  const backendUrl = import.meta.env.VITE_BACKEND_URL;
   const encodedTitle = encodeURIComponent(title);
 
   // --------------------------------------------
@@ -75,11 +75,13 @@ function MovieInfosEntrance({ title, onMovieClick, handleCloseModalMIE }) {
 
     const fetchData = async () => {
       try {
-        const res = await axios.get(`${backendUrl}/api/tmdb/search`, {
-          params: { query: encodedTitle, include_adult: adult, page },
+        const result = await searchTmdb({
+          query: encodedTitle,
+          includeAdult: adult,
+          page,
         });
 
-        const { movieRes, tvRes, genresMovie, genresTV } = res.data;
+        const { movieRes, tvRes, genresMovie, genresTV } = result;
 
         const movieResults = movieRes.results.map((m) => ({
           ...m,
