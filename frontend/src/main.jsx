@@ -29,6 +29,7 @@ import MovieFocusCasting from './pages/MovieFocus/MovieFocusCasting.jsx';
 import MovieFavorite from './pages/MovieFocus/MovieFavorite.jsx';
 // refacto
 import { getArtists } from './services/artistService';
+import { getTags } from './services/tagService';
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -94,7 +95,7 @@ const router = createBrowserRouter([
           {
             path: 'movie_tag',
             element: <MovieTag />,
-            loader: () => fetch(`${backendUrl}/api/tags`),
+            loader: () => getTags(),
           },
           {
             path: 'movie_thema',

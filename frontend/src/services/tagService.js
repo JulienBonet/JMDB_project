@@ -1,5 +1,10 @@
 import api from '../api/apiClient';
 
+export const getTags = async () => {
+  const response = await api.get('/api/tags');
+  return response.data;
+};
+
 export const getTagsSortedById = async () => {
   const response = await api.get('/api/tags/sorted_id');
   return response.data;
