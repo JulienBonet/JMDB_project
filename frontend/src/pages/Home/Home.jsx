@@ -8,14 +8,14 @@ import '../../assets/css/common_elements.css';
 import './home.css';
 import './homeMediaQueries.css';
 import MovieThumbnail from '../../components/MovieThumbnail3/MovieThumbnail3';
+// refactor
+import { getMoviesSortedNox } from '../../services/movieService';
 
 function Home() {
   // const data = useLoaderData();
   const initialData = useLoaderData();
   const [movies, setMovies] = useState(initialData);
   const [moviesToShow, setMoviesToShow] = useState(10);
-
-  const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
   const updateMoviesToShow = () => {
     // 👉 1) Si hauteur trop faible ET largeur desktop, on force 4 images
@@ -47,8 +47,7 @@ function Home() {
   }, []);
 
   const handleShuffle = async () => {
-    const res = await fetch(`${backendUrl}/api/movies/sorted/nox`);
-    const newMovies = await res.json();
+    const newMovies = await getMoviesSortedNox();
     setMovies(newMovies);
   };
 
