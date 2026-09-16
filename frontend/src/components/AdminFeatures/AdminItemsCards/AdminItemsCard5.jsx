@@ -5,6 +5,8 @@ import { toast } from 'react-toastify';
 import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
 import UndoIcon from '@mui/icons-material/Undo';
 import './adminItemsCard.css';
+// refactor
+import { updateUserPassword } from '../../../services/userService';
 
 function AdminItemsCard5({ item, onUpdate, closeModal }) {
   const [newPassword, setNewPassword] = useState('');
@@ -41,33 +43,17 @@ function AdminItemsCard5({ item, onUpdate, closeModal }) {
     try {
       setIsSubmitting(true);
 
-      const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/api/auth/user/${item.id}/password`,
-        {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-          body: JSON.stringify({ password: newPassword }),
-        }
-      );
-
-      if (!response.ok) {
-        const txt = await response.text().catch(() => null);
-        console.error('Error change password:', txt || response.statusText);
-        toast.error(txt || 'Erreur lors du changement de mot de passe');
-        setIsSubmitting(false);
-        return;
-      }
+      await updateUserPassword(item.id, newPassword);
 
       toast.success('Mot de passe mis à jour', { className: 'custom-toast' });
       setIsSubmitting(false);
-      onUpdate(); // refresh parent
+      onUpdate();
       closeModal();
-    } catch (err) {
-      console.error(err);
-      toast.error('Erreur réseau');
+    } catch (error) {
+      const message = error.response?.data?.message || error.response?.data || error.message;
+
+      console.error('Error change password:', message);
+      toast.error(message || 'Erreur lors du changement de mot de passe');
       setIsSubmitting(false);
     }
   };

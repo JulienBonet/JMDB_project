@@ -1,33 +1,34 @@
 /* eslint-disable no-alert */
-/* eslint-disable jsx-a11y/control-has-associated-label */
-import { useState, useEffect } from "react";
-import { Button, Container } from "@mui/material";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import Modal from "@mui/material/Modal";
-import Box from "@mui/material/Box";
-import Pagination from "@mui/material/Pagination";
-import "./adminLists.css";
-import DeleteIcon from "@mui/icons-material/Delete";
-import VpnKeyIcon from "@mui/icons-material/VpnKey";
-import TextField from "@mui/material/TextField";
-import InputAdornment from "@mui/material/InputAdornment";
-import IconButton from "@mui/material/IconButton";
-import SearchIcon from "@mui/icons-material/Search";
-import ClearIcon from "@mui/icons-material/Clear";
-import AdminItemsCard from "../AdminItemsCards/AdminItemsCard5";
-import CreateItemCard from "../CreateItemCard/CreateItemCard";
+import { useState, useEffect } from 'react';
+import { Button, Container } from '@mui/material';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Modal from '@mui/material/Modal';
+import Box from '@mui/material/Box';
+import Pagination from '@mui/material/Pagination';
+import './adminLists.css';
+import DeleteIcon from '@mui/icons-material/Delete';
+import VpnKeyIcon from '@mui/icons-material/VpnKey';
+import TextField from '@mui/material/TextField';
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
+import SearchIcon from '@mui/icons-material/Search';
+import ClearIcon from '@mui/icons-material/Clear';
+import AdminItemsCard from '../AdminItemsCards/AdminItemsCard5';
+import CreateItemCard from '../CreateItemCard/CreateItemCard';
+// refactor
+import { getUsersSortedById, deleteUser } from '../../../services/userService';
 
 function AdminUsersList() {
   const [data, setData] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [filteredData, setFilteredData] = useState([]);
   const [newUser, setNewUser] = useState(false);
   const [passwordItem, setPasswordItem] = useState(null);
 
-  const origin = "user";
+  const origin = 'user';
 
   const openModalNewUser = () => {
     setNewUser(true);
@@ -39,78 +40,53 @@ function AdminUsersList() {
 
   // REQUEST ALL USERS sorted ID desc
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/user/sorted_id`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
+    getUsersSortedById()
       .then((datas) => {
         setData(datas);
         setLoading(false);
       })
       .catch((error) => {
-        console.error("Error fetching user data:", error);
+        console.error('Error fetching user data:', error);
         setLoading(false);
       });
   }, []);
 
   // REFRESH USER LIST
-  const refreshUser = () => {
-    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/user/sorted_id`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
+  const refreshUsers = () => {
+    getUsersSortedById()
       .then((datas) => {
         setData(datas);
         setFilteredData(datas);
       })
       .catch((error) => {
-        console.error("Error fetching user data:", error);
+        console.error('Error fetching user data:', error);
       });
   };
 
   // DELETE USER
   const handleDelete = async (id) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this user?"
-    );
+    const confirmDelete = window.confirm('Are you sure you want to delete this user?');
     if (!confirmDelete) return;
 
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/api/auth/user/${id}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const status = await deleteUser(id);
 
-      if (response.ok) {
-        toast.success("User deleted", { className: "custom-toast" });
-        refreshUser();
+      if (status >= 200 && status < 300) {
+        toast.success('User deleted', { className: 'custom-toast' });
+        refreshUsers();
       } else {
-        toast.error("Error deleting user");
+        toast.error('Error deleting user');
       }
     } catch (err) {
       console.error(err);
-      toast.error("Error deleting user");
+      toast.error('Error deleting user');
     }
   };
 
   // SEARCH BAR
   useEffect(() => {
     const filtered = data.filter(
-      (itemData) =>
-        itemData.name &&
-        itemData.name.toLowerCase().includes(searchTerm.toLowerCase())
+      (itemData) => itemData.name && itemData.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredData(filtered);
   }, [searchTerm, data]);
@@ -143,13 +119,13 @@ function AdminUsersList() {
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <SearchIcon sx={{ color: "#aaa" }} />
+                    <SearchIcon sx={{ color: '#aaa' }} />
                   </InputAdornment>
                 ),
                 endAdornment: searchTerm && (
                   <InputAdornment position="end">
-                    <IconButton onClick={() => setSearchTerm("")} size="small">
-                      <ClearIcon sx={{ color: "#888" }} />
+                    <IconButton onClick={() => setSearchTerm('')} size="small">
+                      <ClearIcon sx={{ color: '#888' }} />
                     </IconButton>
                   </InputAdornment>
                 ),
@@ -157,24 +133,24 @@ function AdminUsersList() {
               sx={{
                 maxWidth: 300, // ajuste si besoin
                 borderRadius: 3,
-                "& .MuiOutlinedInput-root": {
+                '& .MuiOutlinedInput-root': {
                   borderRadius: 3,
-                  backgroundColor: "#f5f5f5",
-                  "& fieldset": {
-                    borderColor: "#ccc",
+                  backgroundColor: '#f5f5f5',
+                  '& fieldset': {
+                    borderColor: '#ccc',
                   },
-                  "&:hover fieldset": {
-                    borderColor: "var(--color-03)",
+                  '&:hover fieldset': {
+                    borderColor: 'var(--color-03)',
                   },
-                  "&.Mui-focused fieldset": {
-                    borderColor: "var(--color-03)",
-                    boxShadow: "0 0 8px rgba(0,0,0,0.1)",
+                  '&.Mui-focused fieldset': {
+                    borderColor: 'var(--color-03)',
+                    boxShadow: '0 0 8px rgba(0,0,0,0.1)',
                   },
                 },
                 input: {
-                  color: "#333",
-                  "&::placeholder": {
-                    color: "#aaa",
+                  color: '#333',
+                  '&::placeholder': {
+                    color: '#aaa',
                     opacity: 1,
                   },
                 },
@@ -206,12 +182,12 @@ function AdminUsersList() {
             currentItems.map((DataItem) => {
               // Formater la date
               const createdAt = new Date(DataItem.created_at);
-              const formattedDate = `${String(createdAt.getDate()).padStart(2, "0")}/${String(
+              const formattedDate = `${String(createdAt.getDate()).padStart(2, '0')}/${String(
                 createdAt.getMonth() + 1
-              ).padStart(2, "0")}/${createdAt.getFullYear()}`;
+              ).padStart(2, '0')}/${createdAt.getFullYear()}`;
 
               // Statut
-              const status = DataItem.isAdmin === 1 ? "admin" : "user";
+              const status = DataItem.isAdmin === 1 ? 'admin' : 'user';
 
               return (
                 <tr key={DataItem.id}>
@@ -238,9 +214,7 @@ function AdminUsersList() {
           )}
         </tbody>
       </table>
-      <Box
-        sx={{ display: "flex", justifyContent: "center", marginTop: "20px" }}
-      >
+      <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
         <Pagination
           count={Math.ceil(filteredData.length / itemsPerPage)}
           shape="rounded"
@@ -281,7 +255,7 @@ function AdminUsersList() {
               <div
                 onClick={closeModalNewUser}
                 onKeyDown={(event) => {
-                  if (event.key === "Enter" || event.key === " ") {
+                  if (event.key === 'Enter' || event.key === ' ') {
                     closeModalNewUser();
                   }
                 }}
@@ -293,7 +267,7 @@ function AdminUsersList() {
               </div>
               <CreateItemCard
                 origin={origin}
-                onUpdate={refreshUser}
+                onUpdate={refreshUsers}
                 closeModal={closeModalNewUser}
               />
             </Container>
@@ -301,17 +275,13 @@ function AdminUsersList() {
         </Modal>
       )}
       {passwordItem && (
-        <Modal
-          open
-          onClose={() => setPasswordItem(null)}
-          className="Movie_Modal"
-        >
+        <Modal open onClose={() => setPasswordItem(null)} className="Movie_Modal">
           <Box>
             <Container maxWidth="sm">
               <div
                 onClick={() => setPasswordItem(null)}
                 onKeyDown={(event) => {
-                  if (event.key === "Enter" || event.key === " ") {
+                  if (event.key === 'Enter' || event.key === ' ') {
                     setPasswordItem(null);
                   }
                 }}
@@ -324,7 +294,7 @@ function AdminUsersList() {
 
               <AdminItemsCard
                 item={passwordItem}
-                onUpdate={refreshUser}
+                onUpdate={refreshUsers}
                 closeModal={() => setPasswordItem(null)}
               />
             </Container>
