@@ -43,3 +43,8 @@ export const getRandomArtistFocus = async (type) => {
   const response = await api.get(`/api/${type}/focus/random`);
   return response.data;
 };
+
+export const getArtistFocusSorted = async (type, sort) => {
+  const response = await api.get(`/api/${type}/focus/sorted/${sort}`);
+  return response.data;
+};

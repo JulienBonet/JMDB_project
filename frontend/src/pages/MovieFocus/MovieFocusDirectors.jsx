@@ -1,19 +1,25 @@
-import { useLoaderData } from "react-router-dom";
-import { useState } from "react";
-import Modal from "@mui/material/Modal";
-import Box from "@mui/material/Box";
-import { Container } from "@mui/material";
-import IconButton from "@mui/material/IconButton";
-import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import focusDirectorsIco from "../../assets/ico/focus_directors.png";
-import MovieFocusThumbnail from "../../components/MovieFocusThumbnail/MovieFocusThumbnail";
-import MovieThumbnail from "../../components/MovieThumbnail/MovieThumbnail";
-import ToggleSortedButton from "../../components/ToggleSortedBtn/ToggleSortedButton";
-import SideActionBar from "../../components/StickySideBar/StickySideBar";
-import FocusCard from "../../components/FocusCard/FocusCard";
-import "./movieFocus.css";
-import "./movieFocusMediaqueries.css";
+import { useLoaderData } from 'react-router-dom';
+import { useState } from 'react';
+import Modal from '@mui/material/Modal';
+import Box from '@mui/material/Box';
+import { Container } from '@mui/material';
+import IconButton from '@mui/material/IconButton';
+import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import focusDirectorsIco from '../../assets/ico/focus_directors.png';
+import MovieFocusThumbnail from '../../components/MovieFocusThumbnail/MovieFocusThumbnail';
+import MovieThumbnail from '../../components/MovieThumbnail/MovieThumbnail';
+import ToggleSortedButton from '../../components/ToggleSortedBtn/ToggleSortedButton';
+import SideActionBar from '../../components/StickySideBar/StickySideBar';
+import FocusCard from '../../components/FocusCard/FocusCard';
+import './movieFocus.css';
+import './movieFocusMediaqueries.css';
+// refacto
+import {
+  getArtistFocusSorted,
+  getArtistMovies,
+  getArtistMoviesSorted,
+} from '../../services/artistService';
 
 function MovieThema() {
   const themaData = useLoaderData();
@@ -27,31 +33,24 @@ function MovieThema() {
   const [sortMoviesYearAsc, setSortMoviesYearAsc] = useState(true);
   const [openFocusModal, setOpenFocusModal] = useState(false);
 
-  const backendUrl = `${import.meta.env.VITE_BACKEND_URL}`;
-  const origin = "ArtistFocus";
+  const origin = 'ArtistFocus';
 
   //------------------------------------------
   // SORTED THEMAS
   //------------------------------------------
   const handleSortedAlphabeticalFocus = async () => {
-    const url = sortFocusAsc
-      ? `${backendUrl}/api/directors/focus/sorted/0` // ASC
-      : `${backendUrl}/api/directors/focus/sorted/1`; // DESC
+    const sort = sortFocusAsc ? 0 : 1;
 
-    const res = await fetch(url);
-    const data = await res.json();
+    const data = await getArtistFocusSorted('directors', sort);
     setFocus(data);
 
     setSortFocusAsc(!sortFocusAsc);
   };
 
   const handleSortedChronologicalFocus = async () => {
-    const url = sortFocusAsc
-      ? `${backendUrl}/api/directors/focus/sorted/2` // ASC
-      : `${backendUrl}/api/directors/focus/sorted/3`; // DESC
+    const sort = sortFocusAsc ? 2 : 3;
 
-    const res = await fetch(url);
-    const data = await res.json();
+    const data = await getArtistFocusSorted('directors', sort);
     setFocus(data);
 
     setSortFocusAsc(!sortFocusAsc);
@@ -67,9 +66,7 @@ function MovieThema() {
   const handleClickFocus = async (f) => {
     setSelectedFocus(f);
 
-    // fetch des films du focus
-    const res = await fetch(`${backendUrl}/api/directors/${f.id}`);
-    const data = await res.json();
+    const data = await getArtistMovies('directors', f.id);
     setFilms(data);
   };
 
@@ -79,36 +76,27 @@ function MovieThema() {
   const handleSortedAlphabeticalMovies = async () => {
     if (!selectedFocus) return;
 
-    const url = sortMoviesAsc
-      ? `${backendUrl}/api/directors/${selectedFocus.id}/sorted/0` // ASC
-      : `${backendUrl}/api/directors/${selectedFocus.id}/sorted/1`; // DESC
+    const sort = sortMoviesAsc ? 0 : 1;
+    const data = await getArtistMoviesSorted('directors', selectedFocus.id, sort);
 
-    const res = await fetch(url);
-    const data = await res.json();
     setFilms(data);
-
     setSortMoviesAsc(!sortMoviesAsc);
   };
 
   const handleSortedChronologicalMovies = async () => {
     if (!selectedFocus) return;
 
-    const url = sortMoviesYearAsc
-      ? `${backendUrl}/api/directors/${selectedFocus.id}/sorted/2` // ASC
-      : `${backendUrl}/api/directors/${selectedFocus.id}/sorted/3`; // DESC
+    const sort = sortMoviesYearAsc ? 2 : 3;
+    const data = await getArtistMoviesSorted('directors', selectedFocus.id, sort);
 
-    const res = await fetch(url);
-    const data = await res.json();
     setFilms(data);
-
     setSortMoviesYearAsc(!sortMoviesYearAsc);
   };
 
   const handleResetMovies = async () => {
     if (!selectedFocus) return;
 
-    const res = await fetch(`${backendUrl}/api/directors/${selectedFocus.id}`);
-    const data = await res.json();
+    const data = await getArtistMovies('directors', selectedFocus.id);
     setFilms(data);
 
     setSortMoviesAsc(true);
@@ -129,9 +117,7 @@ function MovieThema() {
   // MAJ DU CONTENU
   //------------------------------------------
   const handleUpdateMovie = (updatedMovie) => {
-    setFilms((prev) =>
-      prev.map((m) => (m.id === updatedMovie.id ? updatedMovie : m))
-    );
+    setFilms((prev) => prev.map((m) => (m.id === updatedMovie.id ? updatedMovie : m)));
   };
 
   const handleDeleteMovie = (movieId) => {
@@ -149,15 +135,15 @@ function MovieThema() {
           {selectedFocus ? (
             <>
               <IconButton
-                onClick={() => setSelectedFocus("")}
+                onClick={() => setSelectedFocus('')}
                 sx={{
-                  color: "var(--color-01)",
-                  border: "1px solid var(--color-01)",
-                  borderRadius: "8px",
-                  padding: "6px",
-                  "&:hover": {
-                    backgroundColor: "var(--color-05)",
-                    borderColor: "var(--color-01)",
+                  color: 'var(--color-01)',
+                  border: '1px solid var(--color-01)',
+                  borderRadius: '8px',
+                  padding: '6px',
+                  '&:hover': {
+                    backgroundColor: 'var(--color-05)',
+                    borderColor: 'var(--color-01)',
                   },
                 }}
                 aria-label="Retour"
@@ -169,31 +155,31 @@ function MovieThema() {
                 <IconButton
                   onClick={openModal}
                   sx={{
-                    color: "var(--color-01)",
+                    color: 'var(--color-01)',
                   }}
                   aria-label="info +"
                 >
                   <InfoOutlinedIcon
                     sx={{
-                      fontSize: "2rem",
-                      animation: "infoPulse 1.2s ease-out 1",
-                      "@keyframes infoPulse": {
-                        "0%": {
-                          transform: "scale(0.8)",
+                      fontSize: '2rem',
+                      animation: 'infoPulse 1.2s ease-out 1',
+                      '@keyframes infoPulse': {
+                        '0%': {
+                          transform: 'scale(0.8)',
                           opacity: 0,
                         },
-                        "50%": {
-                          transform: "scale(1.25)",
+                        '50%': {
+                          transform: 'scale(1.25)',
                           opacity: 1,
                         },
-                        "100%": {
-                          transform: "scale(1)",
+                        '100%': {
+                          transform: 'scale(1)',
                         },
                       },
-                      transition: "0.2s ease",
-                      "&:hover": {
-                        color: "var(--color-03)",
-                        transform: "scale(1.15)",
+                      transition: '0.2s ease',
+                      '&:hover': {
+                        color: 'var(--color-03)',
+                        transform: 'scale(1.15)',
                       },
                     }}
                   />
@@ -206,11 +192,7 @@ function MovieThema() {
             </>
           ) : (
             <>
-              <img
-                src={focusDirectorsIco}
-                alt="Les grands maîtres"
-                className="thema_icon"
-              />
+              <img src={focusDirectorsIco} alt="Les grands maîtres" className="thema_icon" />
               <h1 className="h1_titlePage_MF">LES GRANDS AUTEURS</h1>
               <ToggleSortedButton
                 active={!!themaData}
@@ -234,11 +216,7 @@ function MovieThema() {
             />
             <div className="thumbnails_container_MF">
               {Focus.map((f) => (
-                <MovieFocusThumbnail
-                  key={f.id}
-                  data={f}
-                  onClick={() => handleClickFocus(f)}
-                />
+                <MovieFocusThumbnail key={f.id} data={f} onClick={() => handleClickFocus(f)} />
               ))}
             </div>
           </>
@@ -266,17 +244,13 @@ function MovieThema() {
       </section>
       {/* modal */}
       {selectedFocus && (
-        <Modal
-          open={openFocusModal}
-          onClose={closeModal}
-          className="Focus_Modal"
-        >
+        <Modal open={openFocusModal} onClose={closeModal} className="Focus_Modal">
           <Box>
             <Container maxWidth="800px" className="Focus_Modal_container">
               <div
                 onClick={closeModal}
                 onKeyDown={(event) => {
-                  if (event.key === "Enter" || event.key === " ") {
+                  if (event.key === 'Enter' || event.key === ' ') {
                     closeModal();
                   }
                 }}
