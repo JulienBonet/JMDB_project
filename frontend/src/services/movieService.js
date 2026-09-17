@@ -74,3 +74,8 @@ export const searchMovies = async ({
 
   return response.data;
 };
+
+export const purgeOrphanRecords = async () => {
+  const response = await api.post('/api/purge');
+  return response.data;
+};
