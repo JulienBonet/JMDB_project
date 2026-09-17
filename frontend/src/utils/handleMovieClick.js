@@ -1,15 +1,14 @@
 // -----------------/ MOVIE DATA FETCH IN addNewMovie.jsx/----------------- //
-import axios from 'axios';
 import countries from 'i18n-iso-countries';
 import frLocale from 'i18n-iso-countries/langs/fr.json';
 import { translateCountry } from './countries';
 import { translateLanguage } from './languages';
+// refacto
+import { getTmdbMovieDetails } from '../services/tmdbService';
 
 countries.registerLocale(frLocale);
 
-const handleMovieClick = async (movieId, mediaType, deps, backendUrl) => {
-  const url = `${backendUrl || import.meta.env.VITE_BACKEND_URL}/api/tmdb/${mediaType}/${movieId}/details`;
-
+const handleMovieClick = async (movieId, mediaType, deps) => {
   const {
     resetStates,
     setTmdbSeasonsInfo,
@@ -49,14 +48,9 @@ const handleMovieClick = async (movieId, mediaType, deps, backendUrl) => {
   await resetStates(undefined, false);
 
   try {
-    const response = await axios.get(url);
+    const data = await getTmdbMovieDetails(mediaType, movieId);
 
-    const {
-      movieData = {},
-      credits = { cast: [], crew: [] },
-      videos = [],
-      keywords = [],
-    } = response.data;
+    const { movieData = {}, credits = { cast: [], crew: [] }, videos = [], keywords = [] } = data;
 
     const isTV = mediaType === 'tv';
 
@@ -133,17 +127,6 @@ const handleMovieClick = async (movieId, mediaType, deps, backendUrl) => {
     // COUNTRIES
     // -------------------
 
-    // const countriesData = await Promise.all(
-    //   (movieData.production_countries || []).map((c) =>
-    //     fetchOrCreateEntity(
-    //       c.name,
-    //       searchCountryInDatabase,
-    //       createCountryInDatabase
-    //     )
-    //   )
-    // );
-    // setSelectedCountries(countriesData);
-
     const fetchCountry = async (country) => {
       const countryNameFr = translateCountry(country.iso_3166_1, country.name);
       let data = await searchCountryInDatabase(countryNameFr);
@@ -158,17 +141,6 @@ const handleMovieClick = async (movieId, mediaType, deps, backendUrl) => {
 
     // -------------------
     // LANGUAGES
-
-    // const languagesData = await Promise.all(
-    //   (movieData.spoken_languages || []).map((l) =>
-    //     fetchOrCreateEntity(
-    //       l.name,
-    //       searchLanguageInDatabase,
-    //       createLanguageInDatabase
-    //     )
-    //   )
-    // );
-    // setSelectedLanguages(languagesData);
 
     const fetchLanguage = async (language) => {
       const languageNameFr = translateLanguage(language.iso_639_1, language.name);

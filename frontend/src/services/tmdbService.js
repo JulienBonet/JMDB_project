@@ -18,3 +18,8 @@ export const searchTmdb = async ({ query, includeAdult, page }) => {
 
   return response.data;
 };
+
+export const getTmdbMovieDetails = async (mediaType, movieId) => {
+  const response = await api.get(`/api/tmdb/${mediaType}/${movieId}/details`);
+  return response.data;
+};
