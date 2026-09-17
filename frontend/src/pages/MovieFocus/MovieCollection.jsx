@@ -44,7 +44,7 @@ function MovieCollection() {
   //------------------------------------------
   const handleSortedAlphabeticalFocus = async () => {
     try {
-      const data = sortFocusAsc ? await getFocusByCategoryAsc(1) : await getFocusByCategoryDesc(1);
+      const data = sortFocusAsc ? await getFocusByCategoryAsc(3) : await getFocusByCategoryDesc(3);
 
       setFocus(data);
       setSortFocusAsc(!sortFocusAsc);

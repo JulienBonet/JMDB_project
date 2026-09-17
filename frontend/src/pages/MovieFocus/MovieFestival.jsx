@@ -1,21 +1,28 @@
-import { useLoaderData } from "react-router-dom";
-import { useState } from "react";
-import Modal from "@mui/material/Modal";
-import Box from "@mui/material/Box";
-import { Container } from "@mui/material";
-import IconButton from "@mui/material/IconButton";
-import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import festivalIco from "../../assets/ico/focus_festival.png";
-import MovieFocusThumbnail from "../../components/MovieFocusThumbnail/MovieFocusThumbnail";
-import MovieThumbnail from "../../components/MovieThumbnail/MovieThumbnail";
-import ToggleSortedButton from "../../components/ToggleSortedBtn/ToggleSortedButton";
-import SideActionBar from "../../components/StickySideBar/StickySideBar";
-import FocusCard from "../../components/FocusCard/FocusCard";
-import "./movieFocus.css";
-import "./movieFocusMediaqueries.css";
+import { useLoaderData } from 'react-router-dom';
+import { useState } from 'react';
+import Modal from '@mui/material/Modal';
+import Box from '@mui/material/Box';
+import { Container } from '@mui/material';
+import IconButton from '@mui/material/IconButton';
+import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import festivalIco from '../../assets/ico/focus_festival.png';
+import MovieFocusThumbnail from '../../components/MovieFocusThumbnail/MovieFocusThumbnail';
+import MovieThumbnail from '../../components/MovieThumbnail/MovieThumbnail';
+import ToggleSortedButton from '../../components/ToggleSortedBtn/ToggleSortedButton';
+import SideActionBar from '../../components/StickySideBar/StickySideBar';
+import FocusCard from '../../components/FocusCard/FocusCard';
+import './movieFocus.css';
+import './movieFocusMediaqueries.css';
+// refactor
+import {
+  getFocusByCategoryAsc,
+  getFocusByCategoryDesc,
+  getFocusMovies,
+  getFocusMoviesSorted,
+} from '../../services/focusService';
 
-function MovieThema() {
+function MovieFestival() {
   const themaData = useLoaderData();
   const [Focus, setFocus] = useState(themaData);
   const [selectedFocus, setSelectedFocus] = useState(null);
@@ -27,22 +34,20 @@ function MovieThema() {
   const [sortMoviesYearAsc, setSortMoviesYearAsc] = useState(true);
   const [openFocusModal, setOpenFocusModal] = useState(false);
 
-  const backendUrl = `${import.meta.env.VITE_BACKEND_URL}`;
-  const origin = "focus";
+  const origin = 'focus';
 
   //------------------------------------------
   // SORTED THEMAS
   //------------------------------------------
   const handleSortedAlphabeticalFocus = async () => {
-    const url = sortFocusAsc
-      ? `${backendUrl}/api/focus/2/sorted0` // ASC
-      : `${backendUrl}/api/focus/2/sorted1`; // DESC
+    try {
+      const data = sortFocusAsc ? await getFocusByCategoryAsc(2) : await getFocusByCategoryDesc(2);
 
-    const res = await fetch(url);
-    const data = await res.json();
-    setFocus(data);
-
-    setSortFocusAsc(!sortFocusAsc);
+      setFocus(data);
+      setSortFocusAsc(!sortFocusAsc);
+    } catch (err) {
+      console.error('Fetch festival sorting failed', err);
+    }
   };
 
   const handleResetFocus = () => {
@@ -55,10 +60,12 @@ function MovieThema() {
   const handleClickFocus = async (f) => {
     setSelectedFocus(f);
 
-    // fetch des films du focus
-    const res = await fetch(`${backendUrl}/api/focus/${f.id}/movies`);
-    const data = await res.json();
-    setFilms(data);
+    try {
+      const data = await getFocusMovies(f.id);
+      setFilms(data);
+    } catch (err) {
+      console.error('Fetch festival movies failed', err);
+    }
   };
 
   //------------------------------------------
@@ -67,42 +74,43 @@ function MovieThema() {
   const handleSortedAlphabeticalMovies = async () => {
     if (!selectedFocus) return;
 
-    const url = sortMoviesAsc
-      ? `${backendUrl}/api/focus/${selectedFocus.id}/movies/sorted0` // ASC
-      : `${backendUrl}/api/focus/${selectedFocus.id}/movies/sorted1`; // DESC
+    try {
+      const sort = sortMoviesAsc ? 0 : 1;
+      const data = await getFocusMoviesSorted(selectedFocus.id, sort);
 
-    const res = await fetch(url);
-    const data = await res.json();
-    setFilms(data);
-
-    setSortMoviesAsc(!sortMoviesAsc);
+      setFilms(data);
+      setSortMoviesAsc(!sortMoviesAsc);
+    } catch (err) {
+      console.error('Fetch festival movies sorting failed', err);
+    }
   };
 
   const handleSortedChronologicalMovies = async () => {
     if (!selectedFocus) return;
 
-    const url = sortMoviesYearAsc
-      ? `${backendUrl}/api/focus/${selectedFocus.id}/movies/sorted2` // ASC
-      : `${backendUrl}/api/focus/${selectedFocus.id}/movies/sorted3`; // DESC
+    try {
+      const sort = sortMoviesYearAsc ? 2 : 3;
+      const data = await getFocusMoviesSorted(selectedFocus.id, sort);
 
-    const res = await fetch(url);
-    const data = await res.json();
-    setFilms(data);
-
-    setSortMoviesYearAsc(!sortMoviesYearAsc);
+      setFilms(data);
+      setSortMoviesYearAsc(!sortMoviesYearAsc);
+    } catch (err) {
+      console.error('Fetch festival movies sorting failed', err);
+    }
   };
 
   const handleResetMovies = async () => {
     if (!selectedFocus) return;
 
-    const res = await fetch(
-      `${backendUrl}/api/focus/${selectedFocus.id}/movies`
-    );
-    const data = await res.json();
-    setFilms(data);
+    try {
+      const data = await getFocusMovies(selectedFocus.id);
 
-    setSortMoviesAsc(true);
-    setSortMoviesYearAsc(true);
+      setFilms(data);
+      setSortMoviesAsc(true);
+      setSortMoviesYearAsc(true);
+    } catch (err) {
+      console.error('Fetch festival movies reset failed', err);
+    }
   };
   //------------------------------------------
   // OPEN / CLOSED MODAL
@@ -119,9 +127,7 @@ function MovieThema() {
   // MAJ DU CONTENU
   //------------------------------------------
   const handleUpdateMovie = (updatedMovie) => {
-    setFilms((prev) =>
-      prev.map((m) => (m.id === updatedMovie.id ? updatedMovie : m))
-    );
+    setFilms((prev) => prev.map((m) => (m.id === updatedMovie.id ? updatedMovie : m)));
   };
 
   const handleDeleteMovie = (movieId) => {
@@ -139,15 +145,15 @@ function MovieThema() {
           {selectedFocus ? (
             <>
               <IconButton
-                onClick={() => setSelectedFocus("")}
+                onClick={() => setSelectedFocus('')}
                 sx={{
-                  color: "var(--color-01)",
-                  border: "1px solid var(--color-01)",
-                  borderRadius: "8px",
-                  padding: "6px",
-                  "&:hover": {
-                    backgroundColor: "var(--color-05)",
-                    borderColor: "var(--color-01)",
+                  color: 'var(--color-01)',
+                  border: '1px solid var(--color-01)',
+                  borderRadius: '8px',
+                  padding: '6px',
+                  '&:hover': {
+                    backgroundColor: 'var(--color-05)',
+                    borderColor: 'var(--color-01)',
                   },
                 }}
                 aria-label="Retour"
@@ -159,31 +165,31 @@ function MovieThema() {
                 <IconButton
                   onClick={openModal}
                   sx={{
-                    color: "var(--color-01)",
+                    color: 'var(--color-01)',
                   }}
                   aria-label="info +"
                 >
                   <InfoOutlinedIcon
                     sx={{
-                      fontSize: "2rem",
-                      animation: "infoPulse 1.2s ease-out 1",
-                      "@keyframes infoPulse": {
-                        "0%": {
-                          transform: "scale(0.8)",
+                      fontSize: '2rem',
+                      animation: 'infoPulse 1.2s ease-out 1',
+                      '@keyframes infoPulse': {
+                        '0%': {
+                          transform: 'scale(0.8)',
                           opacity: 0,
                         },
-                        "50%": {
-                          transform: "scale(1.25)",
+                        '50%': {
+                          transform: 'scale(1.25)',
                           opacity: 1,
                         },
-                        "100%": {
-                          transform: "scale(1)",
+                        '100%': {
+                          transform: 'scale(1)',
                         },
                       },
-                      transition: "0.2s ease",
-                      "&:hover": {
-                        color: "var(--color-03)",
-                        transform: "scale(1.15)",
+                      transition: '0.2s ease',
+                      '&:hover': {
+                        color: 'var(--color-03)',
+                        transform: 'scale(1.15)',
                       },
                     }}
                   />
@@ -219,11 +225,7 @@ function MovieThema() {
             />
             <div className="thumbnails_container_MF">
               {Focus.map((f) => (
-                <MovieFocusThumbnail
-                  key={f.id}
-                  data={f}
-                  onClick={() => handleClickFocus(f)}
-                />
+                <MovieFocusThumbnail key={f.id} data={f} onClick={() => handleClickFocus(f)} />
               ))}
             </div>
           </>
@@ -251,17 +253,13 @@ function MovieThema() {
       </section>
       {/* modal */}
       {selectedFocus && (
-        <Modal
-          open={openFocusModal}
-          onClose={closeModal}
-          className="Focus_Modal"
-        >
+        <Modal open={openFocusModal} onClose={closeModal} className="Focus_Modal">
           <Box>
             <Container maxWidth="800px" className="Focus_Modal_container">
               <div
                 onClick={closeModal}
                 onKeyDown={(event) => {
-                  if (event.key === "Enter" || event.key === " ") {
+                  if (event.key === 'Enter' || event.key === ' ') {
                     closeModal();
                   }
                 }}
@@ -280,4 +278,4 @@ function MovieThema() {
   );
 }
 
-export default MovieThema;
+export default MovieFestival;
