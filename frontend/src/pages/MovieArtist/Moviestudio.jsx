@@ -1,166 +1,44 @@
-import { useState, useEffect } from 'react';
 import { useLoaderData } from 'react-router-dom';
 import { createTheme } from '@mui/material/styles';
+
 import './movieArtist.css';
 import './movieArtistMediaQueries.css';
 import ArtistList from '../../components/ArtistList/ArtistList';
 import ArtistFilmo from '../../components/ArtistFilmo/ArtistFilmo';
 import MovieArtistSearchBar from '../../components/MovieArtistSearchBar/MovieArtistSearchBar';
-// refactor
-import {
-  getArtistsByLetter,
-  getArtistMovies,
-  getArtistMoviesSorted,
-} from '../../services/artistService';
+import useMovieArtistPage from '../../hooks/useMovieArtistPage';
 
 function MovieStudio() {
-  // --------------------------------------------
-  // DATAS
-  // --------------------------------------------
   const studioData = useLoaderData();
-  const [movies, setMovies] = useState([]);
-  const [data, setData] = useState(movies);
-  const [search, setSearch] = useState('');
-  const [sortOrderA, setSortOrderA] = useState('asc');
-  const [sortOrderY, setSortOrderY] = useState('desc');
-  const [movieAmount, setMovieAmount] = useState(0);
-  const [selectedLetter, SetSelectedLetter] = useState('a');
-  const [selectedStudio, setselectedStudio] = useState('');
-  const [selectedStudioByLetter, setSelectedStudioByLetter] = useState([]);
-  const [openSideBar, setOpenSideBar] = useState(false);
 
-  // --------------------------------------------
-  // REQUEST ALL STUDIOS BY LETTER
-  // --------------------------------------------
-  useEffect(() => {
-    getArtistsByLetter('studio', selectedLetter)
-      .then((studioDataLetter) => {
-        setSelectedStudioByLetter(studioDataLetter);
-      })
-      .catch((error) => {
-        console.error('Error fetching user data:', error);
-      });
-  }, [selectedLetter]);
+  const {
+    data,
+    selectedArtist,
+    search,
+    sortOrderA,
+    sortOrderY,
+    movieAmount,
+    selectedArtistByLetter,
+    openSideBar,
+    filteredArtists,
+    artistsAmount,
+    selectedArtistAmount,
+    setOpenSideBar,
+    handleLetterChange,
+    handleArtistClick,
+    handleTyping,
+    movieSortedA,
+    movieSortedZ,
+    movieSortedYear,
+    movieSortedYearDesc,
+    fetchMoviesByArtist,
+    handleDeleteMovie,
+    handleResetSearch,
+  } = useMovieArtistPage({
+    type: 'studio',
+    initialData: studioData,
+  });
 
-  // --------------------------------------------
-  // REQUEST ALL MOVIES by STUDIO
-  // --------------------------------------------
-  const fetchMoviesByStudio = () => {
-    getArtistMovies('studio', selectedStudio.id)
-      .then((moviesData) => {
-        setMovies(moviesData);
-        setMovieAmount(moviesData.length);
-      })
-      .catch((error) => {
-        console.error('Error fetching user data:', error);
-      });
-  };
-
-  useEffect(() => {
-    fetchMoviesByStudio();
-  }, [selectedStudio]);
-
-  // --------------------------------------------
-  // SELECT LETTER
-  // --------------------------------------------
-  const handleLetterChange = (letter) => {
-    SetSelectedLetter(letter);
-    setSearch('');
-  };
-
-  // --------------------------------------------
-  // SELECT STUDIO
-  // --------------------------------------------
-  const handleArtistClick = (studio) => {
-    setselectedStudio(studio);
-  };
-
-  // --------------------------------------------
-  // SEARCH BAR
-  // --------------------------------------------
-  const handleTyping = (e) => {
-    let { value } = e.target;
-    value = value.replace(/-/g, '').toLowerCase();
-    setSearch(value);
-    SetSelectedLetter('');
-  };
-
-  const filteredStudio = studioData
-    ? studioData.filter(
-        (dataItem) =>
-          dataItem.name &&
-          dataItem.name.toString().toLowerCase().replace(/-/g, '').includes(search.toLowerCase())
-      )
-    : [];
-
-  // --------------------------------------------
-  // AFFICHER LE NOMBRE D'ARTISTES
-  // --------------------------------------------
-  const studioAmount = selectedStudioByLetter.length;
-  const selectedStudioAmount = filteredStudio.length;
-
-  // --------------------------------------------
-  // SORTED BTN
-  // --------------------------------------------
-  useEffect(() => {
-    setData(movies);
-  }, [movies]);
-
-  // --------------------------------------------
-  // REQUEST ALL MOVIES SORTED ALPHABETICAL ASC
-  // --------------------------------------------
-  const movieSortedA = async () => {
-    try {
-      const newData = await getArtistMoviesSorted('studio', selectedStudio.id, 0);
-      setData(newData);
-      setSortOrderA('asc');
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
-
-  // --------------------------------------------
-  // REQUEST ALL MOVIES SORTED ALPHABETICAL DESC
-  // --------------------------------------------
-  const movieSortedZ = async () => {
-    try {
-      const newData = await getArtistMoviesSorted('studio', selectedStudio.id, 1);
-      setData(newData);
-      setSortOrderA('desc');
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
-
-  // --------------------------------------------
-  // REQUEST ALL MOVIES SORTED CHRONOLOGICAL ASC
-  // --------------------------------------------
-  const movieSortedYear = async () => {
-    try {
-      const newData = await getArtistMoviesSorted('studio', selectedStudio.id, 2);
-      setData(newData);
-      setSortOrderY('asc');
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
-
-  // --------------------------------------------
-  // REQUEST ALL MOVIES SORTED CHRONOLOGICAL DSC
-  // --------------------------------------------
-  const movieSortedYearDesc = async () => {
-    try {
-      const newData = await getArtistMoviesSorted('studio', selectedStudio.id, 3);
-      setData(newData);
-      setSortOrderY('desc');
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
-
-  // --------------------------------------------
-  // STYLE MUI
-  // --------------------------------------------
   const theme = createTheme({
     palette: {
       primary: {
@@ -178,33 +56,8 @@ function MovieStudio() {
     },
   });
 
-  // --------------------------------------------
-  // PROPS FOR TEXTS & IMAGE
-  // --------------------------------------------
   const origin = 'studio';
 
-  // -----------------------------------------------------
-  // MISE A JOUR AFFICHAGE SI DELETE MOVIE DANS MOVIECARD
-  // -----------------------------------------------------
-  const handleDeleteMovie = () => {
-    fetchMoviesByStudio();
-  };
-
-  // --------------------------------------------
-  // FONCTION POUR BTN RESET SEARCH
-  // --------------------------------------------
-  const handleResetSearch = () => {
-    setSearch('');
-    SetSelectedLetter('a'); // lettre par défaut
-    setselectedStudio('');
-    setMovies([]);
-    setData([]);
-    setMovieAmount(0);
-  };
-
-  // --------------------------------------------
-  // RETURN
-  // --------------------------------------------
   return (
     <main>
       <section className="artists_content">
@@ -214,27 +67,30 @@ function MovieStudio() {
             search={search}
             onSearchChange={handleTyping}
             onReset={handleResetSearch}
-            selectedItem={selectedStudio}
+            selectedItem={selectedArtist}
             openSideBar={openSideBar}
             setOpenSideBar={setOpenSideBar}
           />
         </section>
+
         <div className="dashed_secondary_bar" />
+
         <section>
           <section className="artists_seach_container">
             <ArtistList
               handleLetterChange={handleLetterChange}
               search={search}
               theme={theme}
-              selectedByLetter={selectedStudioByLetter}
-              filteredArtist={filteredStudio}
+              selectedByLetter={selectedArtistByLetter}
+              filteredArtist={filteredArtists}
               handleArtistClick={handleArtistClick}
               origin={origin}
-              artistAmount={studioAmount}
-              selectedArtistAmount={selectedStudioAmount}
+              artistAmount={artistsAmount}
+              selectedArtistAmount={selectedArtistAmount}
             />
+
             <ArtistFilmo
-              selectedArtist={selectedStudio}
+              selectedArtist={selectedArtist}
               origin={origin}
               data={data}
               sortOrderA={sortOrderA}
@@ -244,7 +100,7 @@ function MovieStudio() {
               movieSortedYearDesc={movieSortedYearDesc}
               movieSortedYear={movieSortedYear}
               movieAmount={movieAmount}
-              onUpdateMovie={fetchMoviesByStudio}
+              onUpdateMovie={fetchMoviesByArtist}
               onDeleteMovie={handleDeleteMovie}
               onReset={handleResetSearch}
               openSideBar={openSideBar}
@@ -254,7 +110,7 @@ function MovieStudio() {
         </section>
       </section>
     </main>
-  ); // end return
-} // function MovieStudio()
+  );
+}
 
 export default MovieStudio;
