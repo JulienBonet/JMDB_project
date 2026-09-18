@@ -1,0 +1,82 @@
+.Main_movieFocusPage {
+  display: flex;
+  flex-direction: column;
+  height: 90vh;
+  overflow: hidden;
+}
+.search_bar_container_MF {
+  flex: 0 0 auto;
+}
+.search_bar_content_MF {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  justify-content: space-between;
+  height: 5rem;
+}
+.search_bar_content_selectefFocus_MF {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 5rem;
+  padding: 0 2rem;
+  gap: min(1rem);
+}
+.thema_icon {
+  height: 3rem;
+}
+.SelectFocus_Title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+}
+.h1_titlePage_MF {
+  font-family: var(--font-02);
+  color: var(--color-01);
+  font-size: xx-large;
+}
+.main_content_MF {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow-y: auto;
+}
+
+.thumbnails_container_MF {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 2rem;
+  justify-items: center;
+  padding: 2rem 0;
+  width: 90%;
+  margin: 0 auto;
+}
+
+.Movies_thumbnails_container_MF {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 2rem 0;
+  width: 90%;
+  margin: 0 auto;
+}
+
+.NoFavoriteMessageContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 60vh;
+  text-align: center;
+  gap: 1.5rem;
+}
+
+.NoFavoriteMessageContainer p {
+  font-size: 3rem;
+  font-family: var(--font-02);
+  color: var(--color-03);
+}
+
