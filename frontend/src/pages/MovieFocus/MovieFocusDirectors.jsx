@@ -1,5 +1,4 @@
 import { useLoaderData } from 'react-router-dom';
-import { useState } from 'react';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import { Container } from '@mui/material';
@@ -15,114 +14,39 @@ import FocusCard from '../../components/FocusCard/FocusCard';
 import './movieFocus.css';
 import './movieFocusMediaqueries.css';
 // refacto
-import {
-  getArtistFocusSorted,
-  getArtistMovies,
-  getArtistMoviesSorted,
-} from '../../services/artistService';
+import useMovieFocusPage from '../../hooks/useMovieFocusPage';
 
 function MovieThema() {
   const themaData = useLoaderData();
-  const [Focus, setFocus] = useState(themaData);
-  const [selectedFocus, setSelectedFocus] = useState(null);
-  const [films, setFilms] = useState([]);
-  const [openSideBar, setOpenSideBar] = useState(false);
-  const [openMovieSideBar, setOpenMovieSideBar] = useState(false);
-  const [sortFocusAsc, setSortFocusAsc] = useState(true);
-  const [sortMoviesAsc, setSortMoviesAsc] = useState(true);
-  const [sortMoviesYearAsc, setSortMoviesYearAsc] = useState(true);
-  const [openFocusModal, setOpenFocusModal] = useState(false);
+  const {
+    Focus,
+    selectedFocus,
+    films,
+    openSideBar,
+    openMovieSideBar,
+    openFocusModal,
+    origin,
 
-  const origin = 'ArtistFocus';
+    setSelectedFocus,
+    setOpenSideBar,
+    setOpenMovieSideBar,
 
-  //------------------------------------------
-  // SORTED THEMAS
-  //------------------------------------------
-  const handleSortedAlphabeticalFocus = async () => {
-    const sort = sortFocusAsc ? 0 : 1;
-
-    const data = await getArtistFocusSorted('directors', sort);
-    setFocus(data);
-
-    setSortFocusAsc(!sortFocusAsc);
-  };
-
-  const handleSortedChronologicalFocus = async () => {
-    const sort = sortFocusAsc ? 2 : 3;
-
-    const data = await getArtistFocusSorted('directors', sort);
-    setFocus(data);
-
-    setSortFocusAsc(!sortFocusAsc);
-  };
-
-  const handleResetFocus = () => {
-    setFocus(themaData);
-  };
-
-  //------------------------------------------
-  // SELECTION D'UNE THEMA - FETCH DES FILMS
-  //------------------------------------------
-  const handleClickFocus = async (f) => {
-    setSelectedFocus(f);
-
-    const data = await getArtistMovies('directors', f.id);
-    setFilms(data);
-  };
-
-  //------------------------------------------
-  // SORTED MOVIES
-  //------------------------------------------
-  const handleSortedAlphabeticalMovies = async () => {
-    if (!selectedFocus) return;
-
-    const sort = sortMoviesAsc ? 0 : 1;
-    const data = await getArtistMoviesSorted('directors', selectedFocus.id, sort);
-
-    setFilms(data);
-    setSortMoviesAsc(!sortMoviesAsc);
-  };
-
-  const handleSortedChronologicalMovies = async () => {
-    if (!selectedFocus) return;
-
-    const sort = sortMoviesYearAsc ? 2 : 3;
-    const data = await getArtistMoviesSorted('directors', selectedFocus.id, sort);
-
-    setFilms(data);
-    setSortMoviesYearAsc(!sortMoviesYearAsc);
-  };
-
-  const handleResetMovies = async () => {
-    if (!selectedFocus) return;
-
-    const data = await getArtistMovies('directors', selectedFocus.id);
-    setFilms(data);
-
-    setSortMoviesAsc(true);
-    setSortMoviesYearAsc(true);
-  };
-  //------------------------------------------
-  // OPEN / CLOSED MODAL
-  //------------------------------------------
-  const openModal = () => {
-    setOpenFocusModal(true);
-  };
-
-  const closeModal = () => {
-    setOpenFocusModal(false);
-  };
-
-  //------------------------------------------
-  // MAJ DU CONTENU
-  //------------------------------------------
-  const handleUpdateMovie = (updatedMovie) => {
-    setFilms((prev) => prev.map((m) => (m.id === updatedMovie.id ? updatedMovie : m)));
-  };
-
-  const handleDeleteMovie = (movieId) => {
-    setFilms((prev) => prev.filter((movie) => movie.id !== movieId));
-  };
+    handleSortedAlphabeticalFocus,
+    handleSortedChronologicalFocus,
+    handleResetFocus,
+    handleClickFocus,
+    handleSortedAlphabeticalMovies,
+    handleSortedChronologicalMovies,
+    handleResetMovies,
+    handleUpdateMovie,
+    handleDeleteMovie,
+    openModal,
+    closeModal,
+  } = useMovieFocusPage({
+    mode: 'artist',
+    type: 'directors',
+    initialData: themaData,
+  });
 
   //------------------------------------------
   // RETURN

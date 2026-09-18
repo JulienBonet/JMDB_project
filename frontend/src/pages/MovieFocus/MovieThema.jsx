@@ -1,5 +1,4 @@
 import { useLoaderData } from 'react-router-dom';
-import { useState } from 'react';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import { Container } from '@mui/material';
@@ -15,124 +14,39 @@ import FocusCard from '../../components/FocusCard/FocusCard';
 import './movieFocus.css';
 import './movieFocusMediaqueries.css';
 // refactor
-import {
-  getFocusByCategoryAsc,
-  getFocusByCategoryDesc,
-  getFocusMovies,
-  getFocusMoviesSorted,
-} from '../../services/focusService';
+import useMovieFocusPage from '../../hooks/useMovieFocusPage';
 
 function MovieThema() {
   const themaData = useLoaderData();
-  const [Focus, setFocus] = useState(themaData || []);
-  const [selectedFocus, setSelectedFocus] = useState(null);
-  const [films, setFilms] = useState([]);
-  const [openSideBar, setOpenSideBar] = useState(false);
-  const [openMovieSideBar, setOpenMovieSideBar] = useState(false);
-  const [sortFocusAsc, setSortFocusAsc] = useState(true);
-  const [sortMoviesAsc, setSortMoviesAsc] = useState(true);
-  const [sortMoviesYearAsc, setSortMoviesYearAsc] = useState(true);
-  const [openFocusModal, setOpenFocusModal] = useState(false);
+  const {
+    Focus,
+    selectedFocus,
+    films,
+    openSideBar,
+    openMovieSideBar,
+    openFocusModal,
+    origin,
 
-  const origin = 'focus';
+    setSelectedFocus,
+    setOpenSideBar,
+    setOpenMovieSideBar,
 
-  //------------------------------------------
-  // SORTED THEMAS
-  //------------------------------------------
-  const handleSortedAlphabeticalFocus = async () => {
-    try {
-      const data = sortFocusAsc ? await getFocusByCategoryAsc(1) : await getFocusByCategoryDesc(1);
-
-      setFocus(data);
-      setSortFocusAsc(!sortFocusAsc);
-    } catch (err) {
-      console.error('Fetch thema sorting failed', err);
-    }
-  };
-
-  const handleResetFocus = () => {
-    setFocus(themaData);
-  };
-
-  //------------------------------------------
-  // SELECTION D'UNE THEMA - FETCH DES FILMS
-  //------------------------------------------
-  const handleClickFocus = async (f) => {
-    setSelectedFocus(f);
-
-    try {
-      const data = await getFocusMovies(f.id);
-      setFilms(data);
-    } catch (err) {
-      console.error('Fetch thema movies failed', err);
-    }
-  };
-
-  //------------------------------------------
-  // SORTED MOVIES
-  //------------------------------------------
-  const handleSortedAlphabeticalMovies = async () => {
-    if (!selectedFocus) return;
-
-    try {
-      const sort = sortMoviesAsc ? 0 : 1;
-      const data = await getFocusMoviesSorted(selectedFocus.id, sort);
-
-      setFilms(data);
-      setSortMoviesAsc(!sortMoviesAsc);
-    } catch (err) {
-      console.error('Fetch thema movies sorting failed', err);
-    }
-  };
-
-  const handleSortedChronologicalMovies = async () => {
-    if (!selectedFocus) return;
-
-    try {
-      const sort = sortMoviesYearAsc ? 2 : 3;
-      const data = await getFocusMoviesSorted(selectedFocus.id, sort);
-
-      setFilms(data);
-      setSortMoviesYearAsc(!sortMoviesYearAsc);
-    } catch (err) {
-      console.error('Fetch thema movies sorting failed', err);
-    }
-  };
-
-  const handleResetMovies = async () => {
-    if (!selectedFocus) return;
-
-    try {
-      const data = await getFocusMovies(selectedFocus.id);
-
-      setFilms(data);
-      setSortMoviesAsc(true);
-      setSortMoviesYearAsc(true);
-    } catch (err) {
-      console.error('Fetch thema movies reset failed', err);
-    }
-  };
-  //------------------------------------------
-  // OPEN / CLOSED MODAL
-  //------------------------------------------
-  const openModal = () => {
-    setOpenFocusModal(true);
-  };
-
-  const closeModal = () => {
-    setOpenFocusModal(false);
-  };
-
-  //------------------------------------------
-  // MAJ DU CONTENU
-  //------------------------------------------
-  const handleUpdateMovie = (updatedMovie) => {
-    setFilms((prev) => prev.map((m) => (m.id === updatedMovie.id ? updatedMovie : m)));
-  };
-
-  const handleDeleteMovie = (movieId) => {
-    setFilms((prev) => prev.filter((movie) => movie.id !== movieId));
-  };
+    handleSortedAlphabeticalFocus,
+    handleSortedChronologicalFocus,
+    handleResetFocus,
+    handleClickFocus,
+    handleSortedAlphabeticalMovies,
+    handleSortedChronologicalMovies,
+    handleResetMovies,
+    handleUpdateMovie,
+    handleDeleteMovie,
+    openModal,
+    closeModal,
+  } = useMovieFocusPage({
+    mode: 'focus',
+    category: 1,
+    initialData: themaData,
+  });
 
   //------------------------------------------
   // RETURN
