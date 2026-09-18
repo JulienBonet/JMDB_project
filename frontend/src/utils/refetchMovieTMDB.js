@@ -1,12 +1,19 @@
 /* eslint-disable no-restricted-syntax */
 // -----------------/ MOVIE DATA FETCH IN MovieCard.jsx/----------------- //
-import axios from 'axios';
 import countries from 'i18n-iso-countries';
 import frLocale from 'i18n-iso-countries/langs/fr.json';
 import { translateCountry } from './countries';
+// refactor
+import {
+  getTmdbMovie,
+  getTmdbData,
+  getTmdbKeywords,
+  getTmdbTrailer,
+  getTmdbCover,
+} from '../services/tmdbService';
+import { updateMovieImageFromUrl } from '../services/movieService';
 
 countries.registerLocale(frLocale);
-const backendUrl = import.meta.env.VITE_BACKEND_URL;
 const CLOUDINARY_BASE_URL = import.meta.env.VITE_CLOUDINARY_BASE_URL;
 
 const getImageUrl = (publicId) => {
@@ -20,21 +27,19 @@ const getImageUrl = (publicId) => {
 
 const fetchMovieViaBackend = async (mediaType, id) => {
   try {
-    const url = `${backendUrl}/api/tmdb/${mediaType}/${id}`;
-    console.log("🌐 Appel backend TMDB à l'adresse :", url);
+    console.log('🌐 Appel backend TMDB :', mediaType, id);
 
-    const res = await axios.get(url);
+    const data = await getTmdbMovie(mediaType, id);
 
-    console.log('🎬 Données reçues du backend :', res.data.title || res.data.name);
+    console.log('🎬 Données reçues du backend :', data.title || data.name);
 
-    // Normalisation des données
-    const genres = Array.isArray(res.data.genres) ? res.data.genres : [];
-    const cast = Array.isArray(res.data.cast) ? res.data.cast : [];
-    const crew = Array.isArray(res.data.crew) ? res.data.crew : [];
-    const videos = res.data.videos?.results || [];
-    const keywords = Array.isArray(res.data.keywords) ? res.data.keywords : [];
+    const genres = Array.isArray(data.genres) ? data.genres : [];
+    const cast = Array.isArray(data.cast) ? data.cast : [];
+    const crew = Array.isArray(data.crew) ? data.crew : [];
+    const videos = data.videos?.results || [];
+    const keywords = Array.isArray(data.keywords) ? data.keywords : [];
 
-    return { ...res.data, genres, cast, crew, videos, keywords };
+    return { ...data, genres, cast, crew, videos, keywords };
   } catch (err) {
     console.error('❌ Erreur fetch via backend :', err);
     return null;
@@ -217,8 +222,9 @@ const refetchMovieTMDB = async (idTheMovieDb, deps) => {
 
   // -----------------/ TAGS /-----------------
   try {
-    const response = await fetch(`${backendUrl}/api/tmdb/${mediaType}/${movieId}/keywords`);
-    const data = await response.json();
+    const [mediaType, movieId] = idTheMovieDb.split('/');
+
+    const data = await getTmdbKeywords(mediaType, movieId);
 
     console.log('🏷️ data reçu du backend :', data);
 
@@ -270,20 +276,6 @@ const refetchMovieTMDB = async (idTheMovieDb, deps) => {
 // -------------------------------------
 // FONCTIONS REFETCH UTILITAIRES COMMUNE
 // -------------------------------------
-
-const getTmdbData = async (idTheMovieDb) => {
-  try {
-    const res = await fetch(`${backendUrl}/api/tmdb/${idTheMovieDb}`);
-    if (!res.ok) throw new Error('Erreur fetch backend TMDB');
-
-    const data = await res.json();
-    console.log('💾 Données TMDB récupérées :', data);
-    return data;
-  } catch (err) {
-    console.error('Erreur fetch TMDB backend :', err);
-    return null;
-  }
-};
 
 const fetchOrCreateEntity = async (entity, searchFunc, createFunc) => {
   if (!entity?.name) {
@@ -549,8 +541,7 @@ const refetchTags = async (
     const [mediaType, movieId] = idTheMovieDb.split('/');
 
     // 1️⃣ Appel au BACKEND pour récupérer les keywords TMDB
-    const response = await fetch(`${backendUrl}/api/tmdb/${mediaType}/${movieId}/keywords`);
-    const data = await response.json();
+    const data = await getTmdbKeywords(mediaType, movieId);
 
     // vérifier ce que l'on a vraiment
     console.log('data:', data);
@@ -608,11 +599,7 @@ const refetchTrailer = async (idTheMovieDb, { setMovieData, setTrailerMessage })
   try {
     const [mediaType, movieId] = idTheMovieDb.split('/');
 
-    const res = await fetch(`${backendUrl}/api/tmdb/${mediaType}/${movieId}/trailer`);
-
-    if (!res.ok) throw new Error('Erreur fetch backend TMDB trailer');
-
-    const { trailer } = await res.json();
+    const { trailer } = await getTmdbTrailer(mediaType, movieId);
 
     if (!trailer) {
       setTrailerMessage('⚠️ Aucun trailer disponible sur TMDB');
@@ -641,22 +628,15 @@ const refetchMovieCoverFromTMDB = async (
 
   try {
     // fetch poster_path depuis TMDB
-    const response = await axios.get(`${backendUrl}/api/tmdb/${mediaType}/${movieIdTMDB}/cover`);
-
-    const moviefetchData = response.data;
+    const moviefetchData = await getTmdbCover(mediaType, movieIdTMDB);
 
     if (!moviefetchData.poster_path) return;
 
     const posterUrl = `https://image.tmdb.org/t/p/original${moviefetchData.poster_path}`;
 
     // envoyer au backend avec ID interne
-    const backendResponse = await fetch(`${backendUrl}/api/movie/${movieId}/image-from-url`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ imageUrl: posterUrl }),
-    });
+    const data = await updateMovieImageFromUrl(movieId, posterUrl);
 
-    const data = await backendResponse.json();
     if (!data.movie) {
       console.error('Film non trouvé ou backend ne renvoie pas de movie');
       return;
