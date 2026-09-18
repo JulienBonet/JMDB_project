@@ -79,3 +79,11 @@ export const purgeOrphanRecords = async () => {
   const response = await api.post('/api/purge');
   return response.data;
 };
+
+export const updateMovieImageFromUrl = async (id, imageUrl) => {
+  const response = await api.put(`/api/movie/${id}/image-from-url`, {
+    imageUrl,
+  });
+
+  return response.data;
+};
