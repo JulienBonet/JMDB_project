@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import { Container, CircularProgress, Box } from '@mui/material';
 import { useAuth } from '../../Context/AuthContext';
 import MovieThumbnail from '../../components/MovieThumbnail/MovieThumbnail';
@@ -8,92 +7,30 @@ import favoriteIco from '../../assets/ico/favorite.png';
 import './movieFocus.css';
 import './movieFocusMediaqueries.css';
 // refacto
-import {
-  getFavorites,
-  getFavoritesAlphaAsc,
-  getFavoritesAlphaDesc,
-  getFavoritesYearAsc,
-  getFavoritesYearDesc,
-} from '../../services/favoriteService';
+import useMovieFavoritesPage from '../../hooks/useMovieFavoritesPage';
 
 function Favorites() {
   const { token, user, isAuthenticated, authReady } = useAuth();
-  const [movies, setMovies] = useState([]);
-  const [openSideBar, setOpenSideBar] = useState(false);
-  const [sortMoviesAsc, setSortMoviesAsc] = useState(true);
-  const [sortMoviesYearAsc, setSortMoviesYearAsc] = useState(true);
-  const [loading, setLoading] = useState(true);
 
   const origin = 'movies';
 
-  const fetchFavorites = async () => {
-    if (!token) return;
-
-    setLoading(true);
-
-    try {
-      const data = await getFavorites();
-      setMovies(data);
-    } catch (err) {
-      console.error('Fetch favorites failed', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (!authReady || !isAuthenticated || !token || !user) return;
-    fetchFavorites();
-  }, [authReady, isAuthenticated, token, user?.id]);
-
-  //------------------------------------------
-  // SORTED MOVIES
-  //------------------------------------------
-
-  const handleSortedAlphabeticalMovies = async () => {
-    try {
-      const data = sortMoviesAsc ? await getFavoritesAlphaAsc() : await getFavoritesAlphaDesc();
-
-      setMovies(data);
-      setSortMoviesAsc(!sortMoviesAsc);
-    } catch (err) {
-      console.error('Fetch favorites sorting failed', err);
-    }
-  };
-
-  const handleSortedChronologicalMovies = async () => {
-    try {
-      const data = sortMoviesYearAsc ? await getFavoritesYearAsc() : await getFavoritesYearDesc();
-
-      setMovies(data);
-      setSortMoviesYearAsc(!sortMoviesYearAsc);
-    } catch (err) {
-      console.error('Fetch favorites sorting failed', err);
-    }
-  };
-
-  const handleResetMovies = async () => {
-    try {
-      const data = await getFavorites();
-
-      setMovies(data);
-      setSortMoviesAsc(true);
-      setSortMoviesYearAsc(true);
-    } catch (err) {
-      console.error('Fetch favorites reset failed', err);
-    }
-  };
-
-  //------------------------------------------
-  // UPDATE / DELETE
-  //------------------------------------------
-  const handleUpdateMovie = (updatedMovie) => {
-    setMovies((prev) => prev.map((m) => (m.id === updatedMovie.id ? updatedMovie : m)));
-  };
-
-  const handleDeleteMovie = (movieId) => {
-    setMovies((prev) => prev.filter((m) => m.id !== movieId));
-  };
+  const {
+    movies,
+    openSideBar,
+    setOpenSideBar,
+    loading,
+    fetchFavorites,
+    handleSortedAlphabeticalMovies,
+    handleSortedChronologicalMovies,
+    handleResetMovies,
+    handleUpdateMovie,
+    handleDeleteMovie,
+  } = useMovieFavoritesPage({
+    token,
+    authReady,
+    isAuthenticated,
+    userId: user?.id,
+  });
 
   //------------------------------------------
   // RENDER
