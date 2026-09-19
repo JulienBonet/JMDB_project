@@ -1,5 +1,5 @@
 /* eslint-disable no-alert */
-import { useState, useEffect } from 'react';
+import { useCallback, useState } from 'react';
 import { Button, Container } from '@mui/material';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -17,14 +17,10 @@ import ClearIcon from '@mui/icons-material/Clear';
 import AdminItemsCard from '../AdminItemsCards/AdminItemsCard';
 import CreateItemCard from '../CreateItemCard/CreateItemCard';
 // Refactor
+import useAdminItemsList from '../../../hooks/useAdminItemsList';
 import { getArtistsSortedById, deleteArtist } from '../../../services/artistService';
 
 function AdminCastingList() {
-  const [data, setData] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [filteredData, setFilteredData] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   const [newCasting, SetNewCasting] = useState(false);
 
@@ -46,73 +42,28 @@ function AdminCastingList() {
     SetNewCasting(false);
   };
 
-  // REQUEST ALL CASTING sorted ID desc
-  useEffect(() => {
-    getArtistsSortedById('casting')
-      .then((datas) => {
-        setData(datas);
-        setFilteredData(datas);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error('Error fetching user data:', error);
-        setLoading(false);
+  const fetchCastings = useCallback(() => getArtistsSortedById('casting'), []);
+
+  const deleteCasting = useCallback((id) => deleteArtist('casting', id), []);
+
+  const {
+    loading,
+    searchTerm,
+    setSearchTerm,
+    currentItems: currentArtists,
+    totalPages,
+    handlePageChange,
+    refresh: refreshCastings,
+    handleDelete,
+  } = useAdminItemsList({
+    fetchItems: fetchCastings,
+    deleteItem: deleteCasting,
+    onDeleteSuccess: () => {
+      toast.success('casting deleted', {
+        className: 'custom-toast',
       });
-  }, []);
-
-  // REFRESH CASTING LIST
-  const refreshCastings = () => {
-    getArtistsSortedById('casting')
-      .then((datas) => {
-        setData(datas);
-        setFilteredData(datas);
-      })
-      .catch((error) => {
-        console.error('Error fetching user data:', error);
-      });
-  };
-
-  // DELETE CASTING
-  const handleDelete = async (id) => {
-    // Display confirmation dialog
-    const confirmDelete = window.confirm('Are you sure you want to delete this work?');
-
-    // If user confirms deletion
-    if (confirmDelete) {
-      try {
-        const status = await deleteArtist('casting', id);
-
-        if (status === 204) {
-          toast.success('casting deleted', {
-            className: 'custom-toast',
-          });
-          refreshCastings();
-        } else {
-          console.error('error delete');
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  };
-
-  // SEARCH BAR
-  useEffect(() => {
-    const filtered = data.filter(
-      (itemData) => itemData.name && itemData.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setFilteredData(filtered);
-  }, [searchTerm, data]);
-
-  // PAGINATION
-  const artistsPerPage = 50;
-  const indexOfLastArtist = currentPage * artistsPerPage;
-  const indexOfFirstArtist = indexOfLastArtist - artistsPerPage;
-  const currentArtists = filteredData.slice(indexOfFirstArtist, indexOfLastArtist);
-
-  const handlePageChange = (event, value) => {
-    setCurrentPage(value);
-  };
+    },
+  });
 
   return (
     <section className="AdminItemsSection">
@@ -205,11 +156,7 @@ function AdminCastingList() {
         </tbody>
       </table>
       <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-        <Pagination
-          count={Math.ceil(filteredData.length / artistsPerPage)}
-          shape="rounded"
-          onChange={handlePageChange}
-        />
+        <Pagination count={totalPages} shape="rounded" onChange={handlePageChange} />
       </Box>
       {selectedItem && (
         <Modal open onClose={closeModal} className="Movie_Modal">

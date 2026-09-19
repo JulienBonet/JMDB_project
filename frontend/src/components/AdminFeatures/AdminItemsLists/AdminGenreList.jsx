@@ -1,5 +1,5 @@
 /* eslint-disable no-alert */
-import { useState, useEffect } from 'react';
+import { useCallback, useState } from 'react';
 import { Button, Container } from '@mui/material';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -17,14 +17,10 @@ import ClearIcon from '@mui/icons-material/Clear';
 import AdminItemsCard from '../AdminItemsCards/AdminItemsCard2';
 import CreateItemCard from '../CreateItemCard/CreateItemCard';
 // refactor
+import useAdminItemsList from '../../../hooks/useAdminItemsList';
 import { getKindsSortedById, deleteKind } from '../../../services/referenceDataService';
 
 function AdminGenreList() {
-  const [data, setData] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [filteredData, setFilteredData] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   const [newKind, setNewKind] = useState(false);
 
@@ -46,80 +42,31 @@ function AdminGenreList() {
     setNewKind(false);
   };
 
-  // REQUEST ALL KINDS sorted ID desc
-  useEffect(() => {
-    getKindsSortedById()
-      .then((datas) => {
-        setData(datas);
-        setFilteredData(datas);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error('Error fetching user data:', error);
-        setLoading(false);
-      });
+  const fetchKinds = useCallback(() => getKindsSortedById(), []);
+
+  const deleteKindItem = useCallback(async (id) => {
+    const response = await deleteKind(id);
+    return response.status;
   }, []);
 
-  // Update filtered data when search term changes
-  useEffect(() => {
-    const filtered = data.filter(
-      (itemData) => itemData.name && itemData.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setFilteredData(filtered);
-  }, [searchTerm, data]);
-
-  // REFRESH KINDS LIST
-  const refreshKind = () => {
-    getKindsSortedById()
-      .then((datas) => {
-        setData(datas);
-        setFilteredData(datas);
-      })
-      .catch((error) => {
-        console.error('Error fetching user data:', error);
+  const {
+    loading,
+    searchTerm,
+    setSearchTerm,
+    currentItems,
+    totalPages,
+    handlePageChange,
+    refresh: refreshKind,
+    handleDelete,
+  } = useAdminItemsList({
+    fetchItems: fetchKinds,
+    deleteItem: deleteKindItem,
+    onDeleteSuccess: () => {
+      toast.success('kind deleted', {
+        className: 'custom-toast',
       });
-  };
-
-  // DELETE KIND
-  const handleDelete = async (id) => {
-    // Display confirmation dialog
-    const confirmDelete = window.confirm('Are you sure you want to delete this work?');
-
-    // If user confirms deletion
-    if (confirmDelete) {
-      try {
-        const response = await deleteKind(id);
-        if (response.status === 204) {
-          toast.success('kind deleted', {
-            className: 'custom-toast',
-          });
-          refreshKind();
-        } else {
-          console.error('error delete');
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  };
-
-  // SEARCH BAR
-  useEffect(() => {
-    const filtered = data.filter(
-      (itemData) => itemData.name && itemData.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setFilteredData(filtered);
-  }, [searchTerm, data]);
-
-  // PAGINATION
-  const itemsPerPage = 50;
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
-
-  const handlePageChange = (event, value) => {
-    setCurrentPage(value);
-  };
+    },
+  });
 
   return (
     <section className="AdminItemsSection">
@@ -212,11 +159,7 @@ function AdminGenreList() {
         </tbody>
       </table>
       <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-        <Pagination
-          count={Math.ceil(filteredData.length / itemsPerPage)}
-          shape="rounded"
-          onChange={handlePageChange}
-        />
+        <Pagination count={totalPages} shape="rounded" onChange={handlePageChange} />
       </Box>
       {selectedItem && (
         <Modal open onClose={closeModal} className="Movie_Modal">

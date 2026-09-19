@@ -1,5 +1,5 @@
 /* eslint-disable no-alert */
-import { useState, useEffect } from 'react';
+import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Box from '@mui/material/Box';
@@ -20,18 +20,35 @@ import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
 import MovieCard from '../../MovieCard/MovieCard';
+
 // refactor
 import { getCollection, deleteMovie } from '../../../services/movieService';
+import useAdminItemsList from '../../../hooks/useAdminItemsList';
 
 function AdminMovieList() {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
   const [selectedMovie, setSelectedMovie] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [filteredData, setFilteredData] = useState([]);
+  const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
+  const [movieIdToDelete, setMovieIdToDelete] = useState(null);
 
   const origin = 'movie';
+
+  const fetchMovies = useCallback(() => getCollection('movies'), []);
+
+  const deleteMovieItem = useCallback((id) => deleteMovie(id), []);
+
+  const {
+    setData,
+    loading,
+    searchTerm,
+    setSearchTerm,
+    currentItems,
+    totalPages,
+    handlePageChange,
+  } = useAdminItemsList({
+    fetchItems: fetchMovies,
+    deleteItem: deleteMovieItem,
+    searchKey: 'title',
+  });
 
   const openModal = (movieData) => {
     setSelectedMovie(movieData);
@@ -41,38 +58,6 @@ function AdminMovieList() {
     setSelectedMovie(null);
   };
 
-  // REQUEST ALL MOVIES
-  useEffect(() => {
-    getCollection('movies')
-      .then((datas) => {
-        setData(datas);
-        setFilteredData(datas);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error('Error fetching user data:', error);
-        setLoading(false);
-      });
-  }, []);
-
-  // Update filtered data when search term changes
-  useEffect(() => {
-    const filtered = data.filter((movieData) =>
-      movieData.title.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setFilteredData(filtered);
-  }, [searchTerm, data]);
-
-  // PAGINATION
-  const moviesPerPage = 50;
-  const indexOfLastMovie = currentPage * moviesPerPage;
-  const indexOfFirstMovie = indexOfLastMovie - moviesPerPage;
-  const currentMovies = filteredData.slice(indexOfFirstMovie, indexOfLastMovie);
-
-  const handlePageChange = (event, value) => {
-    setCurrentPage(value);
-  };
-
   // NAVIGATION VERS NEW MOVIE
   const navigate = useNavigate();
 
@@ -80,62 +65,58 @@ function AdminMovieList() {
     navigate('/new_movie');
   };
 
-  // Fonction pour Raffraichir l'affichage d'un film en cas d'update dans MovieCard
+  // UPDATE MOVIE FROM MOVIECARD
   const updateMovieData = (updatedMovie) => {
     setData((prevData) =>
       prevData.map((movie) => (movie.id === updatedMovie.id ? updatedMovie : movie))
     );
-    setFilteredData((prevFilteredData) =>
-      prevFilteredData.map((movie) => (movie.id === updatedMovie.id ? updatedMovie : movie))
-    );
 
-    // Mettre à jour aussi le film sélectionné pour refléter les modifications dans le modal
     if (selectedMovie && selectedMovie.id === updatedMovie.id) {
       setSelectedMovie(updatedMovie);
     }
   };
 
   // DELETE MOVIE
-  const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
-  const [movieIdToDelete, setMovieIdToDelete] = useState(null);
-
   const handleOpenDeleteConfirm = (id) => {
-    setMovieIdToDelete(id); // Stocke l'ID du film à supprimer
-    setIsConfirmDeleteOpen(true); // Ouvre le dialogue
+    setMovieIdToDelete(id);
+    setIsConfirmDeleteOpen(true);
   };
 
   const handleCloseDeleteConfirm = () => {
     setIsConfirmDeleteOpen(false);
-    setMovieIdToDelete(null); // Réinitialise l'ID du film
+    setMovieIdToDelete(null);
   };
 
   const handleDeleteMovie = async () => {
-    if (!movieIdToDelete) return; // Vérifie si un ID est bien défini
+    if (!movieIdToDelete) return;
 
     console.info('Tentative de suppression du film avec ID:', movieIdToDelete);
+
     setIsConfirmDeleteOpen(false);
 
     try {
-      const status = await deleteMovie(movieIdToDelete);
+      const status = await deleteMovieItem(movieIdToDelete);
 
       if (status >= 200 && status < 300) {
-        setData(data.filter((movie) => movie.id !== movieIdToDelete)); // Met à jour la liste des films
-        setFilteredData(filteredData.filter((movie) => movie.id !== movieIdToDelete)); // Met à jour les données filtrées
+        setData((prevData) => prevData.filter((movie) => movie.id !== movieIdToDelete));
+
         setSelectedMovie(null);
-        // Alerte pour confirmer la suppression
+        setMovieIdToDelete(null);
+
         toast.info('Film supprimé avec succès');
       } else {
         toast.error('Erreur lors de la suppression du film');
-        console.error('Erreur lors de la suppression du film'); // Log l'erreur
+        console.error('Erreur lors de la suppression du film');
       }
     } catch (error) {
       console.error('Erreur durant la suppression:', error);
+      toast.error('Erreur lors de la suppression du film');
     }
   };
 
+  // DELETE MOVIE FROM MOVIECARD
   const handleDeleteMovieFromMovieCard = (movieId) => {
-    const updatedMovies = data.filter((movie) => movie.id !== movieId);
-    setData(updatedMovies);
+    setData((prevData) => prevData.filter((movie) => movie.id !== movieId));
   };
 
   return (
@@ -144,6 +125,7 @@ function AdminMovieList() {
         <div className="admin_Title_feat_container">
           <h1 className="admin_Title_feat">MOVIES LIST</h1>
         </div>
+
         <div className="admin_feat_tools_line">
           <div className="Admin_search_bar_container">
             <TextField
@@ -168,7 +150,7 @@ function AdminMovieList() {
                 ),
               }}
               sx={{
-                maxWidth: 300, // ajuste si besoin
+                maxWidth: 300,
                 borderRadius: 3,
                 '& .MuiOutlinedInput-root': {
                   borderRadius: 3,
@@ -194,11 +176,13 @@ function AdminMovieList() {
               }}
             />
           </div>
+
           <Button variant="contained" onClick={handleAddNewMovie}>
             ADD NEW FILM
           </Button>
         </div>
       </section>
+
       <table>
         <thead>
           <tr>
@@ -209,6 +193,7 @@ function AdminMovieList() {
             <th scope="col">SUPPORT</th>
           </tr>
         </thead>
+
         <tbody>
           {loading ? (
             <tr>
@@ -217,16 +202,22 @@ function AdminMovieList() {
               </td>
             </tr>
           ) : (
-            currentMovies.map((movieData) => (
+            currentItems.map((movieData) => (
               <tr key={movieData.id}>
                 <th scope="row">{movieData.id}</th>
+
                 <td data-label="Titre">{movieData.title}</td>
+
                 <td data-label="Année">{movieData.year}</td>
+
                 <td data-label="Durée">{movieData.duration}</td>
+
                 <td data-label="Support">{movieData.videoSupport}</td>
+
                 <td data-label="Aperçu">
                   <PreviewIcon className="admin_tools_ico" onClick={() => openModal(movieData)} />
                 </td>
+
                 <td data-label="Supprimer">
                   <DeleteIcon
                     className="admin_tools_ico"
@@ -238,27 +229,35 @@ function AdminMovieList() {
           )}
         </tbody>
       </table>
+
       <Dialog open={isConfirmDeleteOpen} onClose={handleCloseDeleteConfirm}>
         <DialogTitle>Confirmer Delete</DialogTitle>
+
         <DialogContent>
           <DialogContentText>Es-tu sûr de vouloir effacer ce film ?</DialogContentText>
         </DialogContent>
+
         <DialogActions>
           <Button onClick={handleCloseDeleteConfirm} color="primary">
             Annuler
           </Button>
+
           <Button onClick={handleDeleteMovie} color="primary" autoFocus>
             Confirmer
           </Button>
         </DialogActions>
       </Dialog>
-      <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-        <Pagination
-          count={Math.ceil(filteredData.length / moviesPerPage)}
-          shape="rounded"
-          onChange={handlePageChange}
-        />
+
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          marginTop: '20px',
+        }}
+      >
+        <Pagination count={totalPages} shape="rounded" onChange={handlePageChange} />
       </Box>
+
       {selectedMovie && (
         <Modal open onClose={closeModal} className="Movie_Modal">
           <Box>
@@ -276,6 +275,7 @@ function AdminMovieList() {
               >
                 X Fermer
               </div>
+
               <MovieCard
                 movie={selectedMovie}
                 origin={origin}
