@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useEffect, useState } from 'react';
 import {
   Button,
   Stack,
@@ -7,9 +6,11 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-} from "@mui/material";
-import CircularProgress from "@mui/material/CircularProgress";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+} from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+// refactor
+import { getAdminStats, exportAdminCsv, exportAdminSql } from '../../../services/adminStatsService';
 
 function AdminExportStats() {
   // --------------
@@ -22,21 +23,15 @@ function AdminExportStats() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const res = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/api/admin/stats`
-        );
-
-        const { data } = res;
+        const data = await getAdminStats();
 
         // Conversion MB → TB (3 décimales)
         const totalSizeTB =
-          typeof data.totalSizeMB === "number"
-            ? +(data.totalSizeMB / 1024 / 1024).toFixed(3)
-            : 0;
+          typeof data.totalSizeMB === 'number' ? +(data.totalSizeMB / 1024 / 1024).toFixed(3) : 0;
 
         // Conversion minutes (string ou number) → heures arrondies à l'inférieur
         const totalDurationMinutes =
-          typeof data.totalDuration === "string"
+          typeof data.totalDuration === 'string'
             ? Number(data.totalDuration)
             : data.totalDuration || 0;
 
@@ -48,7 +43,7 @@ function AdminExportStats() {
           totalDurationHours,
         });
       } catch (err) {
-        console.error("Erreur stats:", err);
+        console.error('Erreur stats:', err);
       }
     };
     fetchStats();
@@ -62,29 +57,26 @@ function AdminExportStats() {
   const handleExportCsv = async () => {
     setIsExportingCsv(true);
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/api/admin/export-csv`,
-        { responseType: "blob" }
-      );
+      const response = await exportAdminCsv();
 
-      const disposition = response.headers["content-disposition"];
-      let fileName = "movies_export.csv";
-      if (disposition && disposition.includes("filename=")) {
-        fileName = disposition.split("filename=")[1].replace(/"/g, "");
+      const disposition = response.headers['content-disposition'];
+      let fileName = 'movies_export.csv';
+      if (disposition && disposition.includes('filename=')) {
+        fileName = disposition.split('filename=')[1].replace(/"/g, '');
       } else {
-        const dateStr = new Date().toISOString().replace(/[:.]/g, "-");
+        const dateStr = new Date().toISOString().replace(/[:.]/g, '-');
         fileName = `movies_export_${dateStr}.csv`;
       }
 
       const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement("a");
+      const link = document.createElement('a');
       link.href = url;
-      link.setAttribute("download", fileName);
+      link.setAttribute('download', fileName);
       document.body.appendChild(link);
       link.click();
       link.remove();
     } catch (err) {
-      console.error("Erreur export CSV", err);
+      console.error('Erreur export CSV', err);
     } finally {
       setIsExportingCsv(false);
     }
@@ -96,29 +88,26 @@ function AdminExportStats() {
   const handleExportSql = async () => {
     setIsExportingSql(true);
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/api/admin/export-sql`,
-        { responseType: "blob" }
-      );
+      const response = await exportAdminSql();
 
-      const disposition = response.headers["content-disposition"];
-      let fileName = "jmdb2_backup.sql";
-      if (disposition && disposition.includes("filename=")) {
-        fileName = disposition.split("filename=")[1].replace(/"/g, "");
+      const disposition = response.headers['content-disposition'];
+      let fileName = 'jmdb2_backup.sql';
+      if (disposition && disposition.includes('filename=')) {
+        fileName = disposition.split('filename=')[1].replace(/"/g, '');
       } else {
-        const dateStr = new Date().toISOString().replace(/[:.]/g, "-");
+        const dateStr = new Date().toISOString().replace(/[:.]/g, '-');
         fileName = `jmdb2_backup_${dateStr}.sql`;
       }
 
       const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement("a");
+      const link = document.createElement('a');
       link.href = url;
-      link.setAttribute("download", fileName);
+      link.setAttribute('download', fileName);
       document.body.appendChild(link);
       link.click();
       link.remove();
     } catch (err) {
-      console.error("Erreur export SQL", err);
+      console.error('Erreur export SQL', err);
     } finally {
       setIsExportingSql(false);
     }
@@ -129,31 +118,31 @@ function AdminExportStats() {
   // --------------
   const buttonSx = (bgColor, hoverColor) => ({
     backgroundColor: bgColor,
-    color: "#fff",
+    color: '#fff',
     fontWeight: 400,
-    fontFamily: "var(--font-01)",
-    "&:hover": {
+    fontFamily: 'var(--font-01)',
+    '&:hover': {
       backgroundColor: hoverColor,
     },
-    "& .MuiCircularProgress-root": {
-      color: "#fff",
+    '& .MuiCircularProgress-root': {
+      color: '#fff',
     },
-    padding: "8px 24px",
+    padding: '8px 24px',
     borderRadius: 2,
-    textTransform: "none",
+    textTransform: 'none',
   });
 
   const infoStatsSX = () => ({
-    fontSize: "x-large",
-    fontFamily: "var(--font-02)",
-    color: "var(--color-05)",
-    marginBottom: "0.5rem",
+    fontSize: 'x-large',
+    fontFamily: 'var(--font-02)',
+    color: 'var(--color-05)',
+    marginBottom: '0.5rem',
   });
 
   const accordionSX = () => ({
-    backgroundColor: "aliceblue",
-    border: "solid 1px var(--color-04)",
-    borderRadius: "10px",
+    backgroundColor: 'aliceblue',
+    border: 'solid 1px var(--color-04)',
+    borderRadius: '10px',
   });
 
   // --------------
@@ -167,43 +156,39 @@ function AdminExportStats() {
           {/* BOUTON EXPORT CSV */}
           <Button
             sx={{
-              ...buttonSx("#1976d2", "#115293"),
-              color: "#fff",
-              "&.Mui-disabled": {
-                color: "#fff",
-                backgroundColor: "#1976d2",
+              ...buttonSx('#1976d2', '#115293'),
+              color: '#fff',
+              '&.Mui-disabled': {
+                color: '#fff',
+                backgroundColor: '#1976d2',
               },
             }}
             onClick={handleExportCsv}
             disabled={isExportingCsv}
             startIcon={
-              isExportingCsv ? (
-                <CircularProgress size={20} sx={{ color: "#fff" }} />
-              ) : null
+              isExportingCsv ? <CircularProgress size={20} sx={{ color: '#fff' }} /> : null
             }
           >
-            {isExportingCsv ? "Export CSV en cours..." : "Exporter CSV"}
+            {isExportingCsv ? 'Export CSV en cours...' : 'Exporter CSV'}
           </Button>
           {/* BOUTON EXPORT SQL */}
           <Button
             sx={{
-              ...buttonSx("#9c27b0", "#6d1b7b"),
-              color: "#fff",
-              "&.Mui-disabled": {
-                color: "#fff",
-                backgroundColor: "#9c27b0",
+              ...buttonSx('#9c27b0', '#6d1b7b'),
+              color: '#fff',
+              '&.Mui-disabled': {
+                color: '#fff',
+                backgroundColor: '#9c27b0',
                 opacity: 0.8,
               },
             }}
             onClick={handleExportSql}
             disabled={isExportingSql}
             startIcon={
-              isExportingSql ? (
-                <CircularProgress size={20} sx={{ color: "#fff" }} />
-              ) : null
+              isExportingSql ? <CircularProgress size={20} sx={{ color: '#fff' }} /> : null
             }
           >
-            {isExportingSql ? "Export SQL en cours..." : "Exporter SQL"}
+            {isExportingSql ? 'Export SQL en cours...' : 'Exporter SQL'}
           </Button>
         </Stack>
       </section>
@@ -213,8 +198,8 @@ function AdminExportStats() {
           variant="h4"
           gutterBottom
           sx={{
-            fontFamily: "var(--font-01)",
-            textAlign: "center",
+            fontFamily: 'var(--font-01)',
+            textAlign: 'center',
             marginBottom: 3,
           }}
         >
@@ -227,31 +212,27 @@ function AdminExportStats() {
           <Accordion sx={accordionSX}>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Typography sx={infoStatsSX()}>
-                <span className="infoStatWeight">Total films:</span>{" "}
-                {stats.totalMovies}
+                <span className="infoStatWeight">Total films:</span> {stats.totalMovies}
               </Typography>
             </AccordionSummary>
             <AccordionDetails>
               <Typography sx={infoStatsSX()}>
-                <span className="infoStatWeight">Fichier multimedia:</span>{" "}
-                {stats.totalMediaFiles}
+                <span className="infoStatWeight">Fichier multimedia:</span> {stats.totalMediaFiles}
               </Typography>
               <Typography sx={infoStatsSX()}>
-                <span className="infoStatWeight">DVD original:</span>{" "}
-                {stats.totalDVDOriginal}
+                <span className="infoStatWeight">DVD original:</span> {stats.totalDVDOriginal}
               </Typography>
               <Typography sx={infoStatsSX()}>
-                <span className="infoStatWeight">DVD R/RW:</span>{" "}
-                {stats.totalDVDRRW}
+                <span className="infoStatWeight">DVD R/RW:</span> {stats.totalDVDRRW}
               </Typography>
               <div className="stats_bar" />
               <Typography sx={infoStatsSX()}>
-                <span className="infoStatWeight">Total poids fichiers:</span>{" "}
+                <span className="infoStatWeight">Total poids fichiers:</span>{' '}
                 {Number(stats.totalSizeTB || 0).toFixed(2)} To
               </Typography>
               <Typography sx={infoStatsSX()}>
-                <span className="infoStatWeight">Total durée (H):</span>{" "}
-                {stats.totalDurationHours} heures
+                <span className="infoStatWeight">Total durée (H):</span> {stats.totalDurationHours}{' '}
+                heures
               </Typography>
             </AccordionDetails>
           </Accordion>
@@ -260,15 +241,13 @@ function AdminExportStats() {
           <Accordion sx={accordionSX}>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Typography sx={infoStatsSX()}>
-                <span className="infoStatWeight">Total genres:</span>{" "}
-                {stats.totalGenres}
+                <span className="infoStatWeight">Total genres:</span> {stats.totalGenres}
               </Typography>
             </AccordionSummary>
             <AccordionDetails>
               {stats.genresByCount.map((g) => (
                 <Typography key={g.name} sx={infoStatsSX()}>
-                  <span className="infoStatWeight">{g.name}:</span>{" "}
-                  {g.movieCount} films
+                  <span className="infoStatWeight">{g.name}:</span> {g.movieCount} films
                 </Typography>
               ))}
             </AccordionDetails>
@@ -278,22 +257,18 @@ function AdminExportStats() {
           <Accordion sx={accordionSX}>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Typography sx={infoStatsSX()}>
-                <span className="infoStatWeight">Total focus:</span>{" "}
-                {stats?.totalFocus || 0}
+                <span className="infoStatWeight">Total focus:</span> {stats?.totalFocus || 0}
               </Typography>
             </AccordionSummary>
             <AccordionDetails>
               {stats?.focusByCategory?.length > 0 ? (
                 stats.focusByCategory.map((fc) => (
                   <Typography key={fc.categoryName} sx={infoStatsSX()}>
-                    <span className="infoStatWeight">{fc.categoryName}:</span>{" "}
-                    {fc.focusCount}
+                    <span className="infoStatWeight">{fc.categoryName}:</span> {fc.focusCount}
                   </Typography>
                 ))
               ) : (
-                <Typography sx={infoStatsSX()}>
-                  Aucun focus disponible
-                </Typography>
+                <Typography sx={infoStatsSX()}>Aucun focus disponible</Typography>
               )}
             </AccordionDetails>
           </Accordion>
@@ -302,24 +277,19 @@ function AdminExportStats() {
         {/* info stats */}
         <div className="infoStats_container_Admin_export_List">
           <Typography sx={infoStatsSX()}>
-            <span className="infoStatWeight">Total réalisateurs:</span>{" "}
-            {stats.totalDirectors}
+            <span className="infoStatWeight">Total réalisateurs:</span> {stats.totalDirectors}
           </Typography>
           <Typography sx={infoStatsSX()}>
-            <span className="infoStatWeight">Total scénaristes:</span>{" "}
-            {stats.totalScreenwriters}
+            <span className="infoStatWeight">Total scénaristes:</span> {stats.totalScreenwriters}
           </Typography>
           <Typography sx={infoStatsSX()}>
-            <span className="infoStatWeight">Total compositeurs:</span>{" "}
-            {stats.totalComposers}
+            <span className="infoStatWeight">Total compositeurs:</span> {stats.totalComposers}
           </Typography>
           <Typography sx={infoStatsSX()}>
-            <span className="infoStatWeight">Total studios:</span>{" "}
-            {stats.totalStudios}
+            <span className="infoStatWeight">Total studios:</span> {stats.totalStudios}
           </Typography>
           <Typography sx={infoStatsSX()}>
-            <span className="infoStatWeight">Total tags:</span>{" "}
-            {stats.totalTags}
+            <span className="infoStatWeight">Total tags:</span> {stats.totalTags}
           </Typography>
         </div>
       </section>
