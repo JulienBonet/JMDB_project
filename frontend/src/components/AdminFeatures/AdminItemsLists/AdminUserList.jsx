@@ -1,5 +1,5 @@
 /* eslint-disable no-alert */
-import { useState, useEffect } from 'react';
+import { useCallback, useState } from 'react';
 import { Button, Container } from '@mui/material';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -17,18 +17,40 @@ import ClearIcon from '@mui/icons-material/Clear';
 import AdminItemsCard from '../AdminItemsCards/AdminItemsCard5';
 import CreateItemCard from '../CreateItemCard/CreateItemCard';
 // refactor
+import useAdminItemsList from '../../../hooks/useAdminItemsList';
 import { getUsersSortedById, deleteUser } from '../../../services/userService';
 
 function AdminUsersList() {
-  const [data, setData] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [filteredData, setFilteredData] = useState([]);
   const [newUser, setNewUser] = useState(false);
   const [passwordItem, setPasswordItem] = useState(null);
 
   const origin = 'user';
+
+  const fetchUsers = useCallback(() => getUsersSortedById(), []);
+
+  const deleteUserItem = useCallback(async (id) => {
+    const status = await deleteUser(id);
+    return status >= 200 && status < 300 ? 204 : status;
+  }, []);
+
+  const {
+    loading,
+    searchTerm,
+    setSearchTerm,
+    currentItems,
+    totalPages,
+    handlePageChange,
+    refresh: refreshUsers,
+    handleDelete,
+  } = useAdminItemsList({
+    fetchItems: fetchUsers,
+    deleteItem: deleteUserItem,
+    onDeleteSuccess: () => {
+      toast.success('User deleted', {
+        className: 'custom-toast',
+      });
+    },
+  });
 
   const openModalNewUser = () => {
     setNewUser(true);
@@ -36,69 +58,6 @@ function AdminUsersList() {
 
   const closeModalNewUser = () => {
     setNewUser(false);
-  };
-
-  // REQUEST ALL USERS sorted ID desc
-  useEffect(() => {
-    getUsersSortedById()
-      .then((datas) => {
-        setData(datas);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error('Error fetching user data:', error);
-        setLoading(false);
-      });
-  }, []);
-
-  // REFRESH USER LIST
-  const refreshUsers = () => {
-    getUsersSortedById()
-      .then((datas) => {
-        setData(datas);
-        setFilteredData(datas);
-      })
-      .catch((error) => {
-        console.error('Error fetching user data:', error);
-      });
-  };
-
-  // DELETE USER
-  const handleDelete = async (id) => {
-    const confirmDelete = window.confirm('Are you sure you want to delete this user?');
-    if (!confirmDelete) return;
-
-    try {
-      const status = await deleteUser(id);
-
-      if (status >= 200 && status < 300) {
-        toast.success('User deleted', { className: 'custom-toast' });
-        refreshUsers();
-      } else {
-        toast.error('Error deleting user');
-      }
-    } catch (err) {
-      console.error(err);
-      toast.error('Error deleting user');
-    }
-  };
-
-  // SEARCH BAR
-  useEffect(() => {
-    const filtered = data.filter(
-      (itemData) => itemData.name && itemData.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setFilteredData(filtered);
-  }, [searchTerm, data]);
-
-  // PAGINATION
-  const itemsPerPage = 50;
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
-
-  const handlePageChange = (event, value) => {
-    setCurrentPage(value);
   };
 
   return (
@@ -215,39 +174,9 @@ function AdminUsersList() {
         </tbody>
       </table>
       <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-        <Pagination
-          count={Math.ceil(filteredData.length / itemsPerPage)}
-          shape="rounded"
-          onChange={handlePageChange}
-        />
+        <Pagination count={totalPages} shape="rounded" onChange={handlePageChange} />
       </Box>
-      {/* {selectedItem && (
-        <Modal open onClose={closeModal} className="Movie_Modal">
-          <Box>
-            <Container maxWidth="lg">
-              <div
-                onClick={closeModal}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter" || event.key === " ") {
-                    closeModal();
-                  }
-                }}
-                role="button"
-                tabIndex={0}
-                className="modal_closed_btn"
-              >
-                X Fermer
-              </div>
-              <AdminItemsCard
-                item={selectedItem}
-                origin={origin}
-                onUpdate={refreshUser}
-                closeModal={closeModal}
-              />
-            </Container>
-          </Box>
-        </Modal>
-      )} */}
+
       {newUser && (
         <Modal open onClose={closeModalNewUser} className="Movie_Modal">
           <Box>

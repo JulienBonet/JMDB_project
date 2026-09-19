@@ -1,5 +1,5 @@
 /* eslint-disable no-alert */
-import { useState, useEffect } from 'react';
+import { useCallback, useState } from 'react';
 import { Button, Container } from '@mui/material';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -17,18 +17,37 @@ import ClearIcon from '@mui/icons-material/Clear';
 import AdminItemsCard from '../AdminItemsCards/AdminItemsCard';
 import CreateItemCard from '../CreateItemCard/CreateItemCard';
 //refactor
+import useAdminItemsList from '../../../hooks/useAdminItemsList';
 import { getArtistsSortedById, deleteArtist } from '../../../services/artistService';
 
 function AdminCompositorList() {
-  const [data, setData] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [filteredData, setFilteredData] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   const [newCompositor, setNewCompositor] = useState(false);
 
   const origin = 'compositor';
+
+  const fetchCompositors = useCallback(() => getArtistsSortedById('music'), []);
+
+  const deleteCompositor = useCallback((id) => deleteArtist('music', id), []);
+
+  const {
+    loading,
+    searchTerm,
+    setSearchTerm,
+    currentItems: currentArtists,
+    totalPages,
+    handlePageChange,
+    refresh: refreshCompositors,
+    handleDelete,
+  } = useAdminItemsList({
+    fetchItems: fetchCompositors,
+    deleteItem: deleteCompositor,
+    onDeleteSuccess: () => {
+      toast.success('compositor deleted', {
+        className: 'custom-toast',
+      });
+    },
+  });
 
   const openModal = (DataItem) => {
     setSelectedItem(DataItem);
@@ -46,71 +65,6 @@ function AdminCompositorList() {
     setNewCompositor(false);
   };
 
-  // REQUEST ALL COMPOSITORS sorted ID desc
-  useEffect(() => {
-    getArtistsSortedById('music')
-      .then((datas) => {
-        setData(datas);
-        setFilteredData(datas);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error('Error fetching user data:', error);
-        setLoading(false);
-      });
-  }, []);
-
-  // REFRESH COMPOSITORS LIST
-  const refreshCompositors = () => {
-    getArtistsSortedById('music')
-      .then((datas) => {
-        setData(datas);
-        setFilteredData(datas);
-      })
-      .catch((error) => {
-        console.error('Error fetching user data:', error);
-      });
-  };
-
-  // DELETE COMPOSITOR
-  const handleDelete = async (id) => {
-    const confirmDelete = window.confirm('Are you sure you want to delete this work?');
-
-    if (confirmDelete) {
-      try {
-        const status = await deleteArtist('music', id);
-
-        if (status === 204) {
-          toast.success('compositor deleted', {
-            className: 'custom-toast',
-          });
-          refreshCompositors();
-        } else {
-          console.error('error delete');
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  };
-
-  // SEARCH BAR
-  useEffect(() => {
-    const filtered = data.filter(
-      (itemData) => itemData.name && itemData.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setFilteredData(filtered);
-  }, [searchTerm, data]);
-
-  // PAGINATION
-  const artistsPerPage = 50;
-  const indexOfLastArtist = currentPage * artistsPerPage;
-  const indexOfFirstArtist = indexOfLastArtist - artistsPerPage;
-  const currentArtists = filteredData.slice(indexOfFirstArtist, indexOfLastArtist);
-
-  const handlePageChange = (event, value) => {
-    setCurrentPage(value);
-  };
   return (
     <section className="AdminItemsSection">
       <section className="HeaderAdminItemsSection">
@@ -202,11 +156,7 @@ function AdminCompositorList() {
         </tbody>
       </table>
       <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-        <Pagination
-          count={Math.ceil(filteredData.length / artistsPerPage)}
-          shape="rounded"
-          onChange={handlePageChange}
-        />
+        <Pagination count={totalPages} shape="rounded" onChange={handlePageChange} />
       </Box>
       {selectedItem && (
         <Modal open onClose={closeModal} className="Movie_Modal">

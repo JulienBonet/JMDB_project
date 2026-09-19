@@ -1,5 +1,5 @@
 /* eslint-disable no-alert */
-import { useState, useEffect } from 'react';
+import { useCallback, useState } from 'react';
 import { Button, Container } from '@mui/material';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -17,17 +17,37 @@ import ClearIcon from '@mui/icons-material/Clear';
 import AdminItemsCard from '../AdminItemsCards/AdminItemsCard4';
 import CreateItemCard from '../CreateItemCard/CreateItemCard';
 // refactor
+import useAdminItemsList from '../../../hooks/useAdminItemsList';
 import { getFocusSortedById, deleteFocus } from '../../../services/focusService';
 
 function AdminFocusList() {
-  const [data, setData] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [filteredData, setFilteredData] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   const [newFocus, setNewFocus] = useState(false);
+
   const origin = 'focus';
+
+  const fetchFocus = useCallback(() => getFocusSortedById(), []);
+
+  const deleteFocusItem = useCallback((id) => deleteFocus(id), []);
+
+  const {
+    loading,
+    searchTerm,
+    setSearchTerm,
+    currentItems,
+    totalPages,
+    handlePageChange,
+    refresh: refreshFocus,
+    handleDelete,
+  } = useAdminItemsList({
+    fetchItems: fetchFocus,
+    deleteItem: deleteFocusItem,
+    onDeleteSuccess: () => {
+      toast.success('focus deleted', {
+        className: 'custom-toast',
+      });
+    },
+  });
 
   const openModal = (DataItem) => {
     setSelectedItem(DataItem);
@@ -43,74 +63,6 @@ function AdminFocusList() {
 
   const closeModalNewFocus = () => {
     setNewFocus(false);
-  };
-
-  // REQUEST ALL FOCUS sorted ID desc
-  useEffect(() => {
-    getFocusSortedById()
-      .then((datas) => {
-        setData(datas);
-        setFilteredData(datas);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error('Error fetching user data:', error);
-        setLoading(false);
-      });
-  }, []);
-
-  // REFRESH FOCUS LIST
-  const refreshFocus = () => {
-    getFocusSortedById()
-      .then((datas) => {
-        setData(datas);
-        setFilteredData(datas);
-      })
-      .catch((error) => {
-        console.error('Error fetching user data:', error);
-      });
-  };
-
-  // DELETE FOCUS
-  const handleDelete = async (id) => {
-    // Display confirmation dialog
-    const confirmDelete = window.confirm('Are you sure you want to delete this work?');
-
-    // If user confirms deletion
-    if (confirmDelete) {
-      try {
-        const status = await deleteFocus(id);
-
-        if (status === 204) {
-          toast.success('focus deleted', {
-            className: 'custom-toast',
-          });
-          refreshFocus();
-        } else {
-          console.error('error delete');
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  };
-
-  // SEARCH BAR
-  useEffect(() => {
-    const filtered = data.filter(
-      (itemData) => itemData.name && itemData.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setFilteredData(filtered);
-  }, [searchTerm, data]);
-
-  // PAGINATION
-  const itemsPerPage = 50;
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
-
-  const handlePageChange = (event, value) => {
-    setCurrentPage(value);
   };
 
   return (
@@ -206,11 +158,7 @@ function AdminFocusList() {
         </tbody>
       </table>
       <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-        <Pagination
-          count={Math.ceil(filteredData.length / itemsPerPage)}
-          shape="rounded"
-          onChange={handlePageChange}
-        />
+        <Pagination count={totalPages} shape="rounded" onChange={handlePageChange} />
       </Box>
       {selectedItem && (
         <Modal open onClose={closeModal} className="Movie_Modal">
