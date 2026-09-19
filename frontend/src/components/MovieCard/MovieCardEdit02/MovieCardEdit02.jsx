@@ -115,6 +115,7 @@ const MovieCardEdit02 = ({
         setSelectedDirectors={setSelectedDirectors}
         searchScreenwriterInDatabase={searchScreenwriterInDatabase}
         createScreenwriterInDatabase={createScreenwriterInDatabase}
+        setSelectedScreenwriters={setSelectedScreenwriters}
         setSelectedMusic={setSelectedMusic}
         searchCompositorInDatabase={searchCompositorInDatabase}
         createCompositorInDatabase={createCompositorInDatabase}
