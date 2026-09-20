@@ -43,7 +43,7 @@ import AddMovieMediaSection from './AddMovieMediaSection';
 import AddMovieTransferListModal from './AddMovieTransferListModal';
 import MovieInfosEntranceModal from './MovieInfosEntranceModal';
 import AddMovieActions from './AddMovieActions';
-import AddMovieMainSection from './AddMovieMainSection';
+import AddMovieMainSection from './AddMovieMainSection/AddMovieMainSection';
 
 function AddNewMovie() {
   const CLOUDINARY_BASE_URL = import.meta.env.VITE_CLOUDINARY_BASE_URL;
