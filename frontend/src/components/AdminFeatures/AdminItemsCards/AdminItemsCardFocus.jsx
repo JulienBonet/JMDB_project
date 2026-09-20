@@ -16,12 +16,10 @@ import {
   updateAdminItem,
   updateFocusImage,
 } from '../../../services/adminItemService';
-import AdminItemsCardImage from './AdminItemsCardImage';
-import AdminItemsCardActions from './AdminItemsCardActions';
+import AdminItemsCardImage from './AdminItemsCardShared/AdminItemsCardImage';
+import AdminItemsCardActions from './AdminItemsCardShared/AdminItemsCardActions';
 
-function AdminItemsCard4({ item, origin, onUpdate, closeModal }) {
-  // console.info("origin", origin);
-
+function AdminItemsCardFocus({ item, origin, onUpdate, closeModal }) {
   const CLOUDINARY_BASE_URL = import.meta.env.VITE_CLOUDINARY_BASE_URL;
   const isFocus = origin === 'focus';
 
@@ -284,4 +282,4 @@ function AdminItemsCard4({ item, origin, onUpdate, closeModal }) {
   );
 }
 
-export default AdminItemsCard4;
+export default AdminItemsCardFocus;

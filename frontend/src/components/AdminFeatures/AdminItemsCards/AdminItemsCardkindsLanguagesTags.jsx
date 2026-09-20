@@ -6,9 +6,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import './adminItemsCard.css';
 // refactor
 import { updateAdminItem } from '../../../services/adminItemService';
-import AdminItemsCardActions from './AdminItemsCardActions';
+import AdminItemsCardActions from './AdminItemsCardShared/AdminItemsCardActions';
 
-function AdminItemsCard2({ item, origin, onUpdate, closeModal }) {
+function AdminItemsCardkindsLanguagesTags({ item, origin, onUpdate, closeModal }) {
   const [isModify, setIsModify] = useState(false);
   const [name, setName] = useState(item.name);
 
@@ -90,4 +90,4 @@ function AdminItemsCard2({ item, origin, onUpdate, closeModal }) {
   );
 }
 
-export default AdminItemsCard2;
+export default AdminItemsCardkindsLanguagesTags;
