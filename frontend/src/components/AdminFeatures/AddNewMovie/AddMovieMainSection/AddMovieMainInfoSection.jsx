@@ -2,7 +2,7 @@ import { Box, Button, FormControlLabel, IconButton, TextField } from '@mui/mater
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import Switch from '@mui/material/Switch';
 
-import TvSeasonEpisodeFields from '../TvSeasonEpisodeFields';
+import TvSeasonEpisodeFields from './TvSeasonEpisodeFields';
 
 function AddMovieMainInfoSection({
   movie,
