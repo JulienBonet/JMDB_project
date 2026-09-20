@@ -2,22 +2,17 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
-import ModeIcon from '@mui/icons-material/Mode';
-import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
-import UndoIcon from '@mui/icons-material/Undo';
 import './adminItemsCard.css';
 // refactor
 import { updateAdminItem } from '../../../services/adminItemService';
+import AdminItemsCardActions from './AdminItemsCardActions';
 
 function AdminItemsCard2({ item, origin, onUpdate, closeModal }) {
   const [isModify, setIsModify] = useState(false);
   const [name, setName] = useState(item.name);
-  const [isEditing, setIsEditing] = useState(false);
 
   const openModif = () => {
     setIsModify(true);
-    setIsEditing(true);
   };
 
   const handleReturn = () => {
@@ -42,7 +37,6 @@ function AdminItemsCard2({ item, origin, onUpdate, closeModal }) {
         className: 'custom-toast',
       });
       setIsModify(false);
-      setIsEditing(false);
       onUpdate();
       closeModal();
     } catch (error) {
@@ -64,7 +58,6 @@ function AdminItemsCard2({ item, origin, onUpdate, closeModal }) {
   const handleUndo = () => {
     setName(item.name);
     setIsModify(false);
-    setIsEditing(false);
     closeModal();
   };
 
@@ -84,19 +77,13 @@ function AdminItemsCard2({ item, origin, onUpdate, closeModal }) {
           )}
         </div>
 
-        <div className="Info_Btn-Modify">
-          {isEditing ? (
-            <section className="Item_Editing_Buttons">
-              <DoneOutlineIcon className="Item_validateButton" onClick={handleValidate} />
-              <UndoIcon className="Item_UndoButton" onClick={handleUndo} />
-            </section>
-          ) : (
-            <section className="Item_Editing_Buttons">
-              <KeyboardReturnIcon className="item_return_ico" onClick={handleReturn} />
-              <ModeIcon className="item_tools_ico" onClick={() => openModif()} />
-            </section>
-          )}
-        </div>
+        <AdminItemsCardActions
+          isEditing={isModify}
+          onReturn={handleReturn}
+          onEdit={openModif}
+          onValidate={handleValidate}
+          onUndo={handleUndo}
+        />
       </section>
     </article>
   );
