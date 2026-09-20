@@ -1,3 +1,4 @@
+// admin focus
 /* eslint-disable react/no-danger */
 /* eslint-disable react/prop-types */
 import { useState, useRef, useEffect } from 'react';
@@ -8,11 +9,6 @@ import 'react-quill/dist/quill.snow.css';
 import '../../../assets/css/reactQuill_html_parametrage.css';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
-import ModeIcon from '@mui/icons-material/Mode';
-import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
-import UndoIcon from '@mui/icons-material/Undo';
-import CircularProgress from '@mui/material/CircularProgress';
 import './adminItemsCard.css';
 // refacto
 import {
@@ -21,6 +17,7 @@ import {
   updateFocusImage,
 } from '../../../services/adminItemService';
 import AdminItemsCardImage from './AdminItemsCardImage';
+import AdminItemsCardActions from './AdminItemsCardActions';
 
 function AdminItemsCard4({ item, origin, onUpdate, closeModal }) {
   // console.info("origin", origin);
@@ -261,28 +258,14 @@ function AdminItemsCard4({ item, origin, onUpdate, closeModal }) {
             </>
           )}
         </div>
-        <div className="Info_Btn-Modify">
-          {isModify ? (
-            <section className="Item_Editing_Buttons">
-              {isLoading ? (
-                <CircularProgress
-                  size={22}
-                  thickness={5}
-                  color="inherit"
-                  className="Item_loader_mui"
-                />
-              ) : (
-                <DoneOutlineIcon className="Item_validateButton" onClick={handleValidate} />
-              )}
-              <UndoIcon className="Item_UndoButton" onClick={handleUndo} />
-            </section>
-          ) : (
-            <section className="Item_Editing_Buttons">
-              <KeyboardReturnIcon className="item_return_ico" onClick={handleReturn} />
-              <ModeIcon className="item_tools_ico" onClick={() => openModif()} />
-            </section>
-          )}
-        </div>
+        <AdminItemsCardActions
+          isEditing={isModify}
+          isLoading={isLoading}
+          onReturn={handleReturn}
+          onEdit={openModif}
+          onValidate={handleValidate}
+          onUndo={handleUndo}
+        />
       </section>
 
       <section className="ItemsCard_Col2">

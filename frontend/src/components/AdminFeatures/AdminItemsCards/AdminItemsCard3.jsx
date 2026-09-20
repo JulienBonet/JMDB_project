@@ -1,15 +1,13 @@
+// admin Pays
 /* eslint-disable react/prop-types */
 import { useState, useRef } from 'react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
-import ModeIcon from '@mui/icons-material/Mode';
-import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
-import UndoIcon from '@mui/icons-material/Undo';
 import './adminItemsCard.css';
 // refactor
 import { updateAdminItem, updateAdminItemImage } from '../../../services/adminItemService';
 import AdminItemsCardImage from './AdminItemsCardImage';
+import AdminItemsCardActions from './AdminItemsCardActions';
 
 function AdminItemsCard3({ item, origin, onUpdate, closeModal }) {
   const CLOUDINARY_BASE_URL = import.meta.env.VITE_CLOUDINARY_BASE_URL;
@@ -22,14 +20,12 @@ function AdminItemsCard3({ item, origin, onUpdate, closeModal }) {
 
   const [isModify, setIsModify] = useState(false);
   const [name, setName] = useState(item.name);
-  const [isEditing, setIsEditing] = useState(false);
   const [image, setImage] = useState(getImageUrl(item.image));
   const [showUploadButton, setShowUploadButton] = useState(true);
   const fileInputRef = useRef(null);
 
   const openModif = () => {
     setIsModify(true);
-    setIsEditing(true);
   };
 
   const handleReturn = () => {
@@ -74,7 +70,6 @@ function AdminItemsCard3({ item, origin, onUpdate, closeModal }) {
         className: 'custom-toast',
       });
       setIsModify(false);
-      setIsEditing(false);
       setShowUploadButton(true);
 
       onUpdate();
@@ -99,7 +94,6 @@ function AdminItemsCard3({ item, origin, onUpdate, closeModal }) {
     setName(item.name);
     setImage(getImageUrl(item.image));
     setIsModify(false);
-    setIsEditing(false);
     setShowUploadButton(true);
   };
 
@@ -149,19 +143,13 @@ function AdminItemsCard3({ item, origin, onUpdate, closeModal }) {
           )}
         </div>
 
-        <div className="Info_Btn-Modify">
-          {isEditing ? (
-            <section className="Item_Editing_Buttons">
-              <DoneOutlineIcon className="Item_validateButton" onClick={handleValidate} />
-              <UndoIcon className="Item_UndoButton" onClick={handleUndo} />
-            </section>
-          ) : (
-            <section className="Item_Editing_Buttons">
-              <KeyboardReturnIcon className="item_return_ico" onClick={handleReturn} />
-              <ModeIcon className="item_tools_ico" onClick={() => openModif()} />
-            </section>
-          )}
-        </div>
+        <AdminItemsCardActions
+          isEditing={isModify}
+          onReturn={handleReturn}
+          onEdit={openModif}
+          onValidate={handleValidate}
+          onUndo={handleUndo}
+        />
       </section>
 
       <section className="ItemsCard_Col2">
