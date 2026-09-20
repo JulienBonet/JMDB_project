@@ -1,8 +1,3 @@
-import { Box, Button, FormControlLabel, IconButton, TextField } from '@mui/material';
-import RestartAltIcon from '@mui/icons-material/RestartAlt';
-import Switch from '@mui/material/Switch';
-
-import TvSeasonEpisodeFields from '../TvSeasonEpisodeFields';
 import AddMovieRelationsSection from './AddMovieRelationsSection';
 import AddMovieMainInfoSection from './AddMovieMainInfoSection';
 
