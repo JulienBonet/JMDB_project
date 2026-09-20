@@ -12,8 +12,6 @@ import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
 import ModeIcon from '@mui/icons-material/Mode';
 import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
 import UndoIcon from '@mui/icons-material/Undo';
-import FileUploadIcon from '@mui/icons-material/FileUpload';
-import CachedIcon from '@mui/icons-material/Cached';
 import CircularProgress from '@mui/material/CircularProgress';
 import './adminItemsCard.css';
 // refacto
