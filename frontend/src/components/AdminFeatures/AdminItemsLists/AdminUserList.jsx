@@ -14,7 +14,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
-import AdminItemsCard from '../AdminItemsCards/AdminItemsCard5';
+import AdminItemsCard from '../AdminItemsCards/AdminItemsCardUsers';
 import CreateItemCard from '../CreateItemCard/CreateItemCard';
 // refactor
 import useAdminItemsList from '../../../hooks/useAdminItemsList';

@@ -6,10 +6,10 @@ import 'react-toastify/dist/ReactToastify.css';
 import './adminItemsCard.css';
 // refactor
 import { updateAdminItem, updateAdminItemImage } from '../../../services/adminItemService';
-import AdminItemsCardImage from './AdminItemsCardImage';
-import AdminItemsCardActions from './AdminItemsCardActions';
+import AdminItemsCardImage from './AdminItemsCardShared/AdminItemsCardImage';
+import AdminItemsCardActions from './AdminItemsCardShared/AdminItemsCardActions';
 
-function AdminItemsCard3({ item, origin, onUpdate, closeModal }) {
+function AdminItemsCardCountries({ item, origin, onUpdate, closeModal }) {
   const CLOUDINARY_BASE_URL = import.meta.env.VITE_CLOUDINARY_BASE_URL;
 
   // Fonction Cloudinary
@@ -168,4 +168,4 @@ function AdminItemsCard3({ item, origin, onUpdate, closeModal }) {
   );
 }
 
-export default AdminItemsCard3;
+export default AdminItemsCardCountries;

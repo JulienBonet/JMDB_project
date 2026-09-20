@@ -8,7 +8,7 @@ import './adminItemsCard.css';
 // refactor
 import { updateUserPassword } from '../../../services/userService';
 
-function AdminItemsCard5({ item, onUpdate, closeModal }) {
+function AdminItemsCardUsers({ item, onUpdate, closeModal }) {
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -109,4 +109,4 @@ function AdminItemsCard5({ item, onUpdate, closeModal }) {
   );
 }
 
-export default AdminItemsCard5;
+export default AdminItemsCardUsers;
