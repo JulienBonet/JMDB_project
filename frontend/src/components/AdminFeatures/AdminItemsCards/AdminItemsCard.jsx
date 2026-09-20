@@ -1,3 +1,4 @@
+// admin Réalisateurs - Casting - Scénaristes - Compositeurs - Studios
 /* eslint-disable react/no-danger */
 /* eslint-disable react/prop-types */
 /* eslint-disable react/prop-types */
@@ -10,16 +11,12 @@ import '../../../assets/css/reactQuill_html_parametrage.css';
 import 'react-toastify/dist/ReactToastify.css';
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
-import ModeIcon from '@mui/icons-material/Mode';
-import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
-import UndoIcon from '@mui/icons-material/Undo';
-import CircularProgress from '@mui/material/CircularProgress';
 import './adminItemsCard.css';
 import './adminItemsCardMediaQueries.css';
 // refactor
 import { updateAdminItem, updateAdminItemImage } from '../../../services/adminItemService';
 import AdminItemsCardImage from './AdminItemsCardImage';
+import AdminItemsCardActions from './AdminItemsCardActions';
 
 function AdminItemsCard({ item, origin, onUpdate, closeModal }) {
   const CLOUDINARY_BASE_URL = import.meta.env.VITE_CLOUDINARY_BASE_URL;
@@ -313,28 +310,14 @@ function AdminItemsCard({ item, origin, onUpdate, closeModal }) {
           </>
         )}
 
-        <div className="Info_Btn-Modify">
-          {isModify ? (
-            <section className="Item_Editing_Buttons">
-              {isLoading ? (
-                <CircularProgress
-                  size={22}
-                  thickness={5}
-                  color="inherit"
-                  className="Item_loader_mui"
-                />
-              ) : (
-                <DoneOutlineIcon className="Item_validateButton" onClick={handleValidate} />
-              )}
-              <UndoIcon className="Item_UndoButton" onClick={handleUndo} />
-            </section>
-          ) : (
-            <section className="Item_Editing_Buttons">
-              <KeyboardReturnIcon className="item_return_ico" onClick={handleReturn} />
-              <ModeIcon className="item_tools_ico" onClick={() => openModif()} />
-            </section>
-          )}
-        </div>
+        <AdminItemsCardActions
+          isEditing={isModify}
+          isLoading={isLoading}
+          onReturn={handleReturn}
+          onEdit={openModif}
+          onValidate={handleValidate}
+          onUndo={handleUndo}
+        />
       </section>
 
       <section className="ItemsCard_Col2">
