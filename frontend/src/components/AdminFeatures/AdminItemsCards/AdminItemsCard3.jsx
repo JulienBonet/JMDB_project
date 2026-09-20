@@ -6,11 +6,10 @@ import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
 import ModeIcon from '@mui/icons-material/Mode';
 import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
 import UndoIcon from '@mui/icons-material/Undo';
-import FileUploadIcon from '@mui/icons-material/FileUpload';
-import CachedIcon from '@mui/icons-material/Cached';
 import './adminItemsCard.css';
 // refactor
 import { updateAdminItem, updateAdminItemImage } from '../../../services/adminItemService';
+import AdminItemsCardImage from './AdminItemsCardImage';
 
 function AdminItemsCard3({ item, origin, onUpdate, closeModal }) {
   const CLOUDINARY_BASE_URL = import.meta.env.VITE_CLOUDINARY_BASE_URL;
@@ -123,23 +122,17 @@ function AdminItemsCard3({ item, origin, onUpdate, closeModal }) {
   return (
     <article className="ItemsCard">
       <section className="ItemsCard_Col_0">
-        {image && <img className="ItemImage" src={image} alt={`${item.name}`} />}
-        {isModify && (
-          <>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleFileUpload}
-              ref={fileInputRef}
-              style={{ display: 'none' }}
-            />
-            {showUploadButton ? (
-              <FileUploadIcon className="Item_uploadButton" onClick={handleUploadClick} />
-            ) : (
-              <CachedIcon className="Item_reset_img_Button" onClick={handleResetImage} />
-            )}
-          </>
-        )}
+        <AdminItemsCardImage
+          image={image}
+          itemName={item.name}
+          isModify={isModify}
+          fileInputRef={fileInputRef}
+          handleFileUpload={handleFileUpload}
+          showUploadButton={showUploadButton}
+          handleUploadClick={handleUploadClick}
+          handleResetImage={handleResetImage}
+        />
+
         <div className="ItemsCard_bar" />
       </section>
       <section className="ItemsCard_Col1">
@@ -172,23 +165,16 @@ function AdminItemsCard3({ item, origin, onUpdate, closeModal }) {
       </section>
 
       <section className="ItemsCard_Col2">
-        {image && <img className="ItemImage" src={image} alt={`${item.name}`} />}
-        {isModify && (
-          <>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleFileUpload}
-              ref={fileInputRef}
-              style={{ display: 'none' }}
-            />
-            {showUploadButton ? (
-              <FileUploadIcon className="Item_uploadButton" onClick={handleUploadClick} />
-            ) : (
-              <CachedIcon className="Item_reset_img_Button" onClick={handleResetImage} />
-            )}
-          </>
-        )}
+        <AdminItemsCardImage
+          image={image}
+          itemName={item.name}
+          isModify={isModify}
+          fileInputRef={fileInputRef}
+          handleFileUpload={handleFileUpload}
+          showUploadButton={showUploadButton}
+          handleUploadClick={handleUploadClick}
+          handleResetImage={handleResetImage}
+        />
       </section>
     </article>
   );
