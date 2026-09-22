@@ -10,9 +10,3 @@ export const exportAdminCsv = async () => {
     responseType: 'blob',
   });
 };
-
-export const exportAdminSql = async () => {
-  return api.get('/api/admin/export-sql', {
-    responseType: 'blob',
-  });
-};
