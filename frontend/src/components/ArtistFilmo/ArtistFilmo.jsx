@@ -1,14 +1,13 @@
 /* eslint-disable react/prop-types */
-import { useState, useEffect } from "react";
-import MovieCountArtistMovie from "../MovieCountArtistMovie/MovieCountArtistMovie";
-import MovieThumbnail from "../MovieThumbnail/MovieThumbnail";
-import DirectorBear from "../../assets/ico/director_bear_01.jpeg";
-import ActorBear from "../../assets/ico/actor-bear.jpg";
-import ScreenwriterBear from "../../assets/ico/screenwiter-bear.jpeg";
-import MusicBear from "../../assets/ico/compositor-bear.jpeg";
-import StudioBear from "../../assets/ico/studio_bear.jpeg";
-import TagBear from "../../assets/ico/search_Bear_02.jpeg";
-import SideActionBar from "../StickySideBar/StickySideBar";
+import MovieCountArtistMovie from '../MovieCountArtistMovie/MovieCountArtistMovie';
+import MovieThumbnail from '../MovieThumbnail/MovieThumbnail';
+import DirectorBear from '../../assets/ico/director_bear_01.jpeg';
+import ActorBear from '../../assets/ico/actor-bear.jpg';
+import ScreenwriterBear from '../../assets/ico/screenwiter-bear.jpeg';
+import MusicBear from '../../assets/ico/compositor-bear.jpeg';
+import StudioBear from '../../assets/ico/studio_bear.jpeg';
+import TagBear from '../../assets/ico/search_Bear_02.jpeg';
+import SideActionBar from '../StickySideBar/StickySideBar';
 
 function ArtistFilmo({
   selectedArtist,
@@ -26,114 +25,51 @@ function ArtistFilmo({
   onReset,
   openSideBar,
 }) {
-  const [artistMovies, setArtistMovies] = useState(data || []);
-
-  useEffect(() => {
-    setArtistMovies(data);
-  }, [data]);
-
-  // ---------- Wrappers qui utilisent les fonctions backend si disponibles ----------
   const handleAlphabeticBtnClick = async () => {
-    // si le parent a fourni movieSortedA/movieSortedZ et sortOrderA : on les utilise
-    if (
-      typeof movieSortedA === "function" &&
-      typeof movieSortedZ === "function"
-    ) {
-      try {
-        if (sortOrderA === "asc") {
-          await movieSortedZ(); // appel parent qui fetch sorted desc
-        } else {
-          await movieSortedA(); // appel parent qui fetch sorted asc
-        }
-        // parent mettra à jour `data`, et useEffect propagera dans artistMovies
-      } catch (err) {
-        console.error("Erreur lors du tri alphabétique remote:", err);
-      }
-      return;
+    if (sortOrderA === 'asc') {
+      await movieSortedZ();
+    } else {
+      await movieSortedA();
     }
-
-    // fallback local (si le parent n'a pas fourni les fonctions)
-    const sorted = [...artistMovies].sort((a, b) =>
-      a.title.localeCompare(b.title, undefined, { sensitivity: "accent" })
-    );
-    setArtistMovies(sorted);
   };
 
   const handleChronologicBtnClick = async () => {
-    if (
-      typeof movieSortedYear === "function" &&
-      typeof movieSortedYearDesc === "function"
-    ) {
-      try {
-        if (sortOrderY === "asc") {
-          await movieSortedYearDesc();
-        } else {
-          await movieSortedYear();
-        }
-      } catch (err) {
-        console.error("Erreur lors du tri chronologique remote:", err);
-      }
-      return;
+    if (sortOrderY === 'asc') {
+      await movieSortedYearDesc();
+    } else {
+      await movieSortedYear();
     }
-
-    // fallback local
-    const sorted = [...artistMovies].sort((a, b) => a.year - b.year);
-    setArtistMovies(sorted);
   };
 
   const handleResetSearch = () => {
-    // Prefer call parent reset if provided (réinitialise lettres/search etc.)
-    if (typeof onReset === "function") {
-      onReset();
-      return;
-    }
-
-    // sinon on demande au parent de re-fetch les films (onUpdateMovie)
-    if (typeof onUpdateMovie === "function") {
-      onUpdateMovie();
-      return;
-    }
-    // Fallback local : on réaffiche les données actuelles
-    setArtistMovies(data || []);
+    onReset();
   };
 
   return (
     <section className="filmo_artists">
-      {selectedArtist === "" && (
+      {selectedArtist === '' && (
         <section className="artists_bear">
           <section className="artists_bear_position">
-            {origin === "directors" && (
+            {origin === 'directors' && (
               <div className="artists_bear_container">
                 <div className="artists_pitch_container">
-                  <p className="artists_pitch">
-                    QUEL REALISATEUR CHERCHONS NOUS ?
-                  </p>
+                  <p className="artists_pitch">QUEL REALISATEUR CHERCHONS NOUS ?</p>
                 </div>
-                <img
-                  src={DirectorBear}
-                  alt="a Bear director"
-                  className="artists_bear_illustr"
-                />
+                <img src={DirectorBear} alt="a Bear director" className="artists_bear_illustr" />
               </div>
             )}
-            {origin === "casting" && (
+            {origin === 'casting' && (
               <div className="artists_bear_container">
                 <div className="artists_pitch_container">
                   <p className="artists_pitch">QUEL ACTEUR CHERCHONS NOUS ?</p>
                 </div>
-                <img
-                  src={ActorBear}
-                  alt="a Bear actor"
-                  className="artists_bear_illustr"
-                />
+                <img src={ActorBear} alt="a Bear actor" className="artists_bear_illustr" />
               </div>
             )}
-            {origin === "screenwriters" && (
+            {origin === 'screenwriters' && (
               <div className="artists_bear_container">
                 <div className="artists_pitch_container">
-                  <p className="artists_pitch">
-                    QUEL SCENARISTE CHERCHONS NOUS ?
-                  </p>
+                  <p className="artists_pitch">QUEL SCENARISTE CHERCHONS NOUS ?</p>
                 </div>
                 <img
                   src={ScreenwriterBear}
@@ -142,7 +78,7 @@ function ArtistFilmo({
                 />
               </div>
             )}
-            {origin === "music" && (
+            {origin === 'music' && (
               <div className="artists_bear_container">
                 <div className="artists_pitch_container">
                   <p className="artists_pitch">QUEL MAESTRO CHERCHONS NOUS ?</p>
@@ -154,7 +90,7 @@ function ArtistFilmo({
                 />
               </div>
             )}
-            {origin === "studio" && (
+            {origin === 'studio' && (
               <div className="artists_bear_container">
                 <div className="artists_pitch_container">
                   <p className="artists_pitch">QUEL STUDIO CHERCHONS NOUS ?</p>
@@ -166,24 +102,18 @@ function ArtistFilmo({
                 />
               </div>
             )}
-            {origin === "tags" && (
+            {origin === 'tags' && (
               <div className="artists_bear_container">
                 <div className="artists_pitch_container">
-                  <p className="artists_pitch">
-                    AVEC QUEL TAG CHERCHONS NOUS ?
-                  </p>
+                  <p className="artists_pitch">AVEC QUEL TAG CHERCHONS NOUS ?</p>
                 </div>
-                <img
-                  src={TagBear}
-                  alt="a Bear searching movie"
-                  className="artists_bear_illustr"
-                />
+                <img src={TagBear} alt="a Bear searching movie" className="artists_bear_illustr" />
               </div>
             )}
           </section>
         </section>
       )}
-      {selectedArtist !== "" && (
+      {selectedArtist !== '' && (
         <section className="artists_filmo">
           <SideActionBar
             onAlphabeticClick={handleAlphabeticBtnClick}
