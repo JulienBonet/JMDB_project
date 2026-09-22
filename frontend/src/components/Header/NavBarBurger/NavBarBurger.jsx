@@ -1,18 +1,18 @@
-import * as React from "react";
-import { Link, useNavigate } from "react-router-dom";
-import Button from "@mui/material/Button";
-import LogoutIcon from "@mui/icons-material/Logout";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import MenuIcon from "@mui/icons-material/Menu";
-import CloseIcon from "@mui/icons-material/Close";
-import Divider from "@mui/material/Divider";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import { useAuth } from "../../../Context/AuthContext";
-import "../../../assets/css/var_font_color.css";
+import * as React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import Button from '@mui/material/Button';
+import LogoutIcon from '@mui/icons-material/Logout';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import MenuIcon from '@mui/icons-material/Menu';
+import CloseIcon from '@mui/icons-material/Close';
+import Divider from '@mui/material/Divider';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import { useAuth } from '../../../Context/AuthContext';
+import '../../../assets/css/var_font_color.css';
 
-export default function BasicMenu() {
+export default function NavBarBurger() {
   const { isAdmin } = useAuth();
   const navigate = useNavigate();
 
@@ -24,26 +24,26 @@ export default function BasicMenu() {
 
   // Fonction logout
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
-    localStorage.removeItem("user");
-    navigate("/login"); // redirection vers login
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
+    localStorage.removeItem('user');
+    navigate('/login'); // redirection vers login
   };
 
   return (
     <div>
       <Button
         id="burgerMenuButton"
-        aria-controls={open ? "burgerMenu" : undefined}
+        aria-controls={open ? 'burgerMenu' : undefined}
         aria-haspopup="true"
-        aria-expanded={open ? "true" : undefined}
+        aria-expanded={open ? 'true' : undefined}
         onClick={handleClick}
-        aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
+        aria-label={open ? 'Fermer le menu' : 'Ouvrir le menu'}
       >
         {open ? (
-          <CloseIcon sx={{ fontSize: 30, color: "var(--color-01)" }} />
+          <CloseIcon sx={{ fontSize: 30, color: 'var(--color-01)' }} />
         ) : (
-          <MenuIcon sx={{ fontSize: 30, color: "var(--color-01)" }} />
+          <MenuIcon sx={{ fontSize: 30, color: 'var(--color-01)' }} />
         )}
       </Button>
 
@@ -52,15 +52,15 @@ export default function BasicMenu() {
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
-        MenuListProps={{ "aria-labelledby": "burgerMenuButton" }}
+        MenuListProps={{ 'aria-labelledby': 'burgerMenuButton' }}
         slotProps={{
           paper: {
             sx: {
-              backgroundColor: "var(--color-05)",
-              color: "var(--color-01)",
-              boxShadow: "0px 4px 12px rgba(0,0,0,0.1)",
-              border: "1px solid var(--color-02)",
-              borderRadius: "8px",
+              backgroundColor: 'var(--color-05)',
+              color: 'var(--color-01)',
+              boxShadow: '0px 4px 12px rgba(0,0,0,0.1)',
+              border: '1px solid var(--color-02)',
+              borderRadius: '8px',
               minWidth: 240,
               paddingY: 1,
             },
@@ -72,17 +72,17 @@ export default function BasicMenu() {
           onClick={handleClose}
           component={Link}
           to="/movie_search"
-          sx={{ justifyContent: "center" }}
+          sx={{ justifyContent: 'center' }}
         >
           RECHERCHE FILMS
         </MenuItem>
-        <Divider sx={{ backgroundColor: "var(--color-02)", marginY: 1 }} />
+        <Divider sx={{ backgroundColor: 'var(--color-02)', marginY: 1 }} />
         {/* TITRE : RECHERCHE PAR (non cliquable) */}
-        <Box sx={{ px: 2, textAlign: "center" }}>
+        <Box sx={{ px: 2, textAlign: 'center' }}>
           <Typography
             sx={{
               fontWeight: 700,
-              color: "var(--color-02)",
+              color: 'var(--color-02)',
               letterSpacing: 0.6,
               marginBottom: 1,
             }}
@@ -96,7 +96,7 @@ export default function BasicMenu() {
           onClick={handleClose}
           component={Link}
           to="/movie_directors"
-          sx={{ justifyContent: "center" }}
+          sx={{ justifyContent: 'center' }}
         >
           RÉALISATEUR
         </MenuItem>
@@ -104,7 +104,7 @@ export default function BasicMenu() {
           onClick={handleClose}
           component={Link}
           to="/movie_casting"
-          sx={{ justifyContent: "center" }}
+          sx={{ justifyContent: 'center' }}
         >
           CASTING
         </MenuItem>
@@ -112,7 +112,7 @@ export default function BasicMenu() {
           onClick={handleClose}
           component={Link}
           to="/movie_screenwriters"
-          sx={{ justifyContent: "center" }}
+          sx={{ justifyContent: 'center' }}
         >
           SCÉNARISTE
         </MenuItem>
@@ -120,7 +120,7 @@ export default function BasicMenu() {
           onClick={handleClose}
           component={Link}
           to="/movie_music"
-          sx={{ justifyContent: "center" }}
+          sx={{ justifyContent: 'center' }}
         >
           COMPOSITEUR
         </MenuItem>
@@ -128,7 +128,7 @@ export default function BasicMenu() {
           onClick={handleClose}
           component={Link}
           to="/movie_studio"
-          sx={{ justifyContent: "center" }}
+          sx={{ justifyContent: 'center' }}
         >
           STUDIO
         </MenuItem>
@@ -136,17 +136,17 @@ export default function BasicMenu() {
           onClick={handleClose}
           component={Link}
           to="/movie_tag"
-          sx={{ justifyContent: "center" }}
+          sx={{ justifyContent: 'center' }}
         >
           TAGS
         </MenuItem>
-        <Divider sx={{ backgroundColor: "var(--color-02)", marginY: 1 }} />
+        <Divider sx={{ backgroundColor: 'var(--color-02)', marginY: 1 }} />
         {/* CINE CLUB */}
-        <Box sx={{ px: 2, textAlign: "center" }}>
+        <Box sx={{ px: 2, textAlign: 'center' }}>
           <Typography
             sx={{
               fontWeight: 700,
-              color: "var(--color-02)",
+              color: 'var(--color-02)',
               letterSpacing: 0.6,
               marginBottom: 1,
             }}
@@ -159,7 +159,7 @@ export default function BasicMenu() {
           component={Link}
           to="/movie_thema"
           onClick={handleClose}
-          sx={{ justifyContent: "center" }}
+          sx={{ justifyContent: 'center' }}
         >
           THEMAS
         </MenuItem>
@@ -167,7 +167,7 @@ export default function BasicMenu() {
           component={Link}
           to="/movie_thema_festival"
           onClick={handleClose}
-          sx={{ justifyContent: "center" }}
+          sx={{ justifyContent: 'center' }}
         >
           FESTIVALS
         </MenuItem>
@@ -175,7 +175,7 @@ export default function BasicMenu() {
           component={Link}
           to="/movie_thema_collection"
           onClick={handleClose}
-          sx={{ justifyContent: "center" }}
+          sx={{ justifyContent: 'center' }}
         >
           COLLECTIONS
         </MenuItem>
@@ -183,7 +183,7 @@ export default function BasicMenu() {
           component={Link}
           to="/movie_thema_directors"
           onClick={handleClose}
-          sx={{ justifyContent: "center" }}
+          sx={{ justifyContent: 'center' }}
         >
           LES GRANDS AUTEURS
         </MenuItem>
@@ -195,37 +195,33 @@ export default function BasicMenu() {
         >
           LES STARS
         </MenuItem> */}
-        <Divider sx={{ backgroundColor: "var(--color-02)", marginY: 1 }} />
+        <Divider sx={{ backgroundColor: 'var(--color-02)', marginY: 1 }} />
         {/* FAVORIS */}
         <MenuItem
           onClick={handleClose}
           component={Link}
           to="/movie_favorites"
-          sx={{ justifyContent: "center" }}
+          sx={{ justifyContent: 'center' }}
         >
           🧡 MA LISTE 🧡
         </MenuItem>
         {/* ADMIN */}
         {isAdmin && (
           <>
-            <Divider sx={{ backgroundColor: "var(--color-02)", marginY: 1 }} />
+            <Divider sx={{ backgroundColor: 'var(--color-02)', marginY: 1 }} />
             <MenuItem
               onClick={handleClose}
               component={Link}
               to="/admin_feat"
-              sx={{ justifyContent: "center" }}
+              sx={{ justifyContent: 'center' }}
             >
               ADMIN
             </MenuItem>
           </>
         )}
-        <Divider sx={{ backgroundColor: "var(--color-02)", marginY: 1 }} />
+        <Divider sx={{ backgroundColor: 'var(--color-02)', marginY: 1 }} />
         {/* LOGOUT */}
-        <MenuItem
-          onClick={handleLogout}
-          component={Link}
-          sx={{ justifyContent: "center" }}
-        >
+        <MenuItem onClick={handleLogout} component={Link} sx={{ justifyContent: 'center' }}>
           <LogoutIcon /> LOGOUT
         </MenuItem>
       </Menu>
