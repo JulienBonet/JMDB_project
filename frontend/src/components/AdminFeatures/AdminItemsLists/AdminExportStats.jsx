@@ -10,7 +10,7 @@ import {
 import CircularProgress from '@mui/material/CircularProgress';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 // refactor
-import { getAdminStats, exportAdminCsv, exportAdminSql } from '../../../services/adminStatsService';
+import { getAdminStats, exportAdminCsv } from '../../../services/adminStatsService';
 
 function AdminExportStats() {
   // --------------
@@ -18,7 +18,6 @@ function AdminExportStats() {
   // --------------
   const [stats, setStats] = useState(null);
   const [isExportingCsv, setIsExportingCsv] = useState(false);
-  const [isExportingSql, setIsExportingSql] = useState(false);
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -83,37 +82,6 @@ function AdminExportStats() {
   };
 
   // --------------
-  // EXPORT SQL
-  // --------------
-  const handleExportSql = async () => {
-    setIsExportingSql(true);
-    try {
-      const response = await exportAdminSql();
-
-      const disposition = response.headers['content-disposition'];
-      let fileName = 'jmdb2_backup.sql';
-      if (disposition && disposition.includes('filename=')) {
-        fileName = disposition.split('filename=')[1].replace(/"/g, '');
-      } else {
-        const dateStr = new Date().toISOString().replace(/[:.]/g, '-');
-        fileName = `jmdb2_backup_${dateStr}.sql`;
-      }
-
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', fileName);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-    } catch (err) {
-      console.error('Erreur export SQL', err);
-    } finally {
-      setIsExportingSql(false);
-    }
-  };
-
-  // --------------
   // SX
   // --------------
   const buttonSx = (bgColor, hoverColor) => ({
@@ -170,25 +138,6 @@ function AdminExportStats() {
             }
           >
             {isExportingCsv ? 'Export CSV en cours...' : 'Exporter CSV'}
-          </Button>
-          {/* BOUTON EXPORT SQL */}
-          <Button
-            sx={{
-              ...buttonSx('#9c27b0', '#6d1b7b'),
-              color: '#fff',
-              '&.Mui-disabled': {
-                color: '#fff',
-                backgroundColor: '#9c27b0',
-                opacity: 0.8,
-              },
-            }}
-            onClick={handleExportSql}
-            disabled={isExportingSql}
-            startIcon={
-              isExportingSql ? <CircularProgress size={20} sx={{ color: '#fff' }} /> : null
-            }
-          >
-            {isExportingSql ? 'Export SQL en cours...' : 'Exporter SQL'}
           </Button>
         </Stack>
       </section>
