@@ -14,6 +14,7 @@ export const createAdminItem = async (origin, data) => {
 };
 
 export const updateAdminItem = async (origin, id, data) => {
+  console.log('PUT DATA :', data);
   const response = await api.put(`/api/${origin}/${id}`, data);
 
   return response.data;

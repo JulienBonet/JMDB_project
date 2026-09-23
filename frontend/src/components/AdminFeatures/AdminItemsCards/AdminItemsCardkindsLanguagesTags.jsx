@@ -29,6 +29,10 @@ function AdminItemsCardkindsLanguagesTags({ item, origin, onUpdate, closeModal }
           name,
         };
 
+        console.log('ORIGIN :', origin);
+        console.log('ITEM ID :', item.id);
+        console.log('DATA :', data);
+
         // 1. Mettre à jour les infos
         await updateAdminItem(origin, item.id, data);
       }

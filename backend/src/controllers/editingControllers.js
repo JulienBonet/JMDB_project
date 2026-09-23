@@ -913,6 +913,10 @@ const editingTag = async (req, res) => {
     const { id } = req.params;
 
     const existingTag = await editingModel.findTagById(id);
+
+    console.log('ID reçu :', id);
+    console.log('existingTag :', existingTag);
+
     if (existingTag[0].name === name) {
       return res.status(400).json({ message: 'Error updating Tag: no changes detected' });
     }
