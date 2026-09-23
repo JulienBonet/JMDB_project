@@ -108,7 +108,7 @@ tbody tr:nth-child(even) {
   th,
   td,
   tr {
-    display: block; /* force la table à se comporter comme un flux */
+    display: block;
   }
 
   /* chaque ligne devient un mini bloc */

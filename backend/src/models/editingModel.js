@@ -258,7 +258,7 @@ const deleteLanguage = (id) => db.query('DELETE FROM language WHERE id = ?;', [i
 
 const findTagById = async (tagId) => {
   const [rows] = await db.query('SELECT id FROM tag WHERE id = ?', [tagId]);
-  return rows.length > 0 ? rows[0].id : null;
+  return rows;
 };
 
 const findTagByName = async (name) => {

@@ -15,6 +15,7 @@ import CreateItemCard from '../CreateItemCard/CreateItemCard';
 import useAdminItemsList from '../../../hooks/useAdminItemsList';
 import { getLanguagesSortedById, deleteLanguage } from '../../../services/referenceDataService';
 import AdminListHeader from './ui/AdminListHeader';
+import AdminDataTable from './ui/AdminDataTable';
 
 function AdminLanguagesList() {
   const [selectedItem, setSelectedItem] = useState(null);
@@ -74,35 +75,41 @@ function AdminLanguagesList() {
         actionLabel="ADD NEW LANGUAGE"
         onAction={openModalNewLanguage}
       />
-      <table>
-        <thead>
-          <tr>
-            <th scope="col">ID</th>
-            <th scope="col">LANGUAGE</th>
-          </tr>
-        </thead>
-        <tbody>
-          {loading ? (
-            <div className="LoaderTemp">LOADING...</div>
-          ) : (
-            currentItems.map((DataItem) => (
-              <tr key={DataItem.id}>
-                <th scope="row">{DataItem.id}</th>
-                <td data-label="Langue">{DataItem.name}</td>
-                <td data-label="Aperçu">
-                  <PreviewIcon className="admin_tools_ico" onClick={() => openModal(DataItem)} />
-                </td>
-                <td data-label="Supprimer">
-                  <DeleteIcon
-                    className="admin_tools_ico"
-                    onClick={() => handleDelete(DataItem.id)}
-                  />
-                </td>
-              </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+
+      <AdminDataTable
+        columns={[
+          {
+            label: 'ID',
+            mobileLabel: 'ID',
+            width: '15%',
+            render: (item) => item.id,
+          },
+          {
+            label: 'LANGUAGE',
+            mobileLabel: 'LANGUAGE',
+            render: (item) => item.name,
+          },
+          {
+            label: 'VIEW',
+            mobileLabel: 'VIEW',
+            width: '15%',
+            render: (item) => (
+              <PreviewIcon className="admin_tools_ico" onClick={() => openModal(item)} />
+            ),
+          },
+          {
+            label: 'DELETE',
+            mobileLabel: 'DELETE',
+            width: '15%',
+            render: (item) => (
+              <DeleteIcon className="admin_tools_ico" onClick={() => handleDelete(item.id)} />
+            ),
+          },
+        ]}
+        rows={currentItems}
+        loading={loading}
+      />
+
       <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
         <Pagination count={totalPages} shape="rounded" onChange={handlePageChange} />
       </Box>
