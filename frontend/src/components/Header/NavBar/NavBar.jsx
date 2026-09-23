@@ -1,13 +1,13 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import Button from "@mui/material/Button";
-import Stack from "@mui/material/Stack";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import { useAuth } from "../../../Context/AuthContext";
-import "./NavBar.css";
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Button from '@mui/material/Button';
+import Stack from '@mui/material/Stack';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import { useAuth } from '../../../Context/AuthContext';
+import './NavBar.css';
 
 export default function navBar() {
   const { isAdmin } = useAuth();
@@ -23,10 +23,10 @@ export default function navBar() {
   const theme = createTheme({
     palette: {
       JmdbColorNav: {
-        main: "#ffebcd",
-        light: "#ffc45e",
-        dark: "#e59100",
-        contrastText: "#242105",
+        main: '#ffebcd',
+        light: '#ffc45e',
+        dark: '#e59100',
+        contrastText: '#242105',
       },
     },
   });
@@ -53,11 +53,7 @@ export default function navBar() {
               RECHERCHE PAR
             </Button>
 
-            <Menu
-              anchorEl={anchorSearch}
-              open={openSearch}
-              onClose={() => setAnchorSearch(null)}
-            >
+            <Menu anchorEl={anchorSearch} open={openSearch} onClose={() => setAnchorSearch(null)}>
               <MenuItem
                 component={Link}
                 to="/movie_directors"
@@ -65,11 +61,7 @@ export default function navBar() {
               >
                 RÉALISATEURS
               </MenuItem>
-              <MenuItem
-                component={Link}
-                to="/movie_casting"
-                onClick={() => setAnchorSearch(null)}
-              >
+              <MenuItem component={Link} to="/movie_casting" onClick={() => setAnchorSearch(null)}>
                 CASTING
               </MenuItem>
               <MenuItem
@@ -79,25 +71,13 @@ export default function navBar() {
               >
                 SCÉNARISTES
               </MenuItem>
-              <MenuItem
-                component={Link}
-                to="/movie_music"
-                onClick={() => setAnchorSearch(null)}
-              >
+              <MenuItem component={Link} to="/movie_music" onClick={() => setAnchorSearch(null)}>
                 COMPOSITEURS
               </MenuItem>
-              <MenuItem
-                component={Link}
-                to="/movie_studio"
-                onClick={() => setAnchorSearch(null)}
-              >
+              <MenuItem component={Link} to="/movie_studio" onClick={() => setAnchorSearch(null)}>
                 STUDIOS
               </MenuItem>
-              <MenuItem
-                component={Link}
-                to="/movie_tag"
-                onClick={() => setAnchorSearch(null)}
-              >
+              <MenuItem component={Link} to="/movie_tag" onClick={() => setAnchorSearch(null)}>
                 TAGS
               </MenuItem>
             </Menu>
@@ -114,16 +94,8 @@ export default function navBar() {
               CINE-CLUB
             </Button>
 
-            <Menu
-              anchorEl={anchorCine}
-              open={openCine}
-              onClose={() => setAnchorCine(null)}
-            >
-              <MenuItem
-                component={Link}
-                to="/movie_thema"
-                onClick={() => setAnchorCine(null)}
-              >
+            <Menu anchorEl={anchorCine} open={openCine} onClose={() => setAnchorCine(null)}>
+              <MenuItem component={Link} to="/movie_thema" onClick={() => setAnchorCine(null)}>
                 THEMAS
               </MenuItem>
               <MenuItem

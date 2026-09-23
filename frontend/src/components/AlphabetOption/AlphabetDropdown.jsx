@@ -1,7 +1,7 @@
 /* eslint-disable no-plusplus */
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from "react";
-import "./alphabetDropdown.css";
+import { useEffect, useState } from 'react';
+import './alphabetDropdown.css';
 
 // Génère A-Z
 function generateAlphabet() {
@@ -21,12 +21,7 @@ function generateNumbers() {
   return numbers;
 }
 
-function AlphabetDropdown({
-  onLetterChange,
-  origin,
-  AlphabetDropdownClassName,
-  search,
-}) {
+function AlphabetDropdown({ onLetterChange, origin, AlphabetDropdownClassName, search }) {
   const [options, setOptions] = useState([]);
 
   const handleChange = (event) => {
@@ -38,7 +33,7 @@ function AlphabetDropdown({
     const numbers = generateNumbers();
 
     // Si origin === "tag", on ajoute les chiffres
-    const allOptions = origin === "tags" ? [...numbers, ...letters] : letters;
+    const allOptions = origin === 'tags' ? [...numbers, ...letters] : letters;
 
     const generatedOptions = allOptions.map((char) => (
       <option key={char} value={char}>
@@ -53,12 +48,10 @@ function AlphabetDropdown({
     <select
       onChange={handleChange}
       className={
-        AlphabetDropdownClassName === "artistlist"
-          ? "AlphabetDropdown"
-          : "AlphabetDropdown2"
+        AlphabetDropdownClassName === 'artistlist' ? 'AlphabetDropdown' : 'AlphabetDropdown2'
       }
     >
-      {search !== "" && <option value="">-</option>}
+      {search !== '' && <option value="">-</option>}
       {options}
     </select>
   );

@@ -1,5 +1,5 @@
-import * as React from "react";
-import "./loading.css";
+import * as React from 'react';
+import './loading.css';
 
 function Loading() {
   return (

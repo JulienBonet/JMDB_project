@@ -1,12 +1,11 @@
-import PropTypes from "prop-types";
-import "./movieCountArtistMovie.css";
+import PropTypes from 'prop-types';
+import './movieCountArtistMovie.css';
 
 function MovieCount({ movieAmount }) {
   return (
     <section className="Amount_info_container">
       <p className="Amount_info">
-        NOMBRE DE FILMS :{" "}
-        <span className="movieAmountColor">{movieAmount}</span>
+        NOMBRE DE FILMS : <span className="movieAmountColor">{movieAmount}</span>
       </p>
     </section>
   );

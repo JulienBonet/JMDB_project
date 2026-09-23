@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types */
-import { Box, IconButton, Tooltip } from "@mui/material";
-import CachedIcon from "@mui/icons-material/Cached";
-import AlphabeticBtn from "../AlphabeticBtn/AlphabeticBtn";
-import ChronologicBtn from "../ChronologicBtn/ChronologicBtn";
+import { Box, IconButton, Tooltip } from '@mui/material';
+import CachedIcon from '@mui/icons-material/Cached';
+import AlphabeticBtn from '../AlphabeticBtn/AlphabeticBtn';
+import ChronologicBtn from '../ChronologicBtn/ChronologicBtn';
 
 export default function SideActionBar({
   onAlphabeticClick,
@@ -12,24 +12,24 @@ export default function SideActionBar({
   origin,
   openSideBar,
 }) {
-  const isThema = origin === "focus";
+  const isThema = origin === 'focus';
   return (
     <Box
       sx={{
-        position: "fixed",
-        bottom: "10%",
+        position: 'fixed',
+        bottom: '10%',
         right: openSideBar ? 20 : -240,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
         gap: 2,
-        backgroundColor: "rgba(18,18,18,0.85)",
-        border: "1px solid #555",
+        backgroundColor: 'rgba(18,18,18,0.85)',
+        border: '1px solid #555',
         borderRadius: 4,
         padding: 1.5,
         boxShadow: 3,
         zIndex: 1200,
-        transition: "right 0.4s ease",
+        transition: 'right 0.4s ease',
       }}
     >
       <Tooltip title="Trier alphabétiquement" placement="right">
@@ -58,9 +58,9 @@ export default function SideActionBar({
         <IconButton
           onClick={onResetClick}
           sx={{
-            color: "#ffebcd",
-            backgroundColor: "#242105",
-            "&:hover": { backgroundColor: "#3a3205" },
+            color: '#ffebcd',
+            backgroundColor: '#242105',
+            '&:hover': { backgroundColor: '#3a3205' },
           }}
         >
           <CachedIcon />
