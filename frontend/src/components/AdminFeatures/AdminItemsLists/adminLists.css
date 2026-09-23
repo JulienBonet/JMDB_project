@@ -1,28 +1,6 @@
 .AdminItemsSection {
   width: 95%;
 }
-.HeaderAdminItemsSection {
-  display: flex;
-  align-items: center;
-  margin: 1rem 0;
-}
-.admin_Title_feat_container {
-  width: 50%;
-}
-.admin_Title_feat {
-  font-size: 1.5rem;
-  font-family: var(--font-01);
-}
-.admin_feat_tools_line {
-  display: flex;
-  align-items: center;
-  width: 50%;
-  justify-content: flex-end;
-  gap: 1rem;
-}
-.admin_search_bar {
-  border: solid 1px gray;
-}
 
 table {
   min-width: 100%;
@@ -60,14 +38,6 @@ tbody tr:nth-child(even) {
   text-align: center;
 }
 
-.Admin_search_bar_container {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  width: 50%;
-  border-radius: 25px;
-  padding: 10px;
-}
 
 /* export page */
 .main_Admin_export_List {
@@ -118,20 +88,6 @@ tbody tr:nth-child(even) {
 /* end export page */
 
 @media (max-width: 720px) {
-  .HeaderAdminItemsSection {
-    justify-content: center;
-  }
-  .admin_Title_feat_container {
-    display: none;
-  }
-  .admin_feat_tools_line {
-    flex-direction: column;
-    justify-content: center;
-    width: 90%;
-  }
-  .Admin_search_bar_container{
-    width: 90%;
-  }
   /* Enveloppe de la table si possible */
   .AdminItemsSection {
     overflow-x: auto;

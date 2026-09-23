@@ -118,29 +118,6 @@ function AdminExportStats() {
   // --------------
   return (
     <main className="main_Admin_export_List">
-      {/* EXPORT BUTTONS */}
-      <section className="export_button_container_Admin_export_List">
-        <Stack direction="column" spacing={3}>
-          {/* BOUTON EXPORT CSV */}
-          <Button
-            sx={{
-              ...buttonSx('#1976d2', '#115293'),
-              color: '#fff',
-              '&.Mui-disabled': {
-                color: '#fff',
-                backgroundColor: '#1976d2',
-              },
-            }}
-            onClick={handleExportCsv}
-            disabled={isExportingCsv}
-            startIcon={
-              isExportingCsv ? <CircularProgress size={20} sx={{ color: '#fff' }} /> : null
-            }
-          >
-            {isExportingCsv ? 'Export CSV en cours...' : 'Exporter CSV'}
-          </Button>
-        </Stack>
-      </section>
       {/* STATS */}
       <section className="stats_container_Admin_export_List">
         <Typography
@@ -241,6 +218,29 @@ function AdminExportStats() {
             <span className="infoStatWeight">Total tags:</span> {stats.totalTags}
           </Typography>
         </div>
+      </section>
+      {/* EXPORT BUTTONS */}
+      <section className="export_button_container_Admin_export_List">
+        <Stack direction="column" spacing={3}>
+          {/* BOUTON EXPORT CSV */}
+          <Button
+            sx={{
+              ...buttonSx('#1976d2', '#115293'),
+              color: '#fff',
+              '&.Mui-disabled': {
+                color: '#fff',
+                backgroundColor: '#1976d2',
+              },
+            }}
+            onClick={handleExportCsv}
+            disabled={isExportingCsv}
+            startIcon={
+              isExportingCsv ? <CircularProgress size={20} sx={{ color: '#fff' }} /> : null
+            }
+          >
+            {isExportingCsv ? 'Export CSV en cours...' : 'Exporter CSV'}
+          </Button>
+        </Stack>
       </section>
     </main>
   );
