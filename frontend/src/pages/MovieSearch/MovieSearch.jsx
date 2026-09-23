@@ -2,7 +2,7 @@
 /* eslint-disable no-shadow */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-undef */
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { FixedSizeGrid as Grid } from 'react-window';
 import { useResizeDetector } from 'react-resize-detector';
 import './movieSearch.css';
@@ -24,128 +24,44 @@ import LoaderCowardlySquid from '../../components/LoaderCowardlySquid/LoaderCowa
 import ToggleSortedButton from '../../components/ToggleSortedBtn/ToggleSortedButton';
 import SideActionBar from '../../components/StickySideBar/StickySideBar';
 //refactor
-import { searchMovies } from '../../services/movieService';
+import useMovieSearchPage from '../../hooks/useMovieSearchPage';
 
 function MovieSearch() {
-  const [movies, setMovies] = useState([]);
   const { width, height, ref } = useResizeDetector();
 
+  const {
+    movies,
+    search,
+    selectedKind,
+    selectedCountry,
+    selectedYear,
+    selectedTvShow,
+    isLoading,
+
+    setSelectedTvShow,
+
+    handleTyping,
+    handleKindChange,
+    handleYearChange,
+    handleCountryChange,
+
+    handleAlphabeticBtnClick,
+    handleChronologicBtnClick,
+    handleResetSearch,
+    clearSearch,
+
+    handleUpdateMovie,
+    handleDeleteMovie,
+  } = useMovieSearchPage();
+
   // filtres / tri
-  const [search, setSearch] = useState('');
-  const [selectedKind, setSelectedKind] = useState('');
-  const [selectedCountry, setSelectedCountry] = useState('');
-  const [selectedYear, setSelectedYear] = useState('');
-  const [selectedTvShow, setSelectedTvShow] = useState('all');
-  const [orderby, setOrderby] = useState('id');
-  const [direction, setDirection] = useState('DESC');
-  const [isLoading, setIsLoading] = useState(true);
   const [openSideBar, setOpenSideBar] = useState(false);
 
   // nombre de films
   const movieAmount = movies.length;
 
   // responsive / virtualisation
-  // const [containerWidth, setContainerWidth] = useState(1280);
   const [mobileToggleOpen, setMobileToggleOpen] = useState(false);
-  const [isNarrow, setIsNarrow] = useState(window.innerWidth < 768);
-
-  //-----------------------------
-  // SUIVRE L'ETAT DE isNarrow
-  //-----------------------------
-  useEffect(() => {
-    const handleResize = () => setIsNarrow(window.innerWidth < 768);
-    window.addEventListener('resize', handleResize);
-    handleResize();
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  // ------------------------------------------------------------------
-  // Fetch principal (appelé automatiquement via useEffect ci-dessous)
-  // ------------------------------------------------------------------
-
-  const fetchMovies = async () => {
-    try {
-      setIsLoading(true);
-
-      const moviesData = await searchMovies({
-        search,
-        kind: selectedKind,
-        country: selectedCountry,
-        year: selectedYear,
-        tvshow: selectedTvShow,
-        orderby,
-        direction,
-      });
-
-      setMovies(moviesData);
-    } catch (err) {
-      console.error('Erreur fetchMovies:', err);
-      setMovies([]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // ------------------------------------------------------------------
-  // useEffect unique : fetch sur changement de filtres / tri / taille
-  // ------------------------------------------------------------------
-  useEffect(() => {
-    fetchMovies();
-  }, [
-    search,
-    selectedKind,
-    selectedCountry,
-    selectedYear,
-    selectedTvShow,
-    orderby,
-    direction,
-    isNarrow,
-  ]);
-
-  // ------------------------
-  // Handlers UI
-  // ------------------------
-  const handleTyping = (e) => {
-    let { value } = e.target;
-    value = value.replace(/-/g, '').toLowerCase();
-    setSearch(value);
-  };
-
-  const handleKindChange = (k) => setSelectedKind(k);
-  const handleYearChange = (y) => setSelectedYear(y);
-  const handleCountryChange = (c) => setSelectedCountry(c);
-
-  // TRI via SideActionBar -> change orderby/direction which déclenche fetch
-  const handleAlphabeticBtnClick = () => {
-    setOrderby('title');
-    setDirection((d) => (d === 'ASC' ? 'DESC' : 'ASC'));
-  };
-
-  const handleChronologicBtnClick = () => {
-    setOrderby('year');
-    setDirection((d) => (d === 'ASC' ? 'DESC' : 'ASC'));
-  };
-
-  const handleResetSearch = () => {
-    setSearch('');
-    setSelectedKind('');
-    setSelectedCountry('');
-    setSelectedYear('');
-    setSelectedTvShow('all');
-    setOrderby('id');
-    setDirection('DESC');
-  };
-
-  // --------------------------------------------------------
-  // UPDATE / DELETE MOVIE (modification locale de la liste)
-  // --------------------------------------------------------
-  const handleUpdateMovie = (updatedMovieData) => {
-    setMovies((prev) => prev.map((m) => (m.id === updatedMovieData.id ? updatedMovieData : m)));
-  };
-
-  const handleDeleteMovie = (movieId) => {
-    setMovies((prev) => prev.filter((m) => m.id !== movieId));
-  };
 
   //-----------------------------
   // SX STYLES
@@ -192,7 +108,7 @@ function MovieSearch() {
                 ),
                 endAdornment: search && (
                   <InputAdornment position="end">
-                    <IconButton onClick={() => setSearch('')} size="small">
+                    <IconButton onClick={clearSearch} size="small">
                       <ClearIcon sx={{ color: '#888' }} />
                     </IconButton>
                   </InputAdornment>
