@@ -1,6 +1,6 @@
 /* eslint-disable no-alert */
 import { useCallback, useState } from 'react';
-import { Button, Container } from '@mui/material';
+import { Container } from '@mui/material';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Modal from '@mui/material/Modal';
@@ -9,16 +9,12 @@ import Pagination from '@mui/material/Pagination';
 import './adminLists.css';
 import PreviewIcon from '@mui/icons-material/Preview';
 import DeleteIcon from '@mui/icons-material/Delete';
-import TextField from '@mui/material/TextField';
-import InputAdornment from '@mui/material/InputAdornment';
-import IconButton from '@mui/material/IconButton';
-import SearchIcon from '@mui/icons-material/Search';
-import ClearIcon from '@mui/icons-material/Clear';
 import AdminItemsCard from '../AdminItemsCards/AdminItemsCardkindsLanguagesTags';
 import CreateItemCard from '../CreateItemCard/CreateItemCard';
 // Refactor
 import useAdminItemsList from '../../../hooks/useAdminItemsList';
 import { getTagsSortedById, deleteTag } from '../../../services/tagService';
+import AdminListHeader from './ui/AdminListHeader';
 
 function AdminTagsList() {
   const [selectedItem, setSelectedItem] = useState(null);
@@ -67,65 +63,14 @@ function AdminTagsList() {
 
   return (
     <section className="AdminItemsSection">
-      <section className="HeaderAdminItemsSection">
-        <div className="admin_Title_feat_container">
-          <h1 className="admin_Title_feat">TAGS LIST</h1>
-        </div>
-        <div className="admin_feat_tools_line">
-          <div className="Admin_search_bar_container">
-            <TextField
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Rechercher un tags..."
-              variant="outlined"
-              size="small"
-              fullWidth
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon sx={{ color: '#aaa' }} />
-                  </InputAdornment>
-                ),
-                endAdornment: searchTerm && (
-                  <InputAdornment position="end">
-                    <IconButton onClick={() => setSearchTerm('')} size="small">
-                      <ClearIcon sx={{ color: '#888' }} />
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-              sx={{
-                maxWidth: 300, // ajuste si besoin
-                borderRadius: 3,
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: 3,
-                  backgroundColor: '#f5f5f5',
-                  '& fieldset': {
-                    borderColor: '#ccc',
-                  },
-                  '&:hover fieldset': {
-                    borderColor: 'var(--color-03)',
-                  },
-                  '&.Mui-focused fieldset': {
-                    borderColor: 'var(--color-03)',
-                    boxShadow: '0 0 8px rgba(0,0,0,0.1)',
-                  },
-                },
-                input: {
-                  color: '#333',
-                  '&::placeholder': {
-                    color: '#aaa',
-                    opacity: 1,
-                  },
-                },
-              }}
-            />
-          </div>
-          <Button variant="contained" onClick={() => openModalNewTag()}>
-            ADD NEW TAG
-          </Button>
-        </div>
-      </section>
+      <AdminListHeader
+        title="TAGS LIST"
+        searchValue={searchTerm}
+        onSearchChange={setSearchTerm}
+        searchPlaceholder="Rechercher un tag..."
+        actionLabel="ADD NEW TAG"
+        onAction={openModalNewTag}
+      />
       <table>
         <thead>
           <tr>
