@@ -1,37 +1,35 @@
-import PropTypes from "prop-types";
-import "./counters.css";
+import PropTypes from 'prop-types';
+import './counters.css';
 
 function Counters({ countAmount, origin }) {
   return (
     <section className="Amount_info_container_counter">
-      {origin === "directors" && (
+      {origin === 'directors' && (
         <p className="Amount_info_counter">
-          <span className="whiteString_counter">{countAmount}</span>{" "}
-          réalisateurs
+          <span className="whiteString_counter">{countAmount}</span> réalisateurs
         </p>
       )}
-      {origin === "casting" && (
+      {origin === 'casting' && (
         <p className="Amount_info_counter">
           <span className="whiteString_counter">{countAmount}</span> acteurs
         </p>
       )}
-      {origin === "screenwriters" && (
+      {origin === 'screenwriters' && (
         <p className="Amount_info_counter">
           <span className="whiteString_counter">{countAmount}</span> scénaristes
         </p>
       )}
-      {origin === "music" && (
+      {origin === 'music' && (
         <p className="Amount_info_counter">
-          <span className="whiteString_counter">{countAmount}</span>{" "}
-          compositeurs
+          <span className="whiteString_counter">{countAmount}</span> compositeurs
         </p>
       )}
-      {origin === "studio" && (
+      {origin === 'studio' && (
         <p className="Amount_info_counter">
           <span className="whiteString_counter">{countAmount}</span> studios
         </p>
       )}
-      {origin === "tags" && (
+      {origin === 'tags' && (
         <p className="Amount_info_counter">
           <span className="whiteString_counter">{countAmount}</span> tags
         </p>

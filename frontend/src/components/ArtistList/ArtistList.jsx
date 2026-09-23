@@ -1,12 +1,12 @@
 /* eslint-disable react/prop-types */
-import { ThemeProvider } from "@mui/material/styles";
-import Stack from "@mui/material/Stack";
-import Button from "@mui/material/Button";
-import "../../pages/MovieArtist/movieArtist.css";
-import "../../assets/css/common_elements.css";
-import "../../assets/css/scrollButton.css";
-import AlphabetDropdown from "../AlphabetOption/AlphabetDropdown";
-import Counter from "../Counters/Counters";
+import { ThemeProvider } from '@mui/material/styles';
+import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
+import '../../pages/MovieArtist/movieArtist.css';
+import '../../assets/css/common_elements.css';
+import '../../assets/css/scrollButton.css';
+import AlphabetDropdown from '../AlphabetOption/AlphabetDropdown';
+import Counter from '../Counters/Counters';
 
 function ArtistList({
   handleLetterChange,
@@ -21,17 +21,15 @@ function ArtistList({
 }) {
   return (
     <section className="artists_groups">
-      {search === "" && <Counter origin={origin} countAmount={artistAmount} />}
-      {search !== "" && (
-        <Counter origin={origin} countAmount={selectedArtistAmount} />
-      )}
+      {search === '' && <Counter origin={origin} countAmount={artistAmount} />}
+      {search !== '' && <Counter origin={origin} countAmount={selectedArtistAmount} />}
       <AlphabetDropdown
         onLetterChange={handleLetterChange}
         origin={origin}
         AlphabetDropdownClassName="artistlist"
         search={search}
       />
-      {search === "" && (
+      {search === '' && (
         <div className="artists_groups_content">
           <ThemeProvider theme={theme}>
             <Stack spacing={2} direction="row" className="artists_list">
@@ -52,7 +50,7 @@ function ArtistList({
         </div>
       )}
 
-      {search !== "" && (
+      {search !== '' && (
         <div className="artists_groups_content">
           <ThemeProvider theme={theme}>
             <Stack spacing={2} direction="row" className="artists_list">
