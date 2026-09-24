@@ -24,7 +24,8 @@ function AdminDataTable({ columns, rows, loading }) {
             fontFamily: 'var(--font-07)',
             fontSize: 'medium',
             color: 'black',
-            padding: '10px',
+            padding: '8px',
+            border: '1px solid #dddddd',
           },
         }}
       >
@@ -89,6 +90,9 @@ function AdminDataTable({ columns, rows, loading }) {
                     xs: 1,
                     md: 0,
                   },
+                  '&:nth-of-type(even)': {
+                    backgroundColor: '#f2f2f2',
+                  },
                 }}
               >
                 {columns.map((column) => (
@@ -111,6 +115,10 @@ function AdminDataTable({ columns, rows, loading }) {
                       border: {
                         xs: 'none',
                         md: '1px solid #ddd',
+                      },
+
+                      '& svg': {
+                        cursor: 'pointer',
                       },
 
                       '&:not(:last-child)': {

@@ -2,18 +2,19 @@
 import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import Box from '@mui/material/Box';
-import Pagination from '@mui/material/Pagination';
-import { Button, Container } from '@mui/material';
-import Modal from '@mui/material/Modal';
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogActions from '@mui/material/DialogActions';
-import './adminLists.css';
-import PreviewIcon from '@mui/icons-material/Preview';
-import DeleteIcon from '@mui/icons-material/Delete';
+import {
+  Box,
+  Button,
+  Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Modal,
+  Pagination,
+} from '@mui/material';
+import { Delete, Preview } from '@mui/icons-material';
 import MovieCard from '../../MovieCard/MovieCard';
 
 // refactor
@@ -21,6 +22,7 @@ import { getCollection, deleteMovie } from '../../../services/movieService';
 import useAdminItemsList from '../../../hooks/useAdminItemsList';
 import AdminListHeader from './ui/AdminListHeader';
 import AdminDataTable from './ui/AdminDataTable';
+import AdminListLayout from './ui/AdminListLayout';
 
 function AdminMovieList() {
   const [selectedMovie, setSelectedMovie] = useState(null);
@@ -117,7 +119,7 @@ function AdminMovieList() {
   };
 
   return (
-    <section className="AdminItemsSection">
+    <AdminListLayout>
       <AdminListHeader
         title="MOVIES LIST"
         searchValue={searchTerm}
@@ -157,7 +159,7 @@ function AdminMovieList() {
             mobileLabel: 'VIEW',
             width: '10%',
             render: (item) => (
-              <PreviewIcon className="admin_tools_ico" onClick={() => openModal(item)} />
+              <Preview className="admin_tools_ico" onClick={() => openModal(item)} />
             ),
           },
           {
@@ -165,7 +167,7 @@ function AdminMovieList() {
             mobileLabel: 'DELETE',
             width: '10%',
             render: (item) => (
-              <DeleteIcon
+              <Delete
                 className="admin_tools_ico"
                 onClick={() => handleOpenDeleteConfirm(item.id)}
               />
@@ -233,7 +235,7 @@ function AdminMovieList() {
           </Box>
         </Modal>
       )}
-    </section>
+    </AdminListLayout>
   );
 }
 

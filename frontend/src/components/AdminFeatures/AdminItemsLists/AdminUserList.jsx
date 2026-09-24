@@ -1,14 +1,9 @@
 /* eslint-disable no-alert */
 import { useCallback, useState } from 'react';
-import { Container } from '@mui/material';
+import { Container, Box, Modal, Pagination } from '@mui/material';
+import { VpnKey, Delete } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Modal from '@mui/material/Modal';
-import Box from '@mui/material/Box';
-import Pagination from '@mui/material/Pagination';
-import './adminLists.css';
-import DeleteIcon from '@mui/icons-material/Delete';
-import VpnKeyIcon from '@mui/icons-material/VpnKey';
 import AdminItemsCard from '../AdminItemsCards/AdminItemsCardUsers';
 import CreateItemCard from '../CreateItemCard/CreateItemCard';
 // refactor
@@ -16,6 +11,7 @@ import useAdminItemsList from '../../../hooks/useAdminItemsList';
 import { getUsersSortedById, deleteUser } from '../../../services/userService';
 import AdminListHeader from './ui/AdminListHeader';
 import AdminDataTable from './ui/AdminDataTable';
+import AdminListLayout from './ui/AdminListLayout';
 
 function AdminUsersList() {
   const [newUser, setNewUser] = useState(false);
@@ -58,7 +54,7 @@ function AdminUsersList() {
   };
 
   return (
-    <section className="AdminItemsSection">
+    <AdminListLayout>
       <AdminListHeader
         title="USERS LIST"
         searchValue={searchTerm}
@@ -71,18 +67,15 @@ function AdminUsersList() {
         columns={[
           {
             label: 'ID',
-            mobileLabel: 'ID',
             width: '10%',
             render: (item) => item.id,
           },
           {
             label: 'NAME',
-            mobileLabel: 'NAME',
             render: (item) => item.name,
           },
           {
             label: 'CREATED AT',
-            mobileLabel: 'CREATED AT',
             width: '10%',
             render: (item) => {
               const createdAt = new Date(item.created_at);
@@ -94,16 +87,14 @@ function AdminUsersList() {
           },
           {
             label: 'STATUS',
-            mobileLabel: 'STATUS',
             width: '10%',
             render: (item) => (item.isAdmin === 1 ? 'admin' : 'user'),
           },
           {
             label: 'PASSWORD',
-            mobileLabel: 'PASSWORD',
             width: '10%',
             render: (item) => (
-              <VpnKeyIcon
+              <VpnKey
                 className="admin_tools_ico"
                 onClick={() => setPasswordItem(item)}
                 titleAccess="Change password"
@@ -112,10 +103,9 @@ function AdminUsersList() {
           },
           {
             label: 'DELETE',
-            mobileLabel: 'DELETE',
             width: '10%',
             render: (item) => (
-              <DeleteIcon className="admin_tools_ico" onClick={() => handleDelete(item.id)} />
+              <Delete className="admin_tools_ico" onClick={() => handleDelete(item.id)} />
             ),
           },
         ]}
@@ -179,7 +169,7 @@ function AdminUsersList() {
           </Box>
         </Modal>
       )}
-    </section>
+    </AdminListLayout>
   );
 }
 

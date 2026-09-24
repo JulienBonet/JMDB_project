@@ -2,43 +2,6 @@
   width: 95%;
 }
 
-table {
-  min-width: 100%;
-  border-collapse: collapse;
-}
-caption {
-  font-size: large;
-  font-weight: bold;
-  padding: 15px 0;
-}
-th,
-td {
-  border: 1px solid #dddddd;
-  padding: 8px;
-  text-align: center;
-  vertical-align: middle;
-}
-
-/* Styliser les en-têtes en gras */
-thead th {
-  font-weight: bold;
-}
-
-/* Styliser les lignes de couleurs alternées */
-tbody tr:nth-child(even) {
-  background-color: #f2f2f2;
-}
-
-.admin_tools_ico {
-  cursor: pointer;
-}
-
-.LoaderTemp {
-  width: 100%;
-  text-align: center;
-}
-
-
 /* export page */
 .main_Admin_export_List {
   display: flex;
@@ -48,6 +11,7 @@ tbody tr:nth-child(even) {
   padding: 2rem;
   gap: 2rem;
 }
+
 .export_button_container_Admin_export_List {
   display: flex;
   justify-content: center;
@@ -87,67 +51,3 @@ tbody tr:nth-child(even) {
 
 /* end export page */
 
-@media (max-width: 720px) {
-  /* Enveloppe de la table si possible */
-  .AdminItemsSection {
-    overflow-x: auto;
-  }
-
-  table {
-    display: block; /* rend la table scrollable */
-    width: 100%;
-    overflow-x: auto;
-    border-collapse: collapse;
-    font-size: 0.75rem;
-  }
-
-  thead {
-    display: none;
-  }
-  tbody,
-  th,
-  td,
-  tr {
-    display: block;
-  }
-
-  /* chaque ligne devient un mini bloc */
-  tr {
-    margin-bottom: 0.75rem;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 0.5rem;
-  }
-
-  th {
-    background-color: #f4f4f4;
-    font-weight: bold;
-  }
-
-  td {
-    text-align: left;
-    padding: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  td::before {
-    content: attr(data-label); /* crée un label pour chaque valeur */
-    font-weight: 600;
-    text-transform: capitalize;
-  }
-
-  /* Icônes */
-  .admin_tools_ico {
-    width: 2rem !important;
-    height: 2rem !important;
-    margin: 10px;
-  }
-
-  /* LOADER */
-  .LoaderTemp {
-    font-size: 0.9rem;
-    padding: 1rem 0;
-  }
-}

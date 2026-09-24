@@ -1,14 +1,9 @@
 /* eslint-disable no-alert */
 import { useCallback, useState } from 'react';
-import { Container } from '@mui/material';
+import { Container, Box, Modal, Pagination } from '@mui/material';
+import { Preview, Delete } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Modal from '@mui/material/Modal';
-import Box from '@mui/material/Box';
-import Pagination from '@mui/material/Pagination';
-import './adminLists.css';
-import PreviewIcon from '@mui/icons-material/Preview';
-import DeleteIcon from '@mui/icons-material/Delete';
 import AdminItemsCard from '../AdminItemsCards/AdminItemsCardFocus';
 import CreateItemCard from '../CreateItemCard/CreateItemCard';
 // refactor
@@ -16,6 +11,7 @@ import useAdminItemsList from '../../../hooks/useAdminItemsList';
 import { getFocusSortedById, deleteFocus } from '../../../services/focusService';
 import AdminListHeader from './ui/AdminListHeader';
 import AdminDataTable from './ui/AdminDataTable';
+import AdminListLayout from './ui/AdminListLayout';
 
 function AdminFocusList() {
   const [selectedItem, setSelectedItem] = useState(null);
@@ -63,7 +59,7 @@ function AdminFocusList() {
   };
 
   return (
-    <section className="AdminItemsSection">
+    <AdminListLayout>
       <AdminListHeader
         title="fOCUS LIST"
         searchValue={searchTerm}
@@ -96,7 +92,7 @@ function AdminFocusList() {
             mobileLabel: 'VIEW',
             width: '10%',
             render: (item) => (
-              <PreviewIcon className="admin_tools_ico" onClick={() => openModal(item)} />
+              <Preview className="admin_tools_ico" onClick={() => openModal(item)} />
             ),
           },
           {
@@ -104,7 +100,7 @@ function AdminFocusList() {
             mobileLabel: 'DELETE',
             width: '10%',
             render: (item) => (
-              <DeleteIcon className="admin_tools_ico" onClick={() => handleDelete(item.id)} />
+              <Delete className="admin_tools_ico" onClick={() => handleDelete(item.id)} />
             ),
           },
         ]}
@@ -167,7 +163,7 @@ function AdminFocusList() {
           </Box>
         </Modal>
       )}
-    </section>
+    </AdminListLayout>
   );
 }
 

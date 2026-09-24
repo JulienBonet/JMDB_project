@@ -1,14 +1,9 @@
 /* eslint-disable no-alert */
 import { useCallback, useState } from 'react';
-import { Container } from '@mui/material';
+import { Container, Box, Modal, Pagination } from '@mui/material';
+import { Preview, Delete } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Modal from '@mui/material/Modal';
-import Box from '@mui/material/Box';
-import Pagination from '@mui/material/Pagination';
-import './adminLists.css';
-import PreviewIcon from '@mui/icons-material/Preview';
-import DeleteIcon from '@mui/icons-material/Delete';
 import AdminItemsCard from '../AdminItemsCards/AdminItemsCardArtists';
 import CreateItemCard from '../CreateItemCard/CreateItemCard';
 // Refactor
@@ -16,6 +11,7 @@ import useAdminItemsList from '../../../hooks/useAdminItemsList';
 import { getArtistsSortedById, deleteArtist } from '../../../services/artistService';
 import AdminListHeader from './ui/AdminListHeader';
 import AdminDataTable from './ui/AdminDataTable';
+import AdminListLayout from './ui/AdminListLayout';
 
 function AdminCastingList() {
   const [selectedItem, setSelectedItem] = useState(null);
@@ -63,7 +59,7 @@ function AdminCastingList() {
   });
 
   return (
-    <section className="AdminItemsSection">
+    <AdminListLayout>
       <AdminListHeader
         title="CASTING LIST"
         searchValue={searchTerm}
@@ -76,29 +72,25 @@ function AdminCastingList() {
         columns={[
           {
             label: 'ID',
-            mobileLabel: 'ID',
             width: '15%',
             render: (item) => item.id,
           },
           {
             label: 'CASTING',
-            mobileLabel: 'CASTING',
             render: (item) => item.name,
           },
           {
             label: 'VIEW',
-            mobileLabel: 'VIEW',
             width: '15%',
             render: (item) => (
-              <PreviewIcon className="admin_tools_ico" onClick={() => openModal(item)} />
+              <Preview className="admin_tools_ico" onClick={() => openModal(item)} />
             ),
           },
           {
             label: 'DELETE',
-            mobileLabel: 'DELETE',
             width: '15%',
             render: (item) => (
-              <DeleteIcon className="admin_tools_ico" onClick={() => handleDelete(item.id)} />
+              <Delete className="admin_tools_ico" onClick={() => handleDelete(item.id)} />
             ),
           },
         ]}
@@ -108,6 +100,7 @@ function AdminCastingList() {
       <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
         <Pagination count={totalPages} shape="rounded" onChange={handlePageChange} />
       </Box>
+
       {selectedItem && (
         <Modal open onClose={closeModal} className="Movie_Modal">
           <Box>
@@ -165,7 +158,7 @@ function AdminCastingList() {
           </Box>
         </Modal>
       )}
-    </section>
+    </AdminListLayout>
   );
 }
 
