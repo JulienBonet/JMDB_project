@@ -1,14 +1,9 @@
 /* eslint-disable no-alert */
 import { useCallback, useState } from 'react';
-import { Container } from '@mui/material';
+import { Container, Box, Modal, Pagination } from '@mui/material';
+import { Preview, Delete } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Modal from '@mui/material/Modal';
-import Box from '@mui/material/Box';
-import Pagination from '@mui/material/Pagination';
-import './adminLists.css';
-import PreviewIcon from '@mui/icons-material/Preview';
-import DeleteIcon from '@mui/icons-material/Delete';
 import AdminItemsCard from '../AdminItemsCards/AdminItemsCardkindsLanguagesTags';
 import CreateItemCard from '../CreateItemCard/CreateItemCard';
 // Refactor
@@ -16,6 +11,7 @@ import useAdminItemsList from '../../../hooks/useAdminItemsList';
 import { getTagsSortedById, deleteTag } from '../../../services/tagService';
 import AdminListHeader from './ui/AdminListHeader';
 import AdminDataTable from './ui/AdminDataTable';
+import AdminListLayout from './ui/AdminListLayout';
 
 function AdminTagsList() {
   const [selectedItem, setSelectedItem] = useState(null);
@@ -63,7 +59,7 @@ function AdminTagsList() {
   };
 
   return (
-    <section className="AdminItemsSection">
+    <AdminListLayout>
       <AdminListHeader
         title="TAGS LIST"
         searchValue={searchTerm}
@@ -91,7 +87,7 @@ function AdminTagsList() {
             mobileLabel: 'VIEW',
             width: '15%',
             render: (item) => (
-              <PreviewIcon className="admin_tools_ico" onClick={() => openModal(item)} />
+              <Preview className="admin_tools_ico" onClick={() => openModal(item)} />
             ),
           },
           {
@@ -99,7 +95,7 @@ function AdminTagsList() {
             mobileLabel: 'DELETE',
             width: '15%',
             render: (item) => (
-              <DeleteIcon className="admin_tools_ico" onClick={() => handleDelete(item.id)} />
+              <Delete className="admin_tools_ico" onClick={() => handleDelete(item.id)} />
             ),
           },
         ]}
@@ -159,7 +155,7 @@ function AdminTagsList() {
           </Box>
         </Modal>
       )}
-    </section>
+    </AdminListLayout>
   );
 }
 

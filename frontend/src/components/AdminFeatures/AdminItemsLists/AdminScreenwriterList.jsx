@@ -1,14 +1,9 @@
 /* eslint-disable no-alert */
 import { useCallback, useState } from 'react';
-import { Container } from '@mui/material';
+import { Container, Box, Modal, Pagination } from '@mui/material';
+import { Preview, Delete } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Modal from '@mui/material/Modal';
-import Box from '@mui/material/Box';
-import Pagination from '@mui/material/Pagination';
-import './adminLists.css';
-import PreviewIcon from '@mui/icons-material/Preview';
-import DeleteIcon from '@mui/icons-material/Delete';
 import AdminItemsCard from '../AdminItemsCards/AdminItemsCardArtists';
 import CreateItemCard from '../CreateItemCard/CreateItemCard';
 // refactor
@@ -76,29 +71,25 @@ function AdminScreenwriterList() {
         columns={[
           {
             label: 'ID',
-            mobileLabel: 'ID',
             width: '15%',
             render: (item) => item.id,
           },
           {
             label: 'SCREENWRITER',
-            mobileLabel: 'SCREENWRITER',
             render: (item) => item.name,
           },
           {
             label: 'VIEW',
-            mobileLabel: 'VIEW',
             width: '15%',
             render: (item) => (
-              <PreviewIcon className="admin_tools_ico" onClick={() => openModal(item)} />
+              <Preview className="admin_tools_ico" onClick={() => openModal(item)} />
             ),
           },
           {
             label: 'DELETE',
-            mobileLabel: 'DELETE',
             width: '15%',
             render: (item) => (
-              <DeleteIcon className="admin_tools_ico" onClick={() => handleDelete(item.id)} />
+              <Delete className="admin_tools_ico" onClick={() => handleDelete(item.id)} />
             ),
           },
         ]}

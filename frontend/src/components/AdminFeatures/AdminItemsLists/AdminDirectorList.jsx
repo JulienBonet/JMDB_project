@@ -1,14 +1,9 @@
 /* eslint-disable no-alert */
 import { useCallback, useState } from 'react';
-import { Container } from '@mui/material';
+import { Container, Box, Modal, Pagination } from '@mui/material';
+import { Preview, Delete } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Modal from '@mui/material/Modal';
-import Box from '@mui/material/Box';
-import Pagination from '@mui/material/Pagination';
-import './adminLists.css';
-import PreviewIcon from '@mui/icons-material/Preview';
-import DeleteIcon from '@mui/icons-material/Delete';
 import AdminItemsCard from '../AdminItemsCards/AdminItemsCardArtists';
 import CreateItemCard from '../CreateItemCard/CreateItemCard';
 // refactor
@@ -16,6 +11,7 @@ import useAdminItemsList from '../../../hooks/useAdminItemsList';
 import { getArtistsSortedById, deleteArtist } from '../../../services/artistService';
 import AdminListHeader from './ui/AdminListHeader';
 import AdminDataTable from './ui/AdminDataTable';
+import AdminListLayout from './ui/AdminListLayout';
 
 function AdminDirectorList() {
   const [selectedItem, setSelectedItem] = useState(null);
@@ -63,7 +59,7 @@ function AdminDirectorList() {
   };
 
   return (
-    <section className="AdminItemsSection">
+    <AdminListLayout>
       <AdminListHeader
         title="DIRECTORS LIST"
         searchValue={searchTerm}
@@ -77,29 +73,25 @@ function AdminDirectorList() {
         columns={[
           {
             label: 'ID',
-            mobileLabel: 'ID',
             width: '15%',
             render: (item) => item.id,
           },
           {
             label: 'DIRECTOR',
-            mobileLabel: 'DIRECTOR',
             render: (item) => item.name,
           },
           {
             label: 'VIEW',
-            mobileLabel: 'VIEW',
             width: '15%',
             render: (item) => (
-              <PreviewIcon className="admin_tools_ico" onClick={() => openModal(item)} />
+              <Preview className="admin_tools_ico" onClick={() => openModal(item)} />
             ),
           },
           {
             label: 'DELETE',
-            mobileLabel: 'DELETE',
             width: '15%',
             render: (item) => (
-              <DeleteIcon className="admin_tools_ico" onClick={() => handleDelete(item.id)} />
+              <Delete className="admin_tools_ico" onClick={() => handleDelete(item.id)} />
             ),
           },
         ]}
@@ -166,7 +158,7 @@ function AdminDirectorList() {
           </Box>
         </Modal>
       )}
-    </section>
+    </AdminListLayout>
   );
 }
 
