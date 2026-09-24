@@ -15,6 +15,7 @@ import CreateItemCard from '../CreateItemCard/CreateItemCard';
 import useAdminItemsList from '../../../hooks/useAdminItemsList';
 import { getUsersSortedById, deleteUser } from '../../../services/userService';
 import AdminListHeader from './ui/AdminListHeader';
+import AdminDataTable from './ui/AdminDataTable';
 
 function AdminUsersList() {
   const [newUser, setNewUser] = useState(false);
@@ -66,58 +67,61 @@ function AdminUsersList() {
         actionLabel="ADD NEW USER"
         onAction={openModalNewUser}
       />
-      <table>
-        <thead>
-          <tr>
-            <th scope="col">ID</th>
-            <th scope="col">NAME</th>
-            <th scope="col">CREATED AT</th>
-            <th scope="col">STATUT</th>
-          </tr>
-        </thead>
-        <tbody>
-          {loading ? (
-            <tr>
-              <td colSpan="6" className="LoaderTemp">
-                LOADING...
-              </td>
-            </tr>
-          ) : (
-            currentItems.map((DataItem) => {
-              // Formater la date
-              const createdAt = new Date(DataItem.created_at);
-              const formattedDate = `${String(createdAt.getDate()).padStart(2, '0')}/${String(
+      <AdminDataTable
+        columns={[
+          {
+            label: 'ID',
+            mobileLabel: 'ID',
+            width: '10%',
+            render: (item) => item.id,
+          },
+          {
+            label: 'NAME',
+            mobileLabel: 'NAME',
+            render: (item) => item.name,
+          },
+          {
+            label: 'CREATED AT',
+            mobileLabel: 'CREATED AT',
+            width: '10%',
+            render: (item) => {
+              const createdAt = new Date(item.created_at);
+
+              return `${String(createdAt.getDate()).padStart(2, '0')}/${String(
                 createdAt.getMonth() + 1
               ).padStart(2, '0')}/${createdAt.getFullYear()}`;
-
-              // Statut
-              const status = DataItem.isAdmin === 1 ? 'admin' : 'user';
-
-              return (
-                <tr key={DataItem.id}>
-                  <th scope="row">{DataItem.id}</th>
-                  <td data-label="name">{DataItem.name}</td>
-                  <td data-label="created at">{formattedDate}</td>
-                  <td data-label="Statut">{status}</td>
-                  <td data-label="Change Password">
-                    <VpnKeyIcon
-                      className="admin_tools_ico"
-                      onClick={() => setPasswordItem(DataItem)}
-                      titleAccess="Change password"
-                    />
-                  </td>
-                  <td data-label="Supprimer">
-                    <DeleteIcon
-                      className="admin_tools_ico"
-                      onClick={() => handleDelete(DataItem.id)}
-                    />
-                  </td>
-                </tr>
-              );
-            })
-          )}
-        </tbody>
-      </table>
+            },
+          },
+          {
+            label: 'STATUS',
+            mobileLabel: 'STATUS',
+            width: '10%',
+            render: (item) => (item.isAdmin === 1 ? 'admin' : 'user'),
+          },
+          {
+            label: 'PASSWORD',
+            mobileLabel: 'PASSWORD',
+            width: '10%',
+            render: (item) => (
+              <VpnKeyIcon
+                className="admin_tools_ico"
+                onClick={() => setPasswordItem(item)}
+                titleAccess="Change password"
+              />
+            ),
+          },
+          {
+            label: 'DELETE',
+            mobileLabel: 'DELETE',
+            width: '10%',
+            render: (item) => (
+              <DeleteIcon className="admin_tools_ico" onClick={() => handleDelete(item.id)} />
+            ),
+          },
+        ]}
+        rows={currentItems}
+        loading={loading}
+      />
       <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
         <Pagination count={totalPages} shape="rounded" onChange={handlePageChange} />
       </Box>

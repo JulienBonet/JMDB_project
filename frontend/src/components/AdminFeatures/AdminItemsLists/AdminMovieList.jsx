@@ -20,6 +20,7 @@ import MovieCard from '../../MovieCard/MovieCard';
 import { getCollection, deleteMovie } from '../../../services/movieService';
 import useAdminItemsList from '../../../hooks/useAdminItemsList';
 import AdminListHeader from './ui/AdminListHeader';
+import AdminDataTable from './ui/AdminDataTable';
 
 function AdminMovieList() {
   const [selectedMovie, setSelectedMovie] = useState(null);
@@ -126,52 +127,54 @@ function AdminMovieList() {
         onAction={handleAddNewMovie}
       />
 
-      <table>
-        <thead>
-          <tr>
-            <th scope="col">ID</th>
-            <th scope="col">TITLE</th>
-            <th scope="col">YEAR</th>
-            <th scope="col">DURATION</th>
-            <th scope="col">SUPPORT</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {loading ? (
-            <tr>
-              <td colSpan="6" className="LoaderTemp">
-                LOADING...
-              </td>
-            </tr>
-          ) : (
-            currentItems.map((movieData) => (
-              <tr key={movieData.id}>
-                <th scope="row">{movieData.id}</th>
-
-                <td data-label="Titre">{movieData.title}</td>
-
-                <td data-label="Année">{movieData.year}</td>
-
-                <td data-label="Durée">{movieData.duration}</td>
-
-                <td data-label="Support">{movieData.videoSupport}</td>
-
-                <td data-label="Aperçu">
-                  <PreviewIcon className="admin_tools_ico" onClick={() => openModal(movieData)} />
-                </td>
-
-                <td data-label="Supprimer">
-                  <DeleteIcon
-                    className="admin_tools_ico"
-                    onClick={() => handleOpenDeleteConfirm(movieData.id)}
-                  />
-                </td>
-              </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+      <AdminDataTable
+        columns={[
+          {
+            label: 'ID',
+            mobileLabel: 'ID',
+            width: '10%',
+            render: (item) => item.id,
+          },
+          {
+            label: 'TITLE',
+            mobileLabel: 'TITLE',
+            render: (item) => item.title,
+          },
+          {
+            label: 'YEAR',
+            mobileLabel: 'YEAR',
+            width: '10%',
+            render: (item) => item.year,
+          },
+          {
+            label: 'SUPPORT',
+            mobileLabel: 'SUPPORT',
+            width: '15%',
+            render: (item) => item.videoSupport,
+          },
+          {
+            label: 'VIEW',
+            mobileLabel: 'VIEW',
+            width: '10%',
+            render: (item) => (
+              <PreviewIcon className="admin_tools_ico" onClick={() => openModal(item)} />
+            ),
+          },
+          {
+            label: 'DELETE',
+            mobileLabel: 'DELETE',
+            width: '10%',
+            render: (item) => (
+              <DeleteIcon
+                className="admin_tools_ico"
+                onClick={() => handleOpenDeleteConfirm(item.id)}
+              />
+            ),
+          },
+        ]}
+        rows={currentItems}
+        loading={loading}
+      />
 
       <Dialog open={isConfirmDeleteOpen} onClose={handleCloseDeleteConfirm}>
         <DialogTitle>Confirmer Delete</DialogTitle>

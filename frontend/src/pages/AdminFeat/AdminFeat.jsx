@@ -1,29 +1,29 @@
-import * as React from "react";
-import { useState } from "react";
-import Button from "@mui/material/Button";
-import Box from "@mui/material/Box";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import "./adminFeat.css";
-import AdminMovieList from "../../components/AdminFeatures/AdminItemsLists/AdminMovieList";
-import AdminDirectorList from "../../components/AdminFeatures/AdminItemsLists/AdminDirectorList";
-import AdminCastingList from "../../components/AdminFeatures/AdminItemsLists/AdminCastingList";
-import AdminScreenwriterList from "../../components/AdminFeatures/AdminItemsLists/AdminScreenwriterList";
-import AdminCompositorList from "../../components/AdminFeatures/AdminItemsLists/AdminCompositorList";
-import AdminStudioList from "../../components/AdminFeatures/AdminItemsLists/AdminStudioList";
-import AdminGenreList from "../../components/AdminFeatures/AdminItemsLists/AdminGenreList";
-import AdminCountryList from "../../components/AdminFeatures/AdminItemsLists/AdminCountryList";
-import AdminTagsList from "../../components/AdminFeatures/AdminItemsLists/AdminTagsList";
-import AdminLanguagesList from "../../components/AdminFeatures/AdminItemsLists/AdminLanguagesList";
-import AdminFocusList from "../../components/AdminFeatures/AdminItemsLists/AdminFocusList";
-import AdminUserList from "../../components/AdminFeatures/AdminItemsLists/AdminUserList";
-import AdminExportStats from "../../components/AdminFeatures/AdminItemsLists/AdminExportStats";
+import * as React from 'react';
+import { useState } from 'react';
+import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import './adminFeat.css';
+import AdminMovieList from '../../components/AdminFeatures/AdminItemsLists/AdminMovieList';
+import AdminDirectorList from '../../components/AdminFeatures/AdminItemsLists/AdminDirectorList';
+import AdminCastingList from '../../components/AdminFeatures/AdminItemsLists/AdminCastingList';
+import AdminScreenwriterList from '../../components/AdminFeatures/AdminItemsLists/AdminScreenwriterList';
+import AdminCompositorList from '../../components/AdminFeatures/AdminItemsLists/AdminCompositorList';
+import AdminStudioList from '../../components/AdminFeatures/AdminItemsLists/AdminStudioList';
+import AdminGenreList from '../../components/AdminFeatures/AdminItemsLists/AdminGenreList';
+import AdminCountryList from '../../components/AdminFeatures/AdminItemsLists/AdminCountryList';
+import AdminTagsList from '../../components/AdminFeatures/AdminItemsLists/AdminTagsList';
+import AdminLanguagesList from '../../components/AdminFeatures/AdminItemsLists/AdminLanguagesList';
+import AdminFocusList from '../../components/AdminFeatures/AdminItemsLists/AdminFocusList';
+import AdminUserList from '../../components/AdminFeatures/AdminItemsLists/AdminUserList';
+import AdminExportStats from '../../components/AdminFeatures/AdminItemsLists/AdminExportStats';
 
 function AdminFeat() {
   const theme = createTheme({
-    palette: { primary: { main: "#00d9c0" }, secondary: { main: "#ffebaa" } },
+    palette: { primary: { main: '#00d9c0' }, secondary: { main: '#ffebaa' } },
   });
 
-  const [selectedItem, setSelectedItem] = useState("FILMS");
+  const [selectedItem, setSelectedItem] = useState('FILMS');
 
   const handleItemClick = (item) => {
     setSelectedItem(item);
@@ -31,31 +31,31 @@ function AdminFeat() {
 
   const renderSelectedItem = () => {
     switch (selectedItem) {
-      case "FILMS":
+      case 'FILMS':
         return <AdminMovieList />;
-      case "REALISATEURS":
+      case 'REALISATEURS':
         return <AdminDirectorList />;
-      case "CASTING":
+      case 'CASTING':
         return <AdminCastingList />;
-      case "SCENARISTES":
+      case 'SCENARISTES':
         return <AdminScreenwriterList />;
-      case "COMPOSITEURS":
+      case 'COMPOSITEURS':
         return <AdminCompositorList />;
-      case "STUDIO":
+      case 'STUDIO':
         return <AdminStudioList />;
-      case "GENRES":
+      case 'GENRES':
         return <AdminGenreList />;
-      case "PAYS":
+      case 'PAYS':
         return <AdminCountryList />;
-      case "LANGUES":
+      case 'LANGUES':
         return <AdminLanguagesList />;
-      case "TAGS":
+      case 'TAGS':
         return <AdminTagsList />;
-      case "FOCUS":
+      case 'FOCUS':
         return <AdminFocusList />;
-      case "USERS":
+      case 'USERS':
         return <AdminUserList />;
-      case "STATS":
+      case 'STATS':
         return <AdminExportStats />;
       default:
         return null;
@@ -63,19 +63,19 @@ function AdminFeat() {
   };
 
   const navItems = [
-    "FILMS",
-    "REALISATEURS",
-    "CASTING",
-    "SCENARISTES",
-    "COMPOSITEURS",
-    "STUDIO",
-    "GENRES",
-    "PAYS",
-    "LANGUES",
-    "TAGS",
-    "FOCUS",
-    "USERS",
-    "STATS",
+    'FILMS',
+    'REALISATEURS',
+    'CASTING',
+    'SCENARISTES',
+    'COMPOSITEURS',
+    'STUDIO',
+    'GENRES',
+    'PAYS',
+    'LANGUES',
+    'TAGS',
+    'FOCUS',
+    'USERS',
+    'STATS',
   ];
 
   return (
@@ -84,21 +84,21 @@ function AdminFeat() {
         <ThemeProvider theme={theme}>
           <Box
             sx={{
-              display: "flex",
-              flexWrap: "wrap",
-              justifyContent: "center",
+              display: 'flex',
+              flexWrap: 'wrap',
+              justifyContent: 'center',
               gap: 1,
-              width: "90%",
-              margin: "auto",
+              width: '90%',
+              margin: 'auto',
             }}
           >
             {navItems.map((item) => (
               <Button
                 key={item}
-                variant={selectedItem === item ? "contained" : "outlined"}
+                variant={selectedItem === item ? 'contained' : 'outlined'}
                 color="primary"
                 onClick={() => handleItemClick(item)}
-                sx={{ flex: "1 1 140px", minWidth: "120px", maxWidth: "200px" }}
+                sx={{ flex: '1 1 140px', minWidth: '120px', maxWidth: '200px' }}
               >
                 {item}
               </Button>
