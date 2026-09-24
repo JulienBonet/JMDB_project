@@ -15,6 +15,7 @@ import CreateItemCard from '../CreateItemCard/CreateItemCard';
 import useAdminItemsList from '../../../hooks/useAdminItemsList';
 import { getFocusSortedById, deleteFocus } from '../../../services/focusService';
 import AdminListHeader from './ui/AdminListHeader';
+import AdminDataTable from './ui/AdminDataTable';
 
 function AdminFocusList() {
   const [selectedItem, setSelectedItem] = useState(null);
@@ -71,37 +72,45 @@ function AdminFocusList() {
         actionLabel="ADD NEW FOCUS"
         onAction={openModalNewFocus}
       />
-      <table>
-        <thead>
-          <tr>
-            <th scope="col">ID</th>
-            <th scope="col">FOCUS</th>
-            <th scope="col">CATEGORIE</th>
-          </tr>
-        </thead>
-        <tbody>
-          {loading ? (
-            <div className="LoaderTemp">LOADING...</div>
-          ) : (
-            currentItems.map((DataItem) => (
-              <tr key={DataItem.id}>
-                <th scope="row">{DataItem.id}</th>
-                <td data-label="Focus">{DataItem.name}</td>
-                <td data-label="Catégorie">{DataItem.category_name}</td>
-                <td data-label="Aperçu">
-                  <PreviewIcon className="admin_tools_ico" onClick={() => openModal(DataItem)} />
-                </td>
-                <td data-label="Supprimer">
-                  <DeleteIcon
-                    className="admin_tools_ico"
-                    onClick={() => handleDelete(DataItem.id)}
-                  />
-                </td>
-              </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+      <AdminDataTable
+        columns={[
+          {
+            label: 'ID',
+            mobileLabel: 'ID',
+            width: '10%',
+            render: (item) => item.id,
+          },
+          {
+            label: 'FOCUS',
+            mobileLabel: 'FOCUS',
+            render: (item) => item.name,
+          },
+          {
+            label: 'CATEGORY',
+            mobileLabel: 'CATEGORY',
+            width: '25%',
+            render: (item) => item.categoryName,
+          },
+          {
+            label: 'VIEW',
+            mobileLabel: 'VIEW',
+            width: '10%',
+            render: (item) => (
+              <PreviewIcon className="admin_tools_ico" onClick={() => openModal(item)} />
+            ),
+          },
+          {
+            label: 'DELETE',
+            mobileLabel: 'DELETE',
+            width: '10%',
+            render: (item) => (
+              <DeleteIcon className="admin_tools_ico" onClick={() => handleDelete(item.id)} />
+            ),
+          },
+        ]}
+        rows={currentItems}
+        loading={loading}
+      />
       <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
         <Pagination count={totalPages} shape="rounded" onChange={handlePageChange} />
       </Box>
