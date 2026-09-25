@@ -81,17 +81,30 @@ function AdminDataTable({ columns, rows, loading }) {
                 key={row.id}
                 sx={{
                   display: { xs: 'block', md: 'table-row' },
-                  mb: { xs: 1.5, md: 0 },
+
+                  mb: { xs: 2, md: 0 },
+                  p: { xs: 1, md: 0 },
+
                   border: {
-                    xs: '1px solid black',
+                    xs: '1px solid #d5d5d5',
                     md: 'none',
                   },
+
+                  boxShadow: {
+                    xs: '0 1px 3px rgba(0,0,0,0.08)',
+                    md: 'none',
+                  },
+
                   borderRadius: {
-                    xs: 1,
+                    xs: 2,
                     md: 0,
                   },
+
                   '&:nth-of-type(even)': {
-                    backgroundColor: '#f2f2f2',
+                    backgroundColor: {
+                      xs: 'transparent',
+                      md: '#f2f2f2',
+                    },
                   },
                 }}
               >
@@ -121,9 +134,13 @@ function AdminDataTable({ columns, rows, loading }) {
                         cursor: 'pointer',
                       },
 
+                      '& svg:hover': {
+                        opacity: 0.7,
+                      },
+
                       '&:not(:last-child)': {
                         borderBottom: {
-                          xs: '1px dashed #505050',
+                          xs: '1px dashed #ddd',
                           md: 'none',
                         },
                       },
