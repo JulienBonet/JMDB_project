@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import {
   Button,
   Box,
@@ -7,81 +6,24 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
+  CircularProgress,
 } from '@mui/material';
-import CircularProgress from '@mui/material/CircularProgress';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-// import './adminLists.css';
-// refactor
-import { getAdminStats, exportAdminCsv } from '../../../services/adminStatsService';
+// Hooks
+import useAdminStats from '../../../hooks/useAdminStats';
+import useAdminExportCsv from '../../../hooks/useAdminExportCsv';
 
 function AdminExportStats() {
-  // --------------
-  // STATS
-  // --------------
-  const [stats, setStats] = useState(null);
-  const [isExportingCsv, setIsExportingCsv] = useState(false);
-
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const data = await getAdminStats();
-
-        // Conversion MB → TB (3 décimales)
-        const totalSizeTB =
-          typeof data.totalSizeMB === 'number' ? +(data.totalSizeMB / 1024 / 1024).toFixed(3) : 0;
-
-        // Conversion minutes (string ou number) → heures arrondies à l'inférieur
-        const totalDurationMinutes =
-          typeof data.totalDuration === 'string'
-            ? Number(data.totalDuration)
-            : data.totalDuration || 0;
-
-        const totalDurationHours = Math.floor(totalDurationMinutes / 60);
-
-        setStats({
-          ...data,
-          totalSizeTB,
-          totalDurationHours,
-        });
-      } catch (err) {
-        console.error('Erreur stats:', err);
-      }
-    };
-    fetchStats();
-  }, []);
-
-  if (!stats) return <p>Chargement des stats...</p>;
+  const { stats, loading } = useAdminStats();
 
   // --------------
-  // EXPORT CSV
+  // STATS & EXPORT CSV
   // --------------
-  const handleExportCsv = async () => {
-    setIsExportingCsv(true);
-    try {
-      const response = await exportAdminCsv();
+  const { isExportingCsv, handleExportCsv } = useAdminExportCsv();
 
-      const disposition = response.headers['content-disposition'];
-      let fileName = 'movies_export.csv';
-      if (disposition && disposition.includes('filename=')) {
-        fileName = disposition.split('filename=')[1].replace(/"/g, '');
-      } else {
-        const dateStr = new Date().toISOString().replace(/[:.]/g, '-');
-        fileName = `movies_export_${dateStr}.csv`;
-      }
-
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', fileName);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-    } catch (err) {
-      console.error('Erreur export CSV', err);
-    } finally {
-      setIsExportingCsv(false);
-    }
-  };
+  if (loading) {
+    return <p>Chargement des stats...</p>;
+  }
 
   // --------------
   // SX
@@ -203,6 +145,7 @@ function AdminExportStats() {
                 </Box>{' '}
                 {stats.totalDVDRRW}
               </Typography>
+              {/* dashed bar */}
               <Box
                 sx={{
                   borderBottom: '1px dashed',
@@ -210,6 +153,7 @@ function AdminExportStats() {
                   my: 2,
                 }}
               />
+              {/* end dashed bar */}
               <Typography sx={infoStatsSX()}>
                 <Box component="span" sx={spanInfoStatsSX()}>
                   Total poids fichiers:
