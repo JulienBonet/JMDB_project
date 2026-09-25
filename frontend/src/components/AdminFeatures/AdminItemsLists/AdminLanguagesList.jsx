@@ -4,11 +4,14 @@ import { Container, Box, Modal, Pagination } from '@mui/material';
 import { Preview, Delete } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+// services
+import { getLanguagesSortedById, deleteLanguage } from '../../../services/referenceDataService';
+// hooks
+import useAdminItemsList from '../../../hooks/useAdminItemsList';
+// components
 import AdminItemsCard from '../AdminItemsCards/AdminItemsCardkindsLanguagesTags';
 import CreateItemCard from '../CreateItemCard/CreateItemCard';
-// refector
-import useAdminItemsList from '../../../hooks/useAdminItemsList';
-import { getLanguagesSortedById, deleteLanguage } from '../../../services/referenceDataService';
+// UI
 import AdminListHeader from './ui/AdminListHeader';
 import AdminDataTable from './ui/AdminDataTable';
 import AdminListLayout from './ui/AdminListLayout';
@@ -76,18 +79,15 @@ function AdminLanguagesList() {
         columns={[
           {
             label: 'ID',
-            mobileLabel: 'ID',
             width: '15%',
             render: (item) => item.id,
           },
           {
             label: 'LANGUAGE',
-            mobileLabel: 'LANGUAGE',
             render: (item) => item.name,
           },
           {
             label: 'VIEW',
-            mobileLabel: 'VIEW',
             width: '15%',
             render: (item) => (
               <Preview className="admin_tools_ico" onClick={() => openModal(item)} />
@@ -95,7 +95,6 @@ function AdminLanguagesList() {
           },
           {
             label: 'DELETE',
-            mobileLabel: 'DELETE',
             width: '15%',
             render: (item) => (
               <Delete className="admin_tools_ico" onClick={() => handleDelete(item.id)} />

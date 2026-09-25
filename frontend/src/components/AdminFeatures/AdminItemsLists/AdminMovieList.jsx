@@ -15,11 +15,13 @@ import {
   Pagination,
 } from '@mui/material';
 import { Delete, Preview } from '@mui/icons-material';
-import MovieCard from '../../MovieCard/MovieCard';
-
-// refactor
+// services
 import { getCollection, deleteMovie } from '../../../services/movieService';
+// hooks
 import useAdminItemsList from '../../../hooks/useAdminItemsList';
+// components
+import MovieCard from '../../MovieCard/MovieCard';
+// UI
 import AdminListHeader from './ui/AdminListHeader';
 import AdminDataTable from './ui/AdminDataTable';
 import AdminListLayout from './ui/AdminListLayout';
@@ -133,30 +135,25 @@ function AdminMovieList() {
         columns={[
           {
             label: 'ID',
-            mobileLabel: 'ID',
             width: '10%',
             render: (item) => item.id,
           },
           {
             label: 'TITLE',
-            mobileLabel: 'TITLE',
             render: (item) => item.title,
           },
           {
             label: 'YEAR',
-            mobileLabel: 'YEAR',
             width: '10%',
             render: (item) => item.year,
           },
           {
             label: 'SUPPORT',
-            mobileLabel: 'SUPPORT',
             width: '15%',
             render: (item) => item.videoSupport,
           },
           {
             label: 'VIEW',
-            mobileLabel: 'VIEW',
             width: '10%',
             render: (item) => (
               <Preview className="admin_tools_ico" onClick={() => openModal(item)} />

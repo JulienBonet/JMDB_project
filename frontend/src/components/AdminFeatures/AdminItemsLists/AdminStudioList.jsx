@@ -4,11 +4,14 @@ import { Container, Box, Modal, Pagination } from '@mui/material';
 import { Preview, Delete } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+// services
+import { getArtistsSortedById, deleteArtist } from '../../../services/artistService';
+// hooks
+import useAdminItemsList from '../../../hooks/useAdminItemsList';
+// components
 import AdminItemsCard from '../AdminItemsCards/AdminItemsCardArtists';
 import CreateItemCard from '../CreateItemCard/CreateItemCard';
-// refacto
-import useAdminItemsList from '../../../hooks/useAdminItemsList';
-import { getArtistsSortedById, deleteArtist } from '../../../services/artistService';
+// UI
 import AdminListHeader from './ui/AdminListHeader';
 import AdminDataTable from './ui/AdminDataTable';
 import AdminListLayout from './ui/AdminListLayout';

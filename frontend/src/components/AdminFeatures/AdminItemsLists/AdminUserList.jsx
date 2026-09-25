@@ -4,11 +4,14 @@ import { Container, Box, Modal, Pagination } from '@mui/material';
 import { VpnKey, Delete } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+// services
+import { getUsersSortedById, deleteUser } from '../../../services/userService';
+// hooks
+import useAdminItemsList from '../../../hooks/useAdminItemsList';
+// components
 import AdminItemsCard from '../AdminItemsCards/AdminItemsCardUsers';
 import CreateItemCard from '../CreateItemCard/CreateItemCard';
-// refactor
-import useAdminItemsList from '../../../hooks/useAdminItemsList';
-import { getUsersSortedById, deleteUser } from '../../../services/userService';
+// UI
 import AdminListHeader from './ui/AdminListHeader';
 import AdminDataTable from './ui/AdminDataTable';
 import AdminListLayout from './ui/AdminListLayout';

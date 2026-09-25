@@ -4,11 +4,14 @@ import { Container, Box, Modal, Pagination } from '@mui/material';
 import { Preview, Delete } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+// services
+import { getCountriesSortedById, deleteCountry } from '../../../services/referenceDataService';
+// hooks
+import useAdminItemsList from '../../../hooks/useAdminItemsList';
+// components
 import AdminItemsCard from '../AdminItemsCards/AdminItemsCardCountries';
 import CreateItemCard from '../CreateItemCard/CreateItemCard';
-// refactor
-import useAdminItemsList from '../../../hooks/useAdminItemsList';
-import { getCountriesSortedById, deleteCountry } from '../../../services/referenceDataService';
+// UI
 import AdminListHeader from './ui/AdminListHeader';
 import AdminDataTable from './ui/AdminDataTable';
 import AdminListLayout from './ui/AdminListLayout';
@@ -20,8 +23,6 @@ function AdminCountryList() {
   const origin = 'country';
 
   const openModal = (DataItem) => {
-    console.log('COUNTRY sélectionné :', DataItem);
-    console.log('IMAGE :', DataItem.image);
     setSelectedItem(DataItem);
   };
 
