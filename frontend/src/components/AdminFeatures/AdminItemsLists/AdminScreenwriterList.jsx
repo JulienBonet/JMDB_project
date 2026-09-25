@@ -11,6 +11,7 @@ import useAdminItemsList from '../../../hooks/useAdminItemsList';
 import { getArtistsSortedById, deleteArtist } from '../../../services/artistService';
 import AdminListHeader from './ui/AdminListHeader';
 import AdminDataTable from './ui/AdminDataTable';
+import AdminListLayout from './ui/AdminListLayout';
 
 function AdminScreenwriterList() {
   const [selectedItem, setSelectedItem] = useState(null);
@@ -58,7 +59,7 @@ function AdminScreenwriterList() {
   });
 
   return (
-    <section className="AdminItemsSection">
+    <AdminListLayout>
       <AdminListHeader
         title="SCREENWRITERS LIST"
         searchValue={searchTerm}
@@ -156,7 +157,7 @@ function AdminScreenwriterList() {
           </Box>
         </Modal>
       )}
-    </section>
+    </AdminListLayout>
   );
 }
 

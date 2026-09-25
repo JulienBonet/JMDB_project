@@ -9,6 +9,7 @@ import {
 } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import './adminLists.css';
 // refactor
 import { getAdminStats, exportAdminCsv } from '../../../services/adminStatsService';
 
