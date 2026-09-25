@@ -4,11 +4,14 @@ import { Container, Box, Modal, Pagination } from '@mui/material';
 import { Preview, Delete } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+// services
+import { getFocusSortedById, deleteFocus } from '../../../services/focusService';
+// hooks
+import useAdminItemsList from '../../../hooks/useAdminItemsList';
+// components
 import AdminItemsCard from '../AdminItemsCards/AdminItemsCardFocus';
 import CreateItemCard from '../CreateItemCard/CreateItemCard';
-// refactor
-import useAdminItemsList from '../../../hooks/useAdminItemsList';
-import { getFocusSortedById, deleteFocus } from '../../../services/focusService';
+// UI
 import AdminListHeader from './ui/AdminListHeader';
 import AdminDataTable from './ui/AdminDataTable';
 import AdminListLayout from './ui/AdminListLayout';
@@ -72,24 +75,20 @@ function AdminFocusList() {
         columns={[
           {
             label: 'ID',
-            mobileLabel: 'ID',
             width: '10%',
             render: (item) => item.id,
           },
           {
             label: 'FOCUS',
-            mobileLabel: 'FOCUS',
             render: (item) => item.name,
           },
           {
             label: 'CATEGORY',
-            mobileLabel: 'CATEGORY',
             width: '25%',
             render: (item) => item.categoryName,
           },
           {
             label: 'VIEW',
-            mobileLabel: 'VIEW',
             width: '10%',
             render: (item) => (
               <Preview className="admin_tools_ico" onClick={() => openModal(item)} />
@@ -97,7 +96,6 @@ function AdminFocusList() {
           },
           {
             label: 'DELETE',
-            mobileLabel: 'DELETE',
             width: '10%',
             render: (item) => (
               <Delete className="admin_tools_ico" onClick={() => handleDelete(item.id)} />
