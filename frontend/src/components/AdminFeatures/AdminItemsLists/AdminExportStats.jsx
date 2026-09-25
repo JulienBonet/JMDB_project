@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import {
   Button,
+  Box,
   Stack,
   Typography,
   Accordion,
@@ -9,7 +10,7 @@ import {
 } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import './adminLists.css';
+// import './adminLists.css';
 // refactor
 import { getAdminStats, exportAdminCsv } from '../../../services/adminStatsService';
 
@@ -102,10 +103,19 @@ function AdminExportStats() {
   });
 
   const infoStatsSX = () => ({
-    fontSize: 'x-large',
+    fontSize: {
+      xs: '1rem',
+      sm: '1.1rem',
+      md: '1.25rem',
+      lg: 'x-large',
+    },
     fontFamily: 'var(--font-02)',
     color: 'var(--color-05)',
     marginBottom: '0.5rem',
+  });
+
+  const spanInfoStatsSX = () => ({
+    fontWeight: 'bold',
   });
 
   const accordionSX = () => ({
@@ -118,80 +128,145 @@ function AdminExportStats() {
   // RETURN
   // --------------
   return (
-    <main className="main_Admin_export_List">
+    <Box
+      component="main"
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        width: '90%',
+        p: 4,
+        gap: 4,
+      }}
+    >
       {/* STATS */}
-      <section className="stats_container_Admin_export_List">
+      <Box
+        component="section"
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          width: '80%',
+          border: '1px solid black',
+          borderRadius: 2,
+          p: 2,
+        }}
+      >
         <Typography
-          variant="h4"
-          gutterBottom
+          component="h1"
           sx={{
             fontFamily: 'var(--font-01)',
             textAlign: 'center',
-            marginBottom: 3,
+            fontSize: {
+              xs: '1.5rem',
+              md: '2rem',
+            },
           }}
         >
           Statistiques générales
         </Typography>
 
         {/* Accordions */}
-        <div className="accordion_container_Admin_export_List">
-          {/* infos films */}
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 2,
+            py: 4,
+          }}
+        >
+          {/* INFOS FILMS */}
           <Accordion sx={accordionSX}>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Typography sx={infoStatsSX()}>
-                <span className="infoStatWeight">Total films:</span> {stats.totalMovies}
+                <Box component="span" sx={spanInfoStatsSX()}>
+                  Total films:
+                </Box>{' '}
+                {stats.totalMovies}
               </Typography>
             </AccordionSummary>
             <AccordionDetails>
               <Typography sx={infoStatsSX()}>
-                <span className="infoStatWeight">Fichier multimedia:</span> {stats.totalMediaFiles}
+                <Box component="span" sx={spanInfoStatsSX()}>
+                  Fichier multimedia:
+                </Box>{' '}
+                {stats.totalMediaFiles}
               </Typography>
               <Typography sx={infoStatsSX()}>
-                <span className="infoStatWeight">DVD original:</span> {stats.totalDVDOriginal}
+                <Box component="span" sx={spanInfoStatsSX()}>
+                  DVD original:
+                </Box>{' '}
+                {stats.totalDVDOriginal}
               </Typography>
               <Typography sx={infoStatsSX()}>
-                <span className="infoStatWeight">DVD R/RW:</span> {stats.totalDVDRRW}
+                <Box component="span" sx={spanInfoStatsSX()}>
+                  DVD R/RW:
+                </Box>{' '}
+                {stats.totalDVDRRW}
               </Typography>
-              <div className="stats_bar" />
+              <Box
+                sx={{
+                  borderBottom: '1px dashed',
+                  borderColor: 'var(--color-05)',
+                  my: 2,
+                }}
+              />
               <Typography sx={infoStatsSX()}>
-                <span className="infoStatWeight">Total poids fichiers:</span>{' '}
+                <Box component="span" sx={spanInfoStatsSX()}>
+                  Total poids fichiers:
+                </Box>{' '}
                 {Number(stats.totalSizeTB || 0).toFixed(2)} To
               </Typography>
               <Typography sx={infoStatsSX()}>
-                <span className="infoStatWeight">Total durée (H):</span> {stats.totalDurationHours}{' '}
-                heures
+                <Box component="span" sx={spanInfoStatsSX()}>
+                  Total durée (H):
+                </Box>{' '}
+                {stats.totalDurationHours} heures
               </Typography>
             </AccordionDetails>
           </Accordion>
+          {/* END INFOS FILMS */}
 
-          {/* infos genres */}
+          {/* INFOS GENRES */}
           <Accordion sx={accordionSX}>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Typography sx={infoStatsSX()}>
-                <span className="infoStatWeight">Total genres:</span> {stats.totalGenres}
+                <Box component="span" sx={spanInfoStatsSX()}>
+                  Total genres:
+                </Box>{' '}
+                {stats.totalGenres}
               </Typography>
             </AccordionSummary>
             <AccordionDetails>
               {stats.genresByCount.map((g) => (
                 <Typography key={g.name} sx={infoStatsSX()}>
-                  <span className="infoStatWeight">{g.name}:</span> {g.movieCount} films
+                  <Box component="span" sx={spanInfoStatsSX()}>
+                    {g.name}:
+                  </Box>{' '}
+                  {g.movieCount} films
                 </Typography>
               ))}
             </AccordionDetails>
           </Accordion>
+          {/* END INFOS GENRES */}
 
-          {/* infos focus */}
+          {/* INFOS FOCUS */}
           <Accordion sx={accordionSX}>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Typography sx={infoStatsSX()}>
-                <span className="infoStatWeight">Total focus:</span> {stats?.totalFocus || 0}
+                <Box component="span" sx={spanInfoStatsSX()}>
+                  Total focus:
+                </Box>{' '}
+                {stats?.totalFocus || 0}
               </Typography>
             </AccordionSummary>
             <AccordionDetails>
               {stats?.focusByCategory?.length > 0 ? (
                 stats.focusByCategory.map((fc) => (
                   <Typography key={fc.categoryName} sx={infoStatsSX()}>
-                    <span className="infoStatWeight">{fc.categoryName}:</span> {fc.focusCount}
+                    <Box component="span" sx={spanInfoStatsSX()}>
+                      {fc.categoryName}:
+                    </Box>{' '}
+                    {fc.focusCount}
                   </Typography>
                 ))
               ) : (
@@ -199,29 +274,64 @@ function AdminExportStats() {
               )}
             </AccordionDetails>
           </Accordion>
-        </div>
+        </Box>
+        {/* END INFOS FOCUS */}
 
-        {/* info stats */}
-        <div className="infoStats_container_Admin_export_List">
+        {/* INFOS ARTISTS */}
+        <Box
+          sx={{
+            mb: 4,
+            border: '1px solid black',
+            borderRadius: 2,
+            p: 2,
+          }}
+        >
           <Typography sx={infoStatsSX()}>
-            <span className="infoStatWeight">Total réalisateurs:</span> {stats.totalDirectors}
+            <Box component="span" sx={spanInfoStatsSX()}>
+              Total réalisateurs:
+            </Box>{' '}
+            {stats.totalDirectors}
           </Typography>
           <Typography sx={infoStatsSX()}>
-            <span className="infoStatWeight">Total scénaristes:</span> {stats.totalScreenwriters}
+            <Box component="span" sx={spanInfoStatsSX()}>
+              Total scénaristes:
+            </Box>{' '}
+            {stats.totalScreenwriters}
           </Typography>
           <Typography sx={infoStatsSX()}>
-            <span className="infoStatWeight">Total compositeurs:</span> {stats.totalComposers}
+            <Box component="span" sx={spanInfoStatsSX()}>
+              Total compositeurs:
+            </Box>{' '}
+            {stats.totalComposers}
           </Typography>
           <Typography sx={infoStatsSX()}>
-            <span className="infoStatWeight">Total studios:</span> {stats.totalStudios}
+            <Box component="span" sx={spanInfoStatsSX()}>
+              Total studios:
+            </Box>{' '}
+            {stats.totalStudios}
           </Typography>
           <Typography sx={infoStatsSX()}>
-            <span className="infoStatWeight">Total tags:</span> {stats.totalTags}
+            <Box component="span" sx={spanInfoStatsSX()}>
+              Total tags:
+            </Box>{' '}
+            {stats.totalTags}
           </Typography>
-        </div>
-      </section>
+        </Box>
+      </Box>
+      {/* END INFOS ARTISTS */}
+
       {/* EXPORT BUTTONS */}
-      <section className="export_button_container_Admin_export_List">
+      <Box
+        component="section"
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          width: '80%',
+          border: '1px solid black',
+          borderRadius: 2,
+          p: 2,
+        }}
+      >
         <Stack direction="column" spacing={3}>
           {/* BOUTON EXPORT CSV */}
           <Button
@@ -242,8 +352,9 @@ function AdminExportStats() {
             {isExportingCsv ? 'Export CSV en cours...' : 'Exporter CSV'}
           </Button>
         </Stack>
-      </section>
-    </main>
+      </Box>
+      {/* END EXPORT BUTTONS */}
+    </Box>
   );
 }
 
