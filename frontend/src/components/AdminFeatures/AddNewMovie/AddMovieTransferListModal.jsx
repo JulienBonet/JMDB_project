@@ -1,4 +1,4 @@
-import { Box, Container, Modal } from '@mui/material';
+import { Box, Container, Modal, Typography } from '@mui/material';
 
 import TransferList from '../../TransferList/TransferList';
 
@@ -37,19 +37,30 @@ function AddMovieTransferListModal({
       aria-describedby="modal-modal-description"
     >
       <Box sx={transferListStyle}>
-        <div
-          onClick={handleCloseModal}
-          onKeyDown={(event) => {
-            if (event.key === 'Enter' || event.key === ' ') {
-              handleCloseModal();
-            }
+        <Box
+          sx={{
+            textAlign: 'right',
+            pr: 2,
+            pt: 2,
+            pb: 3,
+            mr: '5%',
           }}
-          role="button"
-          tabIndex={0}
-          className="modal_closed_btn_MovieItemList"
         >
-          &#91; Fermer &#93;
-        </div>
+          <Typography
+            component="button"
+            onClick={handleCloseModal}
+            sx={{
+              border: 'none',
+              background: 'none',
+              fontFamily: 'var(--font-04)',
+              fontWeight: 'bold',
+              color: 'var(--color-05)',
+              cursor: 'pointer',
+            }}
+          >
+            [ Fermer ]
+          </Typography>
+        </Box>
 
         <Container>
           {openModal && dataType && (

@@ -1,3 +1,7 @@
+// -----------------------------
+// MEDIAS SECTION FORM
+// ----------------------------
+
 import {
   Box,
   Button,
@@ -27,17 +31,62 @@ function AddMovieMediaSection({
   handleFormatSupportChange,
   formatsHandleChange,
 }) {
+  //--------------
+  // SX
+  //--------------
+  const btnDownloadImageSx = {
+    color: 'black',
+    border: 'solid 1px black',
+    fontSize: 'x-small',
+    '&:hover': {
+      border: 'solid 1px grey',
+      color: 'black',
+    },
+  };
+
+  //--------------
+  // RETURN
+  //--------------
   return (
-    <section className="Adm_l2">
+    <Box
+      component="section"
+      id="AdM_Medias_section"
+      sx={{
+        display: 'flex',
+        justifyContent: 'space-evenly',
+        alignItems: {
+          xs: 'center',
+          lg: 'stretch',
+        },
+        py: 2,
+        flexDirection: {
+          xs: 'column',
+          lg: 'row',
+        },
+      }}
+    >
       {/* movie FILE */}
-      <div className="Adm_l2a">
+      <Box
+        id="AdM_Media_Support"
+        sx={{
+          width: {
+            xs: '90%',
+            lg: '40%',
+          },
+          border: { xs: '1px dotted black' },
+          p: 2,
+          mb: {
+            xs: 2,
+            lg: 0,
+          },
+        }}
+      >
         {/* movie SUPPORT */}
-        <FormControl sx={{ m: 1, minWidth: 120 }}>
-          <InputLabel id="demo-select-small-label">Support</InputLabel>
+        <FormControl id="AdM_Support_FormControl" sx={{ m: 1, minWidth: 120 }}>
+          <InputLabel>Support</InputLabel>
 
           <Select
-            labelId="demo-select-small-label"
-            id="demo-select-small"
+            id="AdM_Support_Select"
             value={movie.videoSupport || ''}
             label="Support"
             onChange={handleFormatSupportChange}
@@ -53,7 +102,7 @@ function AddMovieMediaSection({
 
         {movie.videoSupport === 'Fichier multimédia' && (
           <>
-            <div>
+            <Box>
               {/* movie VIDEOFORMAT */}
               <Box
                 component="form"
@@ -64,12 +113,11 @@ function AddMovieMediaSection({
                 alignItems="center"
                 gap={4}
               >
-                <FormControl sx={{ m: 1, minWidth: 120 }}>
+                <FormControl id="AdM_Format_FromControl" sx={{ m: 1, minWidth: 120 }}>
                   <InputLabel>format</InputLabel>
 
                   <Select
-                    labelId="demo-select-small-label"
-                    id="demo-select-small"
+                    id="AdM_Format_select"
                     value={movie.videoFormat || ''}
                     label="format"
                     onChange={formatsHandleChange}
@@ -86,7 +134,7 @@ function AddMovieMediaSection({
                 {/* movie FILESIZE */}
                 <TextField
                   label="File Size"
-                  id="outlined-start-adornment"
+                  id="Adm_FileSize"
                   sx={{ m: 1, width: '25ch' }}
                   value={movie.fileSize || ''}
                   onChange={(event) =>
@@ -97,7 +145,7 @@ function AddMovieMediaSection({
                   }
                 />
               </Box>
-            </div>
+            </Box>
 
             {/* movie LOCAL PATH */}
             {movie.isTvShow ? (
@@ -191,12 +239,11 @@ function AddMovieMediaSection({
             )}
 
             {/* movie VERSION (vostfr or multi) */}
-            <FormControl sx={{ m: 1 }}>
-              <FormLabel id="demo-row-radio-buttons-group-label">version:</FormLabel>
+            <FormControl id="Adm_LanguageVersion_FormControl" sx={{ m: 1 }}>
+              <FormLabel>version:</FormLabel>
 
               <RadioGroup
                 row
-                aria-labelledby="demo-row-radio-buttons-group-label"
                 name="row-radio-buttons-group"
                 value={version}
                 onChange={(e) => setVersion(e.target.value)}
@@ -208,11 +255,39 @@ function AddMovieMediaSection({
             </FormControl>
           </>
         )}
-      </div>
+      </Box>
 
       {/* movie COVER */}
-      <div className="Adm_l2b">
-        <img className="preview_cover" src={coverPreview} alt="Couverture" />
+      <Box
+        id="AdM_Media_Cover"
+        sx={{
+          width: {
+            xs: '90%',
+            lg: '40%',
+          },
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          border: '1px dotted black',
+          p: 2,
+          gap: 2,
+        }}
+      >
+        <Box
+          component="img"
+          src={coverPreview}
+          alt="Couverture"
+          sx={{
+            width: {
+              xl: '20%',
+              lg: '20%',
+              md: '25%',
+              sm: '35%',
+              xs: '50%',
+            },
+          }}
+        />
 
         <input
           type="file"
@@ -223,11 +298,15 @@ function AddMovieMediaSection({
           accept="image/*"
         />
 
-        <button type="button" onClick={() => fileCoverRef.current.click()}>
+        <Button
+          variant="outlined"
+          sx={btnDownloadImageSx}
+          onClick={() => fileCoverRef.current.click()}
+        >
           Sélectionner une image
-        </button>
-      </div>
-    </section>
+        </Button>
+      </Box>
+    </Box>
   );
 }
 

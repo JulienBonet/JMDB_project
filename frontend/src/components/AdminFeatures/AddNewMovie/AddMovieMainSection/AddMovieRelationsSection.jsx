@@ -1,4 +1,7 @@
-// frontend/src/components/AdminFeatures/AddNewMovie/AddMovieRelationsSection.jsx
+// -----------------------------
+// COLUMN 2 - MAIN SECTION FORM
+// -----------------------------
+
 import { Box, TextField } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
@@ -19,11 +22,37 @@ function AddMovieRelationsSection({
   selectedTags,
   selectedFocus,
 }) {
+  //-----------------------------------------------
+  // SX
+  //-----------------------------------------------
+  const itemRelationSx = {
+    display: 'flex',
+    alignItems: 'center',
+  };
+
+  const itemBtnPopUpSx = {
+    cursor: 'pointer',
+
+    '&:hover': {
+      opacity: 0.7,
+    },
+  };
+
   return (
-    <div className="Adm_l1b">
+    <Box
+      id="AdM_Main_column_2"
+      sx={{
+        width: {
+          xs: '95%',
+          lg: '40%',
+        },
+        p: 2,
+      }}
+    >
       {/* movie idTheMovieDb */}
       <Box
         component="form"
+        id="AdM_idTheMovieDb"
         sx={{ width: '30%' }}
         noValidate
         autoComplete="off"
@@ -43,7 +72,7 @@ function AddMovieRelationsSection({
       </Box>
 
       {/* movie KINDS */}
-      <div className="adm-l1_item">
+      <Box id="AdM_kinds_item" sx={itemRelationSx}>
         <Box
           component="form"
           sx={{ flexGrow: 1 }}
@@ -63,14 +92,11 @@ function AddMovieRelationsSection({
           />
         </Box>
 
-        <AddCircleOutlineIcon
-          className="Btn_Add_itemsPopUp"
-          onClick={() => handleOpenModal('kinds')}
-        />
-      </div>
+        <AddCircleOutlineIcon sx={itemBtnPopUpSx} onClick={() => handleOpenModal('kinds')} />
+      </Box>
 
       {/* movie DIRECTOR */}
-      <div className="adm-l1_item">
+      <Box id="AdM_Directors_item" sx={itemRelationSx}>
         <Box
           component="form"
           sx={{ flexGrow: 1 }}
@@ -90,14 +116,11 @@ function AddMovieRelationsSection({
           />
         </Box>
 
-        <AddCircleOutlineIcon
-          className="Btn_Add_itemsPopUp"
-          onClick={() => handleOpenModal('directors')}
-        />
-      </div>
+        <AddCircleOutlineIcon sx={itemBtnPopUpSx} onClick={() => handleOpenModal('directors')} />
+      </Box>
 
       {/* movie SCREENWRITERS */}
-      <div className="adm-l1_item">
+      <Box id="AdM_Screenwriters_item" sx={itemRelationSx}>
         <Box
           component="form"
           sx={{ flexGrow: 1 }}
@@ -118,13 +141,13 @@ function AddMovieRelationsSection({
         </Box>
 
         <AddCircleOutlineIcon
-          className="Btn_Add_itemsPopUp"
+          sx={itemBtnPopUpSx}
           onClick={() => handleOpenModal('screenwriters')}
         />
-      </div>
+      </Box>
 
       {/* movie COMPOSITOR */}
-      <div className="adm-l1_item">
+      <Box id="AdM_Compositors_item" sx={itemRelationSx}>
         <Box
           component="form"
           sx={{ flexGrow: 1 }}
@@ -144,14 +167,11 @@ function AddMovieRelationsSection({
           />
         </Box>
 
-        <AddCircleOutlineIcon
-          className="Btn_Add_itemsPopUp"
-          onClick={() => handleOpenModal('music')}
-        />
-      </div>
+        <AddCircleOutlineIcon sx={itemBtnPopUpSx} onClick={() => handleOpenModal('music')} />
+      </Box>
 
       {/* movie CASTING */}
-      <div className="adm-l1_item">
+      <Box id="AdM_Casting_item" sx={itemRelationSx}>
         <Box
           component="form"
           sx={{ flexGrow: 1 }}
@@ -171,14 +191,11 @@ function AddMovieRelationsSection({
           />
         </Box>
 
-        <AddCircleOutlineIcon
-          className="Btn_Add_itemsPopUp"
-          onClick={() => handleOpenModal('casting')}
-        />
-      </div>
+        <AddCircleOutlineIcon sx={itemBtnPopUpSx} onClick={() => handleOpenModal('casting')} />
+      </Box>
 
       {/* movie STUDIO */}
-      <div className="adm-l1_item">
+      <Box id="AdM_Studios_item" sx={itemRelationSx}>
         <Box
           component="form"
           sx={{ flexGrow: 1 }}
@@ -198,14 +215,11 @@ function AddMovieRelationsSection({
           />
         </Box>
 
-        <AddCircleOutlineIcon
-          className="Btn_Add_itemsPopUp"
-          onClick={() => handleOpenModal('studio')}
-        />
-      </div>
+        <AddCircleOutlineIcon sx={itemBtnPopUpSx} onClick={() => handleOpenModal('studio')} />
+      </Box>
 
       {/* movie COUNTRY */}
-      <div className="adm-l1_item">
+      <Box id="AdM_Countries_item" sx={itemRelationSx}>
         <Box
           component="form"
           sx={{ flexGrow: 1 }}
@@ -225,14 +239,11 @@ function AddMovieRelationsSection({
           />
         </Box>
 
-        <AddCircleOutlineIcon
-          className="Btn_Add_itemsPopUp"
-          onClick={() => handleOpenModal('country')}
-        />
-      </div>
+        <AddCircleOutlineIcon sx={itemBtnPopUpSx} onClick={() => handleOpenModal('country')} />
+      </Box>
 
       {/* movie LANGUAGES */}
-      <div className="adm-l1_item">
+      <Box id="AdM_Languages_item" sx={itemRelationSx}>
         <Box
           component="form"
           sx={{ flexGrow: 1 }}
@@ -253,13 +264,13 @@ function AddMovieRelationsSection({
         </Box>
 
         <AddCircleOutlineIcon
-          className="Btn_Add_itemsPopUp"
+          sx={itemRelationSx}
           onClick={() => handleOpenModal('languages/sorted_id')}
         />
-      </div>
+      </Box>
 
       {/* movie TAG */}
-      <div className="adm-l1_item">
+      <Box id="AdM_Tags_item" sx={itemRelationSx}>
         <Box
           component="form"
           sx={{ flexGrow: 1 }}
@@ -280,13 +291,13 @@ function AddMovieRelationsSection({
         </Box>
 
         <AddCircleOutlineIcon
-          className="Btn_Add_itemsPopUp"
+          sx={itemBtnPopUpSx}
           onClick={() => handleOpenModal('tags/sorted_id')}
         />
-      </div>
+      </Box>
 
       {/* movie FOCUS */}
-      <div className="adm-l1_item">
+      <Box id="AdM_Focus_item" sx={itemRelationSx}>
         <Box
           component="form"
           sx={{ flexGrow: 1 }}
@@ -306,12 +317,9 @@ function AddMovieRelationsSection({
           />
         </Box>
 
-        <AddCircleOutlineIcon
-          className="Btn_Add_itemsPopUp"
-          onClick={() => handleOpenModal('focus')}
-        />
-      </div>
-    </div>
+        <AddCircleOutlineIcon sx={itemBtnPopUpSx} onClick={() => handleOpenModal('focus')} />
+      </Box>
+    </Box>
   );
 }
 

@@ -1,3 +1,7 @@
+// -----------------------------
+// COLUMN 1 - MAIN SECTION FORM
+// -----------------------------
+
 import { Box, Button, FormControlLabel, IconButton, TextField } from '@mui/material';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import Switch from '@mui/material/Switch';
@@ -19,10 +23,31 @@ function AddMovieMainInfoSection({
   setSelectedSeasons,
   handleFormSubmit,
 }) {
+  const itemMainInfosSX = { '& > :not(style)': { width: '150ch' } };
+
   return (
-    <div className="Adm_l1a">
+    <Box
+      id="AdM_Main_column_1"
+      sx={{
+        width: {
+          xs: '95%',
+          lg: '40%',
+        },
+        p: 2,
+      }}
+    >
       {/* Control Admin Buttons */}
-      <div className="SourceResearchItems">
+      <Box
+        id="AdM_SourceResearchItems"
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          p: 2,
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: 2,
+        }}
+      >
         {/* recherche BTN */}
         <Button
           variant="contained"
@@ -33,7 +58,17 @@ function AddMovieMainInfoSection({
           RECHERCHE
         </Button>
 
-        <div className="SourceResearchItems_2">
+        <Box
+          id="AdM_SourceResearchItems"
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            borderRadius: 2,
+            px: 1,
+            gap: 2,
+          }}
+        >
           {/* isTvShow Switch */}
           <FormControlLabel
             control={
@@ -63,13 +98,13 @@ function AddMovieMainInfoSection({
           >
             <RestartAltIcon />
           </IconButton>
-        </div>
-      </div>
+        </Box>
+      </Box>
 
       {/* movie TITLE */}
       <Box
         component="form"
-        sx={{ '& > :not(style)': { width: '150ch' } }}
+        sx={itemMainInfosSX}
         noValidate
         autoComplete="off"
         display="flex"
@@ -90,7 +125,7 @@ function AddMovieMainInfoSection({
       {/* movie alt TITLE */}
       <Box
         component="form"
-        sx={{ '& > :not(style)': { width: '100ch' } }}
+        sx={itemMainInfosSX}
         noValidate
         autoComplete="off"
         display="flex"
@@ -112,6 +147,7 @@ function AddMovieMainInfoSection({
       {/* movie YEAR - DURATION */}
       <Box
         component="form"
+        id="AdM_Year_Duration"
         sx={{ flexGrow: 1 }}
         noValidate
         autoComplete="off"
@@ -120,10 +156,13 @@ function AddMovieMainInfoSection({
         gap={2}
         p={2}
       >
-        <div
-          className={
-            movie.isTvShow ? 'year_duration_Btn_AddNewtvShow' : 'year_duration_Btn_AddNewMovie'
-          }
+        <Box
+          id="AdM_Movie_toggle_TvShow"
+          sx={{
+            display: 'flex',
+            gap: 2,
+            flexWrap: 'wrap',
+          }}
         >
           {/* movie year */}
           <TextField
@@ -161,13 +200,13 @@ function AddMovieMainInfoSection({
               setSelectedSeasons={setSelectedSeasons}
             />
           )}
-        </div>
+        </Box>
       </Box>
 
       {/* movie PITCH */}
       <Box
         component="form"
-        sx={{ '& > :not(style)': { width: '100ch' } }}
+        sx={itemMainInfosSX}
         noValidate
         autoComplete="off"
         display="flex"
@@ -188,7 +227,7 @@ function AddMovieMainInfoSection({
       {/* movie STORY */}
       <Box
         component="form"
-        sx={{ '& > :not(style)': { width: '100ch' } }}
+        sx={itemMainInfosSX}
         noValidate
         autoComplete="off"
         display="flex"
@@ -210,7 +249,7 @@ function AddMovieMainInfoSection({
       {/* movie TRAILER */}
       <Box
         component="form"
-        sx={{ '& > :not(style)': { width: '100ch' } }}
+        sx={itemMainInfosSX}
         noValidate
         autoComplete="off"
         display="flex"
@@ -231,7 +270,7 @@ function AddMovieMainInfoSection({
       {/* movie COMMENTAIRE */}
       <Box
         component="form"
-        sx={{ '& > :not(style)': { width: '100ch' } }}
+        sx={itemMainInfosSX}
         noValidate
         autoComplete="off"
         display="flex"
@@ -250,7 +289,7 @@ function AddMovieMainInfoSection({
           rows={4}
         />
       </Box>
-    </div>
+    </Box>
   );
 }
 
