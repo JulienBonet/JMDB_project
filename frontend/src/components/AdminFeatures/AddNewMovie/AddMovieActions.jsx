@@ -1,9 +1,22 @@
-import { Backdrop, Button, CircularProgress, Stack } from '@mui/material';
+// -----------------------------
+// VALIDATION SECTION FORM
+// ----------------------------
+
+import { Backdrop, Button, CircularProgress, Stack, Box } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 
 function AddMovieActions({ theme, handleFormSubmit, handleReturn, isSubmitting }) {
   return (
-    <section className="Adm_l3">
+    <Box
+      component="section"
+      id="AdM_Validation_section"
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        py: 2,
+      }}
+    >
       {/* VALIDATION */}
       <ThemeProvider theme={theme}>
         <Stack spacing={2} direction="row">
@@ -26,7 +39,7 @@ function AddMovieActions({ theme, handleFormSubmit, handleReturn, isSubmitting }
       >
         <CircularProgress color="inherit" />
       </Backdrop>
-    </section>
+    </Box>
   );
 }
 

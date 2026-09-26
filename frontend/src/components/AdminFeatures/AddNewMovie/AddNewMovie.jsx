@@ -5,10 +5,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { createTheme } from '@mui/material/styles';
-import { IconButton } from '@mui/material';
+import { IconButton, Box, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-// style
-import './addNewMovie.css';
 // services
 import {
   searchGenreInDatabase,
@@ -267,8 +265,17 @@ function AddNewMovie() {
   });
 
   //-----------------------------------------------
-  // MODALS STYLE
+  // SX
   //-----------------------------------------------
+
+  const CloseBtnLineSX = { display: 'flex', justifyContent: 'flex-end' };
+
+  const MainTitleDividerSX = { borderBottom: '1px dashed', borderColor: 'var(--color-04)' };
+
+  //-----------------------------------------------
+  // MODALS STYLE SX
+  //-----------------------------------------------
+
   const transferListStyle = {
     position: 'absolute',
     top: '50%',
@@ -299,17 +306,62 @@ function AddNewMovie() {
   // RETURN
   //-----------------------------------------------
   return (
-    <main>
-      <section className="Adm_form_box">
-        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+    <Box component="main">
+      {/* GLOBAL FORM COMPONENT*/}
+      <Box
+        component="section"
+        sx={{
+          backgroundColor: 'white',
+          m: 2,
+          p: 2,
+          borderRadius: 2,
+        }}
+      >
+        {/* closed_Btn */}
+        <Box id="AdM_closeBtnLine" sx={CloseBtnLineSX}>
           <IconButton onClick={handleReturn}>
             <CloseIcon />
           </IconButton>
-        </div>
-        <section className="Adm_l0">
-          <h1 className="AdM_main_title">ADD NEW MOVIE</h1>
-          <div className="AdM_main_title_bar" />
-          <section className="Adm_l1">
+        </Box>
+        {/* MAIN TOP */}
+        <Box
+          component="section"
+          id="AdM_Top_Main"
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          {/* HEADER FORM*/}
+          <Typography
+            component="h1"
+            id="AdM_Main_Title"
+            sx={{
+              fontFamily: 'var(--font-01)',
+              fontSize: '2rem',
+              color: 'var(--color-04)',
+              textAlign: 'center',
+              pb: 2,
+            }}
+          >
+            ADD NEW MOVIE
+          </Typography>
+          <Box id="AdM_Divider_Main_Title" sx={MainTitleDividerSX} />
+          {/* END HEADER FORM */}
+
+          {/* MAIN SECTION FORM */}
+          <Box
+            component="section"
+            id="AdM_Main_Section_Form"
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-evenly',
+              flexDirection: {
+                xs: 'column',
+                lg: 'row',
+              },
+            }}
+          >
             <AddMovieMainSection
               movie={movie}
               setMovie={setMovie}
@@ -348,11 +400,14 @@ function AddNewMovie() {
               setSelectedFocus={setSelectedFocus}
               handleFormSubmit={handleFormSubmit}
             />
-          </section>
-        </section>
+          </Box>
+          {/* END MAIN SECTION FORM */}
+        </Box>
+        {/* END MAIN TOP */}
 
         <div className="dashed_secondary_bar" />
 
+        {/* MEDIAS SECTION FORM */}
         <AddMovieMediaSection
           movie={movie}
           setMovie={setMovie}
@@ -368,6 +423,7 @@ function AddNewMovie() {
           handleFormatSupportChange={handleFormatSupportChange}
           formatsHandleChange={formatsHandleChange}
         />
+        {/* MEDIAS SECTION FORM */}
 
         <div className="dashed_secondary_bar" />
 
@@ -378,7 +434,7 @@ function AddNewMovie() {
           handleReturn={handleReturn}
           isSubmitting={isSubmitting}
         />
-      </section>
+      </Box>
       {/* transfert Lists */}
       <AddMovieTransferListModal
         openModal={openModal}
@@ -415,7 +471,8 @@ function AddNewMovie() {
         title={movie.title}
         onMovieClick={handleTmdbMovieClick}
       />
-    </main>
+      {/* END GLOBAL FORM COMPONENT*/}
+    </Box>
   );
 }
 
