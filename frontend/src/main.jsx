@@ -20,7 +20,7 @@ import MovieStudio from './pages/MovieArtist/Moviestudio.jsx';
 import MovieTag from './pages/MovieArtist/MovieTags.jsx';
 import AdminFeat from './pages/AdminFeat/AdminFeat.jsx';
 import AddNewMovie from './components/AdminFeatures/AddNewMovie/AddNewMovie.jsx';
-import MovieInfosEntrance from './components/AdminFeatures/AddNewMovie/MovieInfosEntrance.jsx';
+import MovieInfosEntrance from './components/AdminFeatures/AddNewMovie/MovieInfosEntranceModal/MovieInfosEntrance.jsx';
 import MovieThema from './pages/MovieFocus/MovieThema.jsx';
 import MovieFestival from './pages/MovieFocus/MovieFestival.jsx';
 import MovieCollection from './pages/MovieFocus/MovieCollection.jsx';

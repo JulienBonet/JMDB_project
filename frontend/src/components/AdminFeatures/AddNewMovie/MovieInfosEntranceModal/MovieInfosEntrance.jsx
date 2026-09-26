@@ -9,7 +9,7 @@ import { pink } from '@mui/material/colors';
 import Switch from '@mui/material/Switch';
 import './movieInfosEntrance.css';
 // refacto
-import { searchTmdb } from '../../../services/tmdbService';
+import { searchTmdb } from '../../../../services/tmdbService';
 
 function MovieInfosEntrance({ title, onMovieClick, handleCloseModalMIE }) {
   const [data, setData] = useState([]);

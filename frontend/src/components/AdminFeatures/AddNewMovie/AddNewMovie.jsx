@@ -39,7 +39,7 @@ import { useAddMovieSubmit } from '../../../hooks/useAddMovieSubmit';
 // component
 import AddMovieMediaSection from './AddMovieMediaSection';
 import AddMovieTransferListModal from './AddMovieTransferListModal';
-import MovieInfosEntranceModal from './MovieInfosEntranceModal';
+import MovieInfosEntranceModal from './MovieInfosEntranceModal/MovieInfosEntranceModal';
 import AddMovieActions from './AddMovieActions';
 import AddMovieMainSection from './AddMovieMainSection/AddMovieMainSection';
 
