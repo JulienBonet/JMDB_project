@@ -2,13 +2,10 @@
 /* eslint-disable react/button-has-type */
 /* eslint-disable no-shadow */
 import React, { useEffect, useState } from 'react';
-import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
+import { Box, Typography, FormGroup, FormControlLabel, Switch } from '@mui/material';
 import { alpha, styled } from '@mui/material/styles';
 import { pink } from '@mui/material/colors';
-import Switch from '@mui/material/Switch';
-import './movieInfosEntrance.css';
-// refacto
+// services
 import { searchTmdb } from '../../../../services/tmdbService';
 
 function MovieInfosEntrance({ title, onMovieClick, handleCloseModalMIE }) {
@@ -169,19 +166,64 @@ function MovieInfosEntrance({ title, onMovieClick, handleCloseModalMIE }) {
   // RETURN
   // -----------------------------------------------------
   return (
-    <section className="MIE_container">
-      <span id="top" />
-      <section className="MIE_contents">
-        <h1 className="MIE-title">ENTRÉES DE RECHERCHE DE FILM</h1>
-        <p className="MIE-movie_count">
-          <span className="MIE_bold">{fullData.total_results}</span> film(s)
-        </p>
-        {fullData.total_pages > 1 && (
-          <p className="MIE_PagesCounter">
-            [ {page} / {fullData.total_pages} ]
-          </p>
-        )}
-        <div className="adult_switch">
+    <Box
+      component="main"
+      id="MiE_Container"
+      sx={{
+        bgcolor: 'azure',
+        display: 'flex',
+        justifyContent: 'center',
+        overflowY: 'auto',
+        height: '90vh',
+      }}
+    >
+      {/* MIE CONTENTS */}
+      <Box
+        component="section"
+        id="MiE_Contents"
+        sx={{
+          width: {
+            xs: '90%',
+            md: '95%',
+            lg: '98%',
+          },
+          my: 4,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 2,
+        }}
+      >
+        {/* TOP SECTION */}
+
+        {/* Main title */}
+        <Typography
+          component="h1"
+          id="MiE_Main_Title"
+          textAlign="center"
+          fontFamily="var(--font-01)"
+          fontSize="larger"
+        >
+          ENTRÉES DE RECHERCHE DE FILM
+        </Typography>
+        {/* end Main title */}
+
+        {/* Movies Count */}
+        <Typography id="MiE-movie_count" textAlign="center" fontFamily="var(--font-02)">
+          <Box component="span" fontWeight="bold">
+            {fullData.total_results}
+          </Box>{' '}
+          film(s)
+        </Typography>
+        {/* end Movies Count */}
+
+        {/* adult movies switch */}
+        <Box
+          id="MiE_adult_switch"
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+          }}
+        >
           <FormGroup>
             <FormControlLabel
               control={
@@ -195,46 +237,144 @@ function MovieInfosEntrance({ title, onMovieClick, handleCloseModalMIE }) {
               label="Inclure le contenu pour adultes"
             />
           </FormGroup>
-        </div>
-        <ul>
+        </Box>
+        {/* end adult movies switch */}
+
+        {/* END TOP SECTION */}
+
+        {/* MOVIES SECTION */}
+        <Box component="ul" id="MiE_MoviesList_Section">
           {data.map((item) => (
-            <li key={`${item.media_type}-${item.id}`} className="MIE_movie_bloc">
-              <div className="MIE_movie_bloc_A1">
+            <Box
+              component="li"
+              id="MiE_MovieBloc"
+              key={`${item.media_type}-${item.id}`}
+              sx={{
+                display: 'flex',
+                flexDirection: {
+                  xs: 'column',
+                  lg: 'row',
+                },
+                gap: {
+                  xs: 3,
+                  lg: 0,
+                },
+                alignItems: 'center',
+                border: 1,
+                borderColor: 'black',
+                my: 2,
+                py: 2,
+              }}
+            >
+              {/* Cover Column */}
+              <Box
+                id="MiE_MovieBloc_Cover"
+                sx={{
+                  width: {
+                    xs: '100%',
+                    md: '40%',
+                    lg: '15%',
+                  },
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
                 {item.poster_path && (
-                  <img
+                  <Box
+                    component="img"
                     src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
                     alt={item.title || item.name}
-                    className="MIE_movie_image"
+                    sx={{
+                      width: '50%',
+                    }}
                   />
                 )}
-              </div>
-              <div className="MIE_movie_bloc_A2">
-                <h2 className="MIE_movie_title">
+              </Box>
+              {/* End Cover Column */}
+
+              {/* Infos Movie Column */}
+              <Box
+                id="MiE_MovieBloc_InfosMovie"
+                sx={{
+                  width: {
+                    xs: '90%',
+                    lg: '80%',
+                  },
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 1,
+                }}
+              >
+                {/* movie title */}
+                <Typography component="h2" fontFamily="var(--font-03)" fontSize="large">
                   {item.title || item.name}{' '}
-                  <span className="MIE_type_tag">
+                  <Box
+                    component="span"
+                    sx={{
+                      color: 'var(--color-04)',
+                    }}
+                  >
                     [{item.media_type === 'movie' ? 'Film' : 'Série'}]
-                  </span>
-                </h2>
+                  </Box>
+                </Typography>
+                {/* end movie title */}
+
+                {/* alt movie title */}
                 {(item.original_title || item.original_name) && (
-                  <h3 className="MIE_movie_alt_title">
-                    <span className="MIE_italic">{item.original_title || item.original_name}</span>
-                  </h3>
+                  <Typography component="h3" fontFamily="var(--font-02)" fontStyle="italic">
+                    {item.original_title || item.original_name}
+                  </Typography>
                 )}
-                {item.adult && <p className="MIE_adult">X ADULTE X</p>}
-                <p className="MIE_movie_genre">
-                  <span className="MIE_bold">Genre : </span>
+                {/* end alt movie title */}
+
+                {/* adult movie warning */}
+                {item.adult && (
+                  <Typography color="error" fontWeight="bold">
+                    X ADULTE X
+                  </Typography>
+                )}
+                {/* end adult movie warning */}
+
+                {/* movie kinds */}
+                <Typography fontFamily="var(--font-02)">
+                  <Box component="span" fontWeight="bold">
+                    Genre :
+                  </Box>{' '}
                   {getMovieGenres(item)}
-                </p>
-                <p className="MIE_movie_release">
-                  <span className="MIE_bold">Sortie : </span>
+                </Typography>
+                {/* end movie kinds */}
+
+                {/* movie release */}
+                <Typography fontFamily="var(--font-02)">
+                  <Box component="span" fontWeight="bold">
+                    Sortie :
+                  </Box>{' '}
                   {getYear(item.release_date || item.first_air_date)}
-                </p>
-                <p className="MIE_movie_synopsis">
-                  <span className="MIE_bold">Synopsis : </span>
+                </Typography>
+                {/* end movie release */}
+
+                {/* movie synopsis */}
+                <Typography fontFamily="var(--font-02)" lineHeight={1.5}>
+                  <Box component="span" fontWeight="bold">
+                    Synopsis :
+                  </Box>{' '}
                   {item.overview}
-                </p>
-              </div>
-              <div className="MIE_movie_bloc_A3">
+                </Typography>
+                {/* end movie synopsis */}
+              </Box>
+              {/* End Infos Movie Column */}
+
+              {/* Select Button Column */}
+              <Box
+                id="MiE_MovieBloc_SelectBtn"
+                sx={{
+                  width: '5%',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
                 <button
                   onClick={() => {
                     onMovieClick(item.id, item.media_type);
@@ -243,25 +383,40 @@ function MovieInfosEntrance({ title, onMovieClick, handleCloseModalMIE }) {
                 >
                   OK
                 </button>
-              </div>
-            </li>
+              </Box>
+              {/* Select Button Column */}
+            </Box>
           ))}
-        </ul>
+        </Box>
+        {/* END MOVIES SECTION */}
+
+        {/* TAB - NAV SECTION */}
         {fullData.total_pages > 1 && (
-          <section className="MIE_NavBtn_Block MIE_NavBtn_Block_bottom">
+          <Box
+            component="section"
+            id="MiE_Tab_Nav"
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              gap: 2,
+              pb: 4,
+            }}
+          >
             <button onClick={handlePrevPage} disabled={page === 1}>
               Précédent
             </button>
-            <p className="MIE_PagesCounter">
+            <Typography id="MiE_PagesCounter" textAlign="center" fontFamily="var(--font-02)">
               [ {page} / {fullData.total_pages} ]
-            </p>
+            </Typography>
             <button onClick={handleNextPage} disabled={page === fullData.total_pages}>
               Suivant
             </button>
-          </section>
+          </Box>
         )}
-      </section>
-    </section>
+        {/* END TAB - NAV SECTION */}
+      </Box>
+      {/* END MIE CONTENTS */}
+    </Box>
   );
 }
 
