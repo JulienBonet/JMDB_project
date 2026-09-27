@@ -423,18 +423,20 @@ function AddNewMovie() {
           handleFormatSupportChange={handleFormatSupportChange}
           formatsHandleChange={formatsHandleChange}
         />
-        {/* MEDIAS SECTION FORM */}
+        {/* END MEDIAS SECTION FORM */}
 
         <div className="dashed_secondary_bar" />
 
-        {/* VALIDATION */}
+        {/* VALIDATION SECTION*/}
         <AddMovieActions
           theme={theme}
           handleFormSubmit={handleFormSubmit}
           handleReturn={handleReturn}
           isSubmitting={isSubmitting}
         />
+        {/* VALIDATION SECTION*/}
       </Box>
+
       {/* transfert Lists */}
       <AddMovieTransferListModal
         openModal={openModal}
@@ -463,6 +465,8 @@ function AddNewMovie() {
         setSelectedTags={setSelectedTags}
         setSelectedFocus={setSelectedFocus}
       />
+      {/* end transfert Lists */}
+
       {/* MIE modal */}
       <MovieInfosEntranceModal
         openModalMIE={openModalMIE}
@@ -471,6 +475,8 @@ function AddNewMovie() {
         title={movie.title}
         onMovieClick={handleTmdbMovieClick}
       />
+      {/* end MIE modal */}
+
       {/* END GLOBAL FORM COMPONENT*/}
     </Box>
   );

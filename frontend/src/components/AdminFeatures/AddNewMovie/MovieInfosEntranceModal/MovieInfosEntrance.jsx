@@ -1,23 +1,15 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/button-has-type */
 /* eslint-disable no-shadow */
-import React, { useEffect, useState } from 'react';
 import { Box, Typography, FormGroup, FormControlLabel, Switch } from '@mui/material';
 import { alpha, styled } from '@mui/material/styles';
 import { pink } from '@mui/material/colors';
-// services
-import { searchTmdb } from '../../../../services/tmdbService';
+// hook
+import { useMovieInfosEntrance } from '../../../../hooks/useMovieInfosEntrance';
 
 function MovieInfosEntrance({ title, onMovieClick, handleCloseModalMIE }) {
-  const [data, setData] = useState([]);
-  const [fullData, setFullData] = useState(null);
-  const [genres, setGenres] = useState([]); // Initialisation avec un tableau vide
-  const [page, setPage] = useState(1);
-  const [adult, setAdult] = useState(false);
-  const [error, setError] = useState(null);
-  const [genresLoaded, setGenresLoaded] = useState(false); // Nouvel état pour indiquer si les genres sont chargés
-
-  const encodedTitle = encodeURIComponent(title);
+  const { data, fullData, genres, genresLoaded, page, setPage, adult, setAdult, error } =
+    useMovieInfosEntrance(title);
 
   // --------------------------------------------
   // Fonction pour récupérer les genres d'un film
@@ -63,66 +55,6 @@ function MovieInfosEntrance({ title, onMovieClick, handleCloseModalMIE }) {
   }));
 
   // --------------------------------------------
-  // FETCH API
-  // --------------------------------------------
-  useEffect(() => {
-    setError(null);
-    setData([]);
-    setGenresLoaded(false);
-
-    const fetchData = async () => {
-      try {
-        const result = await searchTmdb({
-          query: encodedTitle,
-          includeAdult: adult,
-          page,
-        });
-
-        const { movieRes, tvRes, genresMovie, genresTV } = result;
-
-        const movieResults = movieRes.results.map((m) => ({
-          ...m,
-          media_type: 'movie',
-        }));
-        const tvResults = tvRes.results.map((t) => ({
-          ...t,
-          media_type: 'tv',
-        }));
-
-        const combined = [...movieResults, ...tvResults].sort(
-          (a, b) => b.popularity - a.popularity
-        );
-
-        setData(combined);
-        setFullData({
-          total_results: movieRes.total_results + tvRes.total_results,
-          total_pages: Math.max(movieRes.total_pages, tvRes.total_pages),
-        });
-
-        setGenres([
-          ...genresMovie.genres,
-          ...genresTV.genres.filter((tvG) => !genresMovie.genres.some((mG) => mG.id === tvG.id)),
-        ]);
-        setGenresLoaded(true);
-      } catch (err) {
-        console.error(err);
-        setError('Erreur lors de la récupération des données');
-      }
-    };
-
-    fetchData();
-  }, [page, adult, encodedTitle]);
-
-  const scrollToTop = () => {
-    const topElement = document.getElementById('top');
-    if (topElement) {
-      topElement.scrollIntoView({
-        behavior: 'smooth',
-      });
-    }
-  };
-
-  // --------------------------------------------
   // Fonction pour formater la date de sortie
   // --------------------------------------------
   const getYear = (releaseDate) => {
@@ -138,7 +70,6 @@ function MovieInfosEntrance({ title, onMovieClick, handleCloseModalMIE }) {
   const handlePrevPage = () => {
     if (page > 1) {
       setPage(page - 1);
-      scrollToTop();
     }
   };
 
@@ -148,7 +79,6 @@ function MovieInfosEntrance({ title, onMovieClick, handleCloseModalMIE }) {
   const handleNextPage = () => {
     if (fullData && page < fullData.total_pages) {
       setPage(page + 1);
-      scrollToTop();
     }
   };
 
