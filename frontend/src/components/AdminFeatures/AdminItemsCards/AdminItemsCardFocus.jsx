@@ -2,22 +2,37 @@
 /* eslint-disable react/no-danger */
 /* eslint-disable react/prop-types */
 import { useState, useRef, useEffect } from 'react';
-import { FormControl, Select, MenuItem, OutlinedInput } from '@mui/material';
-import ReactQuill from 'react-quill';
-import DOMPurify from 'dompurify';
-import 'react-quill/dist/quill.snow.css';
-import '../../../assets/css/reactQuill_html_parametrage.css';
+import {
+  FormControl,
+  Select,
+  MenuItem,
+  OutlinedInput,
+  Card,
+  CardContent,
+  Stack,
+  Typography,
+  TextField,
+  Box,
+} from '@mui/material';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import './adminItemsCard.css';
-// refacto
+import ReactQuill from 'react-quill';
+import DOMPurify from 'dompurify';
+// styles react-quill
+import 'react-quill/dist/quill.snow.css';
+import '../../../assets/css/reactQuill_html_parametrage.css';
+// services
 import {
   getFocusCategories,
   updateAdminItem,
   updateFocusImage,
 } from '../../../services/adminItemService';
+// components
 import AdminItemsCardImage from './AdminItemsCardShared/AdminItemsCardImage';
 import AdminItemsCardActions from './AdminItemsCardShared/AdminItemsCardActions';
+import AdminItemsCardResponsiveDivider from './AdminItemsCardShared/AdminItemsCardResponsiveDivider';
+// SX
+import { labelSx, infoSx, inputSx, pitchDisplaySx } from './constants/adminItemsCardStyles';
 
 function AdminItemsCardFocus({ item, origin, onUpdate, closeModal }) {
   const CLOUDINARY_BASE_URL = import.meta.env.VITE_CLOUDINARY_BASE_URL;
@@ -164,82 +179,209 @@ function AdminItemsCardFocus({ item, origin, onUpdate, closeModal }) {
 
   const formats = ['header', 'bold', 'italic', 'underline', 'list', 'bullet'];
 
-  return (
-    <article className="ItemsCard">
-      <section className="ItemsCard_Col_0">
-        <AdminItemsCardImage
-          image={image}
-          itemName={item.name}
-          isModify={isModify}
-          fileInputRef={fileInputRef}
-          handleFileUpload={handleFileUpload}
-          showUploadButton={showUploadButton}
-          handleUploadClick={handleUploadClick}
-          handleResetImage={handleResetImage}
-        />
+  // -------------------------------
+  // SX
+  // -------------------------------
 
-        <div className="ItemsCard_bar" />
-      </section>
-      <section className="ItemsCard_Col1">
-        <div className="Info_item_line">
-          <h2 className="ItemsCard_title">ID: </h2>
-          <p className="Items_info">{item.id}</p>
-        </div>
-        <div className="Info_item_line">
-          <h2 className="ItemsCard_title">NAME: </h2>
-          {isModify ? (
-            <input type="text" value={name} onChange={handleNameChange} />
-          ) : (
-            <p className="Items_info">{name}</p>
+  const categorySelectSx = {
+    backgroundColor: 'white',
+  };
+
+  return (
+    <Card
+      id="AdminItemsCardFocus"
+      sx={{
+        bgcolor: 'var(--color-04)',
+        mx: '5%',
+        p: 2,
+      }}
+    >
+      {/* CARD CONTENTS */}
+      <CardContent
+        id="AdminItemsCardFocus_Content"
+        sx={{
+          display: 'flex',
+          flexDirection: {
+            xs: 'column',
+            lg: 'row',
+          },
+          justifyContent: 'space-between',
+          gap: 2,
+          p: 0,
+          '&:last-child': {
+            pb: 0,
+          },
+        }}
+      >
+        {/* IMAGE - placement version mobile/tablette */}
+        <Stack
+          id="AdminItemsCardFocus_ImageMobile"
+          sx={{
+            display: {
+              xs: 'flex',
+              lg: 'none',
+            },
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: 2,
+            width: {
+              xs: '100%',
+              lg: '25%',
+            },
+          }}
+        >
+          {/* image mobile/tablette */}
+          <AdminItemsCardImage
+            image={image}
+            itemName={item.name}
+            isModify={isModify}
+            fileInputRef={fileInputRef}
+            handleFileUpload={handleFileUpload}
+            showUploadButton={showUploadButton}
+            handleUploadClick={handleUploadClick}
+            handleResetImage={handleResetImage}
+          />
+          {/* end image mobile/tablette */}
+
+          {/* divider mobile/tablette */}
+          <AdminItemsCardResponsiveDivider />
+          {/* end divider mobile/tablette */}
+        </Stack>
+        {/* End IMAGE - placement version mobile/tablette */}
+
+        {/* CARD INFORMATIONS / ACTIONS */}
+        <Stack
+          id="AdminItemsCardFocus_Infos_actions"
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 2,
+            width: {
+              xs: '95%',
+              lg: '70%',
+            },
+            mx: {
+              xs: 'auto',
+              lg: 0,
+            },
+          }}
+        >
+          {/* ID */}
+          <Stack id="ID_AdminItemsCardFocus" direction="row" spacing={2} alignItems="center">
+            <Typography sx={labelSx}>ID:</Typography>
+
+            <Typography sx={infoSx}>{item.id}</Typography>
+          </Stack>
+          {/* END ID */}
+
+          {/* NAME */}
+          <Stack
+            id="NAME_AdminItemsCardFocus"
+            direction={{ xs: 'column', sm: 'row' }}
+            spacing={2}
+            alignItems={{ xs: 'stretch', sm: 'center' }}
+          >
+            <Typography sx={labelSx}>NAME:</Typography>
+
+            {isModify ? (
+              <TextField
+                type="text"
+                size="small"
+                value={name}
+                onChange={handleNameChange}
+                fullWidth
+                sx={inputSx}
+              />
+            ) : (
+              <Typography sx={infoSx}>{name}</Typography>
+            )}
+          </Stack>
+          {/* END NAME */}
+
+          {/* PITCH TEXT */}
+          {!isFocus && (
+            <Stack
+              id="PITCH_AdminItemsCardFocus"
+              direction={{ xs: 'column', sm: 'row' }}
+              spacing={2}
+              alignItems={{ xs: 'stretch', sm: 'center' }}
+            >
+              <Typography sx={labelSx}>PITCH:</Typography>
+
+              {isModify ? (
+                <TextField
+                  type="text"
+                  size="small"
+                  value={pitch}
+                  onChange={(e) => setPitch(e.target.value)}
+                  fullWidth
+                  sx={inputSx}
+                />
+              ) : (
+                <Typography sx={infoSx}>{pitch}</Typography>
+              )}
+            </Stack>
           )}
-        </div>
-        {!isFocus && (
-          <div className="Info_item_line">
-            <h2 className="ItemsCard_title">PITCH: </h2>
-            {isModify ? (
-              <input type="text" value={pitch} onChange={(e) => setPitch(e.target.value)} />
-            ) : (
-              <p className="Items_info">{pitch}</p>
-            )}
-          </div>
-        )}
-        {isFocus && (
-          <div className="Info_item_line_html">
-            <h2 className="ItemsCard_title">PITCH: </h2>
-            {isModify ? (
-              <ReactQuill
-                value={pitch}
-                onChange={setPitch}
-                theme="snow"
-                modules={modules}
-                formats={formats}
-                style={{
-                  width: '91%',
-                  minHeight: '200px',
-                }}
-                className="Items_info"
-              />
-            ) : (
-              <div
-                className="Items_info_artistFocus"
-                dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(pitch) }}
-              />
-            )}
-          </div>
-        )}
-        <div className="Info_item_line">
-          {isModify && isFocus ? (
-            <>
-              <h2 className="ItemsCard_title">CATEGORY: </h2>
+          {/* END PITCH TEXT */}
+
+          {/* PITCH HTML */}
+          {isFocus && (
+            <Stack
+              id="PITCH_HTML_AdminItemsCardFocus"
+              direction={{ xs: 'column', sm: 'row' }}
+              spacing={2}
+              alignItems={{ xs: 'stretch', sm: 'flex-start' }}
+            >
+              <Typography sx={labelSx}>PITCH:</Typography>
+
+              {isModify ? (
+                <Box
+                  id="AdminItemsCardFocus_ReactQuill"
+                  sx={{
+                    width: { xs: '100%', sm: '91%' },
+                    minHeight: '200px',
+                  }}
+                >
+                  <ReactQuill
+                    value={pitch}
+                    onChange={setPitch}
+                    theme="snow"
+                    modules={modules}
+                    formats={formats}
+                    className="Items_info"
+                  />
+                </Box>
+              ) : (
+                <Box
+                  id="AdminItemsCardFocus_PitchPreview"
+                  className="Items_info"
+                  sx={pitchDisplaySx}
+                  dangerouslySetInnerHTML={{
+                    __html: DOMPurify.sanitize(pitch),
+                  }}
+                />
+              )}
+            </Stack>
+          )}
+          {/* END PITCH HTML */}
+
+          {/* CATEGORY */}
+          <Stack
+            id="CATEGORY_AdminItemsCardFocus"
+            direction={{ xs: 'column', sm: 'row' }}
+            spacing={2}
+            alignItems={{ xs: 'stretch', sm: 'center' }}
+          >
+            <Typography sx={labelSx}>CATEGORY:</Typography>
+
+            {isModify && isFocus ? (
               <FormControl fullWidth size="small">
                 <Select
                   labelId="edit-focus-category-label"
                   value={categoryId}
                   onChange={(e) => setCategoryId(Number(e.target.value))}
                   input={<OutlinedInput label="Category" />}
-                  sx={{
-                    backgroundColor: 'white',
-                  }}
+                  sx={categorySelectSx}
                 >
                   {categories.map((cat) => (
                     <MenuItem key={cat.id} value={cat.id}>
@@ -248,37 +390,60 @@ function AdminItemsCardFocus({ item, origin, onUpdate, closeModal }) {
                   ))}
                 </Select>
               </FormControl>
-            </>
-          ) : (
-            <>
-              <h2 className="ItemsCard_title">CATEGORY: </h2>
-              <p className="Items_info">{item.categoryName}</p>
-            </>
-          )}
-        </div>
-        <AdminItemsCardActions
-          isEditing={isModify}
-          isLoading={isLoading}
-          onReturn={handleReturn}
-          onEdit={openModif}
-          onValidate={handleValidate}
-          onUndo={handleUndo}
-        />
-      </section>
+            ) : (
+              <Typography sx={infoSx}>{item.categoryName}</Typography>
+            )}
+          </Stack>
+          {/* END CATEGORY */}
 
-      <section className="ItemsCard_Col2">
-        <AdminItemsCardImage
-          image={image}
-          itemName={item.name}
-          isModify={isModify}
-          fileInputRef={fileInputRef}
-          handleFileUpload={handleFileUpload}
-          showUploadButton={showUploadButton}
-          handleUploadClick={handleUploadClick}
-          handleResetImage={handleResetImage}
-        />
-      </section>
-    </article>
+          {/* ACTIONS */}
+          <AdminItemsCardActions
+            isEditing={isModify}
+            isLoading={isLoading}
+            onReturn={handleReturn}
+            onEdit={openModif}
+            onValidate={handleValidate}
+            onUndo={handleUndo}
+          />
+          {/* END ACTIONS */}
+        </Stack>
+        {/* END CARD INFORMATIONS / ACTIONS */}
+
+        {/* IMAGE - version desktop */}
+        <Stack
+          id="AdminItemsCardFocus_ImageDesktop"
+          sx={{
+            display: {
+              xs: 'none',
+              lg: 'flex',
+            },
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: 2,
+            width: '25%',
+          }}
+        >
+          {/* image desktop */}
+
+          <AdminItemsCardImage
+            image={image}
+            itemName={item.name}
+            isModify={isModify}
+            fileInputRef={fileInputRef}
+            handleFileUpload={handleFileUpload}
+            showUploadButton={showUploadButton}
+            handleUploadClick={handleUploadClick}
+            handleResetImage={handleResetImage}
+          />
+
+          {/* end image desktop */}
+        </Stack>
+
+        {/* END IMAGE - version desktop */}
+      </CardContent>
+
+      {/* END CARD CONTENTS */}
+    </Card>
   );
 }
 

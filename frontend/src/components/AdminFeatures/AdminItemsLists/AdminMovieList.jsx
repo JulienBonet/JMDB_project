@@ -12,7 +12,6 @@ import {
   DialogContentText,
   DialogTitle,
   Modal,
-  Pagination,
 } from '@mui/material';
 import { Delete, Preview } from '@mui/icons-material';
 // services
@@ -25,6 +24,7 @@ import MovieCard from '../../MovieCard/MovieCard';
 import AdminListHeader from './ui/AdminListHeader';
 import AdminDataTable from './ui/AdminDataTable';
 import AdminListLayout from './ui/AdminListLayout';
+import AdminListPagination from './ui/AdminListPagination';
 
 function AdminMovieList() {
   const [selectedMovie, setSelectedMovie] = useState(null);
@@ -122,6 +122,7 @@ function AdminMovieList() {
 
   return (
     <AdminListLayout>
+      {/* List header */}
       <AdminListHeader
         title="MOVIES LIST"
         searchValue={searchTerm}
@@ -130,7 +131,9 @@ function AdminMovieList() {
         actionLabel="ADD NEW FILM"
         onAction={handleAddNewMovie}
       />
+      {/* end List header */}
 
+      {/* list table */}
       <AdminDataTable
         columns={[
           {
@@ -174,7 +177,9 @@ function AdminMovieList() {
         rows={currentItems}
         loading={loading}
       />
+      {/* end list table */}
 
+      {/* Dialogs */}
       <Dialog open={isConfirmDeleteOpen} onClose={handleCloseDeleteConfirm}>
         <DialogTitle>Confirmer Delete</DialogTitle>
 
@@ -192,17 +197,13 @@ function AdminMovieList() {
           </Button>
         </DialogActions>
       </Dialog>
+      {/* Dialogs */}
 
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          marginTop: '20px',
-        }}
-      >
-        <Pagination count={totalPages} shape="rounded" onChange={handlePageChange} />
-      </Box>
+      {/* Pagination */}
+      <AdminListPagination totalPages={totalPages} onChange={handlePageChange} />
+      {/* end Pagination */}
 
+      {/* MOVIE CARD */}
       {selectedMovie && (
         <Modal open onClose={closeModal} className="Movie_Modal">
           <Box>
@@ -232,6 +233,7 @@ function AdminMovieList() {
           </Box>
         </Modal>
       )}
+      {/* MOVIE CARD */}
     </AdminListLayout>
   );
 }

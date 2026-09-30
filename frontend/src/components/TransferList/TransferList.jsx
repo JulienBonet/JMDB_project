@@ -16,7 +16,7 @@ import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
-import CreateItemCard from '../AdminFeatures/CreateItemCard/CreateItemCard';
+import CreateItemCard from '../AdminFeatures/AdminItemsCards/CreateItemCard';
 // refactor
 import { getByName } from '../../services/movieService';
 

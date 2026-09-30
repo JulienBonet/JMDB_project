@@ -1,6 +1,6 @@
 /* eslint-disable no-alert */
 import { useCallback, useState } from 'react';
-import { Container, Box, Modal, Pagination } from '@mui/material';
+import { Container, Box, Modal } from '@mui/material';
 import { Preview, Delete } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -10,11 +10,12 @@ import { getFocusSortedById, deleteFocus } from '../../../services/focusService'
 import useAdminItemsList from '../../../hooks/useAdminItemsList';
 // components
 import AdminItemsCard from '../AdminItemsCards/AdminItemsCardFocus';
-import CreateItemCard from '../CreateItemCard/CreateItemCard';
+import CreateItemCard from '../AdminItemsCards/CreateItemCard';
 // UI
 import AdminListHeader from './ui/AdminListHeader';
 import AdminDataTable from './ui/AdminDataTable';
 import AdminListLayout from './ui/AdminListLayout';
+import AdminListPagination from './ui/AdminListPagination';
 
 function AdminFocusList() {
   const [selectedItem, setSelectedItem] = useState(null);
@@ -63,6 +64,7 @@ function AdminFocusList() {
 
   return (
     <AdminListLayout>
+      {/* List header */}
       <AdminListHeader
         title="fOCUS LIST"
         searchValue={searchTerm}
@@ -71,6 +73,9 @@ function AdminFocusList() {
         actionLabel="ADD NEW FOCUS"
         onAction={openModalNewFocus}
       />
+      {/* end List header */}
+
+      {/* list table */}
       <AdminDataTable
         columns={[
           {
@@ -105,9 +110,13 @@ function AdminFocusList() {
         rows={currentItems}
         loading={loading}
       />
-      <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-        <Pagination count={totalPages} shape="rounded" onChange={handlePageChange} />
-      </Box>
+      {/* end list table */}
+
+      {/* Pagination */}
+      <AdminListPagination totalPages={totalPages} onChange={handlePageChange} />
+      {/* end Pagination */}
+
+      {/* ADMIN CARD */}
       {selectedItem && (
         <Modal open onClose={closeModal} className="Movie_Modal">
           <Box>
@@ -135,6 +144,9 @@ function AdminFocusList() {
           </Box>
         </Modal>
       )}
+      {/* END ADMIN CARD */}
+
+      {/* CREATED CARD */}
       {newFocus && (
         <Modal open onClose={closeModalNewFocus} className="Movie_Modal">
           <Box>
@@ -161,6 +173,7 @@ function AdminFocusList() {
           </Box>
         </Modal>
       )}
+      {/* END CREATED CARD */}
     </AdminListLayout>
   );
 }
