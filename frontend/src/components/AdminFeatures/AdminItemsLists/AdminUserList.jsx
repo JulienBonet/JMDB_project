@@ -1,6 +1,6 @@
 /* eslint-disable no-alert */
 import { useCallback, useState } from 'react';
-import { Container, Box, Modal, Pagination } from '@mui/material';
+import { Container, Box, Modal } from '@mui/material';
 import { VpnKey, Delete } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -10,11 +10,12 @@ import { getUsersSortedById, deleteUser } from '../../../services/userService';
 import useAdminItemsList from '../../../hooks/useAdminItemsList';
 // components
 import AdminItemsCard from '../AdminItemsCards/AdminItemsCardUsers';
-import CreateItemCard from '../CreateItemCard/CreateItemCard';
+import CreateItemCard from '../AdminItemsCards/CreateItemCard';
 // UI
 import AdminListHeader from './ui/AdminListHeader';
 import AdminDataTable from './ui/AdminDataTable';
 import AdminListLayout from './ui/AdminListLayout';
+import AdminListPagination from './ui/AdminListPagination';
 
 function AdminUsersList() {
   const [newUser, setNewUser] = useState(false);
@@ -58,6 +59,7 @@ function AdminUsersList() {
 
   return (
     <AdminListLayout>
+      {/* List header */}
       <AdminListHeader
         title="USERS LIST"
         searchValue={searchTerm}
@@ -66,6 +68,9 @@ function AdminUsersList() {
         actionLabel="ADD NEW USER"
         onAction={openModalNewUser}
       />
+      {/* end List header */}
+
+      {/* list table */}
       <AdminDataTable
         columns={[
           {
@@ -115,10 +120,13 @@ function AdminUsersList() {
         rows={currentItems}
         loading={loading}
       />
-      <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-        <Pagination count={totalPages} shape="rounded" onChange={handlePageChange} />
-      </Box>
+      {/* end list table */}
 
+      {/* Pagination */}
+      <AdminListPagination totalPages={totalPages} onChange={handlePageChange} />
+      {/* end Pagination */}
+
+      {/* ADMIN CARD */}
       {newUser && (
         <Modal open onClose={closeModalNewUser} className="Movie_Modal">
           <Box>
@@ -145,6 +153,9 @@ function AdminUsersList() {
           </Box>
         </Modal>
       )}
+      {/* END ADMIN CARD */}
+
+      {/* CREATED CARD */}
       {passwordItem && (
         <Modal open onClose={() => setPasswordItem(null)} className="Movie_Modal">
           <Box>
@@ -172,6 +183,7 @@ function AdminUsersList() {
           </Box>
         </Modal>
       )}
+      {/* END CREATED CARD */}
     </AdminListLayout>
   );
 }

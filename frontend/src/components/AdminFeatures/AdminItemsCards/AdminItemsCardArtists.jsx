@@ -3,20 +3,22 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/prop-types */
 import { useState, useRef } from 'react';
+import { Card, CardContent, Stack, Typography, TextField, Box, Switch } from '@mui/material';
 import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import ReactQuill from 'react-quill';
 import DOMPurify from 'dompurify';
+// styles react-quill
 import 'react-quill/dist/quill.snow.css';
 import '../../../assets/css/reactQuill_html_parametrage.css';
-import 'react-toastify/dist/ReactToastify.css';
-import Switch from '@mui/material/Switch';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import './adminItemsCard.css';
-import './adminItemsCardMediaQueries.css';
-// refactor
+// services
 import { updateAdminItem, updateAdminItemImage } from '../../../services/adminItemService';
+// components
 import AdminItemsCardImage from './AdminItemsCardShared/AdminItemsCardImage';
 import AdminItemsCardActions from './AdminItemsCardShared/AdminItemsCardActions';
+import AdminItemsCardResponsiveDivider from './AdminItemsCardShared/AdminItemsCardResponsiveDivider';
+// SX
+import { labelSx, infoSx, inputSx, pitchDisplaySx } from './constants/adminItemsCardStyles';
 
 function AdminItemsCardArtists({ item, origin, onUpdate, closeModal }) {
   const CLOUDINARY_BASE_URL = import.meta.env.VITE_CLOUDINARY_BASE_URL;
@@ -33,7 +35,7 @@ function AdminItemsCardArtists({ item, origin, onUpdate, closeModal }) {
   const [wikilink, setWikilink] = useState(item.wikilink || '');
   const [imdblink, setImdblink] = useState(item.imdblink || '');
   const [senscritiquelink, setSenscritiquelink] = useState(item.senscritiquelink || '');
-  const [websitelink, setWebsitelink] = useState(item.webSitelink || '');
+  const [websitelink, setWebsitelink] = useState(item.websitelink || '');
   const [birthDate, setBirthDate] = useState(item.birthDate || '');
   const [deathDate, setDeathDate] = useState(item.deathDate || '');
   const [isFocus, setIsFocus] = useState(item.isFocus || '');
@@ -137,6 +139,8 @@ function AdminItemsCardArtists({ item, origin, onUpdate, closeModal }) {
     setDeathDate(item.deathDate);
     setWikilink(item.wikilink);
     setImdblink(item.imdblink);
+    setSenscritiquelink(item.senscritiquelink);
+    setWebsitelink(item.websitelink);
     setIsFocus(item.isFocus);
     setImage(getImageUrl(item.image));
     setShowUploadButton(false);
@@ -172,167 +176,362 @@ function AdminItemsCardArtists({ item, origin, onUpdate, closeModal }) {
 
   const formats = ['header', 'bold', 'italic', 'underline', 'list', 'bullet'];
 
+  // -------------------------------
+  // SX
+  // -------------------------------
+
+  const linkSx = {
+    ...infoSx,
+    wordBreak: 'break-all',
+    overflowWrap: 'break-word',
+  };
+
   return (
-    <article className="ItemsCard">
-      <section className="ItemsCard_Col_0">
-        <AdminItemsCardImage
-          image={image}
-          itemName={item.name}
-          isModify={isModify}
-          fileInputRef={fileInputRef}
-          handleFileUpload={handleFileUpload}
-          showUploadButton={showUploadButton}
-          handleUploadClick={handleUploadClick}
-          handleResetImage={handleResetImage}
-        />
+    <Card
+      id="AdminItemsCardArtists"
+      sx={{
+        bgcolor: 'var(--color-04)',
+        mx: '5%',
+        p: 2,
+      }}
+    >
+      {/* CARD CONTENTS */}
+      <CardContent
+        id="AdminItemsCardArtists_Content"
+        sx={{
+          display: 'flex',
+          flexDirection: {
+            xs: 'column',
+            lg: 'row',
+          },
+          justifyContent: 'space-between',
+          gap: 2,
+          p: 0,
+          '&:last-child': {
+            pb: 0,
+          },
+        }}
+      >
+        {/* IMAGE - placement version mobile/tablette */}
+        <Stack
+          id="AdminItemsCardArtists_ImageMobile"
+          sx={{
+            display: {
+              xs: 'flex',
+              lg: 'none',
+            },
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: 2,
+            width: {
+              xs: '100%',
+              lg: '25%',
+            },
+          }}
+        >
+          <AdminItemsCardImage
+            image={image}
+            itemName={item.name}
+            isModify={isModify}
+            fileInputRef={fileInputRef}
+            handleFileUpload={handleFileUpload}
+            showUploadButton={showUploadButton}
+            handleUploadClick={handleUploadClick}
+            handleResetImage={handleResetImage}
+          />
 
-        <div className="ItemsCard_bar" />
-      </section>
+          {/* divider mobile/tablette */}
+          <AdminItemsCardResponsiveDivider />
+          {/* end divider mobile/tablette */}
+        </Stack>
+        {/* END IMAGE - placement version mobile/tablette */}
 
-      <section className="ItemsCard_Col1">
-        <div className="Info_item_line">
-          <h2 className="ItemsCard_title">ID: </h2>
-          <p className="Items_info">{item.id}</p>
-        </div>
-        <div className="Info_item_line">
-          <h2 className="ItemsCard_title">NAME: </h2>
-          {isModify ? (
-            <input type="text" value={name} onChange={handleNameChange} />
-          ) : (
-            <p className="Items_info">{name}</p>
-          )}
-        </div>
+        {/* CARD INFORMATIONS / ACTIONS */}
+        <Stack
+          id="AdminItemsCardArtists_Infos_actions"
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 2,
+            width: {
+              xs: '95%',
+              lg: '70%',
+            },
+            mx: {
+              xs: 'auto',
+              lg: 0,
+            },
+          }}
+        >
+          {/* ID */}
+          <Stack id="ID_AdminItemsCardArtist" direction="row" spacing={2} alignItems="center">
+            <Typography sx={labelSx}>ID:</Typography>
 
-        {isArtistFocus && (
-          <div className="Info_item_line">
-            <h2 className="ItemsCard_title">BIRTH: </h2>
+            <Typography sx={infoSx}>{item.id}</Typography>
+          </Stack>
+          {/* END ID */}
+
+          {/* NAME */}
+          <Stack
+            id="NAME_AdminItemsCardArtist"
+            direction={{ xs: 'column', sm: 'row' }}
+            spacing={2}
+            alignItems={{ xs: 'stretch', sm: 'center' }}
+          >
+            <Typography sx={labelSx}>NAME:</Typography>
+
             {isModify ? (
-              <input type="text" value={birthDate} onChange={(e) => setBirthDate(e.target.value)} />
+              <TextField
+                type="text"
+                size="small"
+                value={name}
+                onChange={handleNameChange}
+                fullWidth
+                sx={inputSx}
+              />
             ) : (
-              <p className="Items_info">{birthDate}</p>
+              <Typography sx={infoSx}>{name}</Typography>
             )}
-          </div>
-        )}
+          </Stack>
+          {/* END NAME */}
 
-        {isArtistFocus && (
-          <>
-            <div className="Info_item_line">
-              <h2 className="ItemsCard_title">DEATH: </h2>
+          {/* BIRTH */}
+          {isArtistFocus && (
+            <Stack id="BIRTH_AdminItemsCardArtist" direction="row" spacing={2} alignItems="center">
+              <Typography sx={labelSx}>BIRTH:</Typography>
               {isModify ? (
-                <input
+                <TextField
                   type="text"
-                  value={deathDate}
-                  onChange={(e) => setDeathDate(e.target.value)}
+                  size="small"
+                  value={birthDate}
+                  onChange={(e) => setBirthDate(e.target.value)}
+                  fullWidth
+                  sx={inputSx}
                 />
               ) : (
-                <p className="Items_info">{deathDate}</p>
+                <Typography sx={infoSx}>{birthDate}</Typography>
               )}
-            </div>
-            <div className="Info_item_line_html">
-              <h2 className="ItemsCard_title">PITCH: </h2>
-              {isModify ? (
-                <ReactQuill
-                  value={pitch}
-                  onChange={setPitch}
-                  theme="snow"
-                  modules={modules}
-                  formats={formats}
-                  style={{
-                    width: '91%',
-                    // minHeight: "200px",
-                  }}
-                  className="Items_info"
-                />
-              ) : (
-                <div
-                  className="Items_info_artistFocus"
-                  dangerouslySetInnerHTML={{
-                    __html: DOMPurify.sanitize(pitch),
-                  }}
-                />
-              )}
-            </div>
-            <div className="Info_item_line">
-              <h2 className="ItemsCard_title">WIKIPEDIA: </h2>
-              {isModify ? (
-                <input type="text" value={wikilink} onChange={(e) => setWikilink(e.target.value)} />
-              ) : (
-                <p className="Items_info word-break">{wikilink}</p>
-              )}
-            </div>
-            <div className="Info_item_line">
-              <h2 className="ItemsCard_title">IMDB: </h2>
-              {isModify ? (
-                <input type="text" value={imdblink} onChange={(e) => setImdblink(e.target.value)} />
-              ) : (
-                <p className="Items_info word-break">{imdblink}</p>
-              )}
-            </div>
-            <div className="Info_item_line">
-              <h2 className="ItemsCard_title">SENS CRITIQUE: </h2>
-              {isModify ? (
-                <input
-                  type="text"
-                  value={senscritiquelink}
-                  onChange={(e) => setSenscritiquelink(e.target.value)}
-                />
-              ) : (
-                <p className="Items_info word-break">{senscritiquelink}</p>
-              )}
-            </div>
-            <div className="Info_item_line">
-              <h2 className="ItemsCard_title">WEBSITE: </h2>
-              {isModify ? (
-                <input
-                  type="text"
-                  value={websitelink}
-                  onChange={(e) => setWebsitelink(e.target.value)}
-                />
-              ) : (
-                <p className="Items_info word-break">{websitelink}</p>
-              )}
-            </div>
-            <div className="Info_item_line">
-              <h2 className="ItemsCard_title">FOCUS: </h2>
-              {isModify ? (
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={Boolean(isFocus)}
-                      onChange={(e) => setIsFocus(e.target.checked)}
+            </Stack>
+          )}
+          {/* END BIRTH */}
+
+          {isArtistFocus && (
+            <>
+              {/* DEATH */}
+              <Stack
+                id="DEATH_AdminItemsCardArtist"
+                direction="row"
+                spacing={2}
+                alignItems="center"
+              >
+                <Typography sx={labelSx}>DEATH:</Typography>
+                {isModify ? (
+                  <TextField
+                    type="text"
+                    size="small"
+                    value={deathDate}
+                    onChange={(e) => setDeathDate(e.target.value)}
+                    fullWidth
+                    sx={inputSx}
+                  />
+                ) : (
+                  <Typography sx={infoSx}>{deathDate}</Typography>
+                )}
+              </Stack>
+              {/* END DEATH */}
+
+              {/* PITCH TEXT */}
+              <Stack
+                id="PITCH_AdminItemsCardArtist"
+                direction={{ xs: 'column', sm: 'row' }}
+                spacing={2}
+                alignItems={{ xs: 'stretch', sm: 'flex-start' }}
+              >
+                <Typography sx={labelSx}>PITCH:</Typography>
+                {isModify ? (
+                  <Box
+                    id="AdminItemsCardArtist_ReactQuill"
+                    sx={{
+                      width: { xs: '100%', sm: '91%' },
+                      minHeight: '200px',
+                    }}
+                  >
+                    <ReactQuill
+                      value={pitch}
+                      onChange={setPitch}
+                      theme="snow"
+                      modules={modules}
+                      formats={formats}
+                      className="Items_info"
                     />
-                  }
-                />
-              ) : (
-                <p className="Items_info">{isFocus ? 'OUI' : 'NON'}</p>
-              )}
-            </div>
-          </>
-        )}
+                  </Box>
+                ) : (
+                  <Box
+                    id="AdminItemsCardArtists_PitchPreview"
+                    className="Items_info"
+                    sx={pitchDisplaySx}
+                    dangerouslySetInnerHTML={{
+                      __html: DOMPurify.sanitize(pitch),
+                    }}
+                  />
+                )}
+              </Stack>
+              {/* END PITCH TEXT */}
 
-        <AdminItemsCardActions
-          isEditing={isModify}
-          isLoading={isLoading}
-          onReturn={handleReturn}
-          onEdit={openModif}
-          onValidate={handleValidate}
-          onUndo={handleUndo}
-        />
-      </section>
+              {/* WIKIPEDIA LINK */}
+              <Stack
+                id="WIKIPEDIA_AdminItemsCardArtist"
+                direction={{ xs: 'column', sm: 'row' }}
+                spacing={2}
+                alignItems={{ xs: 'stretch', sm: 'center' }}
+              >
+                <Typography sx={labelSx}>WIKIPEDIA: </Typography>
+                {isModify ? (
+                  <TextField
+                    type="text"
+                    size="small"
+                    value={wikilink}
+                    onChange={(e) => setWikilink(e.target.value)}
+                    fullWidth
+                    sx={inputSx}
+                  />
+                ) : (
+                  <Typography sx={linkSx}>{wikilink}</Typography>
+                )}
+              </Stack>
+              {/* END WIKIPEDIA LINK */}
 
-      <section className="ItemsCard_Col2">
-        <AdminItemsCardImage
-          image={image}
-          itemName={item.name}
-          isModify={isModify}
-          fileInputRef={fileInputRef}
-          handleFileUpload={handleFileUpload}
-          showUploadButton={showUploadButton}
-          handleUploadClick={handleUploadClick}
-          handleResetImage={handleResetImage}
-        />
-      </section>
-    </article>
+              {/* IMDB LINK */}
+              <Stack
+                id="IMDB_AdminItemsCardArtist"
+                direction={{ xs: 'column', sm: 'row' }}
+                spacing={2}
+                alignItems={{ xs: 'stretch', sm: 'center' }}
+              >
+                <Typography sx={labelSx}>IMDB: </Typography>
+                {isModify ? (
+                  <TextField
+                    type="text"
+                    size="small"
+                    value={imdblink}
+                    onChange={(e) => setImdblink(e.target.value)}
+                    fullWidth
+                    sx={inputSx}
+                  />
+                ) : (
+                  <Typography sx={linkSx}>{imdblink}</Typography>
+                )}
+              </Stack>
+              {/* END IMDB LINK */}
+
+              {/* SENS CRITIQUE LINK */}
+              <Stack
+                id="SENSCRITIQUE_AdminItemsCardArtist"
+                direction={{ xs: 'column', sm: 'row' }}
+                spacing={2}
+                alignItems={{ xs: 'stretch', sm: 'center' }}
+              >
+                <Typography sx={labelSx}>SENS CRITIQUE: </Typography>
+                {isModify ? (
+                  <TextField
+                    type="text"
+                    size="small"
+                    value={senscritiquelink}
+                    onChange={(e) => setSenscritiquelink(e.target.value)}
+                    fullWidth
+                    sx={inputSx}
+                  />
+                ) : (
+                  <Typography sx={linkSx}>{senscritiquelink}</Typography>
+                )}
+              </Stack>
+              {/* END SENS CRITIQUE LINK */}
+
+              {/* WEBSITE LINK */}
+              <Stack
+                id="WEBSITE_AdminItemsCardArtist"
+                direction={{ xs: 'column', sm: 'row' }}
+                spacing={2}
+                alignItems={{ xs: 'stretch', sm: 'center' }}
+              >
+                <Typography sx={labelSx}>WEBSITE: </Typography>
+                {isModify ? (
+                  <TextField
+                    type="text"
+                    size="small"
+                    value={websitelink}
+                    onChange={(e) => setWebsitelink(e.target.value)}
+                    fullWidth
+                    sx={inputSx}
+                  />
+                ) : (
+                  <Typography sx={linkSx}>{websitelink}</Typography>
+                )}
+              </Stack>
+              {/* WEBSITE LINK */}
+
+              {/* FOCUS SWITCH */}
+              <Stack
+                id="isFOCUS_AdminItemsCardArtist"
+                direction="row"
+                spacing={2}
+                alignItems="center"
+              >
+                <Typography sx={labelSx}>FOCUS: </Typography>
+                {isModify ? (
+                  <Switch
+                    checked={Boolean(isFocus)}
+                    onChange={(e) => setIsFocus(e.target.checked)}
+                  />
+                ) : (
+                  <Typography sx={infoSx}>{isFocus ? 'OUI' : 'NON'}</Typography>
+                )}
+              </Stack>
+              {/* END FOCUS SWITCH */}
+            </>
+          )}
+
+          <AdminItemsCardActions
+            isEditing={isModify}
+            isLoading={isLoading}
+            onReturn={handleReturn}
+            onEdit={openModif}
+            onValidate={handleValidate}
+            onUndo={handleUndo}
+          />
+        </Stack>
+        {/* END CARD INFORMATIONS / ACTIONS */}
+
+        {/* IMAGE - version desktop */}
+        <Stack
+          id="AdminItemsCardArtist_ImageDesktop"
+          sx={{
+            display: {
+              xs: 'none',
+              lg: 'flex',
+            },
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: 2,
+            width: '25%',
+          }}
+        >
+          {/* image desktop */}
+          <AdminItemsCardImage
+            image={image}
+            itemName={item.name}
+            isModify={isModify}
+            fileInputRef={fileInputRef}
+            handleFileUpload={handleFileUpload}
+            showUploadButton={showUploadButton}
+            handleUploadClick={handleUploadClick}
+            handleResetImage={handleResetImage}
+          />
+        </Stack>
+        {/* END IMAGE - version desktop */}
+      </CardContent>
+      {/* END CARD CONTENTS */}
+    </Card>
   );
 }
 

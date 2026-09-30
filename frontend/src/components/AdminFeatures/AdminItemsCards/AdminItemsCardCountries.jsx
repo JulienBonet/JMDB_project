@@ -1,13 +1,17 @@
 // admin Pays
 /* eslint-disable react/prop-types */
 import { useState, useRef } from 'react';
+import { Card, CardContent, Stack, Typography, TextField, Box } from '@mui/material';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import './adminItemsCard.css';
-// refactor
+// Services
 import { updateAdminItem, updateAdminItemImage } from '../../../services/adminItemService';
+// Components
 import AdminItemsCardImage from './AdminItemsCardShared/AdminItemsCardImage';
 import AdminItemsCardActions from './AdminItemsCardShared/AdminItemsCardActions';
+import AdminItemsCardResponsiveDivider from './AdminItemsCardShared/AdminItemsCardResponsiveDivider';
+// SX
+import { labelSx, infoSx, inputSx } from './constants/adminItemsCardStyles';
 
 function AdminItemsCardCountries({ item, origin, onUpdate, closeModal }) {
   const CLOUDINARY_BASE_URL = import.meta.env.VITE_CLOUDINARY_BASE_URL;
@@ -114,57 +118,154 @@ function AdminItemsCardCountries({ item, origin, onUpdate, closeModal }) {
   };
 
   return (
-    <article className="ItemsCard">
-      <section className="ItemsCard_Col_0">
-        <AdminItemsCardImage
-          image={image}
-          itemName={item.name}
-          isModify={isModify}
-          fileInputRef={fileInputRef}
-          handleFileUpload={handleFileUpload}
-          showUploadButton={showUploadButton}
-          handleUploadClick={handleUploadClick}
-          handleResetImage={handleResetImage}
-        />
+    <Card
+      id="AdminItemsCardCountries"
+      sx={{
+        bgcolor: 'var(--color-04)',
+        mx: '5%',
+        p: 2,
+      }}
+    >
+      {/* CARD CONTENTS */}
+      <CardContent
+        id="AdminItemsCardCountries_Content"
+        sx={{
+          display: 'flex',
+          flexDirection: {
+            xs: 'column',
+            lg: 'row',
+          },
+          justifyContent: 'space-between',
+          gap: 2,
+          p: 0,
+          '&:last-child': {
+            pb: 0,
+          },
+        }}
+      >
+        {/* IMAGE - placement version mobile/tablette */}
+        <Stack
+          id="AdminItemsCardCountries_ImageMobile"
+          sx={{
+            display: {
+              xs: 'flex',
+              lg: 'none',
+            },
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: 2,
+            width: {
+              xs: '100%',
+              lg: '25%',
+            },
+          }}
+        >
+          {/* image mobile/tablette */}
+          <AdminItemsCardImage
+            image={image}
+            itemName={item.name}
+            isModify={isModify}
+            fileInputRef={fileInputRef}
+            handleFileUpload={handleFileUpload}
+            showUploadButton={showUploadButton}
+            handleUploadClick={handleUploadClick}
+            handleResetImage={handleResetImage}
+          />
+          {/* end image mobile/tablette */}
 
-        <div className="ItemsCard_bar" />
-      </section>
-      <section className="ItemsCard_Col1">
-        <div className="Info_item_line">
-          <h2 className="ItemsCard_title">ID: </h2>
-          <p className="Items_info">{item.id}</p>
-        </div>
-        <div className="Info_item_line">
-          <h2 className="ItemsCard_title">NAME: </h2>
-          {isModify ? (
-            <input type="text" value={name} onChange={handleNameChange} />
-          ) : (
-            <p className="Items_info">{name}</p>
-          )}
-        </div>
+          {/* divider mobile/tablette */}
+          <AdminItemsCardResponsiveDivider />
+          {/* end divider mobile/tablette */}
+        </Stack>
+        {/* End IMAGE - placement version mobile/tablette */}
 
-        <AdminItemsCardActions
-          isEditing={isModify}
-          onReturn={handleReturn}
-          onEdit={openModif}
-          onValidate={handleValidate}
-          onUndo={handleUndo}
-        />
-      </section>
+        {/* CARD INFORMATIONS / ACTIONS */}
+        <Stack
+          id="AdminItemsCardCountries_Infos_actions"
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 2,
+            width: {
+              xs: '95%',
+              lg: '70%',
+            },
+            mx: {
+              xs: 'auto',
+              lg: 0,
+            },
+          }}
+        >
+          {/* ID */}
+          <Stack id="ID_AdminItemsCardCountries" direction="row" spacing={2} alignItems="center">
+            <Typography sx={labelSx}>ID:</Typography>
 
-      <section className="ItemsCard_Col2">
-        <AdminItemsCardImage
-          image={image}
-          itemName={item.name}
-          isModify={isModify}
-          fileInputRef={fileInputRef}
-          handleFileUpload={handleFileUpload}
-          showUploadButton={showUploadButton}
-          handleUploadClick={handleUploadClick}
-          handleResetImage={handleResetImage}
-        />
-      </section>
-    </article>
+            <Typography sx={infoSx}>{item.id}</Typography>
+          </Stack>
+          {/* END ID */}
+
+          {/* NAME */}
+          <Stack id="NAME_AdminItemsCardCountries" direction="row" spacing={2} alignItems="center">
+            <Typography sx={labelSx}>NAME:</Typography>
+
+            {isModify ? (
+              <TextField
+                type="text"
+                size="small"
+                value={name}
+                onChange={handleNameChange}
+                fullWidth
+                sx={inputSx}
+              />
+            ) : (
+              <Typography sx={infoSx}>{name}</Typography>
+            )}
+          </Stack>
+          {/* END NAME */}
+
+          {/* ACTIONS */}
+          <AdminItemsCardActions
+            isEditing={isModify}
+            onReturn={handleReturn}
+            onEdit={openModif}
+            onValidate={handleValidate}
+            onUndo={handleUndo}
+          />
+          {/* END ACTIONS */}
+        </Stack>
+        {/* END CARD INFORMATIONS / ACTIONS */}
+
+        {/* IMAGE - version desktop */}
+        <Stack
+          id="AdminItemsCardCountries_ImageDesktop"
+          sx={{
+            display: {
+              xs: 'none',
+              lg: 'flex',
+            },
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: 2,
+            width: '25%',
+          }}
+        >
+          {/* image desktop */}
+          <AdminItemsCardImage
+            image={image}
+            itemName={item.name}
+            isModify={isModify}
+            fileInputRef={fileInputRef}
+            handleFileUpload={handleFileUpload}
+            showUploadButton={showUploadButton}
+            handleUploadClick={handleUploadClick}
+            handleResetImage={handleResetImage}
+          />
+          {/* end image desktop */}
+        </Stack>
+        {/* END IMAGE - version desktop */}
+      </CardContent>
+      {/* END CARD CONTENTS */}
+    </Card>
   );
 }
 

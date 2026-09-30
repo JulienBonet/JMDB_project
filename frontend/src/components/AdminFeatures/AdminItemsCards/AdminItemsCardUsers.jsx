@@ -2,11 +2,19 @@
 /* eslint-disable no-alert */
 import { useState } from 'react';
 import { toast } from 'react-toastify';
+import { Card, CardContent, Stack, Typography, TextField, Box } from '@mui/material';
 import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
 import UndoIcon from '@mui/icons-material/Undo';
-import './adminItemsCard.css';
-// refactor
+// Services
 import { updateUserPassword } from '../../../services/userService';
+// SX
+import {
+  labelSx,
+  infoSx,
+  inputSx,
+  validateIconSx,
+  undoIconSx,
+} from './constants/adminItemsCardStyles';
 
 function AdminItemsCardUsers({ item, onUpdate, closeModal }) {
   const [newPassword, setNewPassword] = useState('');
@@ -59,53 +67,100 @@ function AdminItemsCardUsers({ item, onUpdate, closeModal }) {
   };
 
   return (
-    <article className="ItemsCard">
-      <section className="ItemsCard_Col1">
-        <div className="Info_item_line">
-          <h2 className="ItemsCard_title">ID:</h2>
-          <p className="Items_info">{item.id}</p>
-        </div>
+    <Card
+      id="AdminItemsCardUsers"
+      sx={{
+        bgcolor: 'var(--color-04)',
+        mx: '5%',
+        p: 2,
+      }}
+    >
+      {/* CARD CONTENTS */}
+      <CardContent
+        id="AdminItemsCardUsers_Content"
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 2,
+          p: 0,
+          '&:last-child': {
+            pb: 0,
+          },
+        }}
+      >
+        {/* ID */}
+        <Stack id="ID_AdminItemsCardUsers" direction="row" spacing={2} alignItems="center">
+          <Typography sx={labelSx}>ID:</Typography>
 
-        <div className="Info_item_line">
-          <h2 className="ItemsCard_title">NAME:</h2>
-          <p className="Items_info">{item.name}</p>
-        </div>
+          <Typography sx={infoSx}>{item.id}</Typography>
+        </Stack>
+        {/* END ID */}
 
-        <div className="Info_item_line">
-          <h2 className="ItemsCard_title">NEW PASSWORD:</h2>
-          <input
+        {/* NAME */}
+        <Stack id="NAME_AdminItemsCardUsers" direction="row" spacing={2} alignItems="center">
+          <Typography sx={labelSx}>NAME:</Typography>
+
+          <Typography sx={infoSx}>{item.name}</Typography>
+        </Stack>
+        {/* END NAME */}
+
+        {/* NEW PASSWORD */}
+        <Stack
+          id="NewPassword_AdminItemsCardUsers"
+          direction={{ xs: 'column', sm: 'row' }}
+          spacing={2}
+          alignItems={{ xs: 'stretch', sm: 'center' }}
+        >
+          <Typography sx={labelSx}>NEW PASSWORD:</Typography>
+
+          <TextField
             type="password"
+            size="small"
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
-            className="Items_input"
+            fullWidth
+            sx={inputSx}
           />
-        </div>
+        </Stack>
+        {/* END NEW PASSWORD */}
 
-        <div className="Info_item_line">
-          <h2 className="ItemsCard_title">CONFIRM PASSWORD:</h2>
-          <input
+        {/* CONFIRM PASSWORD */}
+        <Stack
+          id="ConfirmPassword_AdminItemsCardUsers"
+          direction={{ xs: 'column', sm: 'row' }}
+          spacing={2}
+          alignItems={{ xs: 'stretch', sm: 'center' }}
+        >
+          <Typography sx={labelSx}>CONFIRM PASSWORD:</Typography>
+
+          <TextField
             type="password"
+            size="small"
             value={confirmNewPassword}
             onChange={(e) => setConfirmNewPassword(e.target.value)}
-            className="Items_input"
+            fullWidth
+            sx={inputSx}
           />
-        </div>
+        </Stack>
+        {/* END CONFIRM PASSWORD */}
 
-        <div className="Info_Btn-Modify">
-          <section className="Item_Editing_Buttons">
-            <DoneOutlineIcon
-              className="Item_validateButton"
-              onClick={handleValidate}
-              style={{
-                opacity: isSubmitting ? 0.6 : 1,
-                pointerEvents: isSubmitting ? 'none' : 'auto',
-              }}
-            />
-            <UndoIcon className="Item_UndoButton" onClick={handleUndo} />
-          </section>
-        </div>
-      </section>
-    </article>
+        {/* ACTIONS */}
+        <Box
+          id="AdminItemsCardUsers_Actions"
+          sx={{
+            pt: 2,
+          }}
+        >
+          <Stack direction="row" spacing={2}>
+            <DoneOutlineIcon onClick={handleValidate} sx={validateIconSx(isSubmitting)} />
+
+            <UndoIcon onClick={handleUndo} sx={undoIconSx} />
+          </Stack>
+        </Box>
+        {/* END ACTIONS */}
+      </CardContent>
+      {/* END CARD CONTENTS */}
+    </Card>
   );
 }
 

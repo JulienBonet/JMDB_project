@@ -1,6 +1,6 @@
 /* eslint-disable no-alert */
 import { useCallback, useState } from 'react';
-import { Container, Box, Modal, Pagination } from '@mui/material';
+import { Container, Box, Modal } from '@mui/material';
 import { Preview, Delete } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -10,11 +10,12 @@ import { getTagsSortedById, deleteTag } from '../../../services/tagService';
 import useAdminItemsList from '../../../hooks/useAdminItemsList';
 // components
 import AdminItemsCard from '../AdminItemsCards/AdminItemsCardkindsLanguagesTags';
-import CreateItemCard from '../CreateItemCard/CreateItemCard';
+import CreateItemCard from '../AdminItemsCards/CreateItemCard';
 // UI
 import AdminListHeader from './ui/AdminListHeader';
 import AdminDataTable from './ui/AdminDataTable';
 import AdminListLayout from './ui/AdminListLayout';
+import AdminListPagination from './ui/AdminListPagination';
 
 function AdminTagsList() {
   const [selectedItem, setSelectedItem] = useState(null);
@@ -63,6 +64,7 @@ function AdminTagsList() {
 
   return (
     <AdminListLayout>
+      {/* List header */}
       <AdminListHeader
         title="TAGS LIST"
         searchValue={searchTerm}
@@ -71,7 +73,9 @@ function AdminTagsList() {
         actionLabel="ADD NEW TAG"
         onAction={openModalNewTag}
       />
+      {/* end List header */}
 
+      {/* list table */}
       <AdminDataTable
         columns={[
           {
@@ -105,10 +109,13 @@ function AdminTagsList() {
         rows={currentItems}
         loading={loading}
       />
+      {/* end list table */}
 
-      <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-        <Pagination count={totalPages} shape="rounded" onChange={handlePageChange} />
-      </Box>
+      {/* Pagination */}
+      <AdminListPagination totalPages={totalPages} onChange={handlePageChange} />
+      {/* end Pagination */}
+
+      {/* ADMIN CARD */}
       {selectedItem && (
         <Modal open onClose={closeModal} className="Movie_Modal">
           <Box>
@@ -136,6 +143,9 @@ function AdminTagsList() {
           </Box>
         </Modal>
       )}
+      {/* END ADMIN CARD */}
+
+      {/* CREATED CARD */}
       {newTag && (
         <Modal open onClose={closeModalNewTag} className="Movie_Modal">
           <Box>
@@ -158,6 +168,7 @@ function AdminTagsList() {
           </Box>
         </Modal>
       )}
+      {/* END CREATED CARD */}
     </AdminListLayout>
   );
 }

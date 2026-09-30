@@ -1,12 +1,14 @@
 // Admin Genres - Langues - Tags
 /* eslint-disable react/prop-types */
 import { useState } from 'react';
+import { Card, CardContent, Stack, Typography, TextField } from '@mui/material';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import './adminItemsCard.css';
-// refactor
+// services
 import { updateAdminItem } from '../../../services/adminItemService';
+// component
 import AdminItemsCardActions from './AdminItemsCardShared/AdminItemsCardActions';
+import { inputSx } from './constants/adminItemsCardStyles';
 
 function AdminItemsCardkindsLanguagesTags({ item, origin, onUpdate, closeModal }) {
   const [isModify, setIsModify] = useState(false);
@@ -67,21 +69,56 @@ function AdminItemsCardkindsLanguagesTags({ item, origin, onUpdate, closeModal }
   };
 
   return (
-    <article className="ItemsCard">
-      <section className="ItemsCard_Col1">
-        <div className="Info_item_line">
-          <h2 className="ItemsCard_title">ID: </h2>
-          <p className="Items_info">{item.id}</p>
-        </div>
-        <div className="Info_item_line">
-          <h2 className="ItemsCard_title">NAME: </h2>
-          {isModify ? (
-            <input type="text" value={name} onChange={handleNameChange} />
-          ) : (
-            <p className="Items_info">{name}</p>
-          )}
-        </div>
+    <Card
+      id="KindsLangTags_Card_Container"
+      sx={{
+        bgcolor: 'var(--color-04)',
+        mx: '5%',
+        p: 2,
+      }}
+    >
+      {/* CARD CONTENTS */}
+      <CardContent id="KindsLangTags_Card_Contents">
+        {/* Id */}
+        <Stack id="ID_KindsLangTags_Card" direction="row" spacing={2} alignItems="center">
+          <Typography fontFamily="var(--font-05)" color="var(--color-02)">
+            ID:
+          </Typography>
 
+          <Typography fontFamily="var(--font-06)" color="var(--color-01)">
+            {item.id}
+          </Typography>
+        </Stack>
+        {/* end Id */}
+
+        {/* name */}
+        <Stack
+          id="NAME_KindsLangTags_Card"
+          direction={{ xs: 'column', sm: 'row' }}
+          spacing={2}
+          alignItems={{ xs: 'stretch', sm: 'center' }}
+        >
+          <Typography fontFamily="var(--font-05)" color="var(--color-02)" fontSize="medium">
+            NAME:
+          </Typography>
+
+          {isModify ? (
+            <TextField
+              size="small"
+              fullWidth
+              value={name}
+              onChange={handleNameChange}
+              sx={inputSx}
+            />
+          ) : (
+            <Typography fontFamily="var(--font-06)" color="var(--color-01)" fontSize="medium">
+              {name}
+            </Typography>
+          )}
+        </Stack>
+        {/* name */}
+
+        {/* Card Actions */}
         <AdminItemsCardActions
           isEditing={isModify}
           onReturn={handleReturn}
@@ -89,8 +126,10 @@ function AdminItemsCardkindsLanguagesTags({ item, origin, onUpdate, closeModal }
           onValidate={handleValidate}
           onUndo={handleUndo}
         />
-      </section>
-    </article>
+        {/* end Card Actions */}
+      </CardContent>
+      {/* END CARD CONTENTS */}
+    </Card>
   );
 }
 
