@@ -1,18 +1,13 @@
-import Modal from '@mui/material/Modal';
-import Box from '@mui/material/Box';
-import { Container } from '@mui/material';
+import { Container, Typography, Box, Modal } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-
+// components
 import MovieFocusThumbnail from '../MovieFocusThumbnail/MovieFocusThumbnail';
 import MovieThumbnail from '../MovieThumbnail/MovieThumbnail';
 import ToggleSortedButton from '../ToggleSortedBtn/ToggleSortedButton';
 import SideActionBar from '../StickySideBar/StickySideBar';
 import FocusCard from '../FocusCard/FocusCard';
-
-import './movieFocus.css';
-import './movieFocusMediaqueries.css';
 
 function MovieFocusLayout({
   icon,
@@ -48,12 +43,38 @@ function MovieFocusLayout({
   infoButtonTitle,
 }) {
   return (
-    <main className="Main_movieFocusPage">
-      {/* barre */}
-      <section className="search_bar_container_MF">
-        <div className="search_bar_content_selectefFocus_MF">
+    <Box
+      component="main"
+      id="MovieFocusLayout_Main"
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: '90vh',
+        overflow: 'hidden',
+      }}
+    >
+      {/* HEADER */}
+      <Box
+        component="section"
+        id="MovieFocus_Header"
+        sx={{
+          flex: '0 0 auto',
+        }}
+      >
+        <Box
+          id="MovieFocus_HeaderContent"
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            height: '5rem',
+            px: 4,
+            gap: 1,
+          }}
+        >
           {selectedFocus ? (
             <>
+              {/* selected focus return ico */}
               <IconButton
                 onClick={() => setSelectedFocus('')}
                 sx={{
@@ -61,6 +82,9 @@ function MovieFocusLayout({
                   border: '1px solid var(--color-01)',
                   borderRadius: '8px',
                   padding: '6px',
+                  '& .MuiSvgIcon-root': {
+                    fontSize: { xs: '1.25rem', sm: '1.5rem' },
+                  },
                   '&:hover': {
                     backgroundColor: 'var(--color-05)',
                     borderColor: 'var(--color-01)',
@@ -70,13 +94,37 @@ function MovieFocusLayout({
               >
                 <KeyboardReturnIcon />
               </IconButton>
+              {/* end selected focus return ico */}
 
-              <div className="SelectFocus_Title">
-                <h1 className="h1_titlePage_MF">{selectedFocus.name}</h1>
+              {/* selected focus title SECTION */}
+              <Box
+                id="SelectFocus_Title"
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: { xs: 1, sm: 4 },
+                }}
+              >
+                {/* selected focus title */}
+                <Typography
+                  id="SelectedFocus_HeaderTitle"
+                  component="h1"
+                  sx={{
+                    fontFamily: 'var(--font-02)',
+                    color: 'var(--color-01)',
+                    fontSize: { xs: 'medium', sm: 'xx-large' },
+                    textAlign: 'center',
+                  }}
+                >
+                  {selectedFocus.name}
+                </Typography>
+                {/* selected focus title */}
 
+                {/* selected focus info button */}
                 <IconButton
                   onClick={openModal}
-                  sx={{ color: 'var(--color-01)' }}
+                  sx={{ display: { xs: 'none', md: 'flex' }, color: 'var(--color-01)' }}
                   aria-label="info +"
                   title={infoButtonTitle}
                 >
@@ -105,33 +153,66 @@ function MovieFocusLayout({
                     }}
                   />
                 </IconButton>
-              </div>
+                {/* selected focus info button */}
+              </Box>
+              {/* end selected focus title SECTION */}
 
+              {/* toggle Btn */}
               <ToggleSortedButton
                 active={!!films}
                 onClick={() => setOpenMovieSideBar(!openMovieSideBar)}
               />
+              {/* end toggle Btn */}
             </>
           ) : (
             <>
-              <img src={icon} alt={alt} className="thema_icon" />
-              <h1 className="h1_titlePage_MF">{title}</h1>
+              {/* Thema ico */}
+              <Box component="img" id="focus_ico" src={icon} alt={alt} sx={{ height: '3rem' }} />
+              {/* Thema ico */}
 
+              {/* thema title */}
+              <Typography
+                id="FocusList_HeaderTitle"
+                component="h1"
+                sx={{
+                  fontFamily: 'var(--font-02)',
+                  color: 'var(--color-01)',
+                  fontSize: { xs: 'large', sm: 'xx-large' },
+                }}
+              >
+                {title}
+              </Typography>
+              {/* thema title */}
+
+              {/* toggle Btn */}
               <ToggleSortedButton
                 active={!!initialData}
                 onClick={() => setOpenSideBar(!openSideBar)}
               />
+              {/* toggle Btn */}
             </>
           )}
-        </div>
-      </section>
+        </Box>
+      </Box>
 
       <div className="dashed_secondary_bar" />
 
+      {/* END HEADER */}
+
       {/* contenu */}
-      <section className="main_content_MF">
+      <Box
+        component="section"
+        id="MovieFocus_Content"
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'flex-start',
+          overflowY: 'auto',
+        }}
+      >
         {!selectedFocus ? (
           <>
+            {/* sorted sticky bar */}
             <SideActionBar
               onAlphabeticClick={handleSortedAlphabeticalFocus}
               {...(showChronologicalFocus && {
@@ -141,15 +222,30 @@ function MovieFocusLayout({
               openSideBar={openSideBar}
               origin={origin}
             />
+            {/* end sorted sticky bar */}
 
-            <div className="thumbnails_container_MF">
+            {/* focus list */}
+            <Box
+              id="SelectedFocus_MoviesContainer"
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+                gap: 4,
+                justifyItems: 'center',
+                py: 4,
+                width: '90%',
+                mx: 'auto',
+              }}
+            >
               {Focus.map((f) => (
                 <MovieFocusThumbnail key={f.id} data={f} onClick={() => handleClickFocus(f)} />
               ))}
-            </div>
+            </Box>
+            {/* focus list */}
           </>
         ) : (
           <>
+            {/* sorted sticky bar */}
             <SideActionBar
               onAlphabeticClick={handleSortedAlphabeticalMovies}
               onChronologicClick={handleSortedChronologicalMovies}
@@ -157,8 +253,21 @@ function MovieFocusLayout({
               openSideBar={openMovieSideBar}
               origin="movies"
             />
+            {/* end sorted sticky bar */}
 
-            <div className="Movies_thumbnails_container_MF">
+            {/* Movies list */}
+            <Box
+              id="SelectedFocusMovies_MoviesContainer"
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexWrap: 'wrap',
+                py: 4,
+                width: '90%',
+                mx: 'auto',
+              }}
+            >
               {films.map((movie) => (
                 <MovieThumbnail
                   key={movie.id}
@@ -167,36 +276,68 @@ function MovieFocusLayout({
                   onDeleteMovie={handleDeleteMovie}
                 />
               ))}
-            </div>
+            </Box>
+            {/* end Movies list */}
           </>
         )}
-      </section>
+      </Box>
 
-      {/* modal */}
+      {/* MODAL FOCUS INFOS */}
       {selectedFocus && (
-        <Modal open={openFocusModal} onClose={closeModal} className="Focus_Modal">
-          <Box>
-            <Container maxWidth="800px" className="Focus_Modal_container">
-              <div
-                onClick={closeModal}
-                onKeyDown={(event) => {
-                  if (event.key === 'Enter' || event.key === ' ') {
-                    closeModal();
-                  }
-                }}
-                role="button"
-                tabIndex={0}
-                className="focus_modal_closed_btn"
-              >
-                X Fermer
-              </div>
+        <Modal
+          open={openFocusModal}
+          onClose={closeModal}
+          sx={{
+            p: 3,
+            mx: '5%',
+            display: 'flex',
+            justifyContent: 'center',
+            maxHeight: '100dvh',
+            overflowY: 'auto',
+            WebkitOverflowScrolling: 'touch',
+          }}
+        >
+          <Box
+            sx={{
+              width: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
+            <Box
+              onClick={closeModal}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                  closeModal();
+                }
+              }}
+              role="button"
+              tabIndex={0}
+              sx={{
+                textAlign: 'right',
+                fontFamily: 'var(--font-04)',
+                fontWeight: 600,
+                color: 'var(--color-02)',
+                cursor: 'pointer',
+                p: 2,
+                width: {
+                  xs: '90%',
+                  md: '800px',
+                  lg: '900px',
+                  xl: '1200px',
+                },
+              }}
+            >
+              X Fermer
+            </Box>
 
-              <FocusCard selectedFocus={selectedFocus} origin={origin} />
-            </Container>
+            <FocusCard selectedFocus={selectedFocus} origin={origin} />
           </Box>
         </Modal>
       )}
-    </main>
+      {/* END MODAL FOCUS INFOS */}
+    </Box>
   );
 }
 

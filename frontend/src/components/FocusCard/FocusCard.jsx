@@ -1,9 +1,8 @@
 /* eslint-disable react/no-danger */
 /* eslint-disable react/prop-types */
-import './FocusCard.css';
-import './FocusCardMediaQueries.css';
-import '../../assets/css/reactQuill_html_parametrage.css';
+import { Box, Typography } from '@mui/material';
 import DOMPurify from 'dompurify';
+import '../../assets/css/reactQuill_html_parametrage.css';
 import wikipediaIco from '../../assets/ico/wikipedia_ico.png';
 import imdbIco from '../../assets/ico/imdb_ico.png';
 import senscritiqueIco from '../../assets/ico/sens_critique_ico.png';
@@ -30,22 +29,139 @@ function FocusCard({ selectedFocus, origin }) {
   ];
 
   return (
-    <article className="focusCard_container">
-      <section className="focusCard_content">
-        <img src={imageUrl} alt={selectedFocus.name} className="focusCard_image" />
+    <Box
+      component="article"
+      id="FocusCard_Container"
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      {/* CARD CONTENTS */}
+      <Box
+        component="section"
+        id="FocusCard_Content"
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          width: {
+            xs: '90%',
+            md: '800px',
+            lg: '900px',
+            xl: '1200px',
+          },
+          backgroundColor: 'var(--color-04)',
+          px: 3,
+          py: { xs: 3, lg: 2.5 },
+          gap: 3,
+          flexDirection: {
+            xs: 'column',
+            md: 'column',
+            lg: 'row',
+          },
+          borderRadius: 1,
+        }}
+      >
+        {/* illustration */}
+        <Box
+          component="img"
+          src={imageUrl}
+          alt={selectedFocus.name}
+          sx={{
+            width: {
+              xs: '50%',
+              md: '40%',
+              lg: '30%',
+            },
+            height: 'auto',
+            borderRadius: '10px',
+          }}
+        />
+        {/* end illustration */}
 
-        <div className="focusCard_text_container">
-          <h2 className="focusCard_titre">{selectedFocus.name}</h2>
-          <div className="focusCard_divider" />
-          <p
-            className="focusCard_Pitch"
+        {/* FOCUS INFOS */}
+        <Box
+          id="FocusCard_infos"
+          sx={{
+            width: '100%',
+          }}
+        >
+          {/* focus title */}
+          <Typography
+            component="h2"
+            id="FocusCard_Title"
+            sx={{
+              fontFamily: 'var(--font-02)',
+              color: 'var(--color-01)',
+              fontSize: {
+                xs: 'x-large',
+                md: 'xx-large',
+              },
+              textAlign: {
+                xs: 'center',
+                md: 'left',
+              },
+            }}
+          >
+            {selectedFocus.name}
+          </Typography>
+          {/* end focus title */}
+
+          {/* top divider */}
+          <Box
+            sx={{
+              backgroundColor: 'whitesmoke',
+              width: '100%',
+              height: '1px',
+              my: 2,
+            }}
+          />
+          {/* en top divider */}
+
+          {/* focus pitch */}
+          <Typography
+            component="p"
+            sx={{
+              fontFamily: 'var(--font-02)',
+              color: 'var(--color-01)',
+              fontSize: 'medium',
+            }}
             dangerouslySetInnerHTML={{
               __html: DOMPurify.sanitize(selectedFocus.pitch),
             }}
           />
-          <div className="focusCard_divider_dashed" />
+          {/* end focus pitch */}
+
+          {/* down divider */}
+          <Box
+            sx={{
+              borderTop: '1px dashed whitesmoke',
+              width: '100%',
+              my: {
+                xs: 3,
+                md: 2,
+              },
+            }}
+          />
+          {/* end down divider */}
+
+          {/* artists links */}
           {ArtistFocus && focusLinks.some((link) => selectedFocus?.[link.key]) && (
-            <div className="focusCard_ico_container">
+            <Box
+              id="FocusCard_Links"
+              sx={{
+                display: 'flex',
+                justifyContent: {
+                  xs: 'center',
+                  md: 'flex-end',
+                },
+                gap: {
+                  xs: 3,
+                  md: 2,
+                },
+              }}
+            >
               {focusLinks.map(
                 ({ key, icon, alt }) =>
                   selectedFocus?.[key] && (
@@ -55,15 +171,33 @@ function FocusCard({ selectedFocus, origin }) {
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      <img src={icon} alt={alt} className="focusCard_ico" />
+                      <Box
+                        component="img"
+                        src={icon}
+                        alt={alt}
+                        sx={{
+                          width: {
+                            xs: '2.5rem',
+                            md: '2rem',
+                          },
+                          cursor: 'pointer',
+                          transition: 'transform 0.2s ease',
+                          '&:hover': {
+                            transform: 'scale(1.1)',
+                          },
+                        }}
+                      />
                     </a>
                   )
               )}
-            </div>
+            </Box>
           )}
-        </div>
-      </section>
-    </article>
+          {/* end artists links */}
+        </Box>
+        {/* END FOCUS INFOS */}
+      </Box>
+      {/* END CARD CONTENTS */}
+    </Box>
   );
 }
 

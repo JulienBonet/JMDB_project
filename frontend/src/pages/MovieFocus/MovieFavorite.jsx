@@ -1,13 +1,12 @@
-import { Container, CircularProgress, Box } from '@mui/material';
 import { useAuth } from '../../Context/AuthContext';
+import { Container, CircularProgress, Box, Typography } from '@mui/material';
+import favoriteIco from '../../assets/ico/favorite.png';
+// hook
+import useMovieFavoritesPage from '../../hooks/useMovieFavoritesPage';
+// component
 import MovieThumbnail from '../../components/MovieThumbnail/MovieThumbnail';
 import ToggleSortedButton from '../../components/ToggleSortedBtn/ToggleSortedButton';
 import SideActionBar from '../../components/StickySideBar/StickySideBar';
-import favoriteIco from '../../assets/ico/favorite.png';
-import './movieFocus.css';
-import './movieFocusMediaqueries.css';
-// refacto
-import useMovieFavoritesPage from '../../hooks/useMovieFavoritesPage';
 
 function Favorites() {
   const { token, user, isAuthenticated, authReady } = useAuth();
@@ -36,20 +35,82 @@ function Favorites() {
   // RENDER
   //------------------------------------------
   return (
-    <main className="Main_movieFocusPage">
+    <Box
+      component="main"
+      id="MovieFavouriteLayout_Main"
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: '90vh',
+        overflow: 'hidden',
+      }}
+    >
       {/* HEADER */}
-      <section className="search_bar_container_MF">
-        <div className="search_bar_content_selectefFocus_MF">
-          <img src={favoriteIco} alt="favorite" className="thema_icon" />
-          <h1 className="h1_titlePage_MF">MA LISTE</h1>
+      <Box
+        component="section"
+        id="MovieFavourite_Header"
+        sx={{
+          flex: '0 0 auto',
+        }}
+      >
+        {/* header contents */}
+        <Box
+          id="MovieFavourite_HeaderContent"
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            height: '5rem',
+            px: 4,
+            gap: 1,
+          }}
+        >
+          {/* ico Favourite */}
+          <Box
+            component="img"
+            id="favorite_Ico"
+            src={favoriteIco}
+            alt="favorite_ico"
+            sx={{ height: '3rem' }}
+          />
+          {/* end ico Favourite */}
+
+          {/* header title */}
+          <Typography
+            id="Favorite_HeaderTitle"
+            component="h1"
+            sx={{
+              fontFamily: 'var(--font-02)',
+              color: 'var(--color-01)',
+              fontSize: { xs: 'large', sm: 'xx-large' },
+            }}
+          >
+            MA LISTE
+          </Typography>
+          {/* end header title */}
+
+          {/* toggle Btn */}
           <ToggleSortedButton active={!!movies} onClick={() => setOpenSideBar(!openSideBar)} />
-        </div>
-      </section>
+          {/* end toggle Btn */}
+        </Box>
+        {/* end header contents */}
+      </Box>
 
       <div className="dashed_secondary_bar" />
+      {/* END HEADER */}
 
-      {/* CONTENT */}
-      <section className="main_content_MF">
+      {/* FAVORITES MOVIES LIST */}
+      <Box
+        component="section"
+        id="MovieFavourite_Content"
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'flex-start',
+          overflowY: 'auto',
+        }}
+      >
+        {/* sorted sticky bar */}
         <SideActionBar
           onAlphabeticClick={handleSortedAlphabeticalMovies}
           onChronologicClick={handleSortedChronologicalMovies}
@@ -57,8 +118,11 @@ function Favorites() {
           openSideBar={openSideBar}
           origin={origin}
         />
+        {/* end sorted sticky bar */}
 
+        {/* favorite movies list container */}
         <Container maxWidth={false}>
+          {/* loader */}
           {loading && (
             <Box
               sx={{
@@ -71,15 +135,50 @@ function Favorites() {
               <CircularProgress />
             </Box>
           )}
+          {/* end loader */}
 
+          {/* if NO favorite movies */}
           {!loading && movies.length === 0 && (
-            <div className="NoFavoriteMessageContainer">
-              <p>AUCUN FILM DANS VOTRE LISTE</p>
-            </div>
+            <Box
+              id="Favorites_EmptyState"
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '100%',
+                minHeight: '60vh',
+                textAlign: 'center',
+                gap: 3,
+              }}
+            >
+              <Typography
+                sx={{
+                  fontSize: '3rem',
+                  fontFamily: 'var(--font-02)',
+                  color: 'var(--color-03)',
+                }}
+              >
+                AUCUN FILM DANS VOTRE LISTE
+              </Typography>
+            </Box>
           )}
+          {/* end if NO favorite movies */}
 
+          {/* end if favorite movies list */}
           {!loading && movies.length > 0 && (
-            <div className="Movies_thumbnails_container_MF">
+            <Box
+              id="FavoriteMovies_Container"
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexWrap: 'wrap',
+                py: 4,
+                width: '90%',
+                mx: 'auto',
+              }}
+            >
               {movies.map((movie) => (
                 <MovieThumbnail
                   key={movie.id}
@@ -89,11 +188,14 @@ function Favorites() {
                   onFavoriteRemoved={fetchFavorites}
                 />
               ))}
-            </div>
+            </Box>
           )}
+          {/* end if favorite movies list */}
         </Container>
-      </section>
-    </main>
+        {/* end favorite movies list container */}
+      </Box>
+      {/* END FAVORITES MOVIES LIST */}
+    </Box>
   );
 }
 
