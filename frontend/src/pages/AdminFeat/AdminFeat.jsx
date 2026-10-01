@@ -1,9 +1,8 @@
 import * as React from 'react';
 import { useState } from 'react';
-import Button from '@mui/material/Button';
-import Box from '@mui/material/Box';
+import { Button, Box } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import './adminFeat.css';
+// component
 import AdminMovieList from '../../components/AdminFeatures/AdminItemsLists/AdminMovieList';
 import AdminDirectorList from '../../components/AdminFeatures/AdminItemsLists/AdminDirectorList';
 import AdminCastingList from '../../components/AdminFeatures/AdminItemsLists/AdminCastingList';
@@ -80,7 +79,16 @@ function AdminFeat() {
 
   return (
     <main>
-      <section className="AdminFeatNav">
+      {/* HEADER */}
+      <Box
+        component="section"
+        id="AdminFeatNav"
+        sx={{
+          my: 2,
+          display: 'flex',
+          justifyContent: 'center',
+        }}
+      >
         <ThemeProvider theme={theme}>
           <Box
             sx={{
@@ -105,11 +113,37 @@ function AdminFeat() {
             ))}
           </Box>
         </ThemeProvider>
-      </section>
+      </Box>
+      {/* END HEADER */}
 
-      <section className="AdminFeatContainer">
-        <div className="AdminFeatContent">{renderSelectedItem()}</div>
-      </section>
+      {/* ADMIN CONTENTS */}
+      <Box
+        component="section"
+        id="AdminFeatContainer"
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <Box
+          id="AdminFeatContent"
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: 'aliceblue',
+            width: '95%',
+            borderRadius: '25px',
+            pb: 8,
+            mb: 8,
+          }}
+        >
+          {renderSelectedItem()}
+        </Box>
+      </Box>
+      {/* ADMIN CONTENTS */}
     </main>
   );
 }
