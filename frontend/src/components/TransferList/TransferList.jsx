@@ -390,26 +390,6 @@ export default function TransferList({
             </Button>
           </Grid>
         </Grid>
-        {/* Liste de droite
-        <Grid
-          item
-          sx={{
-            flexShrink: 1,
-            flexGrow: 1,
-            minWidth: { xs: "90%", sm: "40%", md: "40%", lg: "350px" },
-            maxWidth: 500,
-            display: "flex",
-            justifyContent: "center",
-            paddingRight: "10px",
-            "@media (max-width: 768px)": {
-              paddingRight: 0,
-            },
-          }}
-        >
-          {customList(filteredRightItems, true, searchTermRight, (e) =>
-            setSearchTermRight(e.target.value)
-          )}
-        </Grid> */}
         {/* Liste de droite */}
         <Grid
           item
