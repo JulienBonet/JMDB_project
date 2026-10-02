@@ -3,18 +3,17 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-undef */
 import { useState } from 'react';
-import { FixedSizeGrid as Grid } from 'react-window';
-import { useResizeDetector } from 'react-resize-detector';
-import './movieSearch.css';
-import './movieSearchMediaQueries.css';
-import '../../assets/css/scrollButton.css';
+import { Box, Typography, ToggleButton, ToggleButtonGroup, TextField } from '@mui/material';
 import CachedIcon from '@mui/icons-material/Cached';
-import { ToggleButton, ToggleButtonGroup } from '@mui/material';
-import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
+import { FixedSizeGrid as Grid } from 'react-window';
+import { useResizeDetector } from 'react-resize-detector';
+//hooks
+import useMovieSearchPage from '../../hooks/useMovieSearchPage';
+// components
 import YearDropdown from '../../components/YearOption/YearDropdown';
 import CountryDropdown from '../../components/CountryOption/CountryDropdown';
 import KindsDropdown from '../../components/KindOption/KindsDropdown';
@@ -23,8 +22,8 @@ import MovieCount from '../../components/MovieCount/MovieCount';
 import LoaderCowardlySquid from '../../components/LoaderCowardlySquid/LoaderCowardlySquid';
 import ToggleSortedButton from '../../components/ToggleSortedBtn/ToggleSortedButton';
 import SideActionBar from '../../components/StickySideBar/StickySideBar';
-//refactor
-import useMovieSearchPage from '../../hooks/useMovieSearchPage';
+// styles
+import '../../assets/css/scrollButton.css';
 
 function MovieSearch() {
   const { width, height, ref } = useResizeDetector();
@@ -63,6 +62,22 @@ function MovieSearch() {
   // responsive / virtualisation
   const [mobileToggleOpen, setMobileToggleOpen] = useState(false);
 
+  // movie list
+
+  const THUMB_WIDTH = 200;
+  const THUMB_GAP = 16;
+  const THUMB_HEIGHT = 300;
+
+  const columns = width
+    ? Math.max(1, Math.floor((width + THUMB_GAP) / (THUMB_WIDTH + THUMB_GAP)))
+    : 1;
+
+  const rowCount = Math.ceil(movies.length / columns);
+
+  const totalRowWidth = columns * (THUMB_WIDTH + THUMB_GAP) - THUMB_GAP;
+
+  const offsetX = Math.max(0, (width - totalRowWidth) / 2);
+
   //-----------------------------
   // SX STYLES
   //-----------------------------
@@ -79,20 +94,97 @@ function MovieSearch() {
       border: 'solid 1px white',
     },
   };
+  const ResetSearchButtonSx = {
+    width: '3rem',
+    height: '3rem',
+    color: 'var(--color-01)',
+    cursor: 'pointer',
+    borderRadius: '50%',
+    border: '2px solid var(--color-01)',
+    p: 0.5,
+    transition: 'all 0.3s ease, box-shadow 0.3s ease',
+    backgroundColor: 'transparent',
 
-  const THUMB_WIDTH = 200;
-  const THUMB_GAP = 16;
-  const THUMB_HEIGHT = 300;
+    '&:hover': {
+      color: 'var(--color-02)',
+      borderColor: 'var(--color-02)',
+      transform: 'rotate(-0.25turn) scale(1.2)',
+      boxShadow: '0 0 15px var(--color-03), 0 0 25px var(--color-03) inset',
+      backgroundColor: 'rgba(255,255,255,0.1)',
+    },
+
+    '&:active': {
+      color: 'var(--color-02)',
+      borderColor: 'var(--color-02)',
+      transform: 'scale(0.95) rotate(-0.1turn)',
+      boxShadow: '0 0 10px var(--color-02) inset',
+    },
+  };
 
   //-----------------------------
   // RETURN
   //-----------------------------
   return (
-    <main className="Main_movieSearchPage">
-      <section className="search_bar_contents">
-        <section className="search_bar_position">
+    <Box
+      component="main"
+      id="MovieSearch_Main"
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: '90vh',
+        overflow: 'hidden',
+      }}
+    >
+      {/* HEADER */}
+      <Box
+        component="section"
+        id="MovieSearch_Header"
+        sx={{
+          flex: '0 0 auto',
+        }}
+      >
+        {/* header contents */}
+        <Box
+          component="section"
+          id="MovieSearch_Filters"
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: 2,
+            px: 2,
+            minHeight: '5rem',
+
+            flexDirection: {
+              xs: 'column',
+              lg: 'row',
+            },
+
+            py: {
+              xs: 2,
+              lg: 0,
+            },
+          }}
+        >
           {/* Search bar */}
-          <div className="search_bar_container">
+          <Box
+            id="MovieSearch_SearchBar"
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              borderRadius: '10px',
+              p: {
+                xs: '10px 0',
+                xl: '10px',
+              },
+
+              width: {
+                xs: '80%',
+                lg: 'auto',
+              },
+            }}
+          >
             <TextField
               value={search}
               onChange={handleTyping}
@@ -139,22 +231,61 @@ function MovieSearch() {
                 },
               }}
             />
-          </div>
+          </Box>
+          {/* end Search bar */}
 
           {/* Toggle button pour mobile */}
-          <button
+          <Box
+            component="button"
+            id="MovieSearch_MobileToggle"
             type="button"
-            className="mobile_toggle_button"
             onClick={() => setMobileToggleOpen(!mobileToggleOpen)}
+            sx={{
+              display: {
+                xs: 'flex',
+                md: 'none',
+              },
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              fontSize: '1.5rem',
+              borderRadius: '100%',
+              border: '1px solid var(--color-01)',
+              p: 1,
+              color: 'var(--color-01)',
+              backgroundColor: 'var(--color-04)',
+            }}
           >
             <span>{mobileToggleOpen ? '▲' : '▼'}</span>
-          </button>
+          </Box>
+          {/* end Toggle button pour mobile */}
 
           {/* Dropdowns */}
-          <div
-            className="dropdown_search_container"
-            style={{
-              display: mobileToggleOpen || window.innerWidth > 768 ? 'flex' : 'none',
+          <Box
+            id="MovieSearch_Dropdowns"
+            sx={{
+              display: {
+                xs: mobileToggleOpen ? 'flex' : 'none',
+                md: 'flex',
+              },
+
+              alignItems: 'center',
+              justifyContent: 'center',
+
+              width: {
+                xs: '80%',
+                lg: '50%',
+              },
+
+              gap: {
+                xs: 4,
+                lg: 2,
+              },
+
+              flexWrap: {
+                xs: 'wrap',
+                lg: 'nowrap',
+              },
             }}
           >
             <KindsDropdown
@@ -176,13 +307,35 @@ function MovieSearch() {
               search={search}
               selectedYearData={selectedYear}
             />
-          </div>
+          </Box>
+          {/* end Dropdowns */}
 
           {/* Filter buttons */}
-          <div
-            className="filter_container_MovieSearch"
-            style={{
-              display: mobileToggleOpen || window.innerWidth > 768 ? 'flex' : 'none',
+          <Box
+            id="MovieSearch_FilterButtons"
+            sx={{
+              display: {
+                xs: mobileToggleOpen ? 'flex' : 'none',
+                md: 'flex',
+              },
+
+              alignItems: 'center',
+              justifyContent: 'center',
+
+              gap: {
+                xs: 2,
+                xl: 4,
+              },
+
+              flexDirection: {
+                xs: 'column',
+                md: 'row',
+              },
+
+              mb: {
+                xs: 1,
+                md: 0,
+              },
             }}
           >
             <ToggleButtonGroup
@@ -207,24 +360,56 @@ function MovieSearch() {
               active={movies.length > 0}
               onClick={() => setOpenSideBar(!openSideBar)}
             />
-          </div>
-        </section>
-      </section>
+          </Box>
+          {/* end Filter buttons */}
+        </Box>
+        {/* end header contents */}
+      </Box>
+      {/* END HEADER */}
 
       <div className="dashed_secondary_bar" />
       <MovieCount movieAmount={movieAmount} />
 
-      <section
-        className="search_moviesList_position"
+      {/* MOVIES LIST CONTENTS */}
+      <Box
+        component="section"
+        id="MovieSearch_Results"
         ref={ref}
-        style={{ width: '100%', height: '100%' }}
+        sx={{
+          flex: '1 1 auto',
+          overflow: 'hidden',
+          display: 'flex',
+          flexDirection: 'column',
+          width: '100%',
+          height: 'calc(100vh - 200px)',
+        }}
       >
         {isLoading ? (
-          <div className="MovieThumbnails_container MovieThumbnails_Loader">
+          // loader
+          <Box
+            id="MovieSearch_Loader"
+            sx={{
+              width: '100%',
+              height: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
             <LoaderCowardlySquid />
-          </div>
+          </Box>
         ) : (
-          <div className="MovieThumbnails_container">
+          // movies List
+          <Box
+            id="MovieSearch_ThumbnailsContainer"
+            sx={{
+              width: '100%',
+              height: '100%',
+              display: 'block',
+              pt: 2,
+            }}
+          >
+            {/* sorted sticky bar */}
             <SideActionBar
               onAlphabeticClick={handleAlphabeticBtnClick}
               onChronologicClick={handleChronologicBtnClick}
@@ -232,69 +417,77 @@ function MovieSearch() {
               openSideBar={openSideBar}
               origin="movies"
             />
+            {/* end sorted sticky bar */}
 
             {movies.length === 0 && (
-              <div className="NoMovieMessageContainer">
-                <p>NO MOVIE FOUND ...</p>
-                <CachedIcon className="reset_search_btn_NoMovie" onClick={handleResetSearch} />
-              </div>
+              <Box
+                id="MovieSearch_NoResults"
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '100%',
+                  minHeight: '60vh',
+                  textAlign: 'center',
+                  gap: 3,
+                }}
+              >
+                <Typography
+                  component="p"
+                  sx={{
+                    fontSize: '3rem',
+                    fontFamily: 'var(--font-02)',
+                    color: 'var(--color-03)',
+                  }}
+                >
+                  NO MOVIE FOUND ...
+                </Typography>
+                <CachedIcon onClick={handleResetSearch} sx={ResetSearchButtonSx} />
+              </Box>
             )}
 
             {movies.length > 0 && width && height && (
-              <>
-                {(() => {
-                  const columns = Math.max(
-                    1,
-                    Math.floor((width + THUMB_GAP) / (THUMB_WIDTH + THUMB_GAP))
-                  );
+              <Grid
+                columnCount={columns}
+                columnWidth={THUMB_WIDTH + THUMB_GAP}
+                rowCount={rowCount}
+                rowHeight={THUMB_HEIGHT + THUMB_GAP}
+                width={width}
+                height={height}
+              >
+                {({ columnIndex, rowIndex, style }) => {
+                  const index = rowIndex * columns + columnIndex;
+                  const movie = movies[index];
 
-                  const rowCount = Math.ceil(movies.length / columns);
-                  const totalRowWidth = columns * (THUMB_WIDTH + THUMB_GAP) - THUMB_GAP;
-
-                  const offsetX = Math.max(0, (width - totalRowWidth) / 2);
+                  if (!movie) return null;
 
                   return (
-                    <Grid
-                      columnCount={columns}
-                      columnWidth={THUMB_WIDTH + THUMB_GAP}
-                      rowCount={rowCount}
-                      rowHeight={THUMB_HEIGHT + THUMB_GAP}
-                      width={width}
-                      height={height}
-                    >
-                      {({ columnIndex, rowIndex, style }) => {
-                        const index = rowIndex * columns + columnIndex;
-                        const movie = movies[index];
-                        if (!movie) return null;
-
-                        return (
-                          <div
-                            style={{
-                              ...style,
-                              left: style.left + offsetX,
-                              padding: THUMB_GAP / 2,
-                              width: THUMB_WIDTH,
-                              height: THUMB_HEIGHT,
-                            }}
-                          >
-                            <MovieThumbnail
-                              key={movie.id}
-                              data={movie}
-                              onDeleteMovie={handleDeleteMovie}
-                              onUpdateMovie={handleUpdateMovie}
-                            />
-                          </div>
-                        );
+                    <div
+                      style={{
+                        ...style,
+                        left: style.left + offsetX,
+                        padding: THUMB_GAP / 2,
+                        width: THUMB_WIDTH,
+                        height: THUMB_HEIGHT,
                       }}
-                    </Grid>
+                    >
+                      <MovieThumbnail
+                        key={movie.id}
+                        data={movie}
+                        onDeleteMovie={handleDeleteMovie}
+                        onUpdateMovie={handleUpdateMovie}
+                      />
+                    </div>
                   );
-                })()}
-              </>
+                }}
+              </Grid>
             )}
-          </div>
+          </Box>
         )}
-      </section>
-    </main>
+      </Box>
+      {/* MOVIES LIST CONTENTS */}
+    </Box>
   );
 }
 
