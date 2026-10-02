@@ -10,6 +10,8 @@ import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 //hooks
 import useMovieSearchPage from '../../hooks/useMovieSearchPage';
 // components
@@ -57,10 +59,8 @@ function MovieSearch() {
   // nombre de films
   const movieAmount = movies.length;
 
-  // responsive / virtualisation
-  const [mobileToggleOpen, setMobileToggleOpen] = useState(false);
-
-  // movie list
+  // header toggle
+  const [headerToggleOpen, setHeaderToggleOpen] = useState(false);
 
   //-----------------------------
   // SX STYLES
@@ -127,6 +127,7 @@ function MovieSearch() {
         id="MovieSearch_Header"
         sx={{
           flex: '0 0 auto',
+          minHeight: '5rem',
         }}
       >
         {/* header contents */}
@@ -135,219 +136,207 @@ function MovieSearch() {
           id="MovieSearch_Filters"
           sx={{
             display: 'flex',
-            justifyContent: 'center',
+            flexDirection: 'column',
             alignItems: 'center',
+            width: '100%',
             gap: 2,
-            px: 2,
-            minHeight: '5rem',
-
-            flexDirection: {
-              xs: 'column',
-              lg: 'row',
-            },
-
-            py: {
-              xs: 2,
-              lg: 0,
-            },
+            py: 2,
           }}
         >
-          {/* Search bar */}
+          {/* SEARCH ROW */}
           <Box
-            id="MovieSearch_SearchBar"
+            id="MovieSearch_SearchRow"
             sx={{
               display: 'flex',
-              justifyContent: 'center',
               alignItems: 'center',
-              borderRadius: '10px',
-              p: {
-                xs: '10px 0',
-                xl: '10px',
-              },
-
-              width: {
-                xs: '80%',
-                lg: 'auto',
-              },
+              justifyContent: 'center',
+              width: '100%',
+              gap: 1,
             }}
           >
-            <TextField
-              value={search}
-              onChange={handleTyping}
-              placeholder="Rechercher un film..."
-              variant="outlined"
-              size="small"
-              fullWidth
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon sx={{ color: '#aaa' }} />
-                  </InputAdornment>
-                ),
-                endAdornment: search && (
-                  <InputAdornment position="end">
-                    <IconButton onClick={clearSearch} size="small">
-                      <ClearIcon sx={{ color: '#888' }} />
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
+            {/* Search bar */}
+            <Box
+              id="MovieSearch_SearchBar"
               sx={{
-                borderRadius: 3,
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: 3,
-                  backgroundColor: '#f5f5f5',
-                  '& fieldset': {
-                    borderColor: '#ccc',
-                  },
-                  '&:hover fieldset': {
-                    borderColor: 'var(--color-03)',
-                  },
-                  '&.Mui-focused fieldset': {
-                    borderColor: 'var(--color-03)',
-                    boxShadow: '0 0 8px rgba(0,0,0,0.1)',
-                  },
+                width: {
+                  xs: '60%',
+                  sm: '70%',
+                  md: '450px',
                 },
-                input: {
-                  color: '#333',
-                  '&::placeholder': {
-                    color: '#aaa',
-                    opacity: 1,
-                  },
-                },
+                maxWidth: '450px',
               }}
-            />
+            >
+              <TextField
+                value={search}
+                onChange={handleTyping}
+                placeholder="Rechercher un film..."
+                variant="outlined"
+                size="small"
+                fullWidth
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon sx={{ color: '#aaa' }} />
+                    </InputAdornment>
+                  ),
+                  endAdornment: search && (
+                    <InputAdornment position="end">
+                      <IconButton onClick={clearSearch} size="small">
+                        <ClearIcon sx={{ color: '#888' }} />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: 3,
+                    backgroundColor: '#f5f5f5',
+                    '& fieldset': {
+                      borderColor: '#ccc',
+                    },
+                    '&:hover fieldset': {
+                      borderColor: 'var(--color-03)',
+                    },
+                    '&.Mui-focused fieldset': {
+                      borderColor: 'var(--color-03)',
+                      boxShadow: '0 0 8px rgba(0,0,0,0.1)',
+                    },
+                  },
+                  input: {
+                    color: '#333',
+                    '&::placeholder': {
+                      color: '#aaa',
+                      opacity: 1,
+                    },
+                  },
+                }}
+              />
+            </Box>
+            {/* end Search bar */}
+
+            {/* Header toggle */}
+            <Box
+              component="button"
+              id="MovieSearch_HeaderToggle"
+              type="button"
+              onClick={() => setHeaderToggleOpen(!headerToggleOpen)}
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+                cursor: 'pointer',
+                fontSize: '1.2rem',
+                borderRadius: '50%',
+                border: '1px solid var(--color-01)',
+                p: 1,
+                mx: 2,
+                color: 'var(--color-01)',
+                backgroundColor: 'var(--color-04)',
+              }}
+            >
+              {headerToggleOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+            </Box>
+            {/* end Mobile toggle */}
           </Box>
-          {/* end Search bar */}
 
-          {/* Toggle button pour mobile */}
+          {/* CONTROLS ROW */}
           <Box
-            component="button"
-            id="MovieSearch_MobileToggle"
-            type="button"
-            onClick={() => setMobileToggleOpen(!mobileToggleOpen)}
+            id="MovieSearch_ControlsRow"
             sx={{
-              display: {
-                xs: 'flex',
-                md: 'none',
-              },
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              fontSize: '1.5rem',
-              borderRadius: '100%',
-              border: '1px solid var(--color-01)',
-              p: 1,
-              color: 'var(--color-01)',
-              backgroundColor: 'var(--color-04)',
-            }}
-          >
-            <span>{mobileToggleOpen ? '▲' : '▼'}</span>
-          </Box>
-          {/* end Toggle button pour mobile */}
-
-          {/* Dropdowns */}
-          <Box
-            id="MovieSearch_Dropdowns"
-            sx={{
-              display: {
-                xs: mobileToggleOpen ? 'flex' : 'none',
-                md: 'flex',
-              },
-
-              alignItems: 'center',
-              justifyContent: 'center',
-
-              width: {
-                xs: '80%',
-                lg: '50%',
-              },
-
-              gap: {
-                xs: 4,
-                lg: 2,
-              },
-
-              flexWrap: {
-                xs: 'wrap',
-                lg: 'nowrap',
-              },
-            }}
-          >
-            <KindsDropdown
-              onKindChange={handleKindChange}
-              search={search}
-              selectedKindData={selectedKind}
-              handleUpdateMovie={handleUpdateMovie}
-              handleDeleteMovie={handleDeleteMovie}
-            />
-            <CountryDropdown
-              onCountryChange={handleCountryChange}
-              search={search}
-              selectedCountryData={selectedCountry}
-              handleUpdateMovie={handleUpdateMovie}
-              handleDeleteMovie={handleDeleteMovie}
-            />
-            <YearDropdown
-              onYearChange={handleYearChange}
-              search={search}
-              selectedYearData={selectedYear}
-            />
-          </Box>
-          {/* end Dropdowns */}
-
-          {/* Filter buttons */}
-          <Box
-            id="MovieSearch_FilterButtons"
-            sx={{
-              display: {
-                xs: mobileToggleOpen ? 'flex' : 'none',
-                md: 'flex',
-              },
-
-              alignItems: 'center',
-              justifyContent: 'center',
-
-              gap: {
-                xs: 2,
-                xl: 4,
-              },
-
+              display: headerToggleOpen ? 'flex' : 'none',
               flexDirection: {
                 xs: 'column',
                 md: 'row',
               },
-
-              mb: {
-                xs: 1,
-                md: 0,
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '100%',
+              gap: {
+                xs: 2.5,
+                md: 3,
+                lg: 4,
               },
             }}
           >
-            <ToggleButtonGroup
-              value={selectedTvShow}
-              exclusive
-              className="tvShowToggleGroup"
-              onChange={(e, newValue) => newValue && setSelectedTvShow(newValue)}
-              sx={searchToggleGroupButtonSx}
+            {/* Dropdowns */}
+            <Box
+              id="MovieSearch_Dropdowns"
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexWrap: 'wrap',
+                gap: 2,
+                width: {
+                  xs: '100%',
+                  md: 'auto',
+                },
+              }}
             >
-              <ToggleButton value="all" sx={searchToggleButtonSx}>
-                TOUS
-              </ToggleButton>
-              <ToggleButton value="movies" sx={searchToggleButtonSx}>
-                FILMS
-              </ToggleButton>
-              <ToggleButton value="series" sx={searchToggleButtonSx}>
-                SERIES
-              </ToggleButton>
-            </ToggleButtonGroup>
+              <KindsDropdown
+                onKindChange={handleKindChange}
+                search={search}
+                selectedKindData={selectedKind}
+                handleUpdateMovie={handleUpdateMovie}
+                handleDeleteMovie={handleDeleteMovie}
+              />
 
-            <ToggleSortedButton
-              active={movies.length > 0}
-              onClick={() => setOpenSideBar(!openSideBar)}
-            />
+              <CountryDropdown
+                onCountryChange={handleCountryChange}
+                search={search}
+                selectedCountryData={selectedCountry}
+                handleUpdateMovie={handleUpdateMovie}
+                handleDeleteMovie={handleDeleteMovie}
+              />
+
+              <YearDropdown
+                onYearChange={handleYearChange}
+                search={search}
+                selectedYearData={selectedYear}
+              />
+            </Box>
+
+            {/* Filter buttons */}
+            <Box
+              id="MovieSearch_FilterButtons"
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 2,
+                width: {
+                  xs: '100%',
+                  md: 'auto',
+                },
+              }}
+            >
+              <ToggleButtonGroup
+                value={selectedTvShow}
+                exclusive
+                className="tvShowToggleGroup"
+                onChange={(e, newValue) => newValue && setSelectedTvShow(newValue)}
+                sx={searchToggleGroupButtonSx}
+              >
+                <ToggleButton value="all" sx={searchToggleButtonSx}>
+                  TOUS
+                </ToggleButton>
+
+                <ToggleButton value="movies" sx={searchToggleButtonSx}>
+                  FILMS
+                </ToggleButton>
+
+                <ToggleButton value="series" sx={searchToggleButtonSx}>
+                  SERIES
+                </ToggleButton>
+              </ToggleButtonGroup>
+
+              <ToggleSortedButton
+                active={movies.length > 0}
+                onClick={() => setOpenSideBar(!openSideBar)}
+              />
+            </Box>
           </Box>
-          {/* end Filter buttons */}
         </Box>
         {/* end header contents */}
       </Box>
