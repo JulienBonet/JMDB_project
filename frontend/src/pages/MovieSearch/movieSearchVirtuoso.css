@@ -1,0 +1,15 @@
+.movieSearchVirtuosoList {
+    width: 100%;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 200px);
+    justify-content: center;
+    gap: 16px;
+}
+
+.movieSearchVirtuosoItem {
+    display: flex;
+    justify-content: center;
+    width: 200px;
+    height: 300px;
+}
