@@ -4,13 +4,12 @@
 /* eslint-disable no-undef */
 import { useState } from 'react';
 import { Box, Typography, ToggleButton, ToggleButtonGroup, TextField } from '@mui/material';
+import { VirtuosoGrid } from 'react-virtuoso';
 import CachedIcon from '@mui/icons-material/Cached';
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
-import { FixedSizeGrid as Grid } from 'react-window';
-import { useResizeDetector } from 'react-resize-detector';
 //hooks
 import useMovieSearchPage from '../../hooks/useMovieSearchPage';
 // components
@@ -24,10 +23,9 @@ import ToggleSortedButton from '../../components/ToggleSortedBtn/ToggleSortedBut
 import SideActionBar from '../../components/StickySideBar/StickySideBar';
 // styles
 import '../../assets/css/scrollButton.css';
+import './movieSearchVirtuoso.css';
 
 function MovieSearch() {
-  const { width, height, ref } = useResizeDetector();
-
   const {
     movies,
     search,
@@ -64,24 +62,11 @@ function MovieSearch() {
 
   // movie list
 
-  const THUMB_WIDTH = 200;
-  const THUMB_GAP = 16;
-  const THUMB_HEIGHT = 300;
-
-  const columns = width
-    ? Math.max(1, Math.floor((width + THUMB_GAP) / (THUMB_WIDTH + THUMB_GAP)))
-    : 1;
-
-  const rowCount = Math.ceil(movies.length / columns);
-
-  const totalRowWidth = columns * (THUMB_WIDTH + THUMB_GAP) - THUMB_GAP;
-
-  const offsetX = Math.max(0, (width - totalRowWidth) / 2);
-
   //-----------------------------
   // SX STYLES
   //-----------------------------
   const searchToggleGroupButtonSx = { borderRadius: '10px' };
+
   const searchToggleButtonSx = {
     color: 'var(--color-01)',
     border: 'solid 1px white',
@@ -94,6 +79,7 @@ function MovieSearch() {
       border: 'solid 1px white',
     },
   };
+
   const ResetSearchButtonSx = {
     width: '3rem',
     height: '3rem',
@@ -374,7 +360,6 @@ function MovieSearch() {
       <Box
         component="section"
         id="MovieSearch_Results"
-        ref={ref}
         sx={{
           flex: '1 1 auto',
           overflow: 'hidden',
@@ -399,91 +384,84 @@ function MovieSearch() {
             <LoaderCowardlySquid />
           </Box>
         ) : (
-          // movies List
-          <Box
-            id="MovieSearch_ThumbnailsContainer"
-            sx={{
-              width: '100%',
-              height: '100%',
-              display: 'block',
-              pt: 2,
-            }}
-          >
-            {/* sorted sticky bar */}
-            <SideActionBar
-              onAlphabeticClick={handleAlphabeticBtnClick}
-              onChronologicClick={handleChronologicBtnClick}
-              onResetClick={handleResetSearch}
-              openSideBar={openSideBar}
-              origin="movies"
-            />
-            {/* end sorted sticky bar */}
+          <>
+            {/* movies List */}
+            <Box
+              id="MovieSearch_ThumbnailsContainer"
+              sx={{
+                width: '100%',
+                height: '100%',
+                display: 'block',
+                pt: 2,
+              }}
+            >
+              {/* sorted sticky bar */}
+              <SideActionBar
+                onAlphabeticClick={handleAlphabeticBtnClick}
+                onChronologicClick={handleChronologicBtnClick}
+                onResetClick={handleResetSearch}
+                openSideBar={openSideBar}
+                origin="movies"
+              />
+              {/* end sorted sticky bar */}
 
-            {movies.length === 0 && (
-              <Box
-                id="MovieSearch_NoResults"
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  width: '100%',
-                  minHeight: '60vh',
-                  textAlign: 'center',
-                  gap: 3,
-                }}
-              >
-                <Typography
-                  component="p"
+              {movies.length === 0 && (
+                <Box
+                  id="MovieSearch_NoResults"
                   sx={{
-                    fontSize: '3rem',
-                    fontFamily: 'var(--font-02)',
-                    color: 'var(--color-03)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '100%',
+                    minHeight: '60vh',
+                    textAlign: 'center',
+                    gap: 3,
                   }}
                 >
-                  NO MOVIE FOUND ...
-                </Typography>
-                <CachedIcon onClick={handleResetSearch} sx={ResetSearchButtonSx} />
-              </Box>
-            )}
+                  <Typography
+                    component="p"
+                    sx={{
+                      fontSize: '3rem',
+                      fontFamily: 'var(--font-02)',
+                      color: 'var(--color-03)',
+                    }}
+                  >
+                    NO MOVIE FOUND ...
+                  </Typography>
 
-            {movies.length > 0 && width && height && (
-              <Grid
-                columnCount={columns}
-                columnWidth={THUMB_WIDTH + THUMB_GAP}
-                rowCount={rowCount}
-                rowHeight={THUMB_HEIGHT + THUMB_GAP}
-                width={width}
-                height={height}
-              >
-                {({ columnIndex, rowIndex, style }) => {
-                  const index = rowIndex * columns + columnIndex;
-                  const movie = movies[index];
+                  <CachedIcon onClick={handleResetSearch} sx={ResetSearchButtonSx} />
+                </Box>
+              )}
 
-                  if (!movie) return null;
+              {movies.length > 0 && (
+                <>
+                  {/* Movie List - Grid Virtuoso */}
+                  <VirtuosoGrid
+                    totalCount={movies.length}
+                    listClassName="movieSearchVirtuosoList"
+                    itemClassName="movieSearchVirtuosoItem"
+                    itemContent={(index) => {
+                      const movie = movies[index];
 
-                  return (
-                    <div
-                      style={{
-                        ...style,
-                        left: style.left + offsetX,
-                        padding: THUMB_GAP / 2,
-                        width: THUMB_WIDTH,
-                        height: THUMB_HEIGHT,
-                      }}
-                    >
-                      <MovieThumbnail
-                        key={movie.id}
-                        data={movie}
-                        onDeleteMovie={handleDeleteMovie}
-                        onUpdateMovie={handleUpdateMovie}
-                      />
-                    </div>
-                  );
-                }}
-              </Grid>
-            )}
-          </Box>
+                      if (!movie) return null;
+
+                      return (
+                        <MovieThumbnail
+                          key={movie.id}
+                          data={movie}
+                          onDeleteMovie={handleDeleteMovie}
+                          onUpdateMovie={handleUpdateMovie}
+                        />
+                      );
+                    }}
+                  />
+                  {/* end Movie List - Grid Virtuoso */}
+                </>
+              )}
+            </Box>
+            {/* end movies List */}
+          </>
         )}
       </Box>
       {/* MOVIES LIST CONTENTS */}
