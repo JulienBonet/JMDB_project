@@ -24,6 +24,7 @@ import useMovieSearchPage from '../../hooks/useMovieSearchPage';
 import YearDropdown from '../../components/MovieSearchFilters/YearDropdown';
 import CountryDropdown from '../../components/MovieSearchFilters/CountryDropdown';
 import KindsDropdown from '../../components/MovieSearchFilters/KindsDropdown';
+import TvShowFilter from '../../components/MovieSearchFilters/TvShowFilter';
 import MovieThumbnail from '../../components/MovieThumbnail/MovieThumbnail';
 import MovieCount from '../../components/MovieCount/MovieCount';
 import ToggleSortedButton from '../../components/ToggleSortedBtn/ToggleSortedButton';
@@ -71,20 +72,6 @@ function MovieSearch() {
   //-----------------------------
   // SX STYLES
   //-----------------------------
-  const searchToggleGroupButtonSx = { borderRadius: '10px' };
-
-  const searchToggleButtonSx = {
-    color: 'var(--color-01)',
-    border: 'solid 1px white',
-    borderRadius: '10px',
-    height: '40px',
-    textTransform: 'none',
-    '&.Mui-selected': { color: 'var(--color-03)' },
-    '&:hover': {
-      backgroundColor: 'var(--color-05)',
-      border: 'solid 1px white',
-    },
-  };
 
   const ResetSearchButtonSx = {
     width: '3rem',
@@ -301,41 +288,8 @@ function MovieSearch() {
                 search={search}
                 selectedYearData={selectedYear}
               />
-            </Box>
 
-            {/* Filter buttons */}
-            <Box
-              id="MovieSearch_FilterButtons"
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: 2,
-                width: {
-                  xs: '100%',
-                  md: 'auto',
-                },
-              }}
-            >
-              <ToggleButtonGroup
-                value={selectedTvShow}
-                exclusive
-                className="tvShowToggleGroup"
-                onChange={(e, newValue) => newValue && setSelectedTvShow(newValue)}
-                sx={searchToggleGroupButtonSx}
-              >
-                <ToggleButton value="all" sx={searchToggleButtonSx}>
-                  TOUS
-                </ToggleButton>
-
-                <ToggleButton value="movies" sx={searchToggleButtonSx}>
-                  FILMS
-                </ToggleButton>
-
-                <ToggleButton value="series" sx={searchToggleButtonSx}>
-                  SERIES
-                </ToggleButton>
-              </ToggleButtonGroup>
+              <TvShowFilter value={selectedTvShow} onChange={setSelectedTvShow} />
 
               <ToggleSortedButton
                 active={movies.length > 0}
