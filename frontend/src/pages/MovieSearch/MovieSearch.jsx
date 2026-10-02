@@ -3,10 +3,16 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-undef */
 import { useState } from 'react';
-import { Box, Typography, ToggleButton, ToggleButtonGroup, TextField } from '@mui/material';
+import {
+  Box,
+  Typography,
+  ToggleButton,
+  ToggleButtonGroup,
+  TextField,
+  InputAdornment,
+} from '@mui/material';
 import { VirtuosoGrid } from 'react-virtuoso';
 import CachedIcon from '@mui/icons-material/Cached';
-import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
@@ -15,14 +21,14 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 //hooks
 import useMovieSearchPage from '../../hooks/useMovieSearchPage';
 // components
-import YearDropdown from '../../components/YearOption/YearDropdown';
-import CountryDropdown from '../../components/CountryOption/CountryDropdown';
-import KindsDropdown from '../../components/KindOption/KindsDropdown';
+import YearDropdown from '../../components/MovieSearchFilters/YearDropdown';
+import CountryDropdown from '../../components/MovieSearchFilters/CountryDropdown';
+import KindsDropdown from '../../components/MovieSearchFilters/KindsDropdown';
 import MovieThumbnail from '../../components/MovieThumbnail/MovieThumbnail';
 import MovieCount from '../../components/MovieCount/MovieCount';
-import LoaderCowardlySquid from '../../components/LoaderCowardlySquid/LoaderCowardlySquid';
 import ToggleSortedButton from '../../components/ToggleSortedBtn/ToggleSortedButton';
 import SideActionBar from '../../components/StickySideBar/StickySideBar';
+import LoaderCowardlySquid from '../../components/LoaderCowardlySquid/LoaderCowardlySquid';
 // styles
 import '../../assets/css/scrollButton.css';
 import './movieSearchVirtuoso.css';
