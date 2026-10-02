@@ -237,7 +237,7 @@ function MovieSearch() {
             >
               {headerToggleOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
             </Box>
-            {/* end Mobile toggle */}
+            {/* end header toggle */}
           </Box>
 
           {/* CONTROLS ROW */}
