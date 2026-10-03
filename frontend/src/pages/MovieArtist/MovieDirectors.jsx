@@ -1,6 +1,5 @@
 import { useLoaderData } from 'react-router-dom';
 import { createTheme } from '@mui/material/styles';
-
 import './movieArtist.css';
 import './movieArtistMediaQueries.css';
 import ArtistList from '../../components/ArtistList/ArtistList';
