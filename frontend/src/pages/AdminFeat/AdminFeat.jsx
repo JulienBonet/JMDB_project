@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { useState } from 'react';
 import { Button, Box } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
