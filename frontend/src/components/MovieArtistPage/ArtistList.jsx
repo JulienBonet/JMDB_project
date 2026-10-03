@@ -54,10 +54,6 @@ function ArtistList({
           overflow: 'auto',
           my: 1,
           pt: 2,
-          scrollbarWidth: 'none',
-          '&::-webkit-scrollbar': {
-            display: 'none',
-          },
         }}
       >
         <Box
