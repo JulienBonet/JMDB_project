@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { Box, Typography } from '@mui/material';
 // components
-import MovieCountArtistMovie from '../MovieCountArtistMovie/MovieCountArtistMovie';
+import MovieCount from '../MovieCount/MovieCount';
 import MovieThumbnail from '../MovieThumbnail/MovieThumbnail';
 // illustrations
 import DirectorBear from '../../assets/ico/director_bear_01.jpeg';
@@ -205,7 +205,7 @@ function ArtistFilmo({
           />
 
           <Box>
-            <MovieCountArtistMovie movieAmount={movieAmount} />
+            <MovieCount movieAmount={movieAmount} variant="artist" />
           </Box>
 
           <Box
