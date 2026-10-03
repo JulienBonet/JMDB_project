@@ -1,9 +1,8 @@
 /* eslint-disable react/prop-types */
-import { TextField, InputAdornment, IconButton } from '@mui/material';
+import { Box, TextField, InputAdornment, IconButton } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
 import ToggleSortedButton from '../ToggleSortedBtn/ToggleSortedButton';
-import './movieArtistSearchBar.css';
 
 function MovieArtistSearchBar({
   placeholder,
@@ -14,8 +13,30 @@ function MovieArtistSearchBar({
   selectedItem,
 }) {
   return (
-    <section className="MovieArtist_Search_bar_position">
-      <div className="MovieArtist_Search_bar_container">
+    <Box
+      component="section"
+      id="MovieArtist_Header"
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        py: 2,
+        gap: 2,
+        height: '3rem',
+      }}
+    >
+      <Box
+        id="MovieArtist_SearchBar"
+        sx={{
+          width: {
+            xs: '70%',
+            sm: '60%',
+            md: '450px',
+          },
+          maxWidth: '450px',
+        }}
+      >
         <TextField
           value={search}
           onChange={onSearchChange}
@@ -55,10 +76,10 @@ function MovieArtistSearchBar({
             },
           }}
         />
-      </div>
+      </Box>
 
       <ToggleSortedButton active={!!selectedItem} onClick={() => setOpenSideBar(!openSideBar)} />
-    </section>
+    </Box>
   );
 }
 
