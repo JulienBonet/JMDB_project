@@ -1,5 +1,4 @@
 /* eslint-disable react/prop-types */
-import { ThemeProvider } from '@mui/material/styles';
 import { Box, Button } from '@mui/material';
 import '../../assets/css/common_elements.css';
 import '../../assets/css/scrollButton.css';
@@ -9,7 +8,6 @@ import Counter from '../Counters/Counters';
 function ArtistList({
   handleLetterChange,
   search,
-  theme,
   selectedByLetter,
   filteredArtist,
   handleArtistClick,
@@ -44,6 +42,7 @@ function ArtistList({
         search={search}
       />
       <Box
+        id="MovieArtist_list_container"
         sx={{
           width: '100%',
           height: {
@@ -53,7 +52,7 @@ function ArtistList({
           },
 
           overflow: 'auto',
-          my: 2,
+          my: 1,
           pt: 2,
           scrollbarWidth: 'none',
           '&::-webkit-scrollbar': {
@@ -61,35 +60,34 @@ function ArtistList({
           },
         }}
       >
-        <ThemeProvider theme={theme}>
-          <Box
-            id="MovieArtist_list"
-            sx={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              justifyContent: 'center',
-            }}
-          >
-            {artistsToDisplay.map((artist) => (
-              <Button
-                key={artist.id}
-                variant="text"
-                color="primary"
-                size="small"
-                onClick={() => handleArtistClick(artist)}
-                sx={{
-                  fontFamily: 'var(--font-04)',
-                  fontSize: 'medium',
-                  display: 'flex',
-                  flexWrap: 'wrap',
-                  width: '90%',
-                }}
-              >
-                {artist.name}
-              </Button>
-            ))}
-          </Box>
-        </ThemeProvider>
+        <Box
+          id="MovieArtist_list"
+          sx={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: 'center',
+          }}
+        >
+          {artistsToDisplay.map((artist) => (
+            <Button
+              key={artist.id}
+              variant="text"
+              color="primary"
+              size="small"
+              onClick={() => handleArtistClick(artist)}
+              sx={{
+                fontFamily: 'var(--font-04)',
+                color: 'var(--color-01)',
+                fontSize: 'medium',
+                display: 'flex',
+                flexWrap: 'wrap',
+                width: '90%',
+              }}
+            >
+              {artist.name}
+            </Button>
+          ))}
+        </Box>
       </Box>
     </Box>
   );
