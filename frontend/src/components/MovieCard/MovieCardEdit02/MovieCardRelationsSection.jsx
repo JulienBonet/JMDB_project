@@ -1,9 +1,9 @@
 // frontend/src/components/MovieCard/MovieCardRelationsSection.jsx
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import CloudSyncIcon from '@mui/icons-material/CloudSync';
+import { Box } from '@mui/material';
+// UI
+import MovieRelationField from '../ui/MovieRelationField';
+// SX
+import { dividerSx } from '../constant/MovieCardEditStyle';
 
 const MovieCardRelationsSection = ({
   isTvShow,
@@ -57,283 +57,146 @@ const MovieCardRelationsSection = ({
   refetchCasting,
   refetchTags,
 }) => {
+  // -------------------
+  // RETURN
+  // -------------------
   return (
     <>
-      {/* Pays (modify) */}
-      <div className="box_item_form">
-        <Box
-          component="form"
-          sx={textFieldSx}
-          noValidate
-          autoComplete="off"
-          display="flex"
-          alignItems="center"
-        >
-          <TextField
-            id="outlined-read-only-input"
-            label="Pays"
-            value={getSelectedNames(selectedCountries)}
-            InputProps={{ readOnly: true }}
-            fullWidth
-          />
-        </Box>
-
-        <AddCircleOutlineIcon
-          className="Btn_Add_itemsPopUp_MovieCard"
-          onClick={() => handleOpenModal('country')}
-        />
-
-        {idTheMovieDb && (
-          <CloudSyncIcon
-            className="Btn_Refresh_items_MovieCard"
-            onClick={() =>
-              refetchCountries(idTheMovieDb, {
-                searchCountryInDatabase,
-                createCountryInDatabase,
-                setSelectedCountries,
-              })
-            }
-          />
-        )}
-      </div>
+      {/* Pays (edit) */}
+      <MovieRelationField
+        id="Country_container_MovieCardEdit"
+        label="Pays"
+        value={getSelectedNames(selectedCountries)}
+        modalType="country"
+        handleOpenModal={handleOpenModal}
+        textFieldSx={textFieldSx}
+        showRefresh={!!idTheMovieDb}
+        onRefresh={() =>
+          refetchCountries(idTheMovieDb, {
+            searchCountryInDatabase,
+            createCountryInDatabase,
+            setSelectedCountries,
+          })
+        }
+      />
       {/* end Pays (modify) */}
 
-      <div className="divider" />
+      <Box sx={{ ...dividerSx, height: '1px', my: 0.5 }} />
 
       {/* Réalisateur (modify) */}
-      <div className="box_item_form">
-        <Box
-          component="form"
-          sx={textFieldSx}
-          noValidate
-          autoComplete="off"
-          display="flex"
-          alignItems="center"
-        >
-          <TextField
-            id="outlined-read-only-input"
-            label={isTvShow ? 'Créateur:' : 'Réalisateur:'}
-            value={getSelectedNames(selectedDirectors)}
-            InputProps={{ readOnly: true }}
-            fullWidth
-          />
-        </Box>
-
-        <AddCircleOutlineIcon
-          className="Btn_Add_itemsPopUp_MovieCard"
-          onClick={() => handleOpenModal('directors')}
-        />
-
-        {idTheMovieDb && (
-          <CloudSyncIcon
-            className="Btn_Refresh_items_MovieCard"
-            onClick={() =>
-              refetchDirectors(idTheMovieDb, {
-                searchDirectorInDatabase,
-                createDirectorInDatabase,
-                setSelectedDirectors,
-              })
-            }
-          />
-        )}
-      </div>
+      <MovieRelationField
+        id="director_container_MovieCardEdit"
+        label={isTvShow ? 'Créateur:' : 'Réalisateur:'}
+        value={getSelectedNames(selectedDirectors)}
+        modalType="directors"
+        handleOpenModal={handleOpenModal}
+        textFieldSx={textFieldSx}
+        showRefresh={!!idTheMovieDb}
+        onRefresh={() =>
+          refetchDirectors(idTheMovieDb, {
+            searchDirectorInDatabase,
+            createDirectorInDatabase,
+            setSelectedDirectors,
+          })
+        }
+      />
       {/* end Réalisateur (modify) */}
 
       {/* Scénariste (modify) */}
       {!isTvShow && (
-        <div className="box_item_form">
-          <Box
-            component="form"
-            sx={textFieldSx}
-            noValidate
-            autoComplete="off"
-            display="flex"
-            alignItems="center"
-          >
-            <TextField
-              id="outlined-read-only-input"
-              label="Scénariste(s)"
-              value={getSelectedNames(selectedScreenwriters)}
-              InputProps={{ readOnly: true }}
-              fullWidth
-            />
-          </Box>
-
-          <AddCircleOutlineIcon
-            className="Btn_Add_itemsPopUp_MovieCard"
-            onClick={() => handleOpenModal('screenwriters')}
-          />
-
-          {idTheMovieDb && (
-            <CloudSyncIcon
-              className="Btn_Refresh_items_MovieCard"
-              onClick={() =>
-                refetchScreenwriters(idTheMovieDb, {
-                  searchScreenwriterInDatabase,
-                  createScreenwriterInDatabase,
-                  setSelectedScreenwriters,
-                })
-              }
-            />
-          )}
-        </div>
+        <MovieRelationField
+          id="Screenwriter_container_MovieCardEdit"
+          label="Scénariste(s)"
+          value={getSelectedNames(selectedScreenwriters)}
+          modalType="screenwriters"
+          handleOpenModal={handleOpenModal}
+          textFieldSx={textFieldSx}
+          showRefresh={!!idTheMovieDb}
+          onRefresh={() =>
+            refetchScreenwriters(idTheMovieDb, {
+              searchScreenwriterInDatabase,
+              createScreenwriterInDatabase,
+              setSelectedScreenwriters,
+            })
+          }
+        />
       )}
       {/* end Scénariste (modify) */}
 
       {/* Compositeur (modify) */}
-      <div className="box_item_form">
-        <Box
-          component="form"
-          sx={textFieldSx}
-          noValidate
-          autoComplete="off"
-          display="flex"
-          alignItems="center"
-        >
-          <TextField
-            id="outlined-read-only-input"
-            label="Compositeur(s)"
-            value={getSelectedNames(selectedMusic)}
-            InputProps={{ readOnly: true }}
-            fullWidth
-          />
-        </Box>
-
-        <AddCircleOutlineIcon
-          className="Btn_Add_itemsPopUp_MovieCard"
-          onClick={() => handleOpenModal('music')}
-        />
-
-        {idTheMovieDb && (
-          <CloudSyncIcon
-            className="Btn_Refresh_items_MovieCard"
-            onClick={() =>
-              refetchCompositors(idTheMovieDb, {
-                searchCompositorInDatabase,
-                createCompositorInDatabase,
-                setSelectedMusic,
-              })
-            }
-          />
-        )}
-      </div>
+      <MovieRelationField
+        id="Compositor_container_MovieCardEdit"
+        label="Compositeur(s)"
+        value={getSelectedNames(selectedMusic)}
+        modalType="music"
+        handleOpenModal={handleOpenModal}
+        textFieldSx={textFieldSx}
+        showRefresh={!!idTheMovieDb}
+        onRefresh={() =>
+          refetchCompositors(idTheMovieDb, {
+            searchCompositorInDatabase,
+            createCompositorInDatabase,
+            setSelectedMusic,
+          })
+        }
+      />
       {/* end Compositeur (modify) */}
 
       {/* Studio (modify) */}
-      <div className="box_item_form">
-        <Box
-          component="form"
-          sx={textFieldSx}
-          noValidate
-          autoComplete="off"
-          display="flex"
-          alignItems="center"
-        >
-          <TextField
-            id="outlined-read-only-input"
-            label="Studio(s)"
-            value={getSelectedNames(selectedStudios)}
-            InputProps={{ readOnly: true }}
-            fullWidth
-          />
-        </Box>
-
-        <AddCircleOutlineIcon
-          className="Btn_Add_itemsPopUp_MovieCard"
-          onClick={() => handleOpenModal('studio')}
-        />
-
-        {idTheMovieDb && (
-          <CloudSyncIcon
-            className="Btn_Refresh_items_MovieCard"
-            onClick={() =>
-              refetchStudios(idTheMovieDb, {
-                searchStudioInDatabase,
-                createStudioInDatabase,
-                setSelectedStudios,
-              })
-            }
-          />
-        )}
-      </div>
+      <MovieRelationField
+        id="Studio_container_MovieCardEdit"
+        label="Studio(s)"
+        value={getSelectedNames(selectedStudios)}
+        modalType="studio"
+        handleOpenModal={handleOpenModal}
+        textFieldSx={textFieldSx}
+        showRefresh={!!idTheMovieDb}
+        onRefresh={() =>
+          refetchStudios(idTheMovieDb, {
+            searchStudioInDatabase,
+            createStudioInDatabase,
+            setSelectedStudios,
+          })
+        }
+      />
       {/* end Studio (modify) */}
 
       {/* Casting (modify) */}
-      <div className="box_item_form">
-        <Box
-          component="form"
-          sx={textFieldSx}
-          noValidate
-          autoComplete="off"
-          display="flex"
-          alignItems="center"
-        >
-          <TextField
-            id="outlined-read-only-input"
-            label="Casting"
-            value={getSelectedNames(selectedCasting)}
-            InputProps={{ readOnly: true }}
-            fullWidth
-          />
-        </Box>
-
-        <AddCircleOutlineIcon
-          className="Btn_Add_itemsPopUp_MovieCard"
-          onClick={() => handleOpenModal('casting')}
-        />
-
-        {idTheMovieDb && (
-          <CloudSyncIcon
-            className="Btn_Refresh_items_MovieCard"
-            onClick={() =>
-              refetchCasting(idTheMovieDb, {
-                searchCastingInDatabase,
-                createCastingInDatabase,
-                setSelectedCasting,
-              })
-            }
-          />
-        )}
-      </div>
+      <MovieRelationField
+        id="Casting_container_MovieCardEdit"
+        label="Casting"
+        value={getSelectedNames(selectedCasting)}
+        modalType="casting"
+        handleOpenModal={handleOpenModal}
+        textFieldSx={textFieldSx}
+        showRefresh={!!idTheMovieDb}
+        onRefresh={() =>
+          refetchCasting(idTheMovieDb, {
+            searchCastingInDatabase,
+            createCastingInDatabase,
+            setSelectedCasting,
+          })
+        }
+      />
       {/* end Casting (modify) */}
 
       {/* Tags (modify) */}
-      <div className="box_item_form">
-        <Box
-          component="form"
-          sx={textFieldSx}
-          noValidate
-          autoComplete="off"
-          display="flex"
-          alignItems="center"
-        >
-          <TextField
-            id="outlined-read-only-input"
-            label="Tag"
-            value={getSelectedNames(selectedTags)}
-            InputProps={{ readOnly: true }}
-            fullWidth
-          />
-        </Box>
-
-        <AddCircleOutlineIcon
-          className="Btn_Add_itemsPopUp_MovieCard"
-          onClick={() => handleOpenModal('tags')}
-        />
-
-        {idTheMovieDb && (
-          <CloudSyncIcon
-            className="Btn_Refresh_items_MovieCard"
-            onClick={() =>
-              refetchTags(idTheMovieDb, {
-                searchTagInDatabase,
-                createTagInDatabase,
-                setSelectedTags,
-              })
-            }
-          />
-        )}
-      </div>
+      <MovieRelationField
+        id="Tags_container_MovieCardEdit"
+        label="Tag"
+        value={getSelectedNames(selectedTags)}
+        modalType="tags"
+        handleOpenModal={handleOpenModal}
+        textFieldSx={textFieldSx}
+        showRefresh={!!idTheMovieDb}
+        onRefresh={() =>
+          refetchTags(idTheMovieDb, {
+            searchTagInDatabase,
+            createTagInDatabase,
+            setSelectedTags,
+          })
+        }
+      />
       {/* end Tags (modify) */}
     </>
   );

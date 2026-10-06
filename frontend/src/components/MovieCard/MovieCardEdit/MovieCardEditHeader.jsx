@@ -1,9 +1,16 @@
 import { Button, Box, TextField } from '@mui/material';
-
+// icons
 import MovieOutlinedIcon from '@mui/icons-material/MovieOutlined';
 import TvOutlinedIcon from '@mui/icons-material/TvOutlined';
 import CloudSyncIcon from '@mui/icons-material/CloudSync';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+// SX
+import {
+  editContainerSx,
+  addIconSx,
+  refreshIconSx,
+  dividerSx,
+} from '../constant/MovieCardEditStyle';
 
 function MovieCardEditHeader({
   isTvShow,
@@ -90,9 +97,24 @@ function MovieCardEditHeader({
   };
 
   return (
-    <div className="infos_bloc_1_modify">
+    <Box
+      id="MovieCardEditHeader"
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '1.3rem',
+        width: '100%',
+      }}
+    >
       {/* Type + TMDB */}
-      <div className="movieCard_Type_Line">
+      <Box
+        id="TypeLine_MovieCardEditHeader"
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 2,
+        }}
+      >
         {!isTvShow ? (
           <MovieOutlinedIcon sx={{ color: 'white', mr: 1 }} fontSize="large" />
         ) : (
@@ -117,12 +139,23 @@ function MovieCardEditHeader({
             <CloudSyncIcon sx={{ mr: 1 }} /> Recharger les infos
           </Button>
         )}
-      </div>
+      </Box>
+      {/* end Type + TMDB */}
 
-      <div className="divider divider_movie_cover_modify_button2" />
+      {/* divider */}
+      <Box
+        id="divider_MovieCardEditHeader"
+        sx={{
+          ...dividerSx,
+          display: { xs: 'flex' },
+          height: '1px',
+          my: 0.5,
+        }}
+      />
+      {/* end divider */}
 
       {/* Title */}
-      <div className="box_item_form">
+      <Box id="title_container_MovieCardEdit" sx={editContainerSx}>
         <TextField
           label="Title"
           name="title"
@@ -131,12 +164,13 @@ function MovieCardEditHeader({
           fullWidth
           sx={textFieldSx}
         />
-      </div>
+      </Box>
+      {/* end Title */}
 
-      <div className="divider" />
+      <Box sx={{ ...dividerSx, height: '1px', my: 0.5 }} />
 
       {/* Focus */}
-      <div className="box_item_form">
+      <Box id="focus_container_MovieCardEdit" sx={editContainerSx}>
         <Box
           component="form"
           sx={textFieldSx}
@@ -154,16 +188,14 @@ function MovieCardEditHeader({
           />
         </Box>
 
-        <AddCircleOutlineIcon
-          className="Btn_Add_itemsPopUp_MovieCard"
-          onClick={() => handleOpenModal('focus')}
-        />
-      </div>
+        <AddCircleOutlineIcon sx={addIconSx} onClick={() => handleOpenModal('focus')} />
+      </Box>
+      {/* end Focus */}
 
-      <div className="divider" />
+      <Box sx={{ ...dividerSx, height: '1px', my: 0.5 }} />
 
       {/* Alt Title */}
-      <div className="box_item_form">
+      <Box id="altTitle_container_MovieCardEdit" sx={editContainerSx}>
         <TextField
           label="Alt Title"
           name="altTitle"
@@ -175,14 +207,14 @@ function MovieCardEditHeader({
 
         {idTheMovieDb && (
           <CloudSyncIcon
-            className="Btn_Refresh_items_MovieCard"
+            sx={refreshIconSx}
             onClick={() => refetchAltTitle(idTheMovieDb, { movieData, setMovieData })}
           />
         )}
-      </div>
+      </Box>
 
-      {/*  */}
-      <div className="box_item_form">
+      {/* genres */}
+      <Box id="genres_container_MovieCardEdit" sx={editContainerSx}>
         <Box
           component="form"
           sx={textFieldSx}
@@ -200,14 +232,11 @@ function MovieCardEditHeader({
           />
         </Box>
 
-        <AddCircleOutlineIcon
-          className="Btn_Add_itemsPopUp_MovieCard"
-          onClick={() => handleOpenModal('kinds')}
-        />
+        <AddCircleOutlineIcon sx={addIconSx} onClick={() => handleOpenModal('kinds')} />
 
         {idTheMovieDb && (
           <CloudSyncIcon
-            className="Btn_Refresh_items_MovieCard"
+            sx={refreshIconSx}
             onClick={() =>
               refetchGenres(idTheMovieDb, {
                 searchGenreInDatabase,
@@ -217,10 +246,11 @@ function MovieCardEditHeader({
             }
           />
         )}
-      </div>
+      </Box>
+      {/* end genres */}
 
       {/* Year */}
-      <div className="box_item_form">
+      <Box id="year_container_MovieCardEdit" sx={editContainerSx}>
         <TextField
           label="Year"
           name="year"
@@ -233,12 +263,13 @@ function MovieCardEditHeader({
 
         {idTheMovieDb && (
           <CloudSyncIcon
-            className="Btn_Refresh_items_MovieCard"
+            sx={refreshIconSx}
             onClick={() => refetchYear(idTheMovieDb, { movieData, setMovieData })}
           />
         )}
-      </div>
-    </div>
+      </Box>
+      {/* end Year */}
+    </Box>
   );
 }
 

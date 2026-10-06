@@ -28,12 +28,11 @@ const MovieCardMediaSection = ({
 }) => {
   return (
     <>
-      {/* Support (modify) */}
+      {/* Support (edit) */}
       <FormControl sx={textFieldSx}>
         <InputLabel>Support</InputLabel>
 
         <Select
-          id="demo-select-small"
           name="videoSupport"
           value={safeValue(movieData.videoSupport)}
           label="Support"
@@ -144,7 +143,7 @@ const MovieCardMediaSection = ({
             </Box>
           )}
 
-          {/* Champ commun : taille du fichier */}
+          {/* taille du fichier */}
           <TextField
             label="Taille du fichier"
             name="fileSize"
@@ -154,7 +153,9 @@ const MovieCardMediaSection = ({
             type="text"
             sx={textFieldSx}
           />
+          {/* end taille du fichier */}
 
+          {/* version vostf Multi */}
           <FormControl sx={{ m: 1, color: 'white' }}>
             <FormLabel
               sx={{
@@ -211,9 +212,10 @@ const MovieCardMediaSection = ({
               />
             </RadioGroup>
           </FormControl>
+          {/* end version vostf Multi */}
         </>
       )}
-      {/* end Support (modify) */}
+      {/* end Support (edit) */}
     </>
   );
 };

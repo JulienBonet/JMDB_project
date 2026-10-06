@@ -1,4 +1,5 @@
 import {
+  Box,
   Backdrop,
   CircularProgress,
   Dialog,
@@ -10,6 +11,7 @@ import {
   IconButton,
   Tooltip,
 } from '@mui/material';
+// icons
 import ModeIcon from '@mui/icons-material/Mode';
 import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
 import UndoIcon from '@mui/icons-material/Undo';
@@ -36,18 +38,86 @@ function MovieCardActions({
   movieId,
   toggleFavorite,
 }) {
+  // ----------------
+  // SX
+  // ----------------
+  const undoIconBtnSx = {
+    cursor: 'pointer',
+    padding: '0.3rem 0.5rem',
+    border: 'solid 1px',
+    borderRadius: '10px',
+    color: 'whitesmoke',
+  };
+  const submitMovieEditBtnSx = {
+    cursor: 'pointer',
+    padding: '0.3rem 0.5rem',
+    border: 'solid 1px',
+    borderRadius: '10px',
+    color: 'greenyellow',
+  };
+
+  const favoriteBtnSx = {
+    border: 'solid 1px',
+    borderRadius: '10px',
+    padding: '0.3rem 0.5rem',
+    color: isFavorite ? 'error.main' : 'whitesmoke',
+    transition: 'transform 0.15s ease, color 0.15s ease',
+    '&:hover': {
+      color: 'error.main',
+      transform: 'scale(1.15)',
+    },
+  };
+
+  const actionBtnMovieCardSx = {
+    cursor: 'pointer',
+    padding: '0.3rem 0.5rem',
+    border: 'solid 1px',
+    borderRadius: '10px',
+    color: 'var(--color-02)',
+  };
+
+  // ----------------
+  // RETURN
+  // ----------------
   return (
     <>
       {isAdmin ? (
-        <section className="Movie_editing_btn-container">
+        <Box
+          component="section"
+          id="Movie_editing_btn-container"
+          sx={{
+            mt: 2,
+          }}
+        >
           {isModify ? (
-            <section className="Item_Movie_Editing_Buttons">
-              <UndoIcon className="item_movie_undo_ico" onClick={handleUndo} />
+            // ADMIN MODE
+            <Box
+              component="section"
+              id="Editing_Buttons_Item_Movie_EditMode"
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                mt: 2,
+                gap: 2,
+                alignItems: 'center',
+              }}
+            >
+              <UndoIcon sx={undoIconBtnSx} onClick={handleUndo} />
 
-              <DoneOutlineIcon className="item_movie_done_ico" onClick={handleOpenUpdateConfirm} />
-            </section>
+              <DoneOutlineIcon sx={submitMovieEditBtnSx} onClick={handleOpenUpdateConfirm} />
+            </Box>
           ) : (
-            <section className="Item_Movie_Editing_Buttons">
+            <Box
+              component="section"
+              id="Editing_Buttons_Item_Movie_viewMode"
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                mt: { xs: 3, sm: 2 },
+                gap: 2,
+                alignItems: 'center',
+              }}
+            >
               <Tooltip
                 title={isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'}
                 placement="top"
@@ -55,33 +125,29 @@ function MovieCardActions({
                 <IconButton
                   onClick={handleToggleFavorite}
                   size="small"
-                  className="item_movie_favorite_ico"
                   aria-label={isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'}
-                  sx={{
-                    border: 'solid 1px',
-                    borderRadius: '10px',
-                    padding: '0.3rem 0.5rem',
-                    color: isFavorite ? 'error.main' : 'whitesmoke',
-                    transition: 'transform 0.15s ease, color 0.15s ease',
-                    '&:hover': {
-                      color: 'error.main',
-                      transform: 'scale(1.15)',
-                    },
-                  }}
+                  sx={favoriteBtnSx}
                 >
                   {isFavorite ? <FavoriteIcon /> : <FavoriteBorderIcon />}
                 </IconButton>
               </Tooltip>
 
-              <div className="Item_Movie_Editing_Buttons_2">
-                <ModeIcon className="item_movie_mode_ico" onClick={isModifyMode} />
+              <Box
+                id="Item_Movie_Editing_Buttons_2"
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  gap: 2,
+                }}
+              >
+                <ModeIcon sx={actionBtnMovieCardSx} onClick={isModifyMode} />
 
                 <DeleteIcon
-                  className="item_movie_delete_ico"
+                  sx={actionBtnMovieCardSx}
                   onClick={() => handleOpenDeleteConfirm(movieId)}
                 />
-              </div>
-            </section>
+              </Box>
+            </Box>
           )}
 
           <Dialog open={isConfirmUpdateOpen} onClose={handleCloseUpdateConfirm}>
@@ -129,9 +195,17 @@ function MovieCardActions({
           >
             <CircularProgress color="inherit" />
           </Backdrop>
-        </section>
+        </Box> // END ADMIN MODE
       ) : (
-        <section className="Item_Movie_Editing_Buttons_user">
+        // USER MODE
+        <Box
+          component="section"
+          id="Item_Movie_Editing_Buttons_user"
+          sx={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+          }}
+        >
           <Tooltip
             title={isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'}
             placement="top"
@@ -139,24 +213,13 @@ function MovieCardActions({
             <IconButton
               onClick={toggleFavorite}
               size="small"
-              className="item_movie_favorite_ico"
               aria-label={isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'}
-              sx={{
-                border: 'solid 1px',
-                borderRadius: '10px',
-                padding: '0.3rem 0.5rem',
-                color: isFavorite ? 'error.main' : 'var(--color-01)',
-                transition: 'transform 0.15s ease, color 0.15s ease',
-                '&:hover': {
-                  color: 'error.main',
-                  transform: 'scale(1.15)',
-                },
-              }}
+              sx={favoriteBtnSx}
             >
               {isFavorite ? <FavoriteIcon /> : <FavoriteBorderIcon />}
             </IconButton>
           </Tooltip>
-        </section>
+        </Box> // END USER MODE
       )}
     </>
   );

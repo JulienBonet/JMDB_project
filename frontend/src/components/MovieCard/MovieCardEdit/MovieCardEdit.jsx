@@ -1,7 +1,11 @@
-import TextField from '@mui/material/TextField';
+import { Box, TextField } from '@mui/material';
+// icons
 import CloudSyncIcon from '@mui/icons-material/CloudSync';
+// components
 import MovieCardEditHeader from './MovieCardEditHeader';
 import TvShowFields from '../TvShowFields';
+// SX
+import { editContainerSx, refreshIconSx } from '../constant/MovieCardEditStyle';
 
 const MovieCardEdit = ({
   isTvShow,
@@ -56,7 +60,16 @@ const MovieCardEdit = ({
   setNbTvEpisodes,
 }) => {
   return (
-    <div className="infos_bloc_1_modify">
+    <Box
+      id="MovieCardEdit"
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '1.3rem',
+        width: '100%',
+        mt: 1,
+      }}
+    >
       {/* Type + TMDB - Title - Focus - Alt Title - Genre(s) - Year */}
       <MovieCardEditHeader
         isTvShow={isTvShow}
@@ -119,7 +132,7 @@ const MovieCardEdit = ({
           textFieldSx={textFieldSx}
         />
       ) : (
-        <div className="box_item_form">
+        <Box id="duration_container_MovieCardEdit" sx={editContainerSx}>
           <TextField
             label="Durée (minutes)"
             name="duration"
@@ -137,7 +150,7 @@ const MovieCardEdit = ({
 
           {idTheMovieDb && (
             <CloudSyncIcon
-              className="Btn_Refresh_items_MovieCard"
+              sx={refreshIconSx}
               onClick={() =>
                 refetchDuration(idTheMovieDb, {
                   movieData,
@@ -146,10 +159,10 @@ const MovieCardEdit = ({
               }
             />
           )}
-        </div>
+        </Box>
       )}
       {/* END TV saison - episode /+/ duration */}
-    </div>
+    </Box>
   );
 };
 

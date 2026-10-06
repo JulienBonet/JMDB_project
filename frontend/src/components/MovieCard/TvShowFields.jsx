@@ -1,13 +1,17 @@
 // frontend/src/components/MovieCard/TvShowFields.jsx
-
-import TextField from '@mui/material/TextField';
-import InputLabel from '@mui/material/InputLabel';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import Checkbox from '@mui/material/Checkbox';
-import ListItemText from '@mui/material/ListItemText';
-import OutlinedInput from '@mui/material/OutlinedInput';
+import {
+  Box,
+  TextField,
+  InputLabel,
+  FormControl,
+  Select,
+  MenuItem,
+  Checkbox,
+  ListItemText,
+  OutlinedInput,
+} from '@mui/material';
+// SX
+import { dividerSx } from './constant/MovieCardEditStyle';
 
 const TvShowFields = ({
   selectedSeasons,
@@ -82,7 +86,7 @@ const TvShowFields = ({
   if (seasonsInfo.length > 0) {
     return (
       <>
-        <div className="divider" />
+        <Box sx={{ ...dividerSx, my: 1 }} />
 
         <FormControl sx={textFieldSx}>
           <InputLabel id="season-select-label">Saisons</InputLabel>
