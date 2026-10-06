@@ -5,15 +5,12 @@
 /* eslint-disable camelcase */
 import { useState } from 'react';
 import { toast } from 'react-toastify';
-import Box from '@mui/material/Box';
-import { Container } from '@mui/material';
-import Modal from '@mui/material/Modal';
+import { Box, Container, Modal, Typography } from '@mui/material';
 // context
 import { useAuth } from '../../Context/AuthContext';
 // CSS
-import './movieCard.css';
-import './movieCardMediaQueries.css';
-import './movieCard_videoPlayer_MediaQueries.css';
+// import './movieCard.css';
+// import './movieCardMediaQueries.css';
 // component
 import MovieCardView from './MovieCardView';
 import MovieCardView02 from './MovieCardView02';
@@ -70,6 +67,8 @@ import { useMovieMedia } from '../../hooks/useMovieMedia';
 import { useMovieActions } from '../../hooks/useMovieActions';
 import { useMovieRelations } from '../../hooks/useMovieRelations';
 import { useTvSeasons } from '../../hooks/useTvSeasons';
+// SX
+import { textFieldSx } from './constant/MovieCardEditStyle';
 
 function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, onFavoriteRemoved }) {
   const { isAdmin } = useAuth();
@@ -129,21 +128,6 @@ function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, on
   const isTvShow = movieData.isTvShow === 1;
   const tvSeason = movieData.tvSeasons;
   const safeValue = (val) => val ?? '';
-
-  //-----------------------------------------------
-  // UX FIELDS
-  //-----------------------------------------------
-
-  const textFieldSx = {
-    width: '80%',
-    '& .MuiInputLabel-root': { color: 'white' },
-    '& .MuiInputBase-input': { color: 'white' },
-    '& .MuiOutlinedInput-root': {
-      '& fieldset': { borderColor: 'white' },
-      '&:hover fieldset': { borderColor: 'orange' },
-      '&.Mui-focused fieldset': { borderColor: 'cyan' },
-    },
-  };
 
   //-----------------------------------------------
   // TRAILER
@@ -369,9 +353,31 @@ function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, on
   //-----------------------------------------------
 
   return (
-    <article className="MovieCard">
-      <div className="MovieCard_container">
-        <section className="MC_line1">
+    <Box
+      component="article"
+      id="MovieCard"
+      sx={{
+        backgroundColor: 'var(--color-04)',
+        width: '100%',
+      }}
+    >
+      <Box
+        id="MovieCard_container"
+        sx={{
+          p: 2,
+        }}
+      >
+        <Box
+          id="MovieCard_Line01"
+          component="section"
+          sx={{
+            display: 'flex',
+            flexDirection: {
+              xs: 'column',
+              lg: 'row',
+            },
+          }}
+        >
           {/* COVER BLOCK */}
           <MovieCardCover
             image={image}
@@ -463,7 +469,7 @@ function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, on
             />
           )}
           {/* END INFO BLOCK 1 */}
-        </section>
+        </Box>
 
         {/* INFO BLOCK 2 */}
         <section>
@@ -566,26 +572,32 @@ function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, on
         {/* END EDITING BUTTON */}
 
         {/* MODAL TRANSFERT LIST */}
-        <Modal
-          open={openModal}
-          onClose={handleCloseModal}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
+        <Modal open={openModal} onClose={handleCloseModal}>
           <Box sx={transferListStyle}>
-            <div
-              onClick={handleCloseModal}
-              onKeyDown={(event) => {
-                if (event.key === 'Enter' || event.key === ' ') {
-                  handleCloseModal();
-                }
+            <Box
+              sx={{
+                textAlign: 'right',
+                pr: 2,
+                pt: 2,
+                pb: 3,
+                mr: '5%',
               }}
-              role="button"
-              tabIndex={0}
-              className="modal_closed_btn_MovieItemList"
             >
-              &#91; Fermer &#93;
-            </div>
+              <Typography
+                component="button"
+                onClick={handleCloseModal}
+                sx={{
+                  border: 'none',
+                  background: 'none',
+                  fontFamily: 'var(--font-04)',
+                  fontWeight: 'bold',
+                  color: 'var(--color-05)',
+                  cursor: 'pointer',
+                }}
+              >
+                [ Fermer ]
+              </Typography>
+            </Box>
 
             <Container>
               <TransferList
@@ -614,8 +626,8 @@ function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, on
           </Box>
         </Modal>
         {/* END MODAL TRANSFERT LIST */}
-      </div>
-    </article>
+      </Box>
+    </Box>
   ); // end return
 }
 

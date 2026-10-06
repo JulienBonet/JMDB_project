@@ -25,21 +25,20 @@ export function useMovieRelations({
   const fetchByNames = async (namesString, endpoint, setter) => {
     if (!namesString) return;
 
-    try {
-      const namesArray = namesString.split(', ').map(async (name) => {
-        try {
-          return await getByName(endpoint, name);
-        } catch (err) {
-          console.warn(`Error fetching ${endpoint} ${name}:`, err);
-          return null;
-        }
-      });
+    const namesArray = namesString.split(', ').map(async (name) => {
+      try {
+        const result = await getByName(endpoint, name);
 
-      const result = (await Promise.all(namesArray)).filter(Boolean);
-      setter(result);
-    } catch (error) {
-      console.error(`Error fetching ${endpoint}:`, error);
-    }
+        return result;
+      } catch (err) {
+        console.warn(`Error fetching ${endpoint} ${name}:`, err);
+        return null;
+      }
+    });
+
+    const result = (await Promise.all(namesArray)).filter(Boolean);
+
+    setter(result);
   };
 
   const getSelectedNames = (list) => list.map((item) => item.name).join(', ');

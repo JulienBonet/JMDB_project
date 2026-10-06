@@ -27,11 +27,7 @@ const getImageUrl = (publicId) => {
 
 const fetchMovieViaBackend = async (mediaType, id) => {
   try {
-    console.log('🌐 Appel backend TMDB :', mediaType, id);
-
     const data = await getTmdbMovie(mediaType, id);
-
-    console.log('🎬 Données reçues du backend :', data.title || data.name);
 
     const genres = Array.isArray(data.genres) ? data.genres : [];
     const cast = Array.isArray(data.cast) ? data.cast : [];
@@ -106,6 +102,7 @@ const refetchMovieTMDB = async (idTheMovieDb, deps) => {
       altTitle,
       year:
         (isTV ? moviefetchData.first_air_date : moviefetchData.release_date)?.substring(0, 4) || '',
+      duration: isTV ? moviefetchData.episode_run_time?.[0] || 0 : moviefetchData.runtime || 0,
       pitch: moviefetchData.tagline || '',
       story: moviefetchData.overview || '',
       idTheMovieDb: `${mediaType}/${moviefetchData.id}`,
@@ -157,11 +154,20 @@ const refetchMovieTMDB = async (idTheMovieDb, deps) => {
   setSelectedCountries(countriesData);
 
   // -----------------/ CREDITS /-----------------
-  const fetchOrCreateEntity = async (entity, searchFunc, createFunc) => {
-    let entityData = await searchFunc(entity.name);
-    if (!entityData) entityData = await createFunc(entity.name);
-    return { id: entityData.id, name: entity.name };
-  };
+  // const fetchOrCreateEntity = async (entity, searchFunc, createFunc) => {
+  //   let entityData = await searchFunc(entity.name);
+
+  //   if (!entityData) {
+  //     await createFunc(entity.name);
+
+  //     entityData = await searchFunc(entity.name);
+  //   }
+
+  //   return {
+  //     id: entityData?.id,
+  //     name: entity.name,
+  //   };
+  // };
 
   // DIRECTORS
   let directorsData = [];
@@ -226,8 +232,6 @@ const refetchMovieTMDB = async (idTheMovieDb, deps) => {
 
     const data = await getTmdbKeywords(mediaType, movieId);
 
-    console.log('🏷️ data reçu du backend :', data);
-
     const keywordsData = Array.isArray(data.keywordsData)
       ? data.keywordsData
       : data.keywordsData?.keywords || [];
@@ -262,8 +266,6 @@ const refetchMovieTMDB = async (idTheMovieDb, deps) => {
       );
 
       setSelectedTags(tagsData.filter(Boolean));
-
-      console.info(`🏷️ Tags rechargés pour ${idTheMovieDb} :`, tagsData.filter(Boolean));
     }
   } catch (err) {
     console.error('💥 Erreur refetchTags :', err);
@@ -289,7 +291,6 @@ const fetchOrCreateEntity = async (entity, searchFunc, createFunc) => {
 
   if (!entityData) {
     const created = await createFunc(cleanName);
-    console.info('🆕 Entité créée :', created);
 
     // Si la création ne renvoie pas d'id, on refait un search
     if (!created?.id) {
@@ -491,6 +492,7 @@ const refetchStudios = async (
   { searchStudioInDatabase, createStudioInDatabase, setSelectedStudios }
 ) => {
   const data = await getTmdbData(idTheMovieDb);
+
   if (!data?.production_companies) {
     setSelectedStudios([]);
     return;
@@ -542,9 +544,6 @@ const refetchTags = async (
 
     // 1️⃣ Appel au BACKEND pour récupérer les keywords TMDB
     const data = await getTmdbKeywords(mediaType, movieId);
-
-    // vérifier ce que l'on a vraiment
-    console.log('data:', data);
 
     // le tableau réel
     const keywordsData = Array.isArray(data.keywordsData)

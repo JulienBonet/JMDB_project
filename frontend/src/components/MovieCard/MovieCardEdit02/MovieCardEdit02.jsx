@@ -1,12 +1,12 @@
-// frontend/src/components/MovieCard/MovieCardEdit02.jsx
-import TextField from '@mui/material/TextField';
-import Alert from '@mui/material/Alert';
-import Checkbox from '@mui/material/Checkbox';
+import { Box, TextField, Alert, Checkbox } from '@mui/material';
+//icons
 import FormControlLabel from '@mui/material/FormControlLabel';
 import CloudSyncIcon from '@mui/icons-material/CloudSync';
 // component
 import MovieCardRelationsSection from './MovieCardRelationsSection';
 import MovieCardMediaSection from './MovieCardMediaSection';
+// SX
+import { editContainerSx, refreshIconSx, dividerSx } from '../constant/MovieCardEditStyle';
 
 const MovieCardEdit02 = ({
   isTvShow,
@@ -83,8 +83,16 @@ const MovieCardEdit02 = ({
   setAllowEdit,
 }) => {
   return (
-    <div className="MC_line2_modify">
-      <div className="divider" />
+    <Box
+      id="MovieCardEdit02"
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        mt: 2,
+        gap: 2,
+      }}
+    >
+      <Box sx={{ ...dividerSx, height: '1px', my: 0.5 }} />
 
       {/* Pays (modify)\|Réalisateur (modify)\|Scénariste (modify)\|Compositeur (modify)\
       |Studio (modify)\|Casting (modify)\|Tags (modify) */}
@@ -133,10 +141,10 @@ const MovieCardEdit02 = ({
       {/* END Pays (modify)\|Réalisateur (modify)\|Scénariste (modify)\|Compositeur (modify)\
       |Studio (modify)\|Casting (modify)\|Tags (modify) */}
 
-      <div className="divider" />
+      <Box sx={{ ...dividerSx, height: '1px', my: 0.5 }} />
 
       {/* Résumé (modify) */}
-      <div className="box_item_form">
+      <Box id="story_container_MovieCardEdit" sx={editContainerSx}>
         <TextField
           label="Résumé"
           name="story"
@@ -149,7 +157,7 @@ const MovieCardEdit02 = ({
 
         {idTheMovieDb && (
           <CloudSyncIcon
-            className="Btn_Refresh_items_MovieCard"
+            sx={refreshIconSx}
             onClick={() =>
               refetchStory(idTheMovieDb, {
                 movieData,
@@ -158,10 +166,10 @@ const MovieCardEdit02 = ({
             }
           />
         )}
-      </div>
+      </Box>
       {/* end Résumé (modify) */}
 
-      <div className="divider" />
+      <Box sx={{ ...dividerSx, height: '1px', my: 0.5 }} />
 
       {/* Support (modify) */}
       <MovieCardMediaSection
@@ -181,10 +189,10 @@ const MovieCardEdit02 = ({
       />
       {/* end Support (modify) */}
 
-      <div className="divider" />
+      <Box sx={{ ...dividerSx, height: '1px', my: 0.5 }} />
 
       {/* trailer (modify) */}
-      <div className="box_item_form">
+      <Box id="trailer_container_MovieCardEdit" sx={editContainerSx}>
         <TextField
           label="trailer"
           name="trailer"
@@ -196,7 +204,7 @@ const MovieCardEdit02 = ({
 
         {idTheMovieDb && (
           <CloudSyncIcon
-            className="Btn_Refresh_items_MovieCard"
+            sx={refreshIconSx}
             onClick={() =>
               refetchTrailer(idTheMovieDb, {
                 setMovieData,
@@ -205,7 +213,7 @@ const MovieCardEdit02 = ({
             }
           />
         )}
-      </div>
+      </Box>
 
       {trailerMessage && (
         <Alert severity="info" sx={{ mt: 1, width: '50%' }}>
@@ -214,7 +222,7 @@ const MovieCardEdit02 = ({
       )}
       {/* end trailer (modify) */}
 
-      <div className="divider" />
+      <Box sx={{ ...dividerSx, height: '1px', my: 0.5 }} />
 
       {/* Commentaire (modify) */}
       <TextField
@@ -228,7 +236,7 @@ const MovieCardEdit02 = ({
       />
       {/* end Commentaire (modify) */}
 
-      <div className="divider" />
+      <Box sx={{ ...dividerSx, height: '1px', my: 0.5 }} />
 
       {/* IMDB ID (modify) */}
       {movieData.idTheMovieDb ? (
@@ -273,7 +281,7 @@ const MovieCardEdit02 = ({
         />
       )}
       {/* IMDB ID (modify) */}
-    </div>
+    </Box>
   );
 };
 
