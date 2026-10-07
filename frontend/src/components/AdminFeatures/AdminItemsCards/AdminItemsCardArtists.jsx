@@ -252,7 +252,7 @@ function AdminItemsCardArtists({ item, origin, onUpdate, closeModal }) {
           sx={{
             display: 'flex',
             flexDirection: 'column',
-            gap: 2,
+            gap: '10px',
             width: {
               xs: '95%',
               lg: '70%',
@@ -261,6 +261,7 @@ function AdminItemsCardArtists({ item, origin, onUpdate, closeModal }) {
               xs: 'auto',
               lg: 0,
             },
+            p: 1,
           }}
         >
           {/* ID */}

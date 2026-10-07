@@ -1,6 +1,5 @@
 /* eslint-disable no-alert */
 import { useCallback, useState } from 'react';
-import { Container, Box, Modal } from '@mui/material';
 import { VpnKey, Delete } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -10,7 +9,8 @@ import { getUsersSortedById, deleteUser } from '../../../services/userService';
 import useAdminItemsList from '../../../hooks/useAdminItemsList';
 // components
 import AdminItemsCard from '../AdminItemsCards/AdminItemsCardUsers';
-import CreateItemCard from '../AdminItemsCards/CreateItemCard';
+import AdminModal from '../AdminModal/AdminModal';
+import AdminCreateItemModal from '../AdminCreateItemModal/AdminCreateItemModal';
 // UI
 import AdminListHeader from './ui/AdminListHeader';
 import AdminDataTable from './ui/AdminDataTable';
@@ -127,61 +127,25 @@ function AdminUsersList() {
       {/* end Pagination */}
 
       {/* ADMIN CARD */}
-      {newUser && (
-        <Modal open onClose={closeModalNewUser} className="Movie_Modal">
-          <Box>
-            <Container maxWidth="sm">
-              <div
-                onClick={closeModalNewUser}
-                onKeyDown={(event) => {
-                  if (event.key === 'Enter' || event.key === ' ') {
-                    closeModalNewUser();
-                  }
-                }}
-                role="button"
-                tabIndex={0}
-                className="modal_closed_btn"
-              >
-                X Fermer
-              </div>
-              <CreateItemCard
-                origin={origin}
-                onUpdate={refreshUsers}
-                closeModal={closeModalNewUser}
-              />
-            </Container>
-          </Box>
-        </Modal>
+      {passwordItem && (
+        <AdminModal open={!!passwordItem} onClose={() => setPasswordItem(null)}>
+          <AdminItemsCard
+            item={passwordItem}
+            onUpdate={refreshUsers}
+            closeModal={() => setPasswordItem(null)}
+          />
+        </AdminModal>
       )}
       {/* END ADMIN CARD */}
 
       {/* CREATED CARD */}
-      {passwordItem && (
-        <Modal open onClose={() => setPasswordItem(null)} className="Movie_Modal">
-          <Box>
-            <Container maxWidth="sm">
-              <div
-                onClick={() => setPasswordItem(null)}
-                onKeyDown={(event) => {
-                  if (event.key === 'Enter' || event.key === ' ') {
-                    setPasswordItem(null);
-                  }
-                }}
-                role="button"
-                tabIndex={0}
-                className="modal_closed_btn"
-              >
-                X Fermer
-              </div>
-
-              <AdminItemsCard
-                item={passwordItem}
-                onUpdate={refreshUsers}
-                closeModal={() => setPasswordItem(null)}
-              />
-            </Container>
-          </Box>
-        </Modal>
+      {newUser && (
+        <AdminCreateItemModal
+          open={!!newUser}
+          onClose={closeModalNewUser}
+          origin={origin}
+          onUpdate={refreshUsers}
+        />
       )}
       {/* END CREATED CARD */}
     </AdminListLayout>

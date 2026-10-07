@@ -88,8 +88,6 @@ function AdminMovieList() {
   const handleDeleteMovie = async () => {
     if (!movieIdToDelete) return;
 
-    console.info('Tentative de suppression du film avec ID:', movieIdToDelete);
-
     setIsConfirmDeleteOpen(false);
 
     try {
