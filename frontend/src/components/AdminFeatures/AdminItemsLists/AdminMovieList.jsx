@@ -3,15 +3,12 @@ import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import {
-  Box,
   Button,
-  Container,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Modal,
 } from '@mui/material';
 import { Delete, Preview } from '@mui/icons-material';
 // services
@@ -19,7 +16,7 @@ import { getCollection, deleteMovie } from '../../../services/movieService';
 // hooks
 import useAdminItemsList from '../../../hooks/useAdminItemsList';
 // components
-import MovieCard from '../../MovieCard/MovieCard';
+import MovieCardModal from '../../MovieCardModal/MovieCardModal';
 // UI
 import AdminListHeader from './ui/AdminListHeader';
 import AdminDataTable from './ui/AdminDataTable';
@@ -205,56 +202,14 @@ function AdminMovieList() {
 
       {/* MODAL MOVIE CARD */}
       {selectedMovie && (
-        <Modal
-          open
+        <MovieCardModal
+          open={!!selectedMovie}
           onClose={closeModal}
-          sx={{
-            overflowY: 'auto',
-          }}
-        >
-          <Box
-            sx={{
-              width: '100%',
-              minHeight: '100%',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'flex-start',
-              boxSizing: 'border-box',
-              py: 2,
-            }}
-          >
-            <Container maxWidth="lg">
-              <Box
-                onClick={closeModal}
-                onKeyDown={(event) => {
-                  if (event.key === 'Enter' || event.key === ' ') {
-                    closeModal();
-                  }
-                }}
-                role="button"
-                tabIndex={0}
-                sx={{
-                  textAlign: 'right',
-                  fontFamily: 'var(--font-04)',
-                  fontWeight: 600,
-                  color: 'var(--color-02)',
-                  cursor: 'pointer',
-                  p: '1rem 1rem 1rem 0',
-                }}
-              >
-                X Fermer
-              </Box>
-
-              <MovieCard
-                movie={selectedMovie}
-                origin={origin}
-                onUpdateMovie={updateMovieData}
-                onDeleteMovie={handleDeleteMovieFromMovieCard}
-                closeModal={closeModal}
-              />
-            </Container>
-          </Box>
-        </Modal>
+          movie={selectedMovie}
+          origin={origin}
+          onUpdateMovie={updateMovieData}
+          onDeleteMovie={handleDeleteMovieFromMovieCard}
+        />
       )}
       {/* END MODAL MOVIE CARD */}
     </AdminListLayout>
