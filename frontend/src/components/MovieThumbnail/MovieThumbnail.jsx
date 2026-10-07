@@ -1,10 +1,10 @@
 /* eslint-disable react/prop-types */
 import { useState } from 'react';
-import { Box, Modal } from '@mui/material';
+import { Box } from '@mui/material';
 // Services
 import { getMovie } from '../../services/movieService';
 // Component
-import MovieCard from '../MovieCard/MovieCard';
+import MovieCardModal from '../MovieCardModal/MovieCardModal';
 // SX
 import { thumbnailContainerSx, thumbnailCoverSX, thumbnailTitleSx } from './MovieThumbnailStyles';
 
@@ -80,60 +80,17 @@ function MovieThumbnail({
 
       {/* MODAL MOVIE CARD*/}
       {selectedMovie && (
-        <Modal
-          open
+        <MovieCardModal
+          open={!!selectedMovie}
           onClose={closeModal}
-          sx={{
-            overflowY: 'auto',
-          }}
-        >
-          <Box
-            sx={{
-              width: '100%',
-              minHeight: '100%',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'flex-start',
-              boxSizing: 'border-box',
-              py: 2,
-            }}
-          >
-            <Box
-              sx={{
-                width: '100%',
-                maxWidth: 'lg',
-              }}
-            >
-              <Box
-                onClick={closeModal}
-                role="button"
-                tabIndex={0}
-                sx={{
-                  textAlign: 'right',
-                  fontFamily: 'var(--font-04)',
-                  fontWeight: 600,
-                  color: 'var(--color-02)',
-                  cursor: 'pointer',
-                  p: '1rem 1rem 1rem 0',
-                  m: 0,
-                }}
-              >
-                X Fermer
-              </Box>
-
-              <MovieCard
-                movie={selectedMovie}
-                origin={origin}
-                onUpdateMovie={homepage ? handleUpdateMovie : onUpdateMovie}
-                onDeleteMovie={onDeleteMovie}
-                onFavoriteRemoved={onFavoriteRemoved}
-                closeModal={closeModal}
-              />
-            </Box>
-          </Box>
-        </Modal>
+          movie={selectedMovie}
+          origin={origin}
+          onUpdateMovie={homepage ? handleUpdateMovie : onUpdateMovie}
+          onDeleteMovie={onDeleteMovie}
+          onFavoriteRemoved={onFavoriteRemoved}
+        />
       )}
-      {/* END MODAL */}
+      {/* END MODAL MOVIE CARD* */}
     </>
   );
 }
