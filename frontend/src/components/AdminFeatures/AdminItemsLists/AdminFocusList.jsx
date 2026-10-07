@@ -1,6 +1,5 @@
 /* eslint-disable no-alert */
 import { useCallback, useState } from 'react';
-import { Container, Box, Modal } from '@mui/material';
 import { Preview, Delete } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -10,7 +9,8 @@ import { getFocusSortedById, deleteFocus } from '../../../services/focusService'
 import useAdminItemsList from '../../../hooks/useAdminItemsList';
 // components
 import AdminItemsCard from '../AdminItemsCards/AdminItemsCardFocus';
-import CreateItemCard from '../AdminItemsCards/CreateItemCard';
+import AdminModal from '../AdminModal/AdminModal';
+import AdminCreateItemModal from '../AdminCreateItemModal/AdminCreateItemModal';
 // UI
 import AdminListHeader from './ui/AdminListHeader';
 import AdminDataTable from './ui/AdminDataTable';
@@ -118,60 +118,29 @@ function AdminFocusList() {
 
       {/* ADMIN CARD */}
       {selectedItem && (
-        <Modal open onClose={closeModal} className="Movie_Modal">
-          <Box>
-            <Container maxWidth="lg">
-              <div
-                onClick={closeModal}
-                onKeyDown={(event) => {
-                  if (event.key === 'Enter' || event.key === ' ') {
-                    closeModal();
-                  }
-                }}
-                role="button"
-                tabIndex={0}
-                className="modal_closed_btn"
-              >
-                X Fermer
-              </div>
-              <AdminItemsCard
-                item={selectedItem}
-                origin={origin}
-                onUpdate={refreshFocus}
-                closeModal={closeModal}
-              />
-            </Container>
-          </Box>
-        </Modal>
+        <AdminModal open={!!selectedItem} onClose={closeModal}>
+          <AdminItemsCard
+            item={selectedItem}
+            origin={origin}
+            onUpdate={refreshFocus}
+            closeModal={closeModal}
+            showImage
+            showPitch
+            showWikilink
+            showImdbLink
+          />
+        </AdminModal>
       )}
       {/* END ADMIN CARD */}
 
       {/* CREATED CARD */}
       {newFocus && (
-        <Modal open onClose={closeModalNewFocus} className="Movie_Modal">
-          <Box>
-            <Container maxWidth="sm">
-              <div
-                onClick={closeModalNewFocus}
-                onKeyDown={(event) => {
-                  if (event.key === 'Enter' || event.key === ' ') {
-                    closeModalNewFocus();
-                  }
-                }}
-                role="button"
-                tabIndex={0}
-                className="modal_closed_btn"
-              >
-                X Fermer
-              </div>
-              <CreateItemCard
-                origin={origin}
-                onUpdate={refreshFocus}
-                closeModal={closeModalNewFocus}
-              />
-            </Container>
-          </Box>
-        </Modal>
+        <AdminCreateItemModal
+          open={!!newFocus}
+          onClose={closeModalNewFocus}
+          origin={origin}
+          onUpdate={refreshFocus}
+        />
       )}
       {/* END CREATED CARD */}
     </AdminListLayout>

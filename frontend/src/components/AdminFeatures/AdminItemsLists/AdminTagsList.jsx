@@ -1,6 +1,5 @@
 /* eslint-disable no-alert */
 import { useCallback, useState } from 'react';
-import { Container, Box, Modal } from '@mui/material';
 import { Preview, Delete } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -10,7 +9,8 @@ import { getTagsSortedById, deleteTag } from '../../../services/tagService';
 import useAdminItemsList from '../../../hooks/useAdminItemsList';
 // components
 import AdminItemsCard from '../AdminItemsCards/AdminItemsCardkindsLanguagesTags';
-import CreateItemCard from '../AdminItemsCards/CreateItemCard';
+import AdminCreateItemModal from '../AdminCreateItemModal/AdminCreateItemModal';
+import AdminModal from '../AdminModal/AdminModal';
 // UI
 import AdminListHeader from './ui/AdminListHeader';
 import AdminDataTable from './ui/AdminDataTable';
@@ -117,56 +117,29 @@ function AdminTagsList() {
 
       {/* ADMIN CARD */}
       {selectedItem && (
-        <Modal open onClose={closeModal} className="Movie_Modal">
-          <Box>
-            <Container maxWidth="lg">
-              <div
-                onClick={closeModal}
-                onKeyDown={(event) => {
-                  if (event.key === 'Enter' || event.key === ' ') {
-                    closeModal();
-                  }
-                }}
-                role="button"
-                tabIndex={0}
-                className="modal_closed_btn"
-              >
-                X Fermer
-              </div>
-              <AdminItemsCard
-                item={selectedItem}
-                origin={origin}
-                onUpdate={refreshTag}
-                closeModal={closeModal}
-              />
-            </Container>
-          </Box>
-        </Modal>
+        <AdminModal open={!!selectedItem} onClose={closeModal}>
+          <AdminItemsCard
+            item={selectedItem}
+            origin={origin}
+            onUpdate={refreshTag}
+            closeModal={closeModal}
+            showImage
+            showPitch
+            showWikilink
+            showImdbLink
+          />
+        </AdminModal>
       )}
       {/* END ADMIN CARD */}
 
       {/* CREATED CARD */}
       {newTag && (
-        <Modal open onClose={closeModalNewTag} className="Movie_Modal">
-          <Box>
-            <Container maxWidth="sm">
-              <div
-                onClick={closeModalNewTag}
-                onKeyDown={(event) => {
-                  if (event.key === 'Enter' || event.key === ' ') {
-                    closeModalNewTag();
-                  }
-                }}
-                role="button"
-                tabIndex={0}
-                className="modal_closed_btn"
-              >
-                X Fermer
-              </div>
-              <CreateItemCard origin={origin} onUpdate={refreshTag} closeModal={closeModalNewTag} />
-            </Container>
-          </Box>
-        </Modal>
+        <AdminCreateItemModal
+          open={!!newTag}
+          onClose={closeModalNewTag}
+          origin={origin}
+          onUpdate={refreshTag}
+        />
       )}
       {/* END CREATED CARD */}
     </AdminListLayout>
