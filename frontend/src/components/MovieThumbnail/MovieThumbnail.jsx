@@ -78,7 +78,7 @@ function MovieThumbnail({
       </Box>
       {/* END THUMBNAIL */}
 
-      {/* MODAL */}
+      {/* MODAL MOVIE CARD*/}
       {selectedMovie && (
         <Modal
           open

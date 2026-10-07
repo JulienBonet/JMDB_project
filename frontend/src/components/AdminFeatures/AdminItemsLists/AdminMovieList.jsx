@@ -203,12 +203,28 @@ function AdminMovieList() {
       <AdminListPagination totalPages={totalPages} onChange={handlePageChange} />
       {/* end Pagination */}
 
-      {/* MOVIE CARD */}
+      {/* MODAL MOVIE CARD */}
       {selectedMovie && (
-        <Modal open onClose={closeModal} className="Movie_Modal">
-          <Box>
+        <Modal
+          open
+          onClose={closeModal}
+          sx={{
+            overflowY: 'auto',
+          }}
+        >
+          <Box
+            sx={{
+              width: '100%',
+              minHeight: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'flex-start',
+              boxSizing: 'border-box',
+              py: 2,
+            }}
+          >
             <Container maxWidth="lg">
-              <div
+              <Box
                 onClick={closeModal}
                 onKeyDown={(event) => {
                   if (event.key === 'Enter' || event.key === ' ') {
@@ -217,10 +233,17 @@ function AdminMovieList() {
                 }}
                 role="button"
                 tabIndex={0}
-                className="modal_closed_btn"
+                sx={{
+                  textAlign: 'right',
+                  fontFamily: 'var(--font-04)',
+                  fontWeight: 600,
+                  color: 'var(--color-02)',
+                  cursor: 'pointer',
+                  p: '1rem 1rem 1rem 0',
+                }}
               >
                 X Fermer
-              </div>
+              </Box>
 
               <MovieCard
                 movie={selectedMovie}
@@ -233,7 +256,7 @@ function AdminMovieList() {
           </Box>
         </Modal>
       )}
-      {/* MOVIE CARD */}
+      {/* END MODAL MOVIE CARD */}
     </AdminListLayout>
   );
 }

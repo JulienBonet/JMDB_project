@@ -5,12 +5,9 @@
 /* eslint-disable camelcase */
 import { useState } from 'react';
 import { toast } from 'react-toastify';
-import { Box, Container, Modal, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 // context
 import { useAuth } from '../../Context/AuthContext';
-// CSS
-// import './movieCard.css';
-// import './movieCardMediaQueries.css';
 // component
 import MovieCardView from './MovieCardView';
 import MovieCardView02 from './MovieCardView02';
@@ -18,7 +15,6 @@ import MovieCardEdit from './MovieCardEdit/MovieCardEdit';
 import MovieCardEdit02 from './MovieCardEdit02/MovieCardEdit02';
 import MovieCardCover from './MovieCardCover';
 import MovieCardActions from './MovieCardActions';
-import TransferList from '../TransferList/TransferList';
 import TransferListModal from '../TransferList/TransferListModal';
 // utils
 import {
