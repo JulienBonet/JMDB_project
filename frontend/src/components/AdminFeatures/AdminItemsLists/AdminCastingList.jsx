@@ -90,16 +90,12 @@ function AdminCastingList() {
           {
             label: 'VIEW',
             width: '15%',
-            render: (item) => (
-              <Preview className="admin_tools_ico" onClick={() => openModal(item)} />
-            ),
+            render: (item) => <Preview onClick={() => openModal(item)} />,
           },
           {
             label: 'DELETE',
             width: '15%',
-            render: (item) => (
-              <Delete className="admin_tools_ico" onClick={() => handleDelete(item.id)} />
-            ),
+            render: (item) => <Delete onClick={() => handleDelete(item.id)} />,
           },
         ]}
         rows={currentItems}

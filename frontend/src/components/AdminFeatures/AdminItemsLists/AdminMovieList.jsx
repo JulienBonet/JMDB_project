@@ -153,20 +153,13 @@ function AdminMovieList() {
           {
             label: 'VIEW',
             width: '10%',
-            render: (item) => (
-              <Preview className="admin_tools_ico" onClick={() => openModal(item)} />
-            ),
+            render: (item) => <Preview onClick={() => openModal(item)} />,
           },
           {
             label: 'DELETE',
             mobileLabel: 'DELETE',
             width: '10%',
-            render: (item) => (
-              <Delete
-                className="admin_tools_ico"
-                onClick={() => handleOpenDeleteConfirm(item.id)}
-              />
-            ),
+            render: (item) => <Delete onClick={() => handleOpenDeleteConfirm(item.id)} />,
           },
         ]}
         rows={currentItems}
