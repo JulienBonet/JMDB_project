@@ -1,121 +1,148 @@
 /* eslint-disable no-plusplus */
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useLoaderData } from 'react-router-dom';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
-import '../../assets/css/common_elements.css';
-import './home.css';
-import './homeMediaQueries.css';
-import MovieThumbnail from '../../components/MovieThumbnail3/MovieThumbnail3';
-// refactor
+import { Box, Button, Typography, useMediaQuery } from '@mui/material';
+// Services
 import { getMoviesSortedNox } from '../../services/movieService';
+// components
+import MovieThumbnail from '../../components/MovieThumbnail/MovieThumbnail';
 
 function Home() {
-  // const data = useLoaderData();
   const initialData = useLoaderData();
   const [movies, setMovies] = useState(initialData);
-  const [moviesToShow, setMoviesToShow] = useState(10);
 
-  const updateMoviesToShow = () => {
-    // 👉 1) Si hauteur trop faible ET largeur desktop, on force 4 images
-    if (window.innerHeight < 850 && window.innerWidth >= 1024) {
-      setMoviesToShow(4);
-      return;
-    }
+  // xs < 600px → 1 film
+  // sm 600–899px → 2 films
+  // md et plus → 4 films
+  const isMobile = useMediaQuery('(max-width:599.95px)');
+  const isTablet = useMediaQuery('(min-width:600px) and (max-width:899.95px)');
 
-    // 👉 2) Sinon, logique habituelle basée sur la largeur
-    if (window.matchMedia('(max-width: 767px)').matches) {
-      setMoviesToShow(1);
-    } else if (window.matchMedia('(min-width: 1024px) and (max-width: 1279px)').matches) {
-      setMoviesToShow(4);
-    } else if (window.matchMedia('(min-width: 1280px) and (max-width: 1439px)').matches) {
-      setMoviesToShow(6);
-    } else if (window.matchMedia('(min-width: 1440px) and (max-width: 1740px)').matches) {
-      setMoviesToShow(4);
-    } else if (window.matchMedia('(min-width: 1741px)').matches) {
-      setMoviesToShow(10);
-    } else {
-      setMoviesToShow(4);
-    }
-  };
-
-  useEffect(() => {
-    updateMoviesToShow();
-    window.addEventListener('resize', updateMoviesToShow);
-    return () => window.removeEventListener('resize', updateMoviesToShow);
-  }, []);
+  const moviesToShow = isMobile ? 1 : isTablet ? 2 : 4;
 
   const handleShuffle = async () => {
     const newMovies = await getMoviesSortedNox();
     setMovies(newMovies);
   };
 
-  // -----------------
-  // BTN STYLE
-  // -----------------
-  const theme = createTheme({
-    palette: {
-      JmdbColorKindNav: {
-        main: '#00D9C0',
-        light: '#ffc45e',
-        dark: '#e59100',
-        contrastText: '#242105',
-      },
-      JmdbColorKindNav2: {
-        main: '#ffa500',
-        light: '#ffa500',
-        dark: '#e59100',
-        contrastText: '#242105',
-      },
-      JmdbColorKindNav3: {
-        main: '#FFFFFF',
-        light: '#ffa500',
-        dark: '#e59100',
-        contrastText: '#242105',
-      },
-    }, // end palette
-  }); // const theme = createTheme
-
-  // -----------------
-  // RETURN
-  // -----------------
   return (
-    <main className="main_HomePage">
-      <section className="home_title_container">
-        <section className="home_title_position">
-          <h1 className="home_Main_Title">J M D B</h1>
-        </section>
-      </section>
-      <div className="dashed_secondary_bar" />
-      <section className="welcome_container">
-        <div className="welcome_content">
-          <div className="ShuffleThumbnails_welcome">
-            <div className="MovieThumbnails_welcome">
-              {movies.slice(0, moviesToShow).map((movie) => (
-                <MovieThumbnail key={movie.id} data={movie} />
-              ))}
-            </div>
+    <Box
+      component="main"
+      id="Home"
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: '90vh',
+        overflow: 'hidden',
+      }}
+    >
+      {/* Home title */}
+      <Box
+        component="section"
+        id="Home_title_container"
+        sx={{
+          flex: '0 0 auto',
+        }}
+      >
+        <Box
+          component="section"
+          id="Home_title_position"
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            height: '5rem',
+          }}
+        >
+          <Typography
+            component="h1"
+            id="Home_Main_Title"
+            sx={{
+              fontFamily: 'var(--font-01)',
+              fontSize: '54px',
+              color: 'var(--color-03)',
+              display: 'flex',
+              alignItems: 'center',
+              m: 0,
+            }}
+          >
+            J M D B
+          </Typography>
+        </Box>
+      </Box>
 
-            <ThemeProvider theme={theme}>
-              <Stack spacing={2} direction="row">
-                <Button
-                  value="New Shuffle"
-                  onClick={handleShuffle}
-                  variant="outlined"
-                  color="JmdbColorKindNav3"
-                  size="medium"
-                  className="New_shuffle_btn"
-                >
-                  Un film au hasard ?
-                </Button>
-              </Stack>
-            </ThemeProvider>
-          </div>
-        </div>
-      </section>
-    </main>
-  ); // end return
-} // function Home()
+      <div className="dashed_secondary_bar" />
+
+      {/* Welcome content */}
+      <Box
+        component="section"
+        id="Home_welcome_container"
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100%',
+          overflowY: 'auto',
+        }}
+      >
+        <Box
+          id="Home_welcome_content"
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-evenly',
+            alignItems: 'center',
+            py: 4,
+            flexWrap: 'wrap',
+            width: '100%',
+          }}
+        >
+          <Box
+            id="Home_ShuffleThumbnails_welcome"
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              width: '100%',
+            }}
+          >
+            <Box
+              id="Home_MovieThumbnails_welcome"
+              sx={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                justifyContent: 'center',
+                alignContent: 'center',
+                border: '1px dashed white',
+                borderRadius: '25px',
+                py: 2,
+                mb: 2,
+              }}
+            >
+              {movies.slice(0, moviesToShow).map((movie) => (
+                <MovieThumbnail key={movie.id} data={movie} homepage />
+              ))}
+            </Box>
+
+            <Button
+              value="New Shuffle"
+              onClick={handleShuffle}
+              variant="outlined"
+              size="medium"
+              sx={{
+                color: 'var(--color-01)',
+                borderColor: 'rgba(255, 255, 255, 0.6)',
+                '&:hover': {
+                  borderColor: 'var(--color-01)',
+                  backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                },
+              }}
+            >
+              Un film au hasard ?
+            </Button>
+          </Box>
+        </Box>
+      </Box>
+    </Box>
+  );
+}
 
 export default Home;
