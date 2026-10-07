@@ -1,23 +1,49 @@
 /* eslint-disable react/prop-types */
 import { useState } from 'react';
-import Modal from '@mui/material/Modal';
-import Box from '@mui/material/Box';
-import { Container } from '@mui/material';
-import './movieThumbnail.css';
-import './movieThumbnailMediaQueries.css';
+import { Box, Modal } from '@mui/material';
+// Services
+import { getMovie } from '../../services/movieService';
+// Component
 import MovieCard from '../MovieCard/MovieCard';
+// SX
+import { thumbnailContainerSx, thumbnailCoverSX, thumbnailTitleSx } from './MovieThumbnailStyles';
 
-function MovieThumbnail({ data, onDeleteMovie, onUpdateMovie, onFavoriteRemoved }) {
+function MovieThumbnail({
+  data,
+  onDeleteMovie,
+  onUpdateMovie,
+  onFavoriteRemoved,
+  homepage = false,
+}) {
   const origin = 'movie';
+  const [movieData, setMovieData] = useState(data);
   const CLOUDINARY_BASE_URL = import.meta.env.VITE_CLOUDINARY_BASE_URL;
 
-  const { title, year, cover: coverName } = data;
+  const { title, cover: coverName } = movieData;
+  const year = Number(movieData.year) || '';
 
   const [selectedMovie, setSelectedMovie] = useState(null);
 
+  // Recuperer cover
+  const getCoverUrl = (cover) => {
+    if (!cover) return `${CLOUDINARY_BASE_URL}/00_cover_default.jpg`;
+    if (cover.startsWith('http')) return cover;
+    return `${CLOUDINARY_BASE_URL}/${cover}`;
+  };
+
+  // relancer le shuffle
+  const handleUpdateMovie = async () => {
+    try {
+      const updatedMovie = await getMovie(data.id);
+      setMovieData(updatedMovie);
+    } catch (error) {
+      console.error('Erreur lors de la récupération des données mises à jour:', error);
+    }
+  };
+
   // Ouvre le modal avec le film sélectionné
   const openModal = () => {
-    setSelectedMovie(data);
+    setSelectedMovie(movieData);
   };
 
   // Ferme le modal
@@ -25,56 +51,89 @@ function MovieThumbnail({ data, onDeleteMovie, onUpdateMovie, onFavoriteRemoved 
     setSelectedMovie(null);
   };
 
-  const getCoverUrl = (cover) => {
-    if (!cover) return `${CLOUDINARY_BASE_URL}/00_cover_default.jpg`;
-    if (cover.startsWith('http')) return cover;
-    return `${CLOUDINARY_BASE_URL}/${cover}`;
-  };
-
+  // ----------------
+  // RETURN
+  // ----------------
   return (
     <>
-      <div
-        className="thumbail_container"
+      {/* THUMBNAIL */}
+      <Box
+        id="MovieThumbnail_container"
         role="button"
         tabIndex={0}
         onClick={openModal}
         onKeyDown={openModal}
+        sx={thumbnailContainerSx(homepage)}
       >
-        <img className="thumbail_cover" src={getCoverUrl(coverName)} alt={`Cover ${title}`} />
-        <p className="thumbail_title">
-          {title} <span className="thumbail_year">({year})</span>
-        </p>
-      </div>
+        <Box
+          id="MovieThumbnail_cover"
+          component="img"
+          src={getCoverUrl(coverName)}
+          alt={`Cover ${title}`}
+          sx={thumbnailCoverSX(homepage)}
+        />
+        <Box id="MovieThumbnail_title" component="p" sx={thumbnailTitleSx}>
+          {title} ({year})
+        </Box>
+      </Box>
+      {/* END THUMBNAIL */}
 
+      {/* MODAL */}
       {selectedMovie && (
-        <Modal open onClose={closeModal} className="Movie_Modal">
-          <Box>
-            <Container maxWidth="lg">
-              <div
+        <Modal
+          open
+          onClose={closeModal}
+          sx={{
+            overflowY: 'auto',
+          }}
+        >
+          <Box
+            sx={{
+              width: '100%',
+              minHeight: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'flex-start',
+              boxSizing: 'border-box',
+              py: 2,
+            }}
+          >
+            <Box
+              sx={{
+                width: '100%',
+                maxWidth: 'lg',
+              }}
+            >
+              <Box
                 onClick={closeModal}
-                onKeyDown={(event) => {
-                  if (event.key === 'Enter' || event.key === ' ') {
-                    closeModal();
-                  }
-                }}
                 role="button"
                 tabIndex={0}
-                className="modal_closed_btn"
+                sx={{
+                  textAlign: 'right',
+                  fontFamily: 'var(--font-04)',
+                  fontWeight: 600,
+                  color: 'var(--color-02)',
+                  cursor: 'pointer',
+                  p: '1rem 1rem 1rem 0',
+                  m: 0,
+                }}
               >
                 X Fermer
-              </div>
+              </Box>
+
               <MovieCard
                 movie={selectedMovie}
                 origin={origin}
-                onUpdateMovie={onUpdateMovie}
+                onUpdateMovie={homepage ? handleUpdateMovie : onUpdateMovie}
                 onDeleteMovie={onDeleteMovie}
                 onFavoriteRemoved={onFavoriteRemoved}
                 closeModal={closeModal}
               />
-            </Container>
+            </Box>
           </Box>
         </Modal>
       )}
+      {/* END MODAL */}
     </>
   );
 }
