@@ -1,12 +1,8 @@
-// frontend/src/pages/Login/Login.jsx
-/* eslint-disable no-restricted-syntax */
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import CircularProgress from '@mui/material/CircularProgress';
+import { Box, Button, CircularProgress, TextField, Typography } from '@mui/material';
 import '../../assets/css/common_elements.css';
-import './login.css';
+// context
 import { useAuth } from '../../Context/AuthContext';
 
 function Login() {
@@ -18,9 +14,6 @@ function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  // ---------
-  // SUBMIT
-  // ---------
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -37,44 +30,105 @@ function Login() {
       setLoading(false);
     }
   };
-  // ---------
+
+  // -------------
   // SX
-  // ---------
+  // -------------
+
   const textFieldSx = {
     backgroundColor: 'white',
     '& .MuiOutlinedInput-root': {
       '& fieldset': {
-        borderColor: 'var(--color-04)', // bord normal
+        borderColor: 'var(--color-04)',
       },
       '&:hover fieldset': {
-        borderColor: 'var(--color-02)', // bord hover
+        borderColor: 'var(--color-02)',
       },
       '&.Mui-focused fieldset': {
-        borderColor: 'var(--color-02)', // bord focus
+        borderColor: 'var(--color-02)',
       },
     },
     '& .MuiInputLabel-root.Mui-focused': {
-      color: 'var(--color-05)', // label focus
+      color: 'var(--color-05)',
     },
   };
 
-  const SubmitButtonSx = {
+  const submitButtonSx = {
     width: '50%',
     backgroundColor: 'var(--color-03)',
-    color: 'var(--color-04)',
-    '&:hover': { backgroundColor: 'var(--color-02)', color: 'var(--color-05)' },
+    color: 'var(--color-05)',
+    '&:hover': {
+      backgroundColor: 'var(--color-02)',
+      color: 'var(--color-05)',
+    },
   };
 
-  // ---------
+  // ----------
   // RETURN
-  // ---------
+  // ----------
   return (
-    <main className="main_login_page">
-      <section className="content_login_page">
-        <h1 className="title_login_page">CONNEXION</h1>
+    <Box
+      component="main"
+      id="Login"
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '80vh',
+      }}
+    >
+      <Box
+        component="section"
+        id="Login_content"
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 4,
+          width: {
+            xs: '90%',
+            sm: '450px',
+          },
+          alignItems: 'center',
+        }}
+      >
+        <Typography
+          component="h1"
+          sx={{
+            fontFamily: 'var(--font-01)',
+            color: 'var(--color-01)',
+            fontSize: {
+              xs: 'xx-large',
+              sm: 'xxx-large',
+            },
+            textAlign: 'center',
+          }}
+        >
+          CONNEXION
+        </Typography>
 
-        <form className="form_login" onSubmit={handleSubmit}>
-          <div className="textfeild_container_login">
+        <Box
+          component="form"
+          onSubmit={handleSubmit}
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 4,
+            width: '100%',
+          }}
+        >
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 5,
+              backgroundColor: 'white',
+              p: {
+                xs: 2,
+                sm: 4,
+              },
+              borderRadius: '10px',
+            }}
+          >
             <TextField
               required
               variant="outlined"
@@ -94,20 +148,37 @@ function Login() {
               onChange={(e) => setPassword(e.target.value)}
             />
 
-            {error && <p className="error_message">{error}</p>}
-          </div>
-          <div className="Button_Container_Login_Page">
+            {error && (
+              <Typography
+                component="p"
+                sx={{
+                  color: 'red',
+                  textAlign: 'center',
+                  fontSize: 'large',
+                }}
+              >
+                {error}
+              </Typography>
+            )}
+          </Box>
+
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+            }}
+          >
             {loading ? (
               <CircularProgress size={32} />
             ) : (
-              <Button variant="contained" type="submit" sx={SubmitButtonSx}>
+              <Button variant="contained" type="submit" sx={submitButtonSx}>
                 Se connecter
               </Button>
             )}
-          </div>
-        </form>
-      </section>
-    </main>
+          </Box>
+        </Box>
+      </Box>
+    </Box>
   );
 }
 
