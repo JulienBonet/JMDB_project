@@ -38,7 +38,7 @@ import { useAddMovieForm } from '../../../hooks/useAddMovieForm';
 import { useAddMovieSubmit } from '../../../hooks/useAddMovieSubmit';
 // component
 import AddMovieMediaSection from './AddMovieMediaSection';
-import AddMovieTransferListModal from './AddMovieTransferListModal';
+import TransferListModal from '../../TransferList/TransferListModal';
 import MovieInfosEntranceModal from './MovieInfosEntranceModal/MovieInfosEntranceModal';
 import AddMovieActions from './AddMovieActions';
 import AddMovieMainSection from './AddMovieMainSection/AddMovieMainSection';
@@ -274,21 +274,7 @@ function AddNewMovie() {
 
   //-----------------------------------------------
   // MODALS STYLE SX
-  //-----------------------------------------------
-
-  const transferListStyle = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    borderRadius: '10px',
-    boxShadow: 24,
-    pt: 0,
-    pb: 4,
-    px: 0,
-  };
+  //-----------------------------------------------;
 
   const styleMIEmodal = {
     position: 'absolute',
@@ -438,10 +424,9 @@ function AddNewMovie() {
       </Box>
 
       {/* transfert Lists */}
-      <AddMovieTransferListModal
-        openModal={openModal}
-        handleCloseModal={handleCloseModal}
-        transferListStyle={transferListStyle}
+      <TransferListModal
+        open={openModal}
+        onClose={handleCloseModal}
         data={data}
         dataType={dataType}
         selectedKinds={selectedKinds}
@@ -454,16 +439,16 @@ function AddNewMovie() {
         selectedLanguages={selectedLanguages}
         selectedTags={selectedTags}
         selectedFocus={selectedFocus}
-        setSelectedKinds={setSelectedKinds}
-        setSelectedDirectors={setSelectedDirectors}
-        setSelectedCasting={setSelectedCasting}
-        setSelectedScreenwriters={setSelectedScreenwriters}
-        setSelectedMusic={setSelectedMusic}
-        setSelectedStudios={setSelectedStudios}
-        setSelectedCountries={setSelectedCountries}
-        setSelectedLanguages={setSelectedLanguages}
-        setSelectedTags={setSelectedTags}
-        setSelectedFocus={setSelectedFocus}
+        onSelectedKindsUpdate={setSelectedKinds}
+        onSelectedDirectorsUpdate={setSelectedDirectors}
+        onSelectedCastingUpdate={setSelectedCasting}
+        onSelectedScreenwritersUpdate={setSelectedScreenwriters}
+        onSelectedMusicUpdate={setSelectedMusic}
+        onSelectedStudiosUpdate={setSelectedStudios}
+        onSelectedCountriesUpdate={setSelectedCountries}
+        onSelectedLanguagesUpdate={setSelectedLanguages}
+        onSelectedTagsUpdate={setSelectedTags}
+        onSelectedFocusUpdate={setSelectedFocus}
       />
       {/* end transfert Lists */}
 

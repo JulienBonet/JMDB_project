@@ -19,6 +19,7 @@ import MovieCardEdit02 from './MovieCardEdit02/MovieCardEdit02';
 import MovieCardCover from './MovieCardCover';
 import MovieCardActions from './MovieCardActions';
 import TransferList from '../TransferList/TransferList';
+import TransferListModal from '../TransferList/TransferListModal';
 // utils
 import {
   refetchMovieTMDB,
@@ -250,19 +251,6 @@ function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, on
   // TRANSFERT LIST
   //-----------------------------------------------
   const { openModal, data, dataType, handleOpenModal, handleCloseModal } = useTransferList();
-
-  const transferListStyle = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
-    pt: 0,
-    pb: 4,
-    px: 0,
-  };
 
   //-----------------------------------------------
   // UPDATE MODE
@@ -572,59 +560,30 @@ function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, on
         {/* END EDITING BUTTON */}
 
         {/* MODAL TRANSFERT LIST */}
-        <Modal open={openModal} onClose={handleCloseModal}>
-          <Box sx={transferListStyle}>
-            <Box
-              sx={{
-                textAlign: 'right',
-                pr: 2,
-                pt: 2,
-                pb: 3,
-                mr: '5%',
-              }}
-            >
-              <Typography
-                component="button"
-                onClick={handleCloseModal}
-                sx={{
-                  border: 'none',
-                  background: 'none',
-                  fontFamily: 'var(--font-04)',
-                  fontWeight: 'bold',
-                  color: 'var(--color-05)',
-                  cursor: 'pointer',
-                }}
-              >
-                [ Fermer ]
-              </Typography>
-            </Box>
-
-            <Container>
-              <TransferList
-                dataType={dataType}
-                items={data}
-                selectedKinds={selectedKinds}
-                onSelectedKindsUpdate={setSelectedKinds}
-                selectedDirectors={selectedDirectors}
-                onSelectedDirectorsUpdate={setSelectedDirectors}
-                selectedCasting={selectedCasting}
-                onSelectedCastingUpdate={setSelectedCasting}
-                selectedScreenwriters={selectedScreenwriters}
-                onSelectedScreenwritersUpdate={setSelectedScreenwriters}
-                selectedMusic={selectedMusic}
-                onSelectedMusicUpdate={setSelectedMusic}
-                selectedStudios={selectedStudios}
-                onSelectedStudiosUpdate={setSelectedStudios}
-                selectedCountries={selectedCountries}
-                onSelectedCountriesUpdate={setSelectedCountries}
-                selectedTags={selectedTags}
-                onSelectedTagsUpdate={setSelectedTags}
-                selectedFocus={selectedFocus}
-                onSelectedFocusUpdate={setSelectedFocus}
-              />
-            </Container>
-          </Box>
-        </Modal>
+        <TransferListModal
+          open={openModal}
+          onClose={handleCloseModal}
+          data={data}
+          dataType={dataType}
+          selectedKinds={selectedKinds}
+          onSelectedKindsUpdate={setSelectedKinds}
+          selectedDirectors={selectedDirectors}
+          onSelectedDirectorsUpdate={setSelectedDirectors}
+          selectedCasting={selectedCasting}
+          onSelectedCastingUpdate={setSelectedCasting}
+          selectedScreenwriters={selectedScreenwriters}
+          onSelectedScreenwritersUpdate={setSelectedScreenwriters}
+          selectedMusic={selectedMusic}
+          onSelectedMusicUpdate={setSelectedMusic}
+          selectedStudios={selectedStudios}
+          onSelectedStudiosUpdate={setSelectedStudios}
+          selectedCountries={selectedCountries}
+          onSelectedCountriesUpdate={setSelectedCountries}
+          selectedTags={selectedTags}
+          onSelectedTagsUpdate={setSelectedTags}
+          selectedFocus={selectedFocus}
+          onSelectedFocusUpdate={setSelectedFocus}
+        />
         {/* END MODAL TRANSFERT LIST */}
       </Box>
     </Box>

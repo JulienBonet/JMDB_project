@@ -1,24 +1,27 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-shadow */
 /* eslint-disable react/prop-types */
-import * as React from 'react';
-import { createTheme, useTheme, ThemeProvider } from '@mui/material/styles';
+import { useEffect, useMemo, useState } from 'react';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { useState, useEffect } from 'react';
 import { FixedSizeList } from 'react-window';
-import Grid from '@mui/material/Grid';
-import { Modal, Box, Container } from '@mui/material';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import Checkbox from '@mui/material/Checkbox';
-import Button from '@mui/material/Button';
-import Paper from '@mui/material/Paper';
-import TextField from '@mui/material/TextField';
-import MenuItem from '@mui/material/MenuItem';
-import CreateItemCard from '../AdminFeatures/AdminItemsCards/CreateItemCard';
-// refactor
+import {
+  Modal,
+  Box,
+  Container,
+  Grid,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Checkbox,
+  Button,
+  Paper,
+  TextField,
+  MenuItem,
+} from '@mui/material';
+// Services
 import { getByName } from '../../services/movieService';
+// components
+import CreateItemCard from '../AdminFeatures/AdminItemsCards/CreateItemCard';
 
 function not(a, b) {
   return a.filter((value) => b.indexOf(value) === -1);
@@ -193,21 +196,29 @@ export default function TransferList({
   };
 
   const handleCheckedLeft = () => {
-    setLeft(left.concat(rightChecked));
+    const updatedSelectedItems = left.concat(rightChecked);
+
+    setLeft(updatedSelectedItems);
+
     setRight(
       not(right, rightChecked).filter(
         (item) => !selectedItems.some((selectedItem) => selectedItem.id === item.id)
       )
     );
+
     setChecked(not(checked, rightChecked));
-    onSelectedItemsUpdate(left.concat(rightChecked));
+
+    onSelectedItemsUpdate(updatedSelectedItems);
   };
 
   // Fonction pour filtrer les items de droite en fonction de la recherche ou focus
 
-  const cleanedRight = (right || []).filter((item) => item && item.name && item.name.trim() !== '');
+  const cleanedRight = useMemo(
+    () => (right || []).filter((item) => item && item.name && item.name.trim() !== ''),
+    [right]
+  );
 
-  const focusCategories = React.useMemo(() => {
+  const focusCategories = useMemo(() => {
     if (dataType !== 'focus') return [];
 
     const categories = cleanedRight
@@ -242,48 +253,32 @@ export default function TransferList({
       }
 
       setSearchTermRight(newItem.name);
-      console.info('right in handleNewItem', right);
     } catch (error) {
       console.error("Erreur lors de la récupération de l'élément :", error);
     }
   };
 
-  const theme = createTheme({
-    breakpoints: {
-      values: {
-        xs: 0, // smartphones
-        sm: 769, // tablettes
-        md: 1100, // laptops
-        lg: 1650, // desktop
-        xl: 2000, // très grands écrans
-      },
-    },
-  });
+  // useMediaQuery
+  const isSmall = useMediaQuery('(max-width: 768px)');
+  const listHeight = isSmall ? 250 : 460;
 
-  const isSmall = useMediaQuery(theme.breakpoints.down('sm'));
-  const listHeight = isSmall ? 170 : 460;
+  // ------------
+  // SX
+  // -----------
 
-  const customList = (items, showSearch = false, searchTerm = '', onSearchChange = () => {}) => (
-    <Paper
-      sx={{
-        width: 350,
-        height: { listHeight },
-        overflow: 'auto',
-        overflowX: 'hidden',
-        overflowY: 'hidden',
-        border: 'solid 1px var(--color-04)',
-      }}
-    >
-      {showSearch && (
-        <TextField
-          sx={{ m: 1, width: '95%' }}
-          fullWidth
-          label="Search"
-          variant="outlined"
-          value={searchTerm}
-          onChange={onSearchChange}
-        />
-      )}
+  const listPaperSx = {
+    width: 350,
+    height: listHeight,
+    overflow: 'auto',
+    overflowX: 'hidden',
+    overflowY: 'hidden',
+    border: 'solid 1px var(--color-04)',
+  };
+
+  // ---------------
+
+  const customList = (items) => (
+    <Paper sx={listPaperSx}>
       <FixedSizeList
         height={listHeight}
         width={350}
@@ -320,7 +315,6 @@ export default function TransferList({
         alignItems="center"
         sx={{
           width: '95%',
-          maxWidth: '100%',
           margin: '0 auto',
           padding: '0',
           flexWrap: 'nowrap',
@@ -332,29 +326,31 @@ export default function TransferList({
           },
         }}
       >
-        {/* Liste de gauche */}
+        {/* LISTE DE GAUCHE */}
         <Grid
           item
           sx={{
             flexShrink: 1,
             flexGrow: 1,
-            minWidth: { xs: '90%', sm: '40%', md: '40%', lg: '350px' },
+            minWidth: { xs: '90%', sm: '40%', lg: '350px' },
             maxWidth: 500,
             display: 'flex',
             justifyContent: 'center',
-            paddingLeft: '10px',
-            '@media (max-width: 768px)': {
-              paddingLeft: 0,
+            paddingLeft: {
+              xs: 0,
+              sm: '10px',
             },
           }}
         >
           {customList(left)}
         </Grid>
-        {/* Colonne centrale avec les boutons */}
+        {/* END LISTE DE GAUCHE */}
+
+        {/* CENTRAL BOUTONS */}
         <Grid item>
           <Grid
             container
-            direction={{ xs: 'row', sm: 'row', md: 'column' }}
+            direction={{ xs: 'row', md: 'column' }}
             alignItems="center"
             justifyContent="center"
             gap="0 1rem"
@@ -390,32 +386,25 @@ export default function TransferList({
             </Button>
           </Grid>
         </Grid>
-        {/* Liste de droite */}
+        {/* CENTRAL BOUTONS */}
+
+        {/* LISTE DE DROITE */}
         <Grid
           item
           sx={{
             flexShrink: 1,
             flexGrow: 1,
-            minWidth: { xs: '90%', sm: '40%', md: '40%', lg: '350px' },
+            minWidth: { xs: '90%', sm: '40%', lg: '350px' },
             maxWidth: 500,
             display: 'flex',
             justifyContent: 'center',
-            paddingRight: '10px',
-            '@media (max-width: 768px)': {
-              paddingRight: 0,
+            paddingRight: {
+              xs: 0,
+              sm: '10px',
             },
           }}
         >
-          <Paper
-            sx={{
-              width: 350,
-              height: { listHeight },
-              overflow: 'auto',
-              overflowX: 'hidden',
-              overflowY: 'hidden',
-              border: 'solid 1px var(--color-04)',
-            }}
-          >
+          <Paper sx={listPaperSx}>
             {/* Barre de filtre uniquement pour focus */}
             {dataType === 'focus' && (
               <TextField
@@ -472,10 +461,27 @@ export default function TransferList({
           </Paper>
         </Grid>
       </Grid>
-      <Modal open={showModal} onClose={closeModal} className="Movie_Modal">
-        <Box>
+      {/* end LISTE DE DROITE  */}
+
+      {/* MODAL */}
+      <Modal
+        open={showModal}
+        onClose={closeModal}
+        sx={{
+          overflowY: 'auto',
+        }}
+      >
+        <Box
+          sx={{
+            minHeight: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'flex-start',
+            py: 2,
+          }}
+        >
           <Container maxWidth="sm">
-            <div
+            <Box
               onClick={closeModal}
               onKeyDown={(event) => {
                 if (event.key === 'Enter' || event.key === ' ') {
@@ -484,10 +490,19 @@ export default function TransferList({
               }}
               role="button"
               tabIndex={0}
-              className="modal_closed_btn"
+              sx={{
+                textAlign: 'right',
+                fontFamily: 'var(--font-04)',
+                fontWeight: 600,
+                color: 'var(--color-02)',
+                cursor: 'pointer',
+                p: '1rem 1rem 1rem 0',
+                mx: '5%',
+              }}
             >
               X Fermer
-            </div>
+            </Box>
+
             <CreateItemCard
               origin={getOriginFromDataType(modalOrigin)}
               onUpdate={(newItemName) => {
@@ -499,6 +514,7 @@ export default function TransferList({
           </Container>
         </Box>
       </Modal>
+      {/* END MODAL */}
     </>
   );
 }
