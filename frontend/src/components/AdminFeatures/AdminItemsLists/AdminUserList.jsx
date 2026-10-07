@@ -102,19 +102,13 @@ function AdminUsersList() {
             label: 'PASSWORD',
             width: '10%',
             render: (item) => (
-              <VpnKey
-                className="admin_tools_ico"
-                onClick={() => setPasswordItem(item)}
-                titleAccess="Change password"
-              />
+              <VpnKey onClick={() => setPasswordItem(item)} titleAccess="Change password" />
             ),
           },
           {
             label: 'DELETE',
             width: '10%',
-            render: (item) => (
-              <Delete className="admin_tools_ico" onClick={() => handleDelete(item.id)} />
-            ),
+            render: (item) => <Delete onClick={() => handleDelete(item.id)} />,
           },
         ]}
         rows={currentItems}
