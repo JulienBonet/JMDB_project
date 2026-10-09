@@ -1,9 +1,11 @@
 // -----------------/ MOVIE DATA FETCH IN addNewMovie.jsx/----------------- //
+
+// utils
 import countries from 'i18n-iso-countries';
 import frLocale from 'i18n-iso-countries/langs/fr.json';
 import { translateCountry } from './countries';
 import { translateLanguage } from './languages';
-// refacto
+// services
 import { getTmdbMovieDetails } from '../services/tmdbService';
 
 countries.registerLocale(frLocale);
