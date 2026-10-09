@@ -1,7 +1,9 @@
 import { useLoaderData } from 'react-router-dom';
-
+// icon
 import themaIco from '../../assets/ico/focus_thema.png';
+// hook
 import useMovieFocusPage from '../../hooks/useMovieFocusPage';
+// components
 import MovieFocusLayout from '../../components/MovieFocusLayout/MovieFocusLayout';
 
 function MovieThema() {

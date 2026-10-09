@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Button, CircularProgress, TextField, Typography } from '@mui/material';
-import '../../assets/css/common_elements.css';
 // context
 import { useAuth } from '../../Context/AuthContext';
 

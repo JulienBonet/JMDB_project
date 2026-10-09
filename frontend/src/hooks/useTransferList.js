@@ -1,5 +1,3 @@
-// frontend/src/hooks/useTransferList.js
-
 import { useState } from 'react';
 import { getCollection } from '../services/movieService';
 

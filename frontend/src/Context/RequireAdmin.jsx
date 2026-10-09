@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
-import { Navigate, Outlet } from "react-router-dom";
-import { useAuth } from "./AuthContext";
+import { Navigate, Outlet } from 'react-router-dom';
+import { useAuth } from './AuthContext';
 
 export default function RequireAdmin() {
   const { isAuthenticated, isAdmin } = useAuth();

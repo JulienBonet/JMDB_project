@@ -1,7 +1,5 @@
 /* eslint-disable react/prop-types */
 import { Box, Button } from '@mui/material';
-import '../../assets/css/common_elements.css';
-import '../../assets/css/scrollButton.css';
 import AlphabetDropdown from '../AlphabetOption/AlphabetDropdown';
 import Counter from '../Counters/Counters';
 

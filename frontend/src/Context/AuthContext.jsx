@@ -1,4 +1,3 @@
-// frontend/src/Context/AuthContext.jsx
 /* eslint-disable react/prop-types */
 /* eslint-disable no-param-reassign */
 /* eslint-disable react/jsx-no-constructed-context-values */

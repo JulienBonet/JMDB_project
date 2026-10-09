@@ -1,16 +1,10 @@
 import * as React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import Button from '@mui/material/Button';
+import { Button, Menu, MenuItem, Divider, Box, Typography } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
-import Divider from '@mui/material/Divider';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import { useAuth } from '../../../Context/AuthContext';
-import '../../../assets/css/var_font_color.css';
 
 export default function NavBarBurger() {
   const { isAdmin } = useAuth();

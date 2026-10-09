@@ -1,4 +1,3 @@
-// frontend/src/components/MovieCard/TvShowFields.jsx
 import {
   Box,
   TextField,

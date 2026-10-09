@@ -1,7 +1,9 @@
 import { useLoaderData } from 'react-router-dom';
-
+// icon
 import focusCastingIco from '../../assets/ico/focus_casting.png';
+// hook
 import useMovieFocusPage from '../../hooks/useMovieFocusPage';
+// component
 import MovieFocusLayout from '../../components/MovieFocusLayout/MovieFocusLayout';
 
 function MovieFocusCasting() {

@@ -1,9 +1,10 @@
 import { useAuth } from '../../Context/AuthContext';
 import { Container, CircularProgress, Box, Typography } from '@mui/material';
+// icon
 import favoriteIco from '../../assets/ico/favorite.png';
 // hook
 import useMovieFavoritesPage from '../../hooks/useMovieFavoritesPage';
-// component
+// components
 import MovieThumbnail from '../../components/MovieThumbnail/MovieThumbnail';
 import ToggleSortedButton from '../../components/ToggleSortedBtn/ToggleSortedButton';
 import SideActionBar from '../../components/StickySideBar/StickySideBar';
