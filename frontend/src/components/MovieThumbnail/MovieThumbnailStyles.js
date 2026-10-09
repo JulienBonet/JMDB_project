@@ -5,14 +5,10 @@ export const thumbnailContainerSx = (homepage) => ({
   cursor: 'pointer',
 
   width: homepage
-    ? {
-        xs: '13rem',
-        sm: '15rem',
-      }
+    ? '15rem'
     : {
         xs: '8rem',
-        sm: '9rem',
-        md: '11rem',
+        sm: '12rem',
         lg: '13rem',
       },
 
@@ -39,6 +35,7 @@ export const thumbnailTitleSx = {
   fontWeight: 'bold',
   color: 'var(--color-01)',
   textAlign: 'center',
+  fontSize: { xs: 'small', sm: 'medium' },
   m: 0,
   transition: 'transform 0.3s ease, box-shadow 0.3s ease',
 
