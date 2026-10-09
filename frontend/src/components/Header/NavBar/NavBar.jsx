@@ -1,15 +1,11 @@
 import { useState } from 'react';
+import { useAuth } from '../../../Context/AuthContext';
 import { Link } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import Button from '@mui/material/Button';
-import Stack from '@mui/material/Stack';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
+import { Button, Stack, Menu, MenuItem } from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import { useAuth } from '../../../Context/AuthContext';
-import './NavBar.css';
 
-export default function navBar() {
+export default function NavBar() {
   const { isAdmin } = useAuth();
 
   // Menu 1 : Recherche par
@@ -41,6 +37,7 @@ export default function navBar() {
               RECHERCHE FILMS
             </Button>
           </Link>
+          {/* end Bouton RECHERCHE FILMS */}
 
           {/* Menu : RECHERCHE PAR */}
           <div>
@@ -120,6 +117,7 @@ export default function navBar() {
               >
                 LES GRANDS AUTEURS
               </MenuItem>
+
               {/* <MenuItem
                 component={Link}
                 to="/movie_thema_casting"
@@ -129,12 +127,16 @@ export default function navBar() {
               </MenuItem> */}
             </Menu>
           </div>
+          {/* end Menu : RECHERCHE PAR */}
+
           {/* Bouton FAVORIES */}
           <Link to="movie_favorites">
             <Button variant="outlined" color="JmdbColorNav">
               MA LISTE
             </Button>
           </Link>
+          {/* end Bouton FAVORIES */}
+
           {/* Bouton ADMIN */}
           {isAdmin && (
             <Link to="/admin_feat">
@@ -143,6 +145,7 @@ export default function navBar() {
               </Button>
             </Link>
           )}
+          {/* end Bouton ADMIN */}
         </Stack>
       </ThemeProvider>
     </section>
