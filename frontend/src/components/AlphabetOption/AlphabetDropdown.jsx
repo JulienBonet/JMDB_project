@@ -1,59 +1,39 @@
-/* eslint-disable no-plusplus */
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from 'react';
-import './alphabetDropdown.css';
+import { Box } from '@mui/material';
 
-// Génère A-Z
-function generateAlphabet() {
-  const alphabet = [];
-  for (let i = 0; i < 26; i++) {
-    alphabet.push(String.fromCharCode(65 + i));
-  }
-  return alphabet;
-}
+const LETTERS = Array.from({ length: 26 }, (_, index) => String.fromCharCode(65 + index));
 
-// Génère 0-9
-function generateNumbers() {
-  const numbers = [];
-  for (let i = 0; i <= 9; i++) {
-    numbers.push(i.toString());
-  }
-  return numbers;
-}
+const NUMBERS = Array.from({ length: 10 }, (_, index) => String(index));
 
-function AlphabetDropdown({ onLetterChange, origin, AlphabetDropdownClassName, search }) {
-  const [options, setOptions] = useState([]);
-
-  const handleChange = (event) => {
-    onLetterChange(event.target.value);
-  };
-
-  useEffect(() => {
-    const letters = generateAlphabet();
-    const numbers = generateNumbers();
-
-    // Si origin === "tag", on ajoute les chiffres
-    const allOptions = origin === 'tags' ? [...numbers, ...letters] : letters;
-
-    const generatedOptions = allOptions.map((char) => (
-      <option key={char} value={char}>
-        {char}
-      </option>
-    ));
-
-    setOptions(generatedOptions);
-  }, [search, origin]);
+function AlphabetDropdown({ onLetterChange, origin, search }) {
+  const options = origin === 'tags' ? [...NUMBERS, ...LETTERS] : LETTERS;
 
   return (
-    <select
-      onChange={handleChange}
-      className={
-        AlphabetDropdownClassName === 'artistlist' ? 'AlphabetDropdown' : 'AlphabetDropdown2'
-      }
+    <Box
+      component="select"
+      onChange={(event) => onLetterChange(event.target.value)}
+      sx={{
+        textAlign: 'center',
+        fontFamily: 'var(--font-02)',
+        color: 'var(--color-02)',
+        backgroundColor: 'var(--color-04)',
+        border: '1px solid white',
+        borderTop: 0,
+        padding: '5px 0',
+        cursor: 'pointer',
+        width: { xs: '25%', sm: '16%' },
+        fontSize: { xs: 'small', md: 'medium' },
+        fontWeight: 'bold',
+        borderRadius: '0 0 10px 10px',
+      }}
     >
       {search !== '' && <option value="">-</option>}
-      {options}
-    </select>
+      {options.map((char) => (
+        <option key={char} value={char}>
+          {char}{' '}
+        </option>
+      ))}{' '}
+    </Box>
   );
 }
 
