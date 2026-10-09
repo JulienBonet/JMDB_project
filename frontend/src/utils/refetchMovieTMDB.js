@@ -1,9 +1,12 @@
 /* eslint-disable no-restricted-syntax */
+
 // -----------------/ MOVIE DATA FETCH IN MovieCard.jsx/----------------- //
+
+//utils
 import countries from 'i18n-iso-countries';
 import frLocale from 'i18n-iso-countries/langs/fr.json';
 import { translateCountry } from './countries';
-// refactor
+// services
 import {
   getTmdbMovie,
   getTmdbData,
@@ -154,20 +157,6 @@ const refetchMovieTMDB = async (idTheMovieDb, deps) => {
   setSelectedCountries(countriesData);
 
   // -----------------/ CREDITS /-----------------
-  // const fetchOrCreateEntity = async (entity, searchFunc, createFunc) => {
-  //   let entityData = await searchFunc(entity.name);
-
-  //   if (!entityData) {
-  //     await createFunc(entity.name);
-
-  //     entityData = await searchFunc(entity.name);
-  //   }
-
-  //   return {
-  //     id: entityData?.id,
-  //     name: entity.name,
-  //   };
-  // };
 
   // DIRECTORS
   let directorsData = [];
@@ -306,6 +295,7 @@ const fetchOrCreateEntity = async (entity, searchFunc, createFunc) => {
 // ------------------
 // FETCH infos
 // ------------------
+
 // refetchTitle (! XX provoque la creation d'un nouveau film XX !)
 // const refetchTitle = async (idTheMovieDb, { movieData, setMovieData }) => {
 //   const { moviefetchData } = await getTmdbData(idTheMovieDb);
