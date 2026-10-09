@@ -1,11 +1,12 @@
 /* eslint-disable react/prop-types */
-import { useState, useEffect } from 'react';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
-import './chronologicBtn.css';
 
 function ChronologicBtn({ onClick, origin, selectedItems }) {
+  const expanded = selectedItems !== '';
+  const isArtist = origin === 'artists';
+
   const theme = createTheme({
     palette: {
       sortedBtn: {
@@ -17,24 +18,40 @@ function ChronologicBtn({ onClick, origin, selectedItems }) {
     },
   });
 
-  const [expanded, setExpanded] = useState(false);
-
-  useEffect(() => {
-    setExpanded(selectedItems !== '');
-  }, [selectedItems]);
-
   return (
     <ThemeProvider theme={theme}>
       <Button
         variant="outlined"
         color="sortedBtn"
-        className={
-          origin !== 'artists'
-            ? `chronologic_btn ${expanded ? 'active' : ''}`
-            : `chronologic_btn_artists ${expanded ? 'active' : ''}`
-        }
         onClick={onClick}
         disabled={!expanded}
+        sx={{
+          cursor: 'pointer',
+          transition: 'all 0.3s ease-in-out',
+
+          ...(isArtist && {
+            width: '15%',
+            lineHeight: 0,
+          }),
+
+          '& svg': {
+            color: 'var(--color-01)',
+            transition: 'color 0.3s ease, transform 0.3s ease',
+          },
+
+          '&:hover svg': {
+            color: 'var(--color-06)',
+          },
+
+          '&:active svg': {
+            color: 'var(--color-02)',
+            transform: 'rotate(-20deg)',
+          },
+
+          '&:disabled svg': {
+            color: 'gray',
+          },
+        }}
       >
         <AccessTimeFilledIcon />
       </Button>
