@@ -30,7 +30,7 @@ export default function NavBar() {
   return (
     <section>
       <ThemeProvider theme={theme}>
-        <Stack spacing={2} direction="row" className="navBar_container">
+        <Stack spacing={2} direction="row">
           {/* Bouton RECHERCHE FILMS */}
           <Link to="/movie_search">
             <Button variant="outlined" color="JmdbColorNav">

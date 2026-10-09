@@ -1,8 +1,0 @@
-.country_btn {
-  font-family: var(--font-06);
-  font-size: 1rem;
-  color: var(--color-01);
-  border: solid 1px var(--color-01);
-  border-top: 0;
-  cursor: pointer;
-}
