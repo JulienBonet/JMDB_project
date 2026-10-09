@@ -32,6 +32,7 @@ export default function NavBarBurger() {
 
   return (
     <div>
+      {/* MENU ICON */}
       <Button
         id="burgerMenuButton"
         aria-controls={open ? 'burgerMenu' : undefined}
@@ -46,7 +47,9 @@ export default function NavBarBurger() {
           <MenuIcon sx={{ fontSize: 30, color: 'var(--color-01)' }} />
         )}
       </Button>
+      {/* END MENU ICON */}
 
+      {/* MENU */}
       <Menu
         id="burgerMenu"
         anchorEl={anchorEl}
@@ -76,7 +79,10 @@ export default function NavBarBurger() {
         >
           RECHERCHE FILMS
         </MenuItem>
+        {/* END RECHERCHE GÉNÉRALE */}
+
         <Divider sx={{ backgroundColor: 'var(--color-02)', marginY: 1 }} />
+
         {/* TITRE : RECHERCHE PAR (non cliquable) */}
         <Box sx={{ px: 2, textAlign: 'center' }}>
           <Typography
@@ -91,6 +97,8 @@ export default function NavBarBurger() {
             - RECHERCHE PAR -
           </Typography>
         </Box>
+        {/* END TITRE : RECHERCHE PAR (non cliquable) */}
+
         {/* LISTE DES RECHERCHES PAR */}
         <MenuItem
           onClick={handleClose}
@@ -140,7 +148,10 @@ export default function NavBarBurger() {
         >
           TAGS
         </MenuItem>
+        {/* ENd LISTE DES RECHERCHES PAR */}
+
         <Divider sx={{ backgroundColor: 'var(--color-02)', marginY: 1 }} />
+
         {/* CINE CLUB */}
         <Box sx={{ px: 2, textAlign: 'center' }}>
           <Typography
@@ -195,7 +206,11 @@ export default function NavBarBurger() {
         >
           LES STARS
         </MenuItem> */}
+
+        {/* END CINE CLUB */}
+
         <Divider sx={{ backgroundColor: 'var(--color-02)', marginY: 1 }} />
+
         {/* FAVORIS */}
         <MenuItem
           onClick={handleClose}
@@ -205,6 +220,8 @@ export default function NavBarBurger() {
         >
           🧡 MA LISTE 🧡
         </MenuItem>
+        {/* END FAVORIS */}
+
         {/* ADMIN */}
         {isAdmin && (
           <>
@@ -219,12 +236,17 @@ export default function NavBarBurger() {
             </MenuItem>
           </>
         )}
+        {/* END ADMIN */}
+
         <Divider sx={{ backgroundColor: 'var(--color-02)', marginY: 1 }} />
+
         {/* LOGOUT */}
         <MenuItem onClick={handleLogout} component={Link} sx={{ justifyContent: 'center' }}>
           <LogoutIcon /> LOGOUT
         </MenuItem>
+        {/* END LOGOUT */}
       </Menu>
+      {/* END MENU */}
     </div>
   );
 }

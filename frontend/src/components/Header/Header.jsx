@@ -1,28 +1,25 @@
 import { useNavigate } from 'react-router-dom';
-import { useMediaQuery } from '@mui/material';
+import { Box, Button, useMediaQuery } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import Button from '@mui/material/Button';
 import LogoutIcon from '@mui/icons-material/Logout';
 import LogoJmdb from '../../assets/ico/logo_jmdb.png';
 import NavBar from './NavBar/NavBar';
 import NavBarBurger from './NavBarBurger/NavBarBurger';
-import './Header.css';
 
 function Header() {
   const navigate = useNavigate();
 
   const isDesktop = useMediaQuery('(min-width:1280px)');
 
-  function handleClick() {
+  const handleClick = () => {
     navigate('/');
-  }
+  };
 
-  // Fonction logout
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('role');
     localStorage.removeItem('user');
-    navigate('/login'); // redirection vers login
+    navigate('/login');
   };
 
   const theme = createTheme({
@@ -37,35 +34,61 @@ function Header() {
   });
 
   return (
-    <header className="Header_container">
-      <div className="header_01">
-        <img
+    <Box
+      component="header"
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        backgroundColor: 'var(--color-05)',
+        borderBottom: '1px solid var(--color-02)',
+        p: '1rem',
+        position: 'sticky',
+        top: 0,
+        zIndex: 1000,
+      }}
+    >
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          pl: '1rem',
+        }}
+      >
+        <Box
+          component="img"
           src={LogoJmdb}
           alt="Logo - Home"
-          className="LogoJmdb"
           onClick={handleClick}
-          onKeyDown={handleClick}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault();
+              handleClick();
+            }
+          }}
           role="button"
+          tabIndex={0}
+          sx={{
+            width: '90px',
+            cursor: 'pointer',
+          }}
         />
-      </div>
+      </Box>
+
       {isDesktop ? (
         <>
           <NavBar />
-          <div className="header_03">
+
+          <Box>
             <ThemeProvider theme={theme}>
-              <Button
-                // variant="outlined"
-                color="JmdbColorNav"
-                startIcon={<LogoutIcon />}
-                onClick={handleLogout}
-              />
+              <Button color="JmdbColorNav" startIcon={<LogoutIcon />} onClick={handleLogout} />
             </ThemeProvider>
-          </div>
+          </Box>
         </>
       ) : (
         <NavBarBurger />
       )}
-    </header>
+    </Box>
   );
 }
 
