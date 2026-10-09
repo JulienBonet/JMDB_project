@@ -1,9 +1,11 @@
+/* eslint-disable react/prop-types */
+
 // -----------------------------
 // COLUMN 2 - MAIN SECTION FORM
 // -----------------------------
 
 import { Box, TextField } from '@mui/material';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import MovieRelationField from './MovieRelationField';
 
 function AddMovieRelationsSection({
   idTheMovieDb,
@@ -22,21 +24,68 @@ function AddMovieRelationsSection({
   selectedTags,
   selectedFocus,
 }) {
-  //-----------------------------------------------
-  // SX
-  //-----------------------------------------------
-  const itemRelationSx = {
-    display: 'flex',
-    alignItems: 'center',
-  };
-
-  const itemBtnPopUpSx = {
-    cursor: 'pointer',
-
-    '&:hover': {
-      opacity: 0.7,
+  const relations = [
+    {
+      id: 'AdM_kinds_item',
+      label: 'Genre(s)',
+      selected: selectedKinds,
+      modal: 'kinds',
     },
-  };
+    {
+      id: 'AdM_Directors_item',
+      label: isTvShow ? 'Créateur(s)' : 'Réalisateur(s)',
+      selected: selectedDirectors,
+      modal: 'directors',
+    },
+    {
+      id: 'AdM_Screenwriters_item',
+      label: 'Scénariste(s)',
+      selected: selectedScreenwriters,
+      modal: 'screenwriters',
+    },
+    {
+      id: 'AdM_Compositors_item',
+      label: 'Compositeur(s)',
+      selected: selectedMusic,
+      modal: 'music',
+    },
+    {
+      id: 'AdM_Casting_item',
+      label: 'Casting',
+      selected: selectedCasting,
+      modal: 'casting',
+    },
+    {
+      id: 'AdM_Studios_item',
+      label: 'Studio',
+      selected: selectedStudios,
+      modal: 'studio',
+    },
+    {
+      id: 'AdM_Countries_item',
+      label: 'Pays',
+      selected: selectedCountries,
+      modal: 'country',
+    },
+    {
+      id: 'AdM_Languages_item',
+      label: 'Langues',
+      selected: selectedLanguages,
+      modal: 'languages/sorted_id',
+    },
+    {
+      id: 'AdM_Tags_item',
+      label: 'Tags',
+      selected: selectedTags,
+      modal: 'tags/sorted_id',
+    },
+    {
+      id: 'AdM_Focus_item',
+      label: 'Focus',
+      selected: selectedFocus,
+      modal: 'focus',
+    },
+  ];
 
   return (
     <Box
@@ -49,7 +98,7 @@ function AddMovieRelationsSection({
         p: 2,
       }}
     >
-      {/* movie idTheMovieDb */}
+      {/* Movie TMDB ID */}
       <Box
         component="form"
         id="AdM_idTheMovieDb"
@@ -68,257 +117,19 @@ function AddMovieRelationsSection({
           sx={{ flexGrow: 1 }}
           value={idTheMovieDb}
           onChange={handleChangeMovieDb}
+        />{' '}
+      </Box>
+
+      {/* Movie relations */}
+      {relations.map((relation) => (
+        <MovieRelationField
+          key={relation.id}
+          id={relation.id}
+          label={relation.label}
+          value={getSelectedNames(relation.selected)}
+          onAdd={() => handleOpenModal(relation.modal)}
         />
-      </Box>
-
-      {/* movie KINDS */}
-      <Box id="AdM_kinds_item" sx={itemRelationSx}>
-        <Box
-          component="form"
-          sx={{ flexGrow: 1 }}
-          noValidate
-          autoComplete="off"
-          display="flex"
-          alignItems="center"
-          gap={4}
-          p={2}
-        >
-          <TextField
-            id="outlined-read-only-input"
-            label="Genre(s)"
-            value={getSelectedNames(selectedKinds)}
-            InputProps={{ readOnly: true }}
-            fullWidth
-          />
-        </Box>
-
-        <AddCircleOutlineIcon sx={itemBtnPopUpSx} onClick={() => handleOpenModal('kinds')} />
-      </Box>
-
-      {/* movie DIRECTOR */}
-      <Box id="AdM_Directors_item" sx={itemRelationSx}>
-        <Box
-          component="form"
-          sx={{ flexGrow: 1 }}
-          noValidate
-          autoComplete="off"
-          display="flex"
-          alignItems="center"
-          gap={4}
-          p={2}
-        >
-          <TextField
-            id="outlined-read-only-input"
-            label={isTvShow ? 'Créateur(s)' : 'Réalisateur(s)'}
-            value={getSelectedNames(selectedDirectors)}
-            InputProps={{ readOnly: true }}
-            fullWidth
-          />
-        </Box>
-
-        <AddCircleOutlineIcon sx={itemBtnPopUpSx} onClick={() => handleOpenModal('directors')} />
-      </Box>
-
-      {/* movie SCREENWRITERS */}
-      <Box id="AdM_Screenwriters_item" sx={itemRelationSx}>
-        <Box
-          component="form"
-          sx={{ flexGrow: 1 }}
-          noValidate
-          autoComplete="off"
-          display="flex"
-          alignItems="center"
-          gap={4}
-          p={2}
-        >
-          <TextField
-            id="outlined-read-only-input"
-            label="Scénariste(s)"
-            value={getSelectedNames(selectedScreenwriters)}
-            InputProps={{ readOnly: true }}
-            fullWidth
-          />
-        </Box>
-
-        <AddCircleOutlineIcon
-          sx={itemBtnPopUpSx}
-          onClick={() => handleOpenModal('screenwriters')}
-        />
-      </Box>
-
-      {/* movie COMPOSITOR */}
-      <Box id="AdM_Compositors_item" sx={itemRelationSx}>
-        <Box
-          component="form"
-          sx={{ flexGrow: 1 }}
-          noValidate
-          autoComplete="off"
-          display="flex"
-          alignItems="center"
-          gap={4}
-          p={2}
-        >
-          <TextField
-            id="outlined-read-only-input"
-            label="Compositeur(s)"
-            value={getSelectedNames(selectedMusic)}
-            InputProps={{ readOnly: true }}
-            fullWidth
-          />
-        </Box>
-
-        <AddCircleOutlineIcon sx={itemBtnPopUpSx} onClick={() => handleOpenModal('music')} />
-      </Box>
-
-      {/* movie CASTING */}
-      <Box id="AdM_Casting_item" sx={itemRelationSx}>
-        <Box
-          component="form"
-          sx={{ flexGrow: 1 }}
-          noValidate
-          autoComplete="off"
-          display="flex"
-          alignItems="center"
-          gap={4}
-          p={2}
-        >
-          <TextField
-            id="outlined-read-only-input"
-            label="Casting"
-            value={getSelectedNames(selectedCasting)}
-            InputProps={{ readOnly: true }}
-            fullWidth
-          />
-        </Box>
-
-        <AddCircleOutlineIcon sx={itemBtnPopUpSx} onClick={() => handleOpenModal('casting')} />
-      </Box>
-
-      {/* movie STUDIO */}
-      <Box id="AdM_Studios_item" sx={itemRelationSx}>
-        <Box
-          component="form"
-          sx={{ flexGrow: 1 }}
-          noValidate
-          autoComplete="off"
-          display="flex"
-          alignItems="center"
-          gap={4}
-          p={2}
-        >
-          <TextField
-            id="outlined-read-only-input"
-            label="Studio"
-            value={getSelectedNames(selectedStudios)}
-            InputProps={{ readOnly: true }}
-            fullWidth
-          />
-        </Box>
-
-        <AddCircleOutlineIcon sx={itemBtnPopUpSx} onClick={() => handleOpenModal('studio')} />
-      </Box>
-
-      {/* movie COUNTRY */}
-      <Box id="AdM_Countries_item" sx={itemRelationSx}>
-        <Box
-          component="form"
-          sx={{ flexGrow: 1 }}
-          noValidate
-          autoComplete="off"
-          display="flex"
-          alignItems="center"
-          gap={4}
-          p={2}
-        >
-          <TextField
-            id="outlined-read-only-input"
-            label="Pays"
-            value={getSelectedNames(selectedCountries)}
-            InputProps={{ readOnly: true }}
-            fullWidth
-          />
-        </Box>
-
-        <AddCircleOutlineIcon sx={itemBtnPopUpSx} onClick={() => handleOpenModal('country')} />
-      </Box>
-
-      {/* movie LANGUAGES */}
-      <Box id="AdM_Languages_item" sx={itemRelationSx}>
-        <Box
-          component="form"
-          sx={{ flexGrow: 1 }}
-          noValidate
-          autoComplete="off"
-          display="flex"
-          alignItems="center"
-          gap={4}
-          p={2}
-        >
-          <TextField
-            id="outlined-read-only-input"
-            label="Langues"
-            value={getSelectedNames(selectedLanguages)}
-            InputProps={{ readOnly: true }}
-            fullWidth
-          />
-        </Box>
-
-        <AddCircleOutlineIcon
-          sx={itemRelationSx}
-          onClick={() => handleOpenModal('languages/sorted_id')}
-        />
-      </Box>
-
-      {/* movie TAG */}
-      <Box id="AdM_Tags_item" sx={itemRelationSx}>
-        <Box
-          component="form"
-          sx={{ flexGrow: 1 }}
-          noValidate
-          autoComplete="off"
-          display="flex"
-          alignItems="center"
-          gap={4}
-          p={2}
-        >
-          <TextField
-            id="outlined-read-only-input"
-            label="Tags"
-            value={getSelectedNames(selectedTags)}
-            InputProps={{ readOnly: true }}
-            fullWidth
-          />
-        </Box>
-
-        <AddCircleOutlineIcon
-          sx={itemBtnPopUpSx}
-          onClick={() => handleOpenModal('tags/sorted_id')}
-        />
-      </Box>
-
-      {/* movie FOCUS */}
-      <Box id="AdM_Focus_item" sx={itemRelationSx}>
-        <Box
-          component="form"
-          sx={{ flexGrow: 1 }}
-          noValidate
-          autoComplete="off"
-          display="flex"
-          alignItems="center"
-          gap={4}
-          p={2}
-        >
-          <TextField
-            id="outlined-read-only-input"
-            label="Focus"
-            value={getSelectedNames(selectedFocus)}
-            InputProps={{ readOnly: true }}
-            fullWidth
-          />
-        </Box>
-
-        <AddCircleOutlineIcon sx={itemBtnPopUpSx} onClick={() => handleOpenModal('focus')} />
-      </Box>
+      ))}
     </Box>
   );
 }
