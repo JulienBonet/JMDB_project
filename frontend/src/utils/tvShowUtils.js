@@ -1,5 +1,3 @@
-//frontend/src/utils/tvShowUtils.js
-
 export const parseTvSeasons = (tvSeasons) => {
   if (!tvSeasons) return [];
 

@@ -1,5 +1,3 @@
-// frontend/src/services/movieService.js
-
 import api from '../api/apiClient';
 
 export const getMovie = async (id) => {

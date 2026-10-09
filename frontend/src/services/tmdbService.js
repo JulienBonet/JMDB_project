@@ -1,5 +1,3 @@
-// frontend/src/services/tmdbService.js
-
 import api from '../api/apiClient';
 
 export const getSeasons = async (mediaType, movieId) => {

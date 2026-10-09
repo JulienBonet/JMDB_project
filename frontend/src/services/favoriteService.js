@@ -1,5 +1,3 @@
-// frontend/src/services/favoriteService.js
-
 import api from '../api/apiClient';
 
 export const getFavoriteStatus = async (userId, movieId) => {

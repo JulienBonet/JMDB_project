@@ -1,4 +1,3 @@
-// frontend/src/components/MovieCard/MovieCardRelationsSection.jsx
 import { Box } from '@mui/material';
 // UI
 import MovieRelationField from '../ui/MovieRelationField';

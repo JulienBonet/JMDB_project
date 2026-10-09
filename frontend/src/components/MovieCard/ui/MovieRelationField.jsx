@@ -1,5 +1,3 @@
-// MovieRelationField.jsx
-
 import { Box, TextField } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import CloudSyncIcon from '@mui/icons-material/CloudSync';
