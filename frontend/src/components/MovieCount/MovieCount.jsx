@@ -15,7 +15,8 @@ function MovieCount({ movieAmount, variant = 'default' }) {
         sx={{
           fontFamily: 'var(--font-06)',
           fontSize: {
-            xs: 'small',
+            xs: isArtist ? 'xx-small' : 'small',
+            sm: 'small',
             md: '1rem',
           },
           textAlign: 'center',

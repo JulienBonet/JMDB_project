@@ -215,7 +215,7 @@ function ArtistFilmo({
               flexWrap: 'wrap',
               justifyContent: 'center',
               height: '75vh',
-              pt: 2,
+              mt: 2,
               overflow: 'auto',
             }}
           >

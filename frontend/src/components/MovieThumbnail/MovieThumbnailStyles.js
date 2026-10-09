@@ -16,16 +16,7 @@ export const thumbnailContainerSx = (homepage) => ({
         lg: '13rem',
       },
 
-  height: homepage
-    ? {
-        xs: '16rem',
-        sm: '16rem',
-      }
-    : {
-        xs: '14rem',
-        md: '14rem',
-        lg: '18rem',
-      },
+  height: homepage ? '16rem' : '18rem',
 
   gap: 2,
   m: '10px',
