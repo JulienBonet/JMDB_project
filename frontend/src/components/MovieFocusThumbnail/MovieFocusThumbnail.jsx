@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import './movieFocusThumbnail.css';
+import { Box, Typography } from '@mui/material';
 
 function MovieFocusThumbnail({ data, onClick }) {
   const { name, image: imageName } = data;
@@ -10,17 +10,69 @@ function MovieFocusThumbnail({ data, onClick }) {
     if (image.startsWith('http')) return image;
     return `${CLOUDINARY_BASE_URL}/${image}`;
   };
+
+  // ------------
+  // SX
+  // ------------
+
+  const containerMovieFocusThumbSx = {
+    width: '180px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: '1rem',
+    cursor: 'pointer',
+
+    '&:hover img': {
+      transform: 'scale(1.03)',
+      filter: `
+            drop-shadow(0 0 4px rgba(255, 255, 255, 0.9))
+            drop-shadow(0 0 7px rgba(255, 255, 255, 0.7))
+            brightness(1.20)
+          `,
+    },
+
+    '&:hover .focus-thumbnail-name': {
+      filter: 'brightness(1.20)',
+    },
+  };
+
+  const imgMovieFocusThumbSX = {
+    width: '100%',
+    height: 'auto',
+    borderRadius: '10px',
+    objectFit: 'cover',
+    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+  };
+
+  const titleMovieFocusThumbSx = {
+    fontFamily: 'var(--font-02)',
+    color: 'var(--color-01)',
+    fontSize: 'medium',
+  };
+
+  // --------------
+  // RETURN
+  // --------------
+
   return (
-    <div
+    <Box
       key={data.id}
-      className="FocusThumbnail"
-      onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && onClick()}
-      onClick={onClick}
+      role="button"
       tabIndex={0}
+      onClick={onClick}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          onClick();
+        }
+      }}
+      sx={containerMovieFocusThumbSx}
     >
-      <img src={getImageUrl(imageName)} alt={name} className="image_FocusThumbnail" />
-      <p className="name_FocusThumbnail">{name}</p>
-    </div>
+      <Box component="img" src={getImageUrl(imageName)} alt={name} sx={imgMovieFocusThumbSX} />
+
+      <Typography sx={titleMovieFocusThumbSx}>{name}</Typography>
+    </Box>
   );
 }
 
