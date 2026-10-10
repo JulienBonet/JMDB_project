@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
-import { getByName } from '../services/movieService';
+import { getByName, getStudiosByMovieId } from '../services/movieService';
 
 export function useMovieRelations({
+  movieId,
   genres,
   directors,
   casting,
   screenwriters,
   music,
-  studios,
   countries,
   tags,
   focus,
@@ -23,13 +23,14 @@ export function useMovieRelations({
   const [selectedFocus, setSelectedFocus] = useState([]);
 
   const fetchByNames = async (namesString, endpoint, setter) => {
-    if (!namesString) return;
+    if (!namesString) {
+      setter([]);
+      return;
+    }
 
     const namesArray = namesString.split(', ').map(async (name) => {
       try {
-        const result = await getByName(endpoint, name);
-
-        return result;
+        return await getByName(endpoint, name);
       } catch (err) {
         console.warn(`Error fetching ${endpoint} ${name}:`, err);
         return null;
@@ -39,6 +40,21 @@ export function useMovieRelations({
     const result = (await Promise.all(namesArray)).filter(Boolean);
 
     setter(result);
+  };
+
+  const fetchStudiosByMovieId = async () => {
+    if (!movieId) {
+      setSelectedStudios([]);
+      return;
+    }
+
+    try {
+      const result = await getStudiosByMovieId(movieId);
+      setSelectedStudios(result);
+    } catch (err) {
+      console.warn(`Error fetching studios for movie ${movieId}:`, err);
+      setSelectedStudios([]);
+    }
   };
 
   const getSelectedNames = (list) => list.map((item) => item.name).join(', ');
@@ -64,8 +80,8 @@ export function useMovieRelations({
   }, [music]);
 
   useEffect(() => {
-    fetchByNames(studios, 'studio', setSelectedStudios);
-  }, [studios]);
+    fetchStudiosByMovieId();
+  }, [movieId]);
 
   useEffect(() => {
     fetchByNames(countries, 'country', setSelectedCountries);
@@ -101,6 +117,7 @@ export function useMovieRelations({
     setSelectedFocus,
 
     fetchByNames,
+    fetchStudiosByMovieId,
     getSelectedNames,
   };
 }

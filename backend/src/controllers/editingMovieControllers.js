@@ -537,6 +537,17 @@ const editMovieById = async (req, res) => {
   }
 };
 
+const getStudiosByMovieId = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const studios = await editingMovieModel.findStudioByMovieId(id);
+
+    res.status(200).json(studios);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   addMovie,
   deleteMovie,
@@ -544,4 +555,5 @@ module.exports = {
   editMovieById,
   updateImageFromUrl,
   uploadLocalCover,
+  getStudiosByMovieId,
 };
