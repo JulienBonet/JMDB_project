@@ -44,6 +44,7 @@ function MovieArtistPage({ type, placeholder }) {
         flexDirection: 'column',
         height: '90vh',
         overflow: 'hidden',
+        overscrollBehavior: 'none',
       }}
     >
       <Box
@@ -61,6 +62,7 @@ function MovieArtistPage({ type, placeholder }) {
           id="MovieArtist_search_bar"
           sx={{
             width: '100%',
+            flexShrink: 0,
           }}
         >
           <MovieArtistSearchBar

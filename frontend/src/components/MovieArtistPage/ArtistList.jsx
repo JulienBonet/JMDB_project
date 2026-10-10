@@ -1,4 +1,5 @@
 /* eslint-disable react/prop-types */
+import { useState } from 'react';
 import { Box, Button } from '@mui/material';
 import AlphabetDropdown from '../AlphabetOption/AlphabetDropdown';
 import Counter from '../Counters/Counters';
@@ -13,9 +14,12 @@ function ArtistList({
   artistAmount,
   selectedArtistAmount,
 }) {
+  const [selectedArtistId, setSelectedArtistId] = useState(null);
+
   const artistsToDisplay = search === '' ? selectedByLetter : filteredArtist;
 
   const countToDisplay = search === '' ? artistAmount : selectedArtistAmount;
+
   return (
     <Box
       component="section"
@@ -68,10 +72,14 @@ function ArtistList({
               variant="text"
               color="primary"
               size="small"
-              onClick={() => handleArtistClick(artist)}
+              onClick={() => {
+                setSelectedArtistId(artist.id);
+                handleArtistClick(artist);
+              }}
               sx={{
                 fontFamily: 'var(--font-04)',
-                color: 'var(--color-01)',
+                color: selectedArtistId === artist.id ? 'var(--color-03)' : 'var(--color-01)',
+                fontWeight: selectedArtistId === artist.id ? 'bold' : 'none',
                 fontSize: 'medium',
                 display: 'flex',
                 flexWrap: 'wrap',

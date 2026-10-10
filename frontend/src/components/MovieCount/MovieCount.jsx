@@ -16,7 +16,7 @@ function MovieCount({ movieAmount, variant = 'default' }) {
           fontFamily: 'var(--font-06)',
           fontSize: {
             xs: isArtist ? 'xx-small' : 'small',
-            sm: 'small',
+            sm: isArtist ? 'small' : 'medium',
             md: '1rem',
           },
           textAlign: 'center',
@@ -28,8 +28,8 @@ function MovieCount({ movieAmount, variant = 'default' }) {
           borderRadius: '0 0 20px 20px',
           bgcolor: isArtist ? 'var(--color-04)' : 'transparent',
           width: {
-            xs: '50%',
-            sm: '40%',
+            xs: isArtist ? '70%' : '50%',
+            sm: isArtist ? '40%' : '30%',
             md: isArtist ? '30%' : '25%',
             lg: isArtist ? '25%' : '20%',
             xl: isArtist ? '20%' : '20%',
