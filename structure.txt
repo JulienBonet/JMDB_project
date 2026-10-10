@@ -1,0 +1,354 @@
+.
+├── backend
+│   ├── database
+│   │   ├── client.js
+│   │   └── schema.sql
+│   ├── Dockerfile
+│   ├── index.js
+│   ├── package.json
+│   ├── package-lock.json
+│   └── src
+│       ├── app.js
+│       ├── controllers
+│       │   ├── authController.js
+│       │   ├── castingControllers.js
+│       │   ├── directorsControllers.js
+│       │   ├── editingControllers.js
+│       │   ├── editingMovieControllers.js
+│       │   ├── exportStatsController.js
+│       │   ├── favoriteControllers.js
+│       │   ├── focusControllers.js
+│       │   ├── kindsControllers.js
+│       │   ├── languagesControllers.js
+│       │   ├── moviesControllers.js
+│       │   ├── musicControllers.js
+│       │   ├── purgeControllers.js
+│       │   ├── screenwritersControllers.js
+│       │   ├── studioControllers.js
+│       │   ├── tagsControllers.js
+│       │   ├── tmdbController.js
+│       │   └── userControllers.js
+│       ├── middlewares
+│       │   ├── adminMiddleware.js
+│       │   ├── authMiddleware.js
+│       │   ├── authOptional.js
+│       │   ├── fileUpload.js
+│       │   └── resizeImage.js
+│       ├── models
+│       │   ├── castingModel.js
+│       │   ├── directorsModel.js
+│       │   ├── editingModel.js
+│       │   ├── editingMovieModel.js
+│       │   ├── favoriteModel.js
+│       │   ├── focusModel.js
+│       │   ├── kindsModel.js
+│       │   ├── languagesModel.js
+│       │   ├── moviesModel.js
+│       │   ├── musicModel.js
+│       │   ├── purgeModel.js
+│       │   ├── screenwritersModel.js
+│       │   ├── studioModel.js
+│       │   ├── tagsModel.js
+│       │   └── userModel.js
+│       ├── public
+│       │   ├── 1711911878422.0.46760397777435103.test02.jpg
+│       │   ├── 1711921121979.0.33191513812361007.test01.jpg
+│       │   ├── 1711921329774.0.5534764067015174.test01.jpg
+│       │   ├── 1711921387282.0.4403753686035081.test01.jpg
+│       │   ├── 1711921460055.0.14761957134999637.test01.jpg
+│       │   ├── 1711921771725.0.3953006274793571.test01.jpg
+│       │   ├── 1711922412880.0.5196972623340226.test01.jpg
+│       │   ├── 1711922600981.0.20889655540066676.test01.jpg
+│       │   ├── 1711922871807.0.8625919591251148.test01.jpg
+│       │   ├── 1711922961788.0.1423453873169951.test01.jpg
+│       │   ├── 1711922994310.0.7585384851858257.test01.jpg
+│       │   └── 1711923166852.0.49640091079998583.test01.jpg
+│       ├── router.js
+│       ├── routes
+│       │   ├── authRoutes.js
+│       │   ├── castingRoute.js
+│       │   ├── directorsRoute.js
+│       │   ├── editingMovieRoute.js
+│       │   ├── editingRoute.js
+│       │   ├── exportStatsRoutes.js
+│       │   ├── favoriteRoutes.js
+│       │   ├── focusRoute.js
+│       │   ├── healthRoute.js
+│       │   ├── kindsRoute.js
+│       │   ├── languagesRoutes.js
+│       │   ├── moviesRoute.js
+│       │   ├── musicRoute.js
+│       │   ├── purgeRoute.js
+│       │   ├── screenwritersRoute.js
+│       │   ├── studioRoute.js
+│       │   ├── tagsRoute.js
+│       │   ├── tmdbRoutes.js
+│       │   └── userRoutes.js
+│       ├── services
+│       ├── tables.js
+│       ├── tmp
+│       └── utils
+│           ├── cloudinary.js
+│           ├── imageUtils.js
+│           ├── studio.js
+│           └── tags.js
+├── CHANGELOG.md
+├── CONTRIBUTING.md
+├── database-setup.sh
+├── docker-compose.example.yml
+├── docker-compose.yml
+├── frontend
+│   ├── Dockerfile
+│   ├── index.html
+│   ├── nginx.conf
+│   ├── package.json
+│   ├── package-lock.json
+│   ├── src
+│   │   ├── api
+│   │   │   └── apiClient.js
+│   │   ├── App.css
+│   │   ├── App.jsx
+│   │   ├── assets
+│   │   │   ├── css
+│   │   │   │   ├── common_elements.css
+│   │   │   │   ├── reactQuill_html_parametrage.css
+│   │   │   │   ├── reset_style.css
+│   │   │   │   ├── scrollButton.css
+│   │   │   │   └── var_font_color.css
+│   │   │   ├── font
+│   │   │   │   ├── azonix
+│   │   │   │   │   └── Azonix.otf
+│   │   │   │   └── blanka
+│   │   │   │       └── Blanka-Regular.otf
+│   │   │   └── ico
+│   │   │       ├── actor-bear.jpg
+│   │   │       ├── arrow_back.svg
+│   │   │       ├── arrow_forward.svg
+│   │   │       ├── camera_Bear_01.jpeg
+│   │   │       ├── camera_Bear_03.jpeg
+│   │   │       ├── compositor-bear.jpeg
+│   │   │       ├── director_bear_01.jpeg
+│   │   │       ├── favorite.png
+│   │   │       ├── focus_casting.png
+│   │   │       ├── focus_collection.png
+│   │   │       ├── focus_directors.png
+│   │   │       ├── focus_festival.png
+│   │   │       ├── focus_thema.png
+│   │   │       ├── imdb_ico.png
+│   │   │       ├── logo_jmdb.png
+│   │   │       ├── outline_play_arrow_white_24dp.png
+│   │   │       ├── reset.svg
+│   │   │       ├── screenwiter-bear.jpeg
+│   │   │       ├── search_Bear_02.jpeg
+│   │   │       ├── sens_critique_ico.png
+│   │   │       ├── studio_bear.jpeg
+│   │   │       ├── web_ico.png
+│   │   │       └── wikipedia_ico.png
+│   │   ├── components
+│   │   │   ├── AdminFeatures
+│   │   │   │   ├── AddNewMovie
+│   │   │   │   │   ├── AddMovieActions.jsx
+│   │   │   │   │   ├── AddMovieMainSection
+│   │   │   │   │   │   ├── AddMovieMainInfoSection.jsx
+│   │   │   │   │   │   ├── AddMovieMainSection.jsx
+│   │   │   │   │   │   ├── AddMovieRelationsSection.jsx
+│   │   │   │   │   │   ├── MovieRelationField.jsx
+│   │   │   │   │   │   └── TvSeasonEpisodeFields.jsx
+│   │   │   │   │   ├── AddMovieMediaSection.jsx
+│   │   │   │   │   ├── AddNewMovie.jsx
+│   │   │   │   │   └── MovieInfosEntranceModal
+│   │   │   │   │       ├── MovieInfosEntrance.jsx
+│   │   │   │   │       └── MovieInfosEntranceModal.jsx
+│   │   │   │   ├── AdminCreateItemModal
+│   │   │   │   │   └── AdminCreateItemModal.jsx
+│   │   │   │   ├── AdminItemsCards
+│   │   │   │   │   ├── AdminItemsCardArtists.jsx
+│   │   │   │   │   ├── AdminItemsCardCountries.jsx
+│   │   │   │   │   ├── AdminItemsCardFocus.jsx
+│   │   │   │   │   ├── AdminItemsCardkindsLanguagesTags.jsx
+│   │   │   │   │   ├── AdminItemsCardShared
+│   │   │   │   │   │   ├── AdminItemsCardActions.jsx
+│   │   │   │   │   │   ├── AdminItemsCardImage.jsx
+│   │   │   │   │   │   └── AdminItemsCardResponsiveDivider.jsx
+│   │   │   │   │   ├── AdminItemsCardUsers.jsx
+│   │   │   │   │   ├── constants
+│   │   │   │   │   │   └── adminItemsCardStyles.js
+│   │   │   │   │   └── CreateItemCard.jsx
+│   │   │   │   ├── AdminItemsLists
+│   │   │   │   │   ├── AdminCastingList.jsx
+│   │   │   │   │   ├── AdminCompositorList.jsx
+│   │   │   │   │   ├── AdminCountryList.jsx
+│   │   │   │   │   ├── AdminDirectorList.jsx
+│   │   │   │   │   ├── AdminExportStats.jsx
+│   │   │   │   │   ├── AdminFocusList.jsx
+│   │   │   │   │   ├── AdminGenreList.jsx
+│   │   │   │   │   ├── AdminLanguagesList.jsx
+│   │   │   │   │   ├── AdminMovieList.jsx
+│   │   │   │   │   ├── AdminScreenwriterList.jsx
+│   │   │   │   │   ├── AdminStudioList.jsx
+│   │   │   │   │   ├── AdminTagsList.jsx
+│   │   │   │   │   ├── AdminUserList.jsx
+│   │   │   │   │   └── ui
+│   │   │   │   │       ├── AdminDataTable.jsx
+│   │   │   │   │       ├── AdminListHeader.jsx
+│   │   │   │   │       ├── AdminListLayout.jsx
+│   │   │   │   │       ├── AdminListPagination.jsx
+│   │   │   │   │       └── AdminSearchField.jsx
+│   │   │   │   └── AdminModal
+│   │   │   │       └── AdminModal.jsx
+│   │   │   ├── AlphabeticBtn
+│   │   │   │   └── AlphabeticBtn.jsx
+│   │   │   ├── AlphabetOption
+│   │   │   │   └── AlphabetDropdown.jsx
+│   │   │   ├── ChronologicBtn
+│   │   │   │   ├── chronologicBtn.css
+│   │   │   │   └── ChronologicBtn.jsx
+│   │   │   ├── Counters
+│   │   │   │   └── Counters.jsx
+│   │   │   ├── FocusCard
+│   │   │   │   └── FocusCard.jsx
+│   │   │   ├── Footer
+│   │   │   │   └── Footer.jsx
+│   │   │   ├── Header
+│   │   │   │   ├── Header.jsx
+│   │   │   │   ├── NavBar
+│   │   │   │   │   └── NavBar.jsx
+│   │   │   │   └── NavBarBurger
+│   │   │   │       └── NavBarBurger.jsx
+│   │   │   ├── ItemsList
+│   │   │   │   └── ItemsList.jsx
+│   │   │   ├── LoaderCowardlySquid
+│   │   │   │   ├── loaderCowardlySquid.css
+│   │   │   │   └── LoaderCowardlySquid.jsx
+│   │   │   ├── Loading
+│   │   │   │   ├── loading.css
+│   │   │   │   └── Loading.jsx
+│   │   │   ├── MovieArtistPage
+│   │   │   │   ├── ArtistFilmo.jsx
+│   │   │   │   ├── ArtistList.jsx
+│   │   │   │   ├── MovieArtistPage.jsx
+│   │   │   │   └── MovieArtistSearchBar.jsx
+│   │   │   ├── MovieCard
+│   │   │   │   ├── constant
+│   │   │   │   │   └── MovieCardEditStyle.js
+│   │   │   │   ├── MovieCardActions.jsx
+│   │   │   │   ├── MovieCardCover.jsx
+│   │   │   │   ├── MovieCardEdit
+│   │   │   │   │   ├── MovieCardEditHeader.jsx
+│   │   │   │   │   └── MovieCardEdit.jsx
+│   │   │   │   ├── MovieCardEdit02
+│   │   │   │   │   ├── MovieCardEdit02.jsx
+│   │   │   │   │   ├── MovieCardMediaSection.jsx
+│   │   │   │   │   └── MovieCardRelationsSection.jsx
+│   │   │   │   ├── MovieCard.jsx
+│   │   │   │   ├── MovieCardView02.jsx
+│   │   │   │   ├── MovieCardView.jsx
+│   │   │   │   ├── TvShowFields.jsx
+│   │   │   │   └── ui
+│   │   │   │       └── MovieRelationField.jsx
+│   │   │   ├── MovieCardModal
+│   │   │   │   └── MovieCardModal.jsx
+│   │   │   ├── MovieCount
+│   │   │   │   └── MovieCount.jsx
+│   │   │   ├── MovieFocusLayout
+│   │   │   │   └── MovieFocusLayout.jsx
+│   │   │   ├── MovieFocusThumbnail
+│   │   │   │   └── MovieFocusThumbnail.jsx
+│   │   │   ├── MovieSearchFilters
+│   │   │   │   ├── CountryDropdown.jsx
+│   │   │   │   ├── KindsDropdown.jsx
+│   │   │   │   ├── MovieSearchFiltersStyles.js
+│   │   │   │   ├── TvShowFilter.jsx
+│   │   │   │   └── YearDropdown.jsx
+│   │   │   ├── MovieThumbnail
+│   │   │   │   ├── MovieThumbnail.jsx
+│   │   │   │   └── MovieThumbnailStyles.js
+│   │   │   ├── StickySideBar
+│   │   │   │   └── StickySideBar.jsx
+│   │   │   ├── ToggleSortedBtn
+│   │   │   │   └── ToggleSortedButton.jsx
+│   │   │   └── TransferList
+│   │   │       ├── TransferList.jsx
+│   │   │       └── TransferListModal.jsx
+│   │   ├── Context
+│   │   │   ├── AuthContext.jsx
+│   │   │   ├── RequireAdmin.jsx
+│   │   │   └── RequireAuth.jsx
+│   │   ├── hooks
+│   │   │   ├── useAddMovieCover.js
+│   │   │   ├── useAddMovieForm.js
+│   │   │   ├── useAddMovieSubmit.js
+│   │   │   ├── useAdminExportCsv.js
+│   │   │   ├── useAdminItemsList.js
+│   │   │   ├── useAdminStats.js
+│   │   │   ├── useFavorites.js
+│   │   │   ├── useMovieActions.js
+│   │   │   ├── useMovieArtistPage.js
+│   │   │   ├── useMovieCover.js
+│   │   │   ├── useMovieData.js
+│   │   │   ├── useMovieFavoritesPage.js
+│   │   │   ├── useMovieFocusPage.js
+│   │   │   ├── useMovieInfosEntrance.js
+│   │   │   ├── useMovieMedia.js
+│   │   │   ├── useMovieRelations.js
+│   │   │   ├── useMovieSearchPage.js
+│   │   │   ├── useTmdbMovieSelection.js
+│   │   │   ├── useTrailer.js
+│   │   │   ├── useTransferList.js
+│   │   │   └── useTvSeasons.js
+│   │   ├── main.jsx
+│   │   ├── pages
+│   │   │   ├── AdminFeat
+│   │   │   │   └── AdminFeat.jsx
+│   │   │   ├── Home
+│   │   │   │   └── Home.jsx
+│   │   │   ├── Login
+│   │   │   │   └── Login.jsx
+│   │   │   ├── MovieArtist
+│   │   │   │   ├── MovieCasting.jsx
+│   │   │   │   ├── MovieDirectors.jsx
+│   │   │   │   ├── MovieMusic.jsx
+│   │   │   │   ├── MovieScreenwriters.jsx
+│   │   │   │   ├── Moviestudio.jsx
+│   │   │   │   └── MovieTags.jsx
+│   │   │   ├── MovieFocus
+│   │   │   │   ├── MovieCollection.jsx
+│   │   │   │   ├── MovieFavorite.jsx
+│   │   │   │   ├── MovieFestival.jsx
+│   │   │   │   ├── MovieFocusCasting.jsx
+│   │   │   │   ├── MovieFocusDirectors.jsx
+│   │   │   │   └── MovieThema.jsx
+│   │   │   └── MovieSearch
+│   │   │       ├── MovieSearch.jsx
+│   │   │       └── movieSearchVirtuoso.css
+│   │   ├── services
+│   │   │   ├── adminItemService.js
+│   │   │   ├── adminStatsService.js
+│   │   │   ├── artistService.js
+│   │   │   ├── favoriteService.js
+│   │   │   ├── focusService.js
+│   │   │   ├── movieRelationService.js
+│   │   │   ├── movieService.js
+│   │   │   ├── referenceDataService.js
+│   │   │   ├── tagService.js
+│   │   │   ├── tmdbService.js
+│   │   │   └── userService.js
+│   │   └── utils
+│   │       ├── countries.js
+│   │       ├── handleMovieClick.js
+│   │       ├── languages.js
+│   │       ├── purgeOrphanRecords.js
+│   │       ├── refetchMovieTMDB.js
+│   │       └── tvShowUtils.js
+│   └── vite.config.js
+├── package.json
+├── package-lock.json
+├── README.md
+├── scripts
+│   ├── clear-cloudinary-dev.js
+│   ├── cloudinary-clone-prod-to-dev.js
+│   └── test-cloudinary-copy.js
+├── structure.txt
+└── workflow JMDB dev.pdf
+
+72 directories, 280 files
