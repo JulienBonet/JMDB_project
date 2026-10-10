@@ -243,7 +243,8 @@ export default function TransferList({
   // Fonction pour gérer l'ajout d'un nouvel élément
   const handleNewItem = async (name) => {
     try {
-      const newItem = await getByName(getOriginFromDataType(dataType), name);
+      const endpoint = dataType === 'music' ? 'music' : getOriginFromDataType(dataType);
+      const newItem = await getByName(endpoint, name);
 
       // Vérifie si l'item n'est pas déjà présent dans right
       if (!right.some((item) => item.id === newItem.id)) {
