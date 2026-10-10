@@ -13,17 +13,20 @@ function useMovieFavoritesPage({ token, authReady, isAuthenticated, userId }) {
   const [sortMoviesAsc, setSortMoviesAsc] = useState(true);
   const [sortMoviesYearAsc, setSortMoviesYearAsc] = useState(true);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const fetchFavorites = async () => {
     if (!token) return;
 
     setLoading(true);
+    setError(null);
 
     try {
       const data = await getFavorites();
       setMovies(data);
     } catch (err) {
       console.error('Fetch favorites failed', err);
+      setError(err);
     } finally {
       setLoading(false);
     }
@@ -85,6 +88,7 @@ function useMovieFavoritesPage({ token, authReady, isAuthenticated, userId }) {
 
   return {
     movies,
+    error,
     openSideBar,
     setOpenSideBar,
     sortMoviesAsc,
