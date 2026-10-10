@@ -912,23 +912,31 @@ const editingTag = async (req, res) => {
     const { name } = req.body;
     const { id } = req.params;
 
+    if (!name || !name.trim()) {
+      return res.status(400).json({ message: 'Tag name is required' });
+    }
+
     const existingTag = await editingModel.findTagById(id);
 
-    console.log('ID reçu :', id);
-    console.log('existingTag :', existingTag);
-
-    if (existingTag[0].name === name) {
-      return res.status(400).json({ message: 'Error updating Tag: no changes detected' });
+    if (!existingTag || existingTag.length === 0) {
+      return res.status(404).json({ message: 'Tag non trouvé' });
     }
 
-    const result = await editingModel.editTag(name, id);
+    if (existingTag[0].name === name.trim()) {
+      return res.status(400).json({
+        message: 'Error updating Tag: no changes detected',
+      });
+    }
 
-    if (result.affectedRows !== 0) {
+    const [result] = await editingModel.editTag(name.trim(), id);
+
+    if (result.affectedRows > 0) {
       return res.status(200).json({ message: 'Tag successfully updated' });
     }
+
     return res.status(400).json({ message: 'Error updating Tag' });
   } catch (error) {
-    console.error('Stack trace :', error.stack);
+    console.error('Error updating Tag:', error);
     return res.status(500).json({ message: 'Error updating Tag' });
   }
 };
