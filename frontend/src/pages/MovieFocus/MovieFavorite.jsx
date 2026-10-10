@@ -16,6 +16,7 @@ function Favorites() {
 
   const {
     movies,
+    error,
     openSideBar,
     setOpenSideBar,
     loading,
@@ -139,7 +140,7 @@ function Favorites() {
           {/* end loader */}
 
           {/* if NO favorite movies */}
-          {!loading && movies.length === 0 && (
+          {!loading && !error && movies.length === 0 && (
             <Box
               id="Favorites_EmptyState"
               sx={{
@@ -166,7 +167,31 @@ function Favorites() {
           )}
           {/* end if NO favorite movies */}
 
-          {/* end if favorite movies list */}
+          {/* ERROR */}
+          {!loading && error && (
+            <Box
+              role="alert"
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                minHeight: '40vh',
+                px: 2,
+                textAlign: 'center',
+              }}
+            >
+              <Typography color="error" sx={{ fontSize: '2rem', fontFamily: 'var(--font-02)' }}>
+                Impossible de charger votre liste.
+              </Typography>
+              <Typography color="error" sx={{ fontSize: '2rem', fontFamily: 'var(--font-02)' }}>
+                Veuillez réessayer ou vous reconnecter.
+              </Typography>
+            </Box>
+          )}
+          {/* END ERROR */}
+
+          {/* if favorite movies list */}
           {!loading && movies.length > 0 && (
             <Box
               id="FavoriteMovies_Container"
