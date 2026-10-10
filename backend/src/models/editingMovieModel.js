@@ -316,9 +316,15 @@ const findMovieStudio = (movieId, studioId) =>
   ]);
 
 const findStudioByMovieId = async (movieId) => {
-  const [result] = await db.query('SELECT studioId FROM `movie_studio` WHERE `movieId` = ?', [
-    movieId,
-  ]);
+  const [result] = await db.query(
+    `SELECT s.id, s.name
+     FROM movie_studio ms
+     INNER JOIN studio s ON s.id = ms.studioId
+     WHERE ms.movieId = ?
+     ORDER BY s.name`,
+    [movieId]
+  );
+
   return result;
 };
 

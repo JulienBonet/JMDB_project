@@ -5,6 +5,9 @@ const router = express.Router();
 const upload = require('../middlewares/fileUpload');
 const editingMovieController = require('../controllers/editingMovieControllers');
 
+// routes pour géréer l'appel des studios d'un film dans la movieCard dont le nom comporte une virgule
+router.get('/movie/:id/studios', editingMovieController.getStudiosByMovieId);
+
 // MOVIES ROUTES
 router.post('/movie', upload.single('cover'), editingMovieController.addMovie);
 

@@ -85,3 +85,8 @@ export const updateMovieImageFromUrl = async (id, imageUrl) => {
 
   return response.data;
 };
+
+export const getStudiosByMovieId = async (id) => {
+  const response = await api.get(`/api/movie/${id}/studios`);
+  return response.data;
+};

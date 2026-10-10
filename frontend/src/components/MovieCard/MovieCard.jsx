@@ -108,8 +108,10 @@ function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, on
     setSelectedTags,
     setSelectedFocus,
     fetchByNames,
+    fetchStudiosByMovieId,
     getSelectedNames,
   } = useMovieRelations({
+    movieId: movieData.id,
     genres,
     directors,
     casting,
@@ -272,7 +274,7 @@ function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, on
     fetchByNames(casting, 'casting', setSelectedCasting);
     fetchByNames(screenwriters, 'screenwriter', setSelectedScreenwriters);
     fetchByNames(music, 'music', setSelectedMusic);
-    fetchByNames(studios, 'studio', setSelectedStudios);
+    fetchStudiosByMovieId();
     fetchByNames(countries, 'country', setSelectedCountries);
     fetchByNames(tags, 'tags', setSelectedTags);
     fetchByNames(focus, 'focus', setSelectedFocus);
