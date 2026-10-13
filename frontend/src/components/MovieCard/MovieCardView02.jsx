@@ -167,7 +167,7 @@ const MovieCardView = ({ movieData, isTrailerVisible, focus, isAdmin, toggleTrai
             {/* end Informations fichier */}
 
             {/* Commentaire */}
-            {movieData.comment && (
+            {movieData.comment && isAdmin && (
               <>
                 <Box id="divider_comment_MovieCardView02" sx={dividerDashedSx} />
 
