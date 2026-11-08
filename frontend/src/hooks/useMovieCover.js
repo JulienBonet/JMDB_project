@@ -46,7 +46,7 @@ export function useMovieCover({ movie, isModify, getImageUrl }) {
 
     setImage(data.url);
 
-    return data.publicId;
+    return data;
   };
 
   return {
