@@ -353,47 +353,85 @@ const deleteMovie = async (req, res) => {
 // -------------------------- EDIT MOVIE IMAGE (upload via req.file.buffer) --------------------------
 
 const editMovieImage = async (req, res) => {
+  let newPublicId = null;
+
   try {
     const { id } = req.params;
 
-    if (!req.file || !req.file.buffer)
+    if (!req.file || !req.file.buffer) {
       return res.status(400).json({ message: 'Aucun fichier fourni' });
+    }
 
     const [movie] = await editingMovieModel.findMovieById(id);
-    if (!movie) return res.status(404).json({ message: 'Film introuvable' });
+
+    if (!movie) {
+      return res.status(404).json({ message: 'Film introuvable' });
+    }
 
     const oldCover = movie.cover;
 
-    // 🗑️ Suppression ancienne image Cloudinary
-    if (oldCover && oldCover !== DEFAULT_COVER) {
-      try {
-        const publicId = `${CLOUD_FOLDER}/${oldCover.replace(/\.[^.]+$/, '')}`;
-        await cloudinary.uploader.destroy(publicId);
-      } catch (err) {
-        console.error('❌ Cloudinary delete error:', err);
-      }
-    }
-
-    // 🔄 Resize & crop (AFFICHE 2:3)
+    // Redimensionnement et recadrage (affiche 2:3)
     const resizedBuffer = await resizeAndCropBuffer(req.file.buffer, 306, 459);
 
-    // ☁ Upload Cloudinary
+    // Upload de la nouvelle image
     const { publicId, url } = await uploadBufferToCloudinary(resizedBuffer, CLOUD_FOLDER, 'cover');
+
+    newPublicId = publicId;
 
     const filenameOnly = publicId.split('/').pop();
     const filename = `${filenameOnly}.jpg`;
 
-    // 💾 Update BDD (ON STOCKE LE NOM, PAS L’URL)
-    await editingMovieModel.updateMovieImage(filename, id);
+    // Mise à jour de la BDD
+    const result = await editingMovieModel.updateMovieImage(filename, id);
+
+    if (result.affectedRows === 0) {
+      throw new Error('Aucune ligne film mise à jour');
+    }
+
+    // Suppression de l'ancienne image après validation SQL
+    let oldImageDeleted = true;
+
+    if (oldCover && oldCover !== DEFAULT_COVER) {
+      const oldPublicId = `${CLOUD_FOLDER}/${oldCover.replace(/\.[^.]+$/, '')}`;
+
+      try {
+        const deletionResult = await cloudinary.uploader.destroy(oldPublicId);
+
+        if (deletionResult.result !== 'ok' && deletionResult.result !== 'not found') {
+          oldImageDeleted = false;
+
+          console.error('Ancienne image non supprimée de Cloudinary:', oldPublicId, deletionResult);
+        }
+      } catch (deleteError) {
+        oldImageDeleted = false;
+
+        console.error('Erreur suppression ancienne image Cloudinary:', oldPublicId, deleteError);
+      }
+    }
 
     return res.status(200).json({
-      message: 'Image successfully updated',
+      message: oldImageDeleted
+        ? 'Image successfully updated'
+        : 'Image updated, but previous image deletion failed',
       filename,
       url,
+      warning: oldImageDeleted ? null : 'L’ancienne image est toujours présente sur Cloudinary.',
     });
   } catch (error) {
-    console.error('❌ editMovieImage:', error);
-    return res.status(500).json({ message: 'Error updating image' });
+    // Nettoyage de la nouvelle image si la mise à jour échoue
+    if (newPublicId) {
+      try {
+        await cloudinary.uploader.destroy(newPublicId);
+      } catch (cleanupError) {
+        console.error('Erreur nettoyage nouvelle image Cloudinary:', newPublicId, cleanupError);
+      }
+    }
+
+    console.error('editMovieImage:', error);
+
+    return res.status(500).json({
+      message: 'Error updating image',
+    });
   }
 };
 

@@ -43,7 +43,11 @@ export function useMovieActions({
 
     try {
       if (fileCoverRef.current.files[0]) {
-        await handleUpdateImage();
+        const imageResult = await handleUpdateImage();
+
+        if (imageResult?.warning) {
+          toast.warning(imageResult.warning);
+        }
       }
 
       const payload = {
