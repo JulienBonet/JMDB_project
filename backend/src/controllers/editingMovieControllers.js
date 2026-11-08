@@ -454,8 +454,8 @@ const editMovieById = async (req, res) => {
       id
     );
 
-    // Genres
-    if (genres && genres.length > 0) {
+    // Genres (un film doit conserver au moins un genre)
+    if (Array.isArray(genres) && genres.length > 0) {
       await editingMovieModel.eraseKindByMovieId(id);
       for (const genreId of genres) {
         await editingMovieModel.addMovieKind(id, genreId);
@@ -463,7 +463,7 @@ const editMovieById = async (req, res) => {
     }
 
     // Directors
-    if (directors && directors.length > 0) {
+    if (Array.isArray(directors)) {
       await editingMovieModel.eraseDirectorByMovieId(id);
       for (const directorId of directors) {
         await editingMovieModel.addMovieDirector(id, directorId);
@@ -471,7 +471,7 @@ const editMovieById = async (req, res) => {
     }
 
     // Castings
-    if (castings && castings.length > 0) {
+    if (Array.isArray(castings)) {
       await editingMovieModel.eraseCastingByMovieId(id);
       for (const castingId of castings) {
         await editingMovieModel.addMovieCasting(id, castingId);
@@ -479,7 +479,7 @@ const editMovieById = async (req, res) => {
     }
 
     // Screenwriters
-    if (screenwriters && screenwriters.length > 0) {
+    if (Array.isArray(screenwriters)) {
       await editingMovieModel.eraseScreenwriterByMovieId(id);
       for (const screenwriterId of screenwriters) {
         await editingMovieModel.addMovieScreenwriter(id, screenwriterId);
@@ -487,7 +487,7 @@ const editMovieById = async (req, res) => {
     }
 
     // Musics
-    if (musics && musics.length > 0) {
+    if (Array.isArray(musics)) {
       await editingMovieModel.eraseMusicByMovieId(id);
       for (const musicId of musics) {
         await editingMovieModel.addMovieMusic(id, musicId);
@@ -495,7 +495,7 @@ const editMovieById = async (req, res) => {
     }
 
     // Studios
-    if (studios && studios.length > 0) {
+    if (Array.isArray(studios)) {
       await editingMovieModel.eraseStudioByMovieId(id);
       for (const studioId of studios) {
         await editingMovieModel.addMovieStudio(id, studioId);
@@ -503,7 +503,7 @@ const editMovieById = async (req, res) => {
     }
 
     // Countries
-    if (countries && countries.length > 0) {
+    if (Array.isArray(countries)) {
       await editingMovieModel.eraseCountryByMovieId(id);
       for (const countryId of countries) {
         await editingMovieModel.addMovieCountry(id, countryId);
@@ -511,7 +511,7 @@ const editMovieById = async (req, res) => {
     }
 
     // Tags
-    if (tags && tags.length > 0) {
+    if (Array.isArray(tags)) {
       await editingMovieModel.eraseTagByMovieId(id);
       for (const tagId of tags) {
         await editingMovieModel.addMovieTag(id, tagId);
@@ -519,7 +519,7 @@ const editMovieById = async (req, res) => {
     }
 
     // Focus
-    if (focus) {
+    if (Array.isArray(focus)) {
       await editingMovieModel.eraseFocusByMovieId(id);
       for (const focusId of focus) {
         await editingMovieModel.addMovieFocus(id, focusId);
