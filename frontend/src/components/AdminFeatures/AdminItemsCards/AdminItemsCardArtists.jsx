@@ -137,6 +137,9 @@ function AdminItemsCardArtists({ item, origin, onUpdate, closeModal }) {
   // end Fonctions pour filtrer les caractères interdits
 
   const handleUndo = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
     setIsModify(false);
     setName(item.name);
     setPitch(item.pitch);
@@ -153,6 +156,9 @@ function AdminItemsCardArtists({ item, origin, onUpdate, closeModal }) {
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
+
+    if (!file) return;
+
     const newImageUrl = URL.createObjectURL(file);
     setImage(newImageUrl);
     setShowUploadButton(false);
@@ -163,6 +169,10 @@ function AdminItemsCardArtists({ item, origin, onUpdate, closeModal }) {
   };
 
   const handleResetImage = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+
     setImage(getImageUrl(item.image));
     setShowUploadButton(true);
   };
@@ -200,6 +210,13 @@ function AdminItemsCardArtists({ item, origin, onUpdate, closeModal }) {
         p: 2,
       }}
     >
+      <input
+        type="file"
+        accept="image/*"
+        onChange={handleFileUpload}
+        ref={fileInputRef}
+        style={{ display: 'none' }}
+      />
       {/* CARD CONTENTS */}
       <CardContent
         id="AdminItemsCardArtists_Content"
@@ -243,6 +260,7 @@ function AdminItemsCardArtists({ item, origin, onUpdate, closeModal }) {
             showUploadButton={showUploadButton}
             handleUploadClick={handleUploadClick}
             handleResetImage={handleResetImage}
+            renderFileInput={false}
           />
 
           {/* divider mobile/tablette */}
@@ -532,6 +550,7 @@ function AdminItemsCardArtists({ item, origin, onUpdate, closeModal }) {
             showUploadButton={showUploadButton}
             handleUploadClick={handleUploadClick}
             handleResetImage={handleResetImage}
+            renderFileInput={false}
           />
         </Stack>
         {/* END IMAGE - version desktop */}

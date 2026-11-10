@@ -11,6 +11,7 @@ function AdminItemsCardImage({
   showUploadButton,
   handleUploadClick,
   handleResetImage,
+  renderFileInput = true,
 }) {
   const adminCardItemImageSX = {
     padding: '0.5rem 1rem',
@@ -36,13 +37,15 @@ function AdminItemsCardImage({
 
       {isModify && (
         <>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleFileUpload}
-            ref={fileInputRef}
-            style={{ display: 'none' }}
-          />
+          {renderFileInput && (
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleFileUpload}
+              ref={fileInputRef}
+              style={{ display: 'none' }}
+            />
+          )}
 
           {showUploadButton ? (
             <IconButton

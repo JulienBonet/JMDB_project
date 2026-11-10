@@ -26,6 +26,7 @@ function AdminItemsCardCountries({ item, origin, onUpdate, closeModal }) {
   const [name, setName] = useState(item.name);
   const [image, setImage] = useState(getImageUrl(item.image));
   const [showUploadButton, setShowUploadButton] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const fileInputRef = useRef(null);
 
   const openModif = () => {
@@ -47,6 +48,8 @@ function AdminItemsCardCountries({ item, origin, onUpdate, closeModal }) {
 
   const handleValidate = async () => {
     try {
+      setIsLoading(true);
+
       const hasChanges = name !== item.name;
 
       if (hasChanges) {
@@ -80,6 +83,8 @@ function AdminItemsCardCountries({ item, origin, onUpdate, closeModal }) {
       closeModal();
     } catch (error) {
       console.error('Request error:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -95,6 +100,9 @@ function AdminItemsCardCountries({ item, origin, onUpdate, closeModal }) {
   // end Fonctions pour filtrer les caractères interdits
 
   const handleUndo = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
     setName(item.name);
     setImage(getImageUrl(item.image));
     setIsModify(false);
@@ -103,6 +111,9 @@ function AdminItemsCardCountries({ item, origin, onUpdate, closeModal }) {
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
+
+    if (!file) return;
+
     const newImageUrl = URL.createObjectURL(file);
     setImage(newImageUrl);
     setShowUploadButton(false);
@@ -113,6 +124,9 @@ function AdminItemsCardCountries({ item, origin, onUpdate, closeModal }) {
   };
 
   const handleResetImage = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
     setImage(getImageUrl(item.image));
     setShowUploadButton(true);
   };
@@ -126,6 +140,13 @@ function AdminItemsCardCountries({ item, origin, onUpdate, closeModal }) {
         p: 2,
       }}
     >
+      <input
+        type="file"
+        accept="image/*"
+        onChange={handleFileUpload}
+        ref={fileInputRef}
+        style={{ display: 'none' }}
+      />
       {/* CARD CONTENTS */}
       <CardContent
         id="AdminItemsCardCountries_Content"
@@ -170,6 +191,7 @@ function AdminItemsCardCountries({ item, origin, onUpdate, closeModal }) {
             showUploadButton={showUploadButton}
             handleUploadClick={handleUploadClick}
             handleResetImage={handleResetImage}
+            renderFileInput={false}
           />
           {/* end image mobile/tablette */}
 
@@ -226,6 +248,7 @@ function AdminItemsCardCountries({ item, origin, onUpdate, closeModal }) {
           {/* ACTIONS */}
           <AdminItemsCardActions
             isEditing={isModify}
+            isLoading={isLoading}
             onReturn={handleReturn}
             onEdit={openModif}
             onValidate={handleValidate}
@@ -259,6 +282,7 @@ function AdminItemsCardCountries({ item, origin, onUpdate, closeModal }) {
             showUploadButton={showUploadButton}
             handleUploadClick={handleUploadClick}
             handleResetImage={handleResetImage}
+            renderFileInput={false}
           />
           {/* end image desktop */}
         </Stack>
