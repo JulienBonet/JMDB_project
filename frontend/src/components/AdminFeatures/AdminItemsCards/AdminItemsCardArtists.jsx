@@ -58,9 +58,7 @@ function AdminItemsCardArtists({ item, origin, onUpdate, closeModal }) {
     const file = fileInputRef.current.files[0];
     if (!file) return null;
 
-    const data = await updateAdminItemImage(origin, item.id, file);
-
-    return data.url;
+    return await updateAdminItemImage(origin, item.id, file);
   };
 
   const handleValidate = async () => {
@@ -100,10 +98,17 @@ function AdminItemsCardArtists({ item, origin, onUpdate, closeModal }) {
       let newImageUrl = image;
 
       if (fileInputRef.current.files[0]) {
-        newImageUrl = await handleUpdateImage();
-        setImage(newImageUrl);
-      }
+        const imageResult = await handleUpdateImage();
 
+        newImageUrl = imageResult.url;
+        setImage(newImageUrl);
+
+        if (imageResult.warning) {
+          toast.warning(imageResult.warning, {
+            className: 'custom-toast',
+          });
+        }
+      }
       toast.success(`${origin} successfully updated`, {
         className: 'custom-toast',
       });
