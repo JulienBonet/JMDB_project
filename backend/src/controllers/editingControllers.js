@@ -4,8 +4,7 @@
 const { cleanTags } = require('../utils/tags');
 const { cleanStudioName } = require('../utils/studio');
 
-const { uploadBufferToCloudinary, cloudinary } = require('../utils/cloudinary');
-const { resizeAndCropBuffer } = require('../utils/imageUtils');
+const { cloudinary } = require('../utils/cloudinary');
 const { replaceCloudinaryImage } = require('../utils/replaceCloudinaryImage');
 
 const editingModel = require('../models/editingModel');
