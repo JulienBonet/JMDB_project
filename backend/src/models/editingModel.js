@@ -194,17 +194,6 @@ const deleteCountry = (id) => db.query('DELETE FROM country WHERE id = ?;', [id]
 // EDIT GENRE
 //-----------------------------
 
-const findGenreByName = (name) => {
-  db.query('SELECT * FROM genre WHERE name = ?', [name])
-    .then(([rows]) => {
-      return rows;
-    })
-    .catch((err) => {
-      console.error(`Error executing SQL query: ${err}`);
-      throw err;
-    });
-};
-
 const findGenreById = (id) =>
   db.query('SELECT * FROM genre WHERE id = ?', [id]).then(([rows]) => rows);
 
@@ -358,7 +347,6 @@ module.exports = {
   editCountry,
   editCountryImage,
   deleteCountry,
-  findGenreByName,
   findGenreById,
   insertGenre,
   editGenre,

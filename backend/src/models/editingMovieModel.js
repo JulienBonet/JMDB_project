@@ -90,8 +90,6 @@ const updateMovie = (
 const updateMovieImage = (imageUrl, id) =>
   db.query('UPDATE movies SET cover = ? WHERE id = ?', [imageUrl, id]).then(([result]) => result);
 
-const getLastInsertedMovieId = () => db.query('SELECT LAST_INSERT_ID() AS movieId');
-
 const findMovieById = async (id) => {
   const [result] = await db.query('SELECT * FROM movies WHERE id = ?', [id]);
   return result;
@@ -398,14 +396,6 @@ const findLanguageByMovieId = async (movieId) => {
   return result;
 };
 
-const countMoviesBylanguage = async (languageId) => {
-  const [result] = await db.query(
-    'SELECT COUNT(*) AS movieCount FROM movie_language WHERE languageId = ?',
-    [languageId]
-  );
-  return result;
-};
-
 const addMovieLanguage = (movieId, languageId) =>
   db.query('INSERT INTO `movie_language` (`movieId`, `languageId`) VALUES (? , ?);', [
     movieId,
@@ -458,7 +448,6 @@ module.exports = {
   insertMovie,
   updateMovie,
   updateMovieImage,
-  getLastInsertedMovieId,
   findMovieById,
   findMovieExtendedById,
   eraseMovie,
@@ -499,7 +488,6 @@ module.exports = {
   eraseCountryByMovieId,
   findMovieLanguage,
   findLanguageByMovieId,
-  countMoviesBylanguage,
   addMovieLanguage,
   eraseLanguageByMovieId,
   findMovieTag,
