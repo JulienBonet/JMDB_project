@@ -143,6 +143,9 @@ function AdminItemsCardFocus({ item, origin, onUpdate, closeModal }) {
   // end Fonctions pour filtrer les caractères interdits
 
   const handleUndo = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
     setName(item.name);
     setPitch(item.pitch);
     setImage(getImageUrl(item.image));
@@ -152,15 +155,22 @@ function AdminItemsCardFocus({ item, origin, onUpdate, closeModal }) {
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
+
+    if (!file) return;
+
     const newImageUrl = URL.createObjectURL(file);
     setImage(newImageUrl);
     setShowUploadButton(false);
   };
+
   const handleUploadClick = () => {
     fileInputRef.current.click();
   };
 
   const handleResetImage = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
     setImage(getImageUrl(item.image));
     setShowUploadButton(true);
   };
@@ -196,6 +206,13 @@ function AdminItemsCardFocus({ item, origin, onUpdate, closeModal }) {
         p: 2,
       }}
     >
+      <input
+        type="file"
+        accept="image/*"
+        onChange={handleFileUpload}
+        ref={fileInputRef}
+        style={{ display: 'none' }}
+      />
       {/* CARD CONTENTS */}
       <CardContent
         id="AdminItemsCardFocus_Content"
@@ -240,6 +257,7 @@ function AdminItemsCardFocus({ item, origin, onUpdate, closeModal }) {
             showUploadButton={showUploadButton}
             handleUploadClick={handleUploadClick}
             handleResetImage={handleResetImage}
+            renderFileInput={false}
           />
           {/* end image mobile/tablette */}
 
@@ -434,6 +452,7 @@ function AdminItemsCardFocus({ item, origin, onUpdate, closeModal }) {
             showUploadButton={showUploadButton}
             handleUploadClick={handleUploadClick}
             handleResetImage={handleResetImage}
+            renderFileInput={false}
           />
 
           {/* end image desktop */}
