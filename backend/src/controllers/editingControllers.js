@@ -6,6 +6,7 @@ const { cleanStudioName } = require('../utils/studio');
 
 const { uploadBufferToCloudinary, cloudinary } = require('../utils/cloudinary');
 const { resizeAndCropBuffer } = require('../utils/imageUtils');
+const { replaceCloudinaryImage } = require('../utils/replaceCloudinaryImage');
 
 const editingModel = require('../models/editingModel');
 
@@ -92,43 +93,80 @@ const editingDirector = async (req, res) => {
   }
 };
 
+// const uploadDirectorImage = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     if (!req.file || !req.file.buffer)
+//       return res.status(400).json({ message: 'Aucun fichier fourni' });
+
+//     const [director] = await editingModel.findDirectorById(id);
+//     if (!director) return res.status(404).json({ message: 'Director introuvable' });
+
+//     const oldImage = director.image;
+
+//     // 🗑️ Supprim ancienne image Cloudinary
+//     if (oldImage && oldImage !== DEFAULT_IMAGE) {
+//       try {
+//         const publicId = `${CLOUD_FOLDER}/${oldImage.replace(/\.[^.]+$/, '')}`;
+//         await cloudinary.uploader.destroy(publicId);
+//       } catch (err) {
+//         console.error('❌ Cloudinary delete error:', err);
+//       }
+//     }
+
+//     // 🔄 Resize 1:1
+//     const resizedBuffer = await resizeAndCropBuffer(req.file.buffer, 500, 500);
+
+//     // ☁ Upload Cloudinary
+//     const { publicId, url } = await uploadBufferToCloudinary(
+//       resizedBuffer,
+//       CLOUD_FOLDER,
+//       'director'
+//     );
+
+//     const filenameOnly = publicId.split('/').pop();
+//     const filename = `${filenameOnly}.jpg`;
+
+//     await editingModel.editDirectorImage(filename, id);
+
+//     return res.status(200).json({ message: 'Image successfully updated', filename, url });
+//   } catch (err) {
+//     console.error('❌ uploadDirectorImage:', err);
+//     return res.status(500).json({ message: 'Error updating image' });
+//   }
+// };
+
 const uploadDirectorImage = async (req, res) => {
   try {
     const { id } = req.params;
-    if (!req.file || !req.file.buffer)
+
+    if (!req.file || !req.file.buffer) {
       return res.status(400).json({ message: 'Aucun fichier fourni' });
-
-    const [director] = await editingModel.findDirectorById(id);
-    if (!director) return res.status(404).json({ message: 'Director introuvable' });
-
-    const oldImage = director.image;
-
-    // 🗑️ Supprim ancienne image Cloudinary
-    if (oldImage && oldImage !== DEFAULT_IMAGE) {
-      try {
-        const publicId = `${CLOUD_FOLDER}/${oldImage.replace(/\.[^.]+$/, '')}`;
-        await cloudinary.uploader.destroy(publicId);
-      } catch (err) {
-        console.error('❌ Cloudinary delete error:', err);
-      }
     }
 
-    // 🔄 Resize 1:1
-    const resizedBuffer = await resizeAndCropBuffer(req.file.buffer, 500, 500);
+    const [director] = await editingModel.findDirectorById(id);
 
-    // ☁ Upload Cloudinary
-    const { publicId, url } = await uploadBufferToCloudinary(
-      resizedBuffer,
-      CLOUD_FOLDER,
-      'director'
-    );
+    if (!director) {
+      return res.status(404).json({ message: 'Director introuvable' });
+    }
 
-    const filenameOnly = publicId.split('/').pop();
-    const filename = `${filenameOnly}.jpg`;
+    const { filename, url, warning } = await replaceCloudinaryImage({
+      buffer: req.file.buffer,
+      width: 500,
+      height: 500,
+      prefix: 'director',
+      folder: CLOUD_FOLDER,
+      oldImage: director.image,
+      defaultImage: DEFAULT_IMAGE,
+      updateDatabase: (newFilename) => editingModel.editDirectorImage(newFilename, id),
+    });
 
-    await editingModel.editDirectorImage(filename, id);
-
-    return res.status(200).json({ message: 'Image successfully updated', filename, url });
+    return res.status(200).json({
+      message: 'Image successfully updated',
+      filename,
+      url,
+      ...(warning && { warning }),
+    });
   } catch (err) {
     console.error('❌ uploadDirectorImage:', err);
     return res.status(500).json({ message: 'Error updating image' });
@@ -232,38 +270,37 @@ const editingCasting = async (req, res) => {
 const uploadCastingImage = async (req, res) => {
   try {
     const { id } = req.params;
-    if (!req.file || !req.file.buffer)
+
+    if (!req.file || !req.file.buffer) {
       return res.status(400).json({ message: 'Aucun fichier fourni' });
-
-    const [casting] = await editingModel.findCastingById(id);
-    if (!casting) return res.status(404).json({ message: 'Casting introuvable' });
-
-    const oldImage = casting.image;
-
-    if (oldImage && oldImage !== DEFAULT_IMAGE) {
-      try {
-        const publicId = `${CLOUD_FOLDER}/${oldImage.replace(/\.[^.]+$/, '')}`;
-        await cloudinary.uploader.destroy(publicId);
-      } catch (err) {
-        console.error('❌ delete cast:', err);
-      }
     }
 
-    const resizedBuffer = await resizeAndCropBuffer(req.file.buffer, 500, 500);
+    const [casting] = await editingModel.findCastingById(id);
 
-    const { publicId, url } = await uploadBufferToCloudinary(
-      resizedBuffer,
-      CLOUD_FOLDER,
-      'casting'
-    );
+    if (!casting) {
+      return res.status(404).json({ message: 'Casting introuvable' });
+    }
 
-    const filename = `${publicId.split('/').pop()}.jpg`;
-    await editingModel.editCastingImage(filename, id);
+    const { filename, url, warning } = await replaceCloudinaryImage({
+      buffer: req.file.buffer,
+      width: 500,
+      height: 500,
+      prefix: 'casting',
+      folder: CLOUD_FOLDER,
+      oldImage: casting.image,
+      defaultImage: DEFAULT_IMAGE,
+      updateDatabase: (newFilename) => editingModel.editCastingImage(newFilename, id),
+    });
 
-    return res.status(200).json({ message: 'Image updated', filename, url });
+    return res.status(200).json({
+      message: 'Image successfully updated',
+      filename,
+      url,
+      ...(warning && { warning }),
+    });
   } catch (err) {
     console.error('❌ uploadCastingImage:', err);
-    res.status(500).json({ message: 'Error updating image' });
+    return res.status(500).json({ message: 'Error updating image' });
   }
 };
 
@@ -342,37 +379,37 @@ const editingScreenwriter = async (req, res) => {
 const uploadScreenwriterImage = async (req, res) => {
   try {
     const { id } = req.params;
-    if (!req.file || !req.file.buffer)
+
+    if (!req.file || !req.file.buffer) {
       return res.status(400).json({ message: 'Aucun fichier fourni' });
-
-    const [row] = await editingModel.findScreenwriterById(id);
-    if (!row) return res.status(404).json({ message: 'Screenwriter introuvable' });
-
-    const oldImage = row.image;
-    if (oldImage && oldImage !== DEFAULT_IMAGE) {
-      try {
-        const publicId = `${CLOUD_FOLDER}/${oldImage.replace(/\.[^.]+$/, '')}`;
-        await cloudinary.uploader.destroy(publicId);
-      } catch (err) {
-        console.error('❌ delete screenwriter:', err);
-      }
     }
 
-    const resizedBuffer = await resizeAndCropBuffer(req.file.buffer, 500, 500);
+    const [screenwriter] = await editingModel.findScreenwriterById(id);
 
-    const { publicId, url } = await uploadBufferToCloudinary(
-      resizedBuffer,
-      CLOUD_FOLDER,
-      'screenwriter'
-    );
+    if (!screenwriter) {
+      return res.status(404).json({ message: 'Screenwriter introuvable' });
+    }
 
-    const filename = `${publicId.split('/').pop()}.jpg`;
-    await editingModel.editScreenwriterImage(filename, id);
+    const { filename, url, warning } = await replaceCloudinaryImage({
+      buffer: req.file.buffer,
+      width: 500,
+      height: 500,
+      prefix: 'screenwriter',
+      folder: CLOUD_FOLDER,
+      oldImage: screenwriter.image,
+      defaultImage: DEFAULT_IMAGE,
+      updateDatabase: (newFilename) => editingModel.editScreenwriterImage(newFilename, id),
+    });
 
-    return res.status(200).json({ message: 'Image updated', filename, url });
+    return res.status(200).json({
+      message: 'Image successfully updated',
+      filename,
+      url,
+      ...(warning && { warning }),
+    });
   } catch (err) {
     console.error('❌ uploadScreenwriterImage:', err);
-    res.status(500).json({ message: 'Error updating image' });
+    return res.status(500).json({ message: 'Error updating image' });
   }
 };
 
@@ -453,32 +490,37 @@ const editingCompositor = async (req, res) => {
 const uploadCompositorImage = async (req, res) => {
   try {
     const { id } = req.params;
-    if (!req.file?.buffer) return res.status(400).json({ message: 'Aucun fichier fourni' });
 
-    const [row] = await editingModel.findCompositorById(id);
-    if (!row) return res.status(404).json({ message: 'Compositor introuvable' });
-
-    const old = row.image;
-    if (old && old !== DEFAULT_IMAGE) {
-      try {
-        const pub = `${CLOUD_FOLDER}/${old.replace(/\.[^.]+$/, '')}`;
-        await cloudinary.uploader.destroy(pub);
-      } catch (err) {
-        console.error('❌ delete compositor:', err);
-      }
+    if (!req.file || !req.file.buffer) {
+      return res.status(400).json({ message: 'Aucun fichier fourni' });
     }
 
-    const resized = await resizeAndCropBuffer(req.file.buffer, 500, 500);
+    const [compositor] = await editingModel.findCompositorById(id);
 
-    const { publicId, url } = await uploadBufferToCloudinary(resized, CLOUD_FOLDER, 'compositor');
+    if (!compositor) {
+      return res.status(404).json({ message: 'Compositor introuvable' });
+    }
 
-    const filename = `${publicId.split('/').pop()}.jpg`;
-    await editingModel.editCompositorImage(filename, id);
+    const { filename, url, warning } = await replaceCloudinaryImage({
+      buffer: req.file.buffer,
+      width: 500,
+      height: 500,
+      prefix: 'compositor',
+      folder: CLOUD_FOLDER,
+      oldImage: compositor.image,
+      defaultImage: DEFAULT_IMAGE,
+      updateDatabase: (newFilename) => editingModel.editCompositorImage(newFilename, id),
+    });
 
-    return res.status(200).json({ filename, url });
+    return res.status(200).json({
+      message: 'Image successfully updated',
+      filename,
+      url,
+      ...(warning && { warning }),
+    });
   } catch (err) {
     console.error('❌ uploadCompositorImage:', err);
-    res.status(500).json({ message: 'Error updating image' });
+    return res.status(500).json({ message: 'Error updating image' });
   }
 };
 
@@ -563,32 +605,37 @@ const editingStudio = async (req, res) => {
 const uploadStudioImage = async (req, res) => {
   try {
     const { id } = req.params;
-    if (!req.file?.buffer) return res.status(400).json({ message: 'Aucun fichier fourni' });
 
-    const [row] = await editingModel.findStudioById(id);
-    if (!row) return res.status(404).json({ message: 'Studio introuvable' });
-
-    const old = row.image;
-    if (old && old !== '00_jmtb_item_default.jpg') {
-      try {
-        const pub = `${CLOUD_FOLDER}/${old.replace(/\.[^.]+$/, '')}`;
-        await cloudinary.uploader.destroy(pub);
-      } catch (err) {
-        console.error('❌ delete studio:', err);
-      }
+    if (!req.file || !req.file.buffer) {
+      return res.status(400).json({ message: 'Aucun fichier fourni' });
     }
 
-    const resized = await resizeAndCropBuffer(req.file.buffer, 500, 500);
+    const [studio] = await editingModel.findStudioById(id);
 
-    const { publicId, url } = await uploadBufferToCloudinary(resized, CLOUD_FOLDER, 'studio');
+    if (!studio) {
+      return res.status(404).json({ message: 'Studio introuvable' });
+    }
 
-    const filename = `${publicId.split('/').pop()}.jpg`;
-    await editingModel.editStudioImage(filename, id);
+    const { filename, url, warning } = await replaceCloudinaryImage({
+      buffer: req.file.buffer,
+      width: 500,
+      height: 500,
+      prefix: 'studio',
+      folder: CLOUD_FOLDER,
+      oldImage: studio.image,
+      defaultImage: '00_jmtb_item_default.jpg',
+      updateDatabase: (newFilename) => editingModel.editStudioImage(newFilename, id),
+    });
 
-    return res.status(200).json({ filename, url });
+    return res.status(200).json({
+      message: 'Image successfully updated',
+      filename,
+      url,
+      ...(warning && { warning }),
+    });
   } catch (err) {
     console.error('❌ uploadStudioImage:', err);
-    res.status(500).json({ message: 'Error updating image' });
+    return res.status(500).json({ message: 'Error updating image' });
   }
 };
 
@@ -664,40 +711,33 @@ const editingCountry = async (req, res) => {
 const uploadCountryImage = async (req, res) => {
   try {
     const { id } = req.params;
-    if (!req.file?.buffer) return res.status(400).json({ message: 'Aucun fichier fourni' });
 
-    const [country] = await editingModel.findCountryById(id);
-    if (!country) return res.status(404).json({ message: 'Country introuvable' });
-
-    const oldImage = country.image;
-
-    // 🗑️ Suppression ancienne image Cloudinary
-    if (oldImage && oldImage !== '00_jmtb_flag_item_default.jpg') {
-      try {
-        const publicId = `${CLOUD_FOLDER}/${oldImage.replace(/\.[^.]+$/, '')}`;
-        await cloudinary.uploader.destroy(publicId);
-      } catch (err) {
-        console.error('❌ delete country:', err);
-      }
+    if (!req.file || !req.file.buffer) {
+      return res.status(400).json({ message: 'Aucun fichier fourni' });
     }
 
-    // 🔄 Resize (flag → carré OK comme les autres items)
-    const resizedBuffer = await resizeAndCropBuffer(req.file.buffer, 500, 281);
+    const [country] = await editingModel.findCountryById(id);
 
-    // ☁ Upload Cloudinary
-    const { publicId, url } = await uploadBufferToCloudinary(
-      resizedBuffer,
-      CLOUD_FOLDER,
-      'country'
-    );
+    if (!country) {
+      return res.status(404).json({ message: 'Country introuvable' });
+    }
 
-    const filename = `${publicId.split('/').pop()}.jpg`;
-    await editingModel.editCountryImage(filename, id);
+    const { filename, url, warning } = await replaceCloudinaryImage({
+      buffer: req.file.buffer,
+      width: 500,
+      height: 281,
+      prefix: 'country',
+      folder: CLOUD_FOLDER,
+      oldImage: country.image,
+      defaultImage: '00_jmtb_flag_item_default.jpg',
+      updateDatabase: (newFilename) => editingModel.editCountryImage(newFilename, id),
+    });
 
     return res.status(200).json({
       message: 'Image successfully updated',
       filename,
       url,
+      ...(warning && { warning }),
     });
   } catch (err) {
     console.error('❌ uploadCountryImage:', err);
@@ -1019,54 +1059,38 @@ const editingFocus = async (req, res) => {
 
 const uploadFocusImage = async (req, res) => {
   try {
-    const focusId = req.params.id;
+    const { id } = req.params;
 
     if (!req.file || !req.file.buffer) {
       return res.status(400).json({ message: 'Aucun fichier fourni' });
     }
 
-    // 1️⃣ Récupérer l'ancien enregistrement
-    const [focus] = await editingModel.findFocusById(focusId);
+    const [focus] = await editingModel.findFocusById(id);
+
     if (!focus) {
       return res.status(404).json({ message: 'Focus introuvable' });
     }
 
-    const oldImage = focus.image;
-
-    // 2️⃣ SUPPRESSION de l’ancienne image Cloudinary si ce n'est pas l'image par défaut
-    if (oldImage && oldImage !== '00_jmtb_item_default.jpg') {
-      try {
-        const publicId = `${CLOUD_FOLDER}/${oldImage.replace(/\.[^.]+$/, '')}`;
-        await cloudinary.uploader.destroy(publicId);
-
-        // console.log("✔️ Ancienne image supprimée de Cloudinary");
-      } catch (err) {
-        console.error('❌ Erreur suppression ancienne image Cloudinary :', err);
-      }
-    }
-    // 3️⃣ RESIZE du buffer avant upload
-    const bufferToUpload = await resizeAndCropBuffer(req.file.buffer, 500, 500);
-
-    // 3️⃣ UPLOAD Cloudinary de la nouvelle image
-    const { publicId: newPublicId, url } = await uploadBufferToCloudinary(
-      bufferToUpload,
-      CLOUD_FOLDER,
-      'focus'
-    );
-    const filenameOnly = newPublicId.split('/').pop();
-    const filenameWithExt = `${filenameOnly}.jpg`;
-
-    // 4️⃣ Mise à jour en BDD
-    await editingModel.editFocusImage(filenameWithExt, focusId);
+    const { filename, url, warning } = await replaceCloudinaryImage({
+      buffer: req.file.buffer,
+      width: 500,
+      height: 500,
+      prefix: 'focus',
+      folder: CLOUD_FOLDER,
+      oldImage: focus.image,
+      defaultImage: '00_jmtb_item_default.jpg',
+      updateDatabase: (newFilename) => editingModel.editFocusImage(newFilename, id),
+    });
 
     return res.status(200).json({
-      message: 'Image focus uploadée avec succès',
-      filename: filenameWithExt,
+      message: 'Image successfully updated',
+      filename,
       url,
+      ...(warning && { warning }),
     });
-  } catch (error) {
-    console.error('❌ Erreur uploadFocusImage :', error);
-    return res.status(500).json({ message: "Erreur lors de l'upload", error: error.message });
+  } catch (err) {
+    console.error('❌ uploadFocusImage:', err);
+    return res.status(500).json({ message: 'Error updating image' });
   }
 };
 

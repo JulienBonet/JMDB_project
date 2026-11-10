@@ -1,20 +1,16 @@
 const sharp = require('sharp');
 
-/**
- * Redimensionne un buffer d'image selon une taille max
- * @param {Buffer} buffer - image originale
- * @param {number} width - largeur max
- * @param {number} height - hauteur max
- * @returns {Promise<Buffer>} buffer redimensionné
- */
+const resizeAndCropBuffer = async (buffer, width, height, format = null) => {
+  let image = sharp(buffer).resize(width, height, {
+    fit: 'cover',
+    position: 'centre',
+  });
 
-const resizeAndCropBuffer = async (buffer, width, height) => {
-  return sharp(buffer)
-    .resize(width, height, {
-      fit: 'cover',
-      position: 'centre',
-    })
-    .toBuffer();
+  if (format === 'jpeg') {
+    image = image.jpeg({ quality: 90 });
+  }
+
+  return image.toBuffer();
 };
 
 module.exports = { resizeAndCropBuffer };
