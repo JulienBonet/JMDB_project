@@ -91,15 +91,19 @@ function AdminMovieList() {
     setIsConfirmDeleteOpen(false);
 
     try {
-      const status = await deleteMovieItem(movieIdToDelete);
+      const result = await deleteMovieItem(movieIdToDelete);
 
-      if (status >= 200 && status < 300) {
+      if (result.status >= 200 && result.status < 300) {
         setData((prevData) => prevData.filter((movie) => movie.id !== movieIdToDelete));
 
         setSelectedMovie(null);
         setMovieIdToDelete(null);
 
-        toast.info('Film supprimé avec succès');
+        if (result.warning) {
+          toast.warning(result.warning);
+        } else {
+          toast.info('Film supprimé avec succès');
+        }
       } else {
         toast.error('Erreur lors de la suppression du film');
         console.error('Erreur lors de la suppression du film');

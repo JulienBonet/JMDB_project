@@ -22,7 +22,11 @@ export const updateMovie = async (id, movieData) => {
 
 export const deleteMovie = async (id) => {
   const response = await api.delete(`/api/movie/${id}`);
-  return response.status;
+
+  return {
+    status: response.status,
+    ...response.data,
+  };
 };
 
 export const updateMovieImage = async (id, file) => {
