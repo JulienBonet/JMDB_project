@@ -41,13 +41,12 @@ export function useMovieActions({
     setIsConfirmUpdateOpen(false);
     setIsUpdating(true);
 
+    let imageWarning = null;
+
     try {
       if (fileCoverRef.current.files[0]) {
         const imageResult = await handleUpdateImage();
-
-        if (imageResult?.warning) {
-          toast.warning(imageResult.warning);
-        }
+        imageWarning = imageResult?.warning || null;
       }
 
       const payload = {
@@ -82,7 +81,11 @@ export function useMovieActions({
 
       const updatedMovie = await updateMovie(movieData.id, payload);
 
-      toast.success('Film mis à jour avec succès');
+      if (imageWarning) {
+        toast.warning(imageWarning);
+      } else {
+        toast.success('Film mis à jour avec succès');
+      }
 
       const newMovie = Array.isArray(updatedMovie) ? updatedMovie[0] : updatedMovie;
 
@@ -116,9 +119,13 @@ export function useMovieActions({
     setIsConfirmDeleteOpen(false);
 
     try {
-      await deleteMovie(movieData.id);
+      const result = await deleteMovie(movieData.id);
 
-      toast.info('Film supprimé avec succès');
+      if (result.warning) {
+        toast.warning(result.warning);
+      } else {
+        toast.info('Film supprimé avec succès');
+      }
 
       onDeleteMovie(movieData.id);
 

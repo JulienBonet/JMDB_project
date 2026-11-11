@@ -21,16 +21,6 @@ const CLOUD_FOLDER = process.env.CLOUDINARY_FOLDER;
 
 // -------------------------- Fonctions Cloudinary --------------------------
 
-const uploadLocalCover = async (localFilePath, movieId = null) => {
-  const folder = movieId ? `${CLOUD_FOLDER}/${movieId}` : CLOUD_FOLDER;
-  const result = await cloudinary.uploader.upload(localFilePath, {
-    folder,
-    public_id: movieId ? 'cover' : undefined,
-    overwrite: true,
-  });
-  return result.secure_url;
-};
-
 const updateImageFromUrl = async (req, res) => {
   try {
     const { id } = req.params;
@@ -144,18 +134,21 @@ const addMovie = async (req, res) => {
     // directors
     if (parsedBody.directors?.length > 0) {
       const directorIds = [];
+
       for (const name of parsedBody.directors) {
         const [rows] = await editingModel.findDirectorByName(name);
-        let existing = rows[0];
+        let directorId = rows[0]?.id;
 
-        if (!existing) {
-          await editingModel.insertDirector(name);
-          const [rowsAfter] = await editingModel.findDirectorByName(name);
-          existing = rowsAfter[0];
+        if (!directorId) {
+          const [result] = await editingModel.insertDirector(name);
+          directorId = result.insertId;
         }
 
-        if (!existing?.id) console.warn('⚠️ Could not get ID for director:', name);
-        else directorIds.push(existing.id);
+        if (!directorId) {
+          console.warn('⚠️ Could not get ID for director:', name);
+        } else {
+          directorIds.push(directorId);
+        }
       }
 
       await Promise.all(directorIds.map((id) => editingMovieModel.addMovieDirector(movieId, id)));
@@ -164,32 +157,38 @@ const addMovie = async (req, res) => {
     // castings
     if (parsedBody.castings?.length > 0) {
       const castingIds = [];
+
       for (const name of parsedBody.castings) {
         const [rows] = await editingModel.findCastingByName(name);
-        let existing = rows[0];
-        if (!existing) {
-          const result = await editingModel.insertCasting(name);
-          const [rowsAfter] = await editingModel.findCastingByName(name);
-          existing = rowsAfter[0];
+        let castingId = rows[0]?.id;
+
+        if (!castingId) {
+          const [result] = await editingModel.insertCasting(name);
+          castingId = result.insertId;
         }
-        if (existing?.id) castingIds.push(existing.id);
+
+        if (castingId) castingIds.push(castingId);
       }
+
       await Promise.all(castingIds.map((id) => editingMovieModel.addMovieCasting(movieId, id)));
     }
 
     // screenwriters
     if (parsedBody.screenwriters?.length > 0) {
       const screenwriterIds = [];
+
       for (const name of parsedBody.screenwriters) {
         const [rows] = await editingModel.findScreenwriterByName(name);
-        let existing = rows[0];
-        if (!existing) {
-          const result = await editingModel.insertScreenwriter(name);
-          const [rowsAfter] = await editingModel.findScreenwriterByName(name);
-          existing = rowsAfter[0];
+        let screenwriterId = rows[0]?.id;
+
+        if (!screenwriterId) {
+          const [result] = await editingModel.insertScreenwriter(name);
+          screenwriterId = result.insertId;
         }
-        if (existing?.id) screenwriterIds.push(existing.id);
+
+        if (screenwriterId) screenwriterIds.push(screenwriterId);
       }
+
       await Promise.all(
         screenwriterIds.map((id) => editingMovieModel.addMovieScreenwriter(movieId, id))
       );
@@ -198,16 +197,19 @@ const addMovie = async (req, res) => {
     // compositors
     if (parsedBody.compositors?.length > 0) {
       const compositorIds = [];
+
       for (const name of parsedBody.compositors) {
         const [rows] = await editingModel.findCompositorByName(name);
-        let existing = rows[0];
-        if (!existing) {
-          const result = await editingModel.insertCompositor(name);
-          const [rowsAfter] = await editingModel.findCompositorByName(name);
-          existing = rowsAfter[0];
+        let compositorId = rows[0]?.id;
+
+        if (!compositorId) {
+          const [result] = await editingModel.insertCompositor(name);
+          compositorId = result.insertId;
         }
-        if (existing?.id) compositorIds.push(existing.id);
+
+        if (compositorId) compositorIds.push(compositorId);
       }
+
       await Promise.all(compositorIds.map((id) => editingMovieModel.addMovieMusic(movieId, id)));
     }
 
@@ -235,32 +237,38 @@ const addMovie = async (req, res) => {
     // countries
     if (parsedBody.countries?.length > 0) {
       const countryIds = [];
+
       for (const country of parsedBody.countries) {
         const [rows] = await editingModel.findCountryByName(country);
-        let existing = rows[0];
-        if (!existing) {
-          const result = await editingModel.insertCountry(country);
-          const [rowsAfter] = await editingModel.findCountryByName(country);
-          existing = rowsAfter[0];
+        let countryId = rows[0]?.id;
+
+        if (!countryId) {
+          const [result] = await editingModel.insertCountry(country);
+          countryId = result.insertId;
         }
-        if (existing?.id) countryIds.push(existing.id);
+
+        if (countryId) countryIds.push(countryId);
       }
+
       await Promise.all(countryIds.map((id) => editingMovieModel.addMovieCountry(movieId, id)));
     }
 
     // languages
     if (parsedBody.languages?.length > 0) {
       const languageIds = [];
+
       for (const language of parsedBody.languages) {
         const [rows] = await editingModel.findLanguageByName(language);
-        let existing = rows[0];
-        if (!existing) {
-          const result = await editingModel.insertLanguage(language);
-          const [rowsAfter] = await editingModel.findLanguageByName(language);
-          existing = rowsAfter[0];
+        let languageId = rows[0]?.id;
+
+        if (!languageId) {
+          const [result] = await editingModel.insertLanguage(language);
+          languageId = result.insertId;
         }
-        if (existing?.id) languageIds.push(existing.id);
+
+        if (languageId) languageIds.push(languageId);
       }
+
       await Promise.all(languageIds.map((id) => editingMovieModel.addMovieLanguage(movieId, id)));
     }
 
@@ -314,35 +322,56 @@ const deleteMovie = async (req, res) => {
   const movieId = Number(id);
 
   try {
-    // 1️⃣ Récupérer le film
+    // 1. Vérifier que le film existe
     const [movie] = await editingMovieModel.findMovieById(movieId);
 
     if (!movie) {
       return res.status(404).json({ message: 'Film introuvable' });
     }
 
-    // 2️⃣ Supprimer l’image Cloudinary (si pas défaut)
+    // 2. Supprimer le film en base
+    await editingMovieModel.eraseMovie(movieId);
+
+    const warnings = [];
+
+    // 3. Purger les entités devenues orphelines
+    try {
+      await purgeModel.purgeOrphanedRecords();
+    } catch (purgeError) {
+      console.error('Erreur lors de la purge des entités orphelines:', purgeError);
+      warnings.push('Certaines entités orphelines n’ont pas pu être supprimées.');
+    }
+
+    // 4. Supprimer l'image Cloudinary
     if (movie.cover && movie.cover !== DEFAULT_COVER) {
-      // movie.cover = "cover-uuid.jpg"
       const baseName = movie.cover.replace(/\.[^.]+$/, '');
       const publicId = `${CLOUD_FOLDER}/${baseName}`;
 
-      const result = await cloudinary.uploader.destroy(publicId, {
-        resource_type: 'image',
-        invalidate: true, // 🔥 indispensable (cache CDN)
-      });
+      try {
+        const result = await cloudinary.uploader.destroy(publicId, {
+          resource_type: 'image',
+          invalidate: true,
+        });
+
+        if (result.result !== 'ok' && result.result !== 'not found') {
+          console.error('Image Cloudinary non supprimée:', publicId, result);
+          warnings.push('L’image du film n’a pas pu être supprimée de Cloudinary.');
+        }
+      } catch (cloudError) {
+        console.error('Erreur suppression image Cloudinary:', publicId, cloudError);
+        warnings.push('L’image du film n’a pas pu être supprimée de Cloudinary.');
+      }
     }
 
-    // 3️⃣ Supprimer le film en base
-    await editingMovieModel.eraseMovie(movieId);
-
-    // 4️⃣ Réponse
+    // 5. Confirmer la suppression du film
     return res.status(200).json({
       message: 'Film supprimé avec succès',
       movieId,
+      warning: warnings.length > 0 ? warnings.join(' ') : null,
     });
   } catch (err) {
-    console.error('❌ Erreur deleteMovie:', err);
+    console.error('Erreur deleteMovie:', err);
+
     return res.status(500).json({
       message: 'Erreur lors de la suppression',
       error: err.message,
@@ -592,6 +621,5 @@ module.exports = {
   editMovieImage,
   editMovieById,
   updateImageFromUrl,
-  uploadLocalCover,
   getStudiosByMovieId,
 };
