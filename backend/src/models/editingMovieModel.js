@@ -396,6 +396,14 @@ const findLanguageByMovieId = async (movieId) => {
   return result;
 };
 
+const countMoviesByLanguage = async (languageId) => {
+  const [result] = await db.query(
+    'SELECT COUNT(*) AS movieCount FROM movie_language WHERE languageId = ?',
+    [languageId]
+  );
+  return result;
+};
+
 const addMovieLanguage = (movieId, languageId) =>
   db.query('INSERT INTO `movie_language` (`movieId`, `languageId`) VALUES (? , ?);', [
     movieId,
@@ -435,6 +443,14 @@ const eraseTagByMovieId = (movieId) => {
 //-----------------------------------------------
 // EDIT MOVIE_FOCUS
 //-----------------------------------------------
+
+const countMoviesByFocus = async (focusId) => {
+  const [result] = await db.query(
+    'SELECT COUNT(*) AS movieCount FROM movie_focus WHERE focusId = ?',
+    [focusId]
+  );
+  return result;
+};
 
 const addMovieFocus = (movieId, focusId) => {
   return db.query('INSERT INTO movie_focus (movieId, focusId) VALUES (?, ?)', [movieId, focusId]);
@@ -488,6 +504,7 @@ module.exports = {
   eraseCountryByMovieId,
   findMovieLanguage,
   findLanguageByMovieId,
+  countMoviesByLanguage,
   addMovieLanguage,
   eraseLanguageByMovieId,
   findMovieTag,
@@ -495,6 +512,7 @@ module.exports = {
   countMoviesByTag,
   addMovieTag,
   eraseTagByMovieId,
+  countMoviesByFocus,
   addMovieFocus,
   eraseFocusByMovieId,
 };
