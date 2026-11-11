@@ -8,6 +8,7 @@ const { cloudinary } = require('../utils/cloudinary');
 const { replaceCloudinaryImage } = require('../utils/replaceCloudinaryImage');
 
 const editingModel = require('../models/editingModel');
+const editingMovieModel = require('../models/editingMovieModel');
 
 const DEFAULT_IMAGE = '00_item_default.png';
 const CLOUD_FOLDER = process.env.CLOUDINARY_FOLDER;
@@ -62,7 +63,7 @@ const editingDirector = async (req, res) => {
       old.websitelink === websitelink &&
       old.birthDate === birthDate &&
       old.deathDate === deathDate &&
-      old.isFocus === isFocus;
+      Boolean(old.isFocus) === Boolean(isFocus);
 
     if (noChange) {
       return res.status(400).json({ message: 'No change detected for director' });
@@ -91,49 +92,6 @@ const editingDirector = async (req, res) => {
     return res.status(500).json({ message: 'Error updating director' });
   }
 };
-
-// const uploadDirectorImage = async (req, res) => {
-//   try {
-//     const { id } = req.params;
-//     if (!req.file || !req.file.buffer)
-//       return res.status(400).json({ message: 'Aucun fichier fourni' });
-
-//     const [director] = await editingModel.findDirectorById(id);
-//     if (!director) return res.status(404).json({ message: 'Director introuvable' });
-
-//     const oldImage = director.image;
-
-//     // 🗑️ Supprim ancienne image Cloudinary
-//     if (oldImage && oldImage !== DEFAULT_IMAGE) {
-//       try {
-//         const publicId = `${CLOUD_FOLDER}/${oldImage.replace(/\.[^.]+$/, '')}`;
-//         await cloudinary.uploader.destroy(publicId);
-//       } catch (err) {
-//         console.error('❌ Cloudinary delete error:', err);
-//       }
-//     }
-
-//     // 🔄 Resize 1:1
-//     const resizedBuffer = await resizeAndCropBuffer(req.file.buffer, 500, 500);
-
-//     // ☁ Upload Cloudinary
-//     const { publicId, url } = await uploadBufferToCloudinary(
-//       resizedBuffer,
-//       CLOUD_FOLDER,
-//       'director'
-//     );
-
-//     const filenameOnly = publicId.split('/').pop();
-//     const filename = `${filenameOnly}.jpg`;
-
-//     await editingModel.editDirectorImage(filename, id);
-
-//     return res.status(200).json({ message: 'Image successfully updated', filename, url });
-//   } catch (err) {
-//     console.error('❌ uploadDirectorImage:', err);
-//     return res.status(500).json({ message: 'Error updating image' });
-//   }
-// };
 
 const uploadDirectorImage = async (req, res) => {
   try {
@@ -175,15 +133,31 @@ const uploadDirectorImage = async (req, res) => {
 const eraseDirector = async (req, res = null) => {
   try {
     const directorId = req.params.id;
+
     const rows = await editingModel.findDirectorById(directorId);
     if (!rows || rows.length === 0) {
       if (res) return res.status(404).json({ message: 'Director non trouvé' });
       return;
     }
 
+    // Vérifier si le réalisateur est associé à des films
+    const [count] = await editingMovieModel.countMoviesByDirector(directorId);
+
+    if (count.movieCount > 0) {
+      if (res) {
+        return res.status(409).json({
+          message: `Impossible de supprimer ce réalisateur : il est associé à ${count.movieCount} film(s).`,
+        });
+      }
+      return;
+    }
+
     const imageUrl = rows[0].image;
 
-    // ☁ delete Cloudinary
+    // Suppression SQL en premier
+    await editingModel.deleteDirector(directorId);
+
+    // Nettoyage Cloudinary indépendant
     if (imageUrl && imageUrl !== DEFAULT_IMAGE) {
       try {
         const publicId = `${CLOUD_FOLDER}/${imageUrl.replace(/\.[^.]+$/, '')}`;
@@ -193,10 +167,12 @@ const eraseDirector = async (req, res = null) => {
       }
     }
 
-    await editingModel.deleteDirector(directorId);
-    if (res) res.sendStatus(204);
+    if (res) return res.sendStatus(204);
   } catch (err) {
-    if (res) res.status(500).json({ message: 'Erreur lors de la suppression' });
+    console.error('❌ eraseDirector:', err);
+    if (res) {
+      return res.status(500).json({ message: 'Erreur lors de la suppression du réalisateur' });
+    }
   }
 };
 
@@ -238,7 +214,7 @@ const editingCasting = async (req, res) => {
       old.imdblink === imdblink &&
       old.birthDate === birthDate &&
       old.deathDate === deathDate &&
-      old.isFocus === isFocus;
+      Boolean(old.isFocus) === Boolean(isFocus);
 
     if (noChange) {
       return res.status(400).json({ message: 'No change detected for casting' });
@@ -306,13 +282,27 @@ const uploadCastingImage = async (req, res) => {
 const eraseCasting = async (req, res = null) => {
   try {
     const castingId = req.params.id;
+
     const rows = await editingModel.findCastingById(castingId);
-    if (!rows.length) {
+    if (!rows || rows.length === 0) {
       if (res) return res.status(404).json({ message: 'Casting non trouvé' });
       return;
     }
 
+    const [count] = await editingMovieModel.countMoviesByCasting(castingId);
+
+    if (count.movieCount > 0) {
+      if (res) {
+        return res.status(409).json({
+          message: `Impossible de supprimer ce membre du casting : il est associé à ${count.movieCount} film(s).`,
+        });
+      }
+      return;
+    }
+
     const imageUrl = rows[0].image;
+
+    await editingModel.deleteCasting(castingId);
 
     if (imageUrl && imageUrl !== DEFAULT_IMAGE) {
       try {
@@ -323,10 +313,12 @@ const eraseCasting = async (req, res = null) => {
       }
     }
 
-    await editingModel.deleteCasting(castingId);
-    if (res) res.sendStatus(204);
+    if (res) return res.sendStatus(204);
   } catch (err) {
-    if (res) res.status(500).json({ message: 'Erreur lors de la suppression' });
+    console.error('❌ eraseCasting:', err);
+    if (res) {
+      return res.status(500).json({ message: 'Erreur lors de la suppression du casting' });
+    }
   }
 };
 
@@ -354,6 +346,11 @@ const editingScreenwriter = async (req, res) => {
     const { id } = req.params;
 
     const existingScreenwriter = await editingModel.findScreenwriterById(id);
+
+    if (!existingScreenwriter.length) {
+      return res.status(404).json({ message: 'Screenwriter introuvable' });
+    }
+
     if (
       existingScreenwriter[0].name === name &&
       existingScreenwriter[0].pitch === pitch &&
@@ -417,26 +414,41 @@ const eraseScreenwriter = async (req, res = null) => {
     const id = req.params.id;
 
     const rows = await editingModel.findScreenwriterById(id);
-    if (!rows.length) {
+    if (!rows || rows.length === 0) {
       if (res) return res.status(404).json({ message: 'Screenwriter non trouvé' });
+      return;
+    }
+
+    const [count] = await editingMovieModel.countMoviesByScreenwriter(id);
+
+    if (count.movieCount > 0) {
+      if (res) {
+        return res.status(409).json({
+          message: `Impossible de supprimer ce scénariste : il est associé à ${count.movieCount} film(s).`,
+        });
+      }
       return;
     }
 
     const imageUrl = rows[0].image;
 
+    await editingModel.deleteScreenwriter(id);
+
     if (imageUrl && imageUrl !== DEFAULT_IMAGE) {
       try {
-        const pub = `${CLOUD_FOLDER}/${imageUrl.replace(/\.[^.]+$/, '')}`;
-        await cloudinary.uploader.destroy(pub);
+        const publicId = `${CLOUD_FOLDER}/${imageUrl.replace(/\.[^.]+$/, '')}`;
+        await cloudinary.uploader.destroy(publicId);
       } catch (err) {
-        console.error('❌ delete screenwriter:', err);
+        console.error('❌ delete screenwriter image:', err);
       }
     }
 
-    await editingModel.deleteScreenwriter(id);
-    if (res) res.sendStatus(204);
+    if (res) return res.sendStatus(204);
   } catch (err) {
-    if (res) res.status(500).json({ message: 'Erreur lors de la suppression' });
+    console.error('❌ eraseScreenwriter:', err);
+    if (res) {
+      return res.status(500).json({ message: 'Erreur lors de la suppression du scénariste' });
+    }
   }
 };
 
@@ -465,6 +477,11 @@ const editingCompositor = async (req, res) => {
     const { id } = req.params;
 
     const existingCompositor = await editingModel.findCompositorById(id);
+
+    if (!existingCompositor.length) {
+      return res.status(404).json({ message: 'Compositor introuvable' });
+    }
+
     if (
       existingCompositor[0].name === name &&
       existingCompositor[0].pitch === pitch &&
@@ -528,26 +545,41 @@ const eraseCompositor = async (req, res = null) => {
     const id = req.params.id;
 
     const rows = await editingModel.findCompositorById(id);
-    if (!rows.length) {
+    if (!rows || rows.length === 0) {
       if (res) return res.status(404).json({ message: 'Compositor non trouvé' });
+      return;
+    }
+
+    const [count] = await editingMovieModel.countMoviesByMusic(id);
+
+    if (count.movieCount > 0) {
+      if (res) {
+        return res.status(409).json({
+          message: `Impossible de supprimer ce compositeur : il est associé à ${count.movieCount} film(s).`,
+        });
+      }
       return;
     }
 
     const imageUrl = rows[0].image;
 
+    await editingModel.deleteCompositor(id);
+
     if (imageUrl && imageUrl !== DEFAULT_IMAGE) {
       try {
-        const pub = `${CLOUD_FOLDER}/${imageUrl.replace(/\.[^.]+$/, '')}`;
-        await cloudinary.uploader.destroy(pub);
+        const publicId = `${CLOUD_FOLDER}/${imageUrl.replace(/\.[^.]+$/, '')}`;
+        await cloudinary.uploader.destroy(publicId);
       } catch (err) {
-        console.error('❌ delete compositor:', err);
+        console.error('❌ delete compositor image:', err);
       }
     }
 
-    await editingModel.deleteCompositor(id);
-    if (res) res.sendStatus(204);
+    if (res) return res.sendStatus(204);
   } catch (err) {
-    if (res) res.status(500).json({ message: 'Erreur lors de la suppression' });
+    console.error('❌ eraseCompositor:', err);
+    if (res) {
+      return res.status(500).json({ message: 'Erreur lors de la suppression du compositeur' });
+    }
   }
 };
 
@@ -558,12 +590,13 @@ const eraseCompositor = async (req, res = null) => {
 const addStudio = async (req, res) => {
   try {
     const { name } = req.body;
-    if (!name) {
+
+    // clean du nom
+    const cleanedName = cleanStudioName(name);
+
+    if (!cleanedName) {
       return res.status(400).json({ message: "Studio's name is required" });
     }
-
-    // 🔥 Nettoyage du nom
-    const cleanedName = cleanStudioName(name);
 
     await editingModel.insertStudio(cleanedName);
 
@@ -580,6 +613,11 @@ const editingStudio = async (req, res) => {
     const { id } = req.params;
 
     const existingStudio = await editingModel.findStudioById(id);
+
+    if (!existingStudio.length) {
+      return res.status(404).json({ message: 'Studio introuvable' });
+    }
+
     if (
       existingStudio[0].name === name &&
       existingStudio[0].pitch === pitch &&
@@ -643,26 +681,41 @@ const eraseStudio = async (req, res = null) => {
     const id = req.params.id;
 
     const rows = await editingModel.findStudioById(id);
-    if (!rows.length) {
+    if (!rows || rows.length === 0) {
       if (res) return res.status(404).json({ message: 'Studio non trouvé' });
+      return;
+    }
+
+    const [count] = await editingMovieModel.countMoviesByStudio(id);
+
+    if (count.movieCount > 0) {
+      if (res) {
+        return res.status(409).json({
+          message: `Impossible de supprimer ce studio : il est associé à ${count.movieCount} film(s).`,
+        });
+      }
       return;
     }
 
     const imageUrl = rows[0].image;
 
+    await editingModel.deleteStudio(id);
+
     if (imageUrl && imageUrl !== DEFAULT_IMAGE) {
       try {
-        const pub = `${CLOUD_FOLDER}/${imageUrl.replace(/\.[^.]+$/, '')}`;
-        await cloudinary.uploader.destroy(pub);
+        const publicId = `${CLOUD_FOLDER}/${imageUrl.replace(/\.[^.]+$/, '')}`;
+        await cloudinary.uploader.destroy(publicId);
       } catch (err) {
-        console.error('❌ delete studio:', err);
+        console.error('❌ delete studio image:', err);
       }
     }
 
-    await editingModel.deleteStudio(id);
-    if (res) res.sendStatus(204);
+    if (res) return res.sendStatus(204);
   } catch (err) {
-    if (res) res.status(500).json({ message: 'Erreur lors de la suppression' });
+    console.error('❌ eraseStudio:', err);
+    if (res) {
+      return res.status(500).json({ message: 'Erreur lors de la suppression du studio' });
+    }
   }
 };
 
@@ -691,6 +744,11 @@ const editingCountry = async (req, res) => {
     const { id } = req.params;
 
     const existingcountry = await editingModel.findCountryById(id);
+
+    if (!existingcountry.length) {
+      return res.status(404).json({ message: 'Country introuvable' });
+    }
+
     if (existingcountry[0].name === name) {
       return res.status(400).json({ message: 'Error updating Country: no changes detected' });
     }
@@ -746,7 +804,7 @@ const uploadCountryImage = async (req, res) => {
 
 const eraseCountry = async (req, res = null) => {
   try {
-    const id = req.params.id;
+    const { id } = req.params;
 
     const rows = await editingModel.findCountryById(id);
     if (!rows || rows.length === 0) {
@@ -754,21 +812,36 @@ const eraseCountry = async (req, res = null) => {
       return;
     }
 
+    const [count] = await editingMovieModel.countMoviesByCountry(id);
+
+    if (count.movieCount > 0) {
+      if (res) {
+        return res.status(409).json({
+          message: `Impossible de supprimer ce pays : il est associé à ${count.movieCount} film(s).`,
+        });
+      }
+      return;
+    }
+
     const imageUrl = rows[0].image;
 
-    if (imageUrl && imageUrl !== DEFAULT_IMAGE) {
+    await editingModel.deleteCountry(id);
+
+    if (imageUrl && imageUrl !== '00_jmtb_flag_item_default.jpg') {
       try {
         const publicId = `${CLOUD_FOLDER}/${imageUrl.replace(/\.[^.]+$/, '')}`;
         await cloudinary.uploader.destroy(publicId);
       } catch (err) {
-        console.error('❌ delete country:', err);
+        console.error('❌ delete country image:', err);
       }
     }
 
-    await editingModel.deleteCountry(id);
-    if (res) res.sendStatus(204);
+    if (res) return res.sendStatus(204);
   } catch (err) {
-    if (res) res.status(500).json({ message: 'Erreur lors de la suppression du country' });
+    console.error('❌ eraseCountry:', err);
+    if (res) {
+      return res.status(500).json({ message: 'Erreur lors de la suppression du pays' });
+    }
   }
 };
 
@@ -807,6 +880,11 @@ const editingGenre = async (req, res) => {
     const { id } = req.params;
 
     const existingGenre = await editingModel.findGenreById(id);
+
+    if (!existingGenre.length) {
+      return res.status(404).json({ message: 'Genre introuvable' });
+    }
+
     if (existingGenre[0].name === name) {
       return res.status(400).json({ message: 'Error updating Genre: no changes detected' });
     }
@@ -828,14 +906,23 @@ const eraseGenre = async (req, res, next) => {
     const genreId = req.params.id;
 
     const genres = await editingModel.findGenreById(genreId);
+
     if (!genres || genres.length === 0) {
       return res.status(404).json({ message: 'Genre non trouvé' });
     }
 
+    const [count] = await editingMovieModel.countMoviesByKind(genreId);
+
+    if (count.movieCount > 0) {
+      return res.status(409).json({
+        message: `Impossible de supprimer ce genre : il est associé à ${count.movieCount} film(s).`,
+      });
+    }
+
     await editingModel.deleteGenre(genreId);
-    res.sendStatus(204);
+    return res.sendStatus(204);
   } catch (error) {
-    next(error);
+    return next(error);
   }
 };
 
@@ -864,6 +951,11 @@ const editingLanguage = async (req, res) => {
     const { id } = req.params;
 
     const existingLanguage = await editingModel.findLanguageById(id);
+
+    if (!existingLanguage.length) {
+      return res.status(404).json({ message: 'Language introuvable' });
+    }
+
     if (existingLanguage[0].name === name) {
       return res.status(400).json({ message: 'Error updating Language: no changes detected' });
     }
@@ -881,16 +973,27 @@ const editingLanguage = async (req, res) => {
 };
 
 const eraseLanguage = async (req, res, next) => {
-  try {
-    const languageId = req.params.id;
+  const { id } = req.params;
 
-    const languages = await editingModel.findLanguageById(languageId);
-    if (!languages || languages.length === 0) {
-      return res.status(404).json({ message: 'Genre non trouvé' });
+  try {
+    const [language] = await editingModel.findLanguageById(id);
+
+    if (!language) {
+      return res.status(404).json({ message: 'Language not found.' });
     }
 
-    await editingModel.deleteLanguage(languageId);
-    res.sendStatus(204);
+    const [count] = await editingMovieModel.countMoviesByLanguage(id);
+
+    if (count.movieCount > 0) {
+      return res.status(409).json({
+        message:
+          'Impossible de supprimer cette langue : elle est associée à un ou plusieurs films.',
+      });
+    }
+
+    await editingModel.deleteLanguage(id);
+
+    return res.status(204).send();
   } catch (error) {
     next(error);
   }
@@ -982,17 +1085,25 @@ const editingTag = async (req, res) => {
 
 const eraseTag = async (req, res, next) => {
   try {
-    const TagId = req.params.id;
+    const tagId = req.params.id;
 
-    const tags = await editingModel.findTagById(TagId);
+    const tags = await editingModel.findTagById(tagId);
     if (!tags || tags.length === 0) {
       return res.status(404).json({ message: 'Tag non trouvé' });
     }
 
-    await editingModel.deleteTag(TagId);
-    res.sendStatus(204);
+    const [count] = await editingMovieModel.countMoviesByTag(tagId);
+
+    if (count.movieCount > 0) {
+      return res.status(409).json({
+        message: `Impossible de supprimer ce tag : il est associé à ${count.movieCount} film(s).`,
+      });
+    }
+
+    await editingModel.deleteTag(tagId);
+    return res.sendStatus(204);
   } catch (error) {
-    next(error);
+    return next(error);
   }
 };
 
@@ -1032,6 +1143,10 @@ const editingFocus = async (req, res) => {
     const { id } = req.params;
 
     const existingFocus = await editingModel.findFocusById(id);
+
+    if (!existingFocus.length) {
+      return res.status(404).json({ message: 'Focus introuvable' });
+    }
 
     if (
       existingFocus[0].name === name &&
@@ -1097,41 +1212,47 @@ const eraseFocus = async (req, res = null) => {
   try {
     const focusId = req.params.id;
 
-    // 1️⃣ Récupérer le focus depuis la BDD
     const focus = await editingModel.findFocusById(focusId);
     if (!focus || focus.length === 0) {
-      if (res) return res.status(404).json({ message: 'Thema non trouvé' });
+      if (res) return res.status(404).json({ message: 'Focus non trouvé' });
       return;
     }
 
-    const f = focus[0];
-    const imageUrl = f.image;
+    // Vérification des associations avec les films
+    const [count] = await editingMovieModel.countMoviesByFocus(focusId);
 
-    // 2️⃣ Supprimer l'image de Cloudinary si ce n'est pas l'image par défaut
+    if (count.movieCount > 0) {
+      if (res) {
+        return res.status(409).json({
+          message: 'Impossible de supprimer ce Focus : il est associé à un ou plusieurs films.',
+        });
+      }
+      return;
+    }
+
+    const imageUrl = focus[0].image;
+
+    // Suppression SQL en premier
+    await editingModel.deleteFocus(focusId);
+
+    // Nettoyage Cloudinary indépendant
     if (imageUrl && imageUrl !== '00_jmtb_item_default.jpg') {
       try {
-        // Supprimer l'extension pour obtenir le public_id Cloudinary
         const publicId = `${CLOUD_FOLDER}/${imageUrl.replace(/\.[^.]+$/, '')}`;
-        console.log('➡️ Suppression Cloudinary public_id =', publicId);
-
         await cloudinary.uploader.destroy(publicId);
-        console.log('✔️ Image supprimée de Cloudinary');
       } catch (cloudErr) {
-        console.error('❌ Erreur suppression Cloudinary :', cloudErr);
+        console.error('❌ Erreur suppression image Focus :', cloudErr);
       }
     }
 
-    // 3️⃣ Supprimer l'enregistrement en BDD
-    await editingModel.deleteFocus(focusId);
-
-    if (res) res.sendStatus(204); // réponse HTTP seulement si 'res' défini
+    if (res) return res.sendStatus(204);
   } catch (error) {
     console.error('❌ Erreur eraseFocus :', error);
-    if (res)
-      res.status(500).json({
-        message: 'Erreur lors de la suppression du thema',
-        error: error.message,
+    if (res) {
+      return res.status(500).json({
+        message: 'Erreur lors de la suppression du Focus',
       });
+    }
   }
 };
 

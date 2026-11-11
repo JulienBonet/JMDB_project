@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
 function useAdminItemsList({ fetchItems, deleteItem, onDeleteSuccess, searchKey = 'name' }) {
   const [data, setData] = useState([]);
@@ -56,6 +57,10 @@ function useAdminItemsList({ fetchItems, deleteItem, onDeleteSuccess, searchKey 
       }
     } catch (error) {
       console.error(error);
+
+      toast.error(error.response?.data?.message || 'Erreur lors de la suppression.', {
+        className: 'custom-toast',
+      });
     }
   };
 
