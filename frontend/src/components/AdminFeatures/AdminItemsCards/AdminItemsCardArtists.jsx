@@ -62,6 +62,38 @@ function AdminItemsCardArtists({ item, origin, onUpdate, closeModal }) {
   };
 
   const handleValidate = async () => {
+    // verication date de naissance
+    const normalizedBirthDate = birthDate.trim();
+
+    if (normalizedBirthDate && !/^(18|19|20)\d{2}$/.test(normalizedBirthDate)) {
+      toast.error('La date de naissance doit être une année valide au format YYYY (ex. 1985).');
+      return;
+    }
+
+    if (isArtistFocus && Boolean(isFocus) && !normalizedBirthDate) {
+      toast.error('La date de naissance est obligatoire pour un élément Focus.');
+      return;
+    }
+    // END verication date de naissance
+
+    // verication date décés
+    const normalizedDeathDate = deathDate.trim();
+
+    if (normalizedDeathDate && !/^(18|19|20)\d{2}$/.test(normalizedDeathDate)) {
+      toast.error('L’année du décès doit être au format YYYY (ex. 2020).');
+      return;
+    }
+
+    if (
+      normalizedBirthDate &&
+      normalizedDeathDate &&
+      Number(normalizedDeathDate) <= Number(normalizedBirthDate)
+    ) {
+      toast.error('L’année du décès doit être postérieure à l’année de naissance.');
+      return;
+    }
+    // END verication date décés
+
     try {
       setIsLoading(true);
 
@@ -85,7 +117,7 @@ function AdminItemsCardArtists({ item, origin, onUpdate, closeModal }) {
           data.imdblink = imdblink || null;
           data.senscritiquelink = senscritiquelink || null;
           data.websitelink = websitelink || null;
-          data.birthDate = birthDate || null;
+          data.birthDate = normalizedBirthDate || null;
           data.deathDate = deathDate || null;
           data.isFocus = Boolean(isFocus);
         }
@@ -328,7 +360,16 @@ function AdminItemsCardArtists({ item, origin, onUpdate, closeModal }) {
                   type="text"
                   size="small"
                   value={birthDate}
-                  onChange={(e) => setBirthDate(e.target.value)}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/\D/g, '').slice(0, 4);
+                    setBirthDate(value);
+                  }}
+                  inputProps={{
+                    inputMode: 'numeric',
+                    maxLength: 4,
+                    pattern: '[0-9]{4}',
+                  }}
+                  placeholder="Ex. 1985"
                   fullWidth
                   sx={inputSx}
                 />
@@ -354,7 +395,16 @@ function AdminItemsCardArtists({ item, origin, onUpdate, closeModal }) {
                     type="text"
                     size="small"
                     value={deathDate}
-                    onChange={(e) => setDeathDate(e.target.value)}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/\D/g, '').slice(0, 4);
+                      setDeathDate(value);
+                    }}
+                    inputProps={{
+                      inputMode: 'numeric',
+                      maxLength: 4,
+                      pattern: '[0-9]{4}',
+                    }}
+                    placeholder="Ex. 1985"
                     fullWidth
                     sx={inputSx}
                   />
