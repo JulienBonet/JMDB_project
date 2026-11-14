@@ -50,19 +50,6 @@
 │       │   ├── studioModel.js
 │       │   ├── tagsModel.js
 │       │   └── userModel.js
-│       ├── public
-│       │   ├── 1711911878422.0.46760397777435103.test02.jpg
-│       │   ├── 1711921121979.0.33191513812361007.test01.jpg
-│       │   ├── 1711921329774.0.5534764067015174.test01.jpg
-│       │   ├── 1711921387282.0.4403753686035081.test01.jpg
-│       │   ├── 1711921460055.0.14761957134999637.test01.jpg
-│       │   ├── 1711921771725.0.3953006274793571.test01.jpg
-│       │   ├── 1711922412880.0.5196972623340226.test01.jpg
-│       │   ├── 1711922600981.0.20889655540066676.test01.jpg
-│       │   ├── 1711922871807.0.8625919591251148.test01.jpg
-│       │   ├── 1711922961788.0.1423453873169951.test01.jpg
-│       │   ├── 1711922994310.0.7585384851858257.test01.jpg
-│       │   └── 1711923166852.0.49640091079998583.test01.jpg
 │       ├── router.js
 │       ├── routes
 │       │   ├── authRoutes.js
@@ -90,10 +77,9 @@
 │       └── utils
 │           ├── cloudinary.js
 │           ├── imageUtils.js
+│           ├── replaceCloudinaryImage.js
 │           ├── studio.js
 │           └── tags.js
-├── CHANGELOG.md
-├── CONTRIBUTING.md
 ├── database-setup.sh
 ├── docker-compose.example.yml
 ├── docker-compose.yml
@@ -103,6 +89,8 @@
 │   ├── nginx.conf
 │   ├── package.json
 │   ├── package-lock.json
+│   ├── public
+│   │   └── jmdb_ico_Y.svg
 │   ├── src
 │   │   ├── api
 │   │   │   └── apiClient.js
@@ -259,6 +247,7 @@
 │   │   │   │   ├── KindsDropdown.jsx
 │   │   │   │   ├── MovieSearchFiltersStyles.js
 │   │   │   │   ├── TvShowFilter.jsx
+│   │   │   │   ├── VideoSupportFilter.jsx
 │   │   │   │   └── YearDropdown.jsx
 │   │   │   ├── MovieThumbnail
 │   │   │   │   ├── MovieThumbnail.jsx
@@ -351,4 +340,4 @@
 ├── structure.txt
 └── workflow JMDB dev.pdf
 
-72 directories, 280 files
+72 directories, 269 files
