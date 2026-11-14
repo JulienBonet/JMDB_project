@@ -9,6 +9,7 @@ function useMovieSearchPage() {
   const [selectedCountry, setSelectedCountry] = useState('');
   const [selectedYear, setSelectedYear] = useState('');
   const [selectedTvShow, setSelectedTvShow] = useState('all');
+  const [selectedVideoSupport, setSelectedVideoSupport] = useState('all');
   const [orderby, setOrderby] = useState('id');
   const [direction, setDirection] = useState('DESC');
   const [isLoading, setIsLoading] = useState(true);
@@ -27,6 +28,7 @@ function useMovieSearchPage() {
         country: selectedCountry,
         year: selectedYear,
         tvshow: selectedTvShow,
+        videoSupport: selectedVideoSupport,
         orderby,
         direction,
       });
@@ -42,7 +44,16 @@ function useMovieSearchPage() {
 
   useEffect(() => {
     fetchMovies();
-  }, [search, selectedKind, selectedCountry, selectedYear, selectedTvShow, orderby, direction]);
+  }, [
+    search,
+    selectedKind,
+    selectedCountry,
+    selectedYear,
+    selectedTvShow,
+    selectedVideoSupport,
+    orderby,
+    direction,
+  ]);
 
   // ------------------------
   // Handlers UI
@@ -75,6 +86,7 @@ function useMovieSearchPage() {
     setSelectedCountry('');
     setSelectedYear('');
     setSelectedTvShow('all');
+    setSelectedVideoSupport('all');
     setOrderby('id');
     setDirection('DESC');
   };
@@ -102,9 +114,11 @@ function useMovieSearchPage() {
     selectedCountry,
     selectedYear,
     selectedTvShow,
+    selectedVideoSupport,
     isLoading,
 
     setSelectedTvShow,
+    setSelectedVideoSupport,
 
     handleTyping,
     handleKindChange,

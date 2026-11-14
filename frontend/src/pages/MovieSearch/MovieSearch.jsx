@@ -18,6 +18,7 @@ import YearDropdown from '../../components/MovieSearchFilters/YearDropdown';
 import CountryDropdown from '../../components/MovieSearchFilters/CountryDropdown';
 import KindsDropdown from '../../components/MovieSearchFilters/KindsDropdown';
 import TvShowFilter from '../../components/MovieSearchFilters/TvShowFilter';
+import VideoSupportFilter from '../../components/MovieSearchFilters/VideoSupportFilter';
 import MovieThumbnail from '../../components/MovieThumbnail/MovieThumbnail';
 import MovieCount from '../../components/MovieCount/MovieCount';
 import ToggleSortedButton from '../../components/ToggleSortedBtn/ToggleSortedButton';
@@ -35,9 +36,11 @@ function MovieSearch() {
     selectedCountry,
     selectedYear,
     selectedTvShow,
+    selectedVideoSupport,
     isLoading,
 
     setSelectedTvShow,
+    setSelectedVideoSupport,
 
     handleTyping,
     handleKindChange,
@@ -283,6 +286,8 @@ function MovieSearch() {
               />
 
               <TvShowFilter value={selectedTvShow} onChange={setSelectedTvShow} />
+
+              <VideoSupportFilter value={selectedVideoSupport} onChange={setSelectedVideoSupport} />
 
               <ToggleSortedButton
                 active={movies.length > 0}

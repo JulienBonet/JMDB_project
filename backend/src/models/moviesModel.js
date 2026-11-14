@@ -196,6 +196,7 @@ const findFilteredMovies = async ({
   country,
   year,
   tvshow,
+  videoSupport,
   orderby,
   direction,
   isAdmin,
@@ -240,6 +241,14 @@ const findFilteredMovies = async ({
   if (tvshow === '0' || tvshow === '1') {
     sql += ' AND m.isTvShow = ?';
     params.push(tvshow);
+  }
+
+  if (videoSupport === 'dvd') {
+    sql += ' AND m.videoSupport IN (?, ?)';
+    params.push('DVD original', 'DVD R/RW');
+  } else if (videoSupport === 'multimedia') {
+    sql += ' AND m.videoSupport = ?';
+    params.push('Fichier multimédia');
   }
 
   // 🛡 Orderby whitelist
