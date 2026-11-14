@@ -14,7 +14,6 @@ import {
   getTmdbTrailer,
   getTmdbCover,
 } from '../services/tmdbService';
-import { updateMovieImageFromUrl } from '../services/movieService';
 
 countries.registerLocale(frLocale);
 const CLOUDINARY_BASE_URL = import.meta.env.VITE_CLOUDINARY_BASE_URL;
@@ -609,33 +608,41 @@ const refetchTrailer = async (idTheMovieDb, { setMovieData, setTrailerMessage })
 // FETCH COVER
 // ------------------
 
-const refetchMovieCoverFromTMDB = async (
-  idTheMovieDb,
-  { movieId, setImage, setShowImageButton }
-) => {
+const refetchMovieCoverFromTMDB = async (idTheMovieDb, { handleCoverFileSelection }) => {
   const [mediaType, movieIdTMDB] = idTheMovieDb.split('/');
 
   try {
-    // fetch poster_path depuis TMDB
-    const moviefetchData = await getTmdbCover(mediaType, movieIdTMDB);
+    // Récupérer les informations de l'affiche depuis TMDB
+    const movieFetchData = await getTmdbCover(mediaType, movieIdTMDB);
 
-    if (!moviefetchData.poster_path) return;
-
-    const posterUrl = `https://image.tmdb.org/t/p/original${moviefetchData.poster_path}`;
-
-    // envoyer au backend avec ID interne
-    const data = await updateMovieImageFromUrl(movieId, posterUrl);
-
-    if (!data.movie) {
-      console.error('Film non trouvé ou backend ne renvoie pas de movie');
-      return;
+    if (!movieFetchData?.poster_path) {
+      console.warn('Aucune affiche disponible sur TMDB');
+      return null;
     }
 
-    setImage(getImageUrl(data.movie.cover));
-    setShowImageButton(false);
-    console.info('✅ Image mise à jour :', data.movie.cover);
+    const posterUrl = `https://image.tmdb.org/t/p/original${movieFetchData.poster_path}`;
+
+    // Télécharger l'image
+    const response = await fetch(posterUrl);
+
+    if (!response.ok) {
+      throw new Error(`Erreur téléchargement image TMDB : ${response.status}`);
+    }
+
+    const blob = await response.blob();
+
+    // Convertir l'image en fichier exploitable par l'upload existant
+    const file = new File([blob], `tmdb-cover-${movieIdTMDB}.jpg`, {
+      type: blob.type || 'image/jpeg',
+    });
+
+    // Prévisualiser sans modifier SQL ni Cloudinary
+    handleCoverFileSelection(file);
+
+    return file;
   } catch (error) {
     console.error('Erreur lors de la récupération de la cover TMDB :', error);
+    return null;
   }
 };
 
