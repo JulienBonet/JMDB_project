@@ -16,12 +16,6 @@ import {
 } from '../services/tmdbService';
 
 countries.registerLocale(frLocale);
-const CLOUDINARY_BASE_URL = import.meta.env.VITE_CLOUDINARY_BASE_URL;
-
-const getImageUrl = (publicId) => {
-  if (!publicId) return '00_cover_default.jpg';
-  return `${CLOUDINARY_BASE_URL}/${publicId}`;
-};
 
 // -----------------------------------------------------------
 // Fonction qui récupère les données du film depuis le backend
