@@ -11,6 +11,8 @@ import webIco from '../../assets/ico/web_ico.png';
 function FocusCard({ selectedFocus, origin }) {
   if (!selectedFocus) return null;
 
+  console.info(selectedFocus.pitch);
+
   const CLOUDINARY_BASE_URL = import.meta.env.VITE_CLOUDINARY_BASE_URL;
   const getImageUrl = (image) => {
     if (!image) return `${CLOUDINARY_BASE_URL}/00_jmtb_item_default`;
@@ -122,6 +124,7 @@ function FocusCard({ selectedFocus, origin }) {
           {/* focus pitch */}
           <Typography
             component="p"
+            className="focusCard_Pitch"
             sx={{
               fontFamily: 'var(--font-02)',
               color: 'var(--color-01)',
