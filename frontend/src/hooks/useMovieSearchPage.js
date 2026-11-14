@@ -99,8 +99,8 @@ function useMovieSearchPage() {
   // UPDATE / DELETE MOVIE (modification locale de la liste)
   // --------------------------------------------------------
 
-  const handleUpdateMovie = (updatedMovieData) => {
-    setMovies((prev) => prev.map((m) => (m.id === updatedMovieData.id ? updatedMovieData : m)));
+  const handleUpdateMovie = async () => {
+    await fetchMovies();
   };
 
   const handleDeleteMovie = (movieId) => {
