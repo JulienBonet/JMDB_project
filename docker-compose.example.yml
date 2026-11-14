@@ -1,4 +1,4 @@
-# docker-compose.yml
+# docker-compose.yml | EXAMPLE
 services:
   jmdb-mysql:
     image: mysql:8.0
