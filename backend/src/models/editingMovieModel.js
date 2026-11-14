@@ -14,7 +14,7 @@ const insertMovie = (movieData) => {
         movieData.title,
         movieData.altTitle,
         movieData.year,
-        movieData.duration,
+        movieData.duration === '' || movieData.duration == null ? null : movieData.duration,
         movieData.cover,
         movieData.trailer,
         movieData.pitch,
