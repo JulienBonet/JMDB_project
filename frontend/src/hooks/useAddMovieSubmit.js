@@ -23,8 +23,18 @@ export function useAddMovieSubmit({
   const handleFormSubmit = async (event) => {
     event.preventDefault();
 
+    // verification titre
     if (!movie.title) {
       toast.warn('Merci de saisir un titre');
+      return;
+    }
+
+    // vérification date
+    const currentYear = new Date().getFullYear();
+    const year = Number(movie.year);
+
+    if (movie.year === '' || !Number.isInteger(year) || year < 1890 || year > currentYear) {
+      toast.warn(`Merci de saisir une année comprise entre 1890 et ${currentYear}`);
       return;
     }
 
@@ -35,6 +45,7 @@ export function useAddMovieSubmit({
 
       const bodyData = {
         ...movie,
+        year,
         vostfr: version === 'VOSTFR' ? 1 : 0,
         multi: version === 'MULTI' ? 1 : 0,
         isTvShow: movie.isTvShow ? 1 : 0,

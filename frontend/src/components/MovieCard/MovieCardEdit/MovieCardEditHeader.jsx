@@ -258,6 +258,11 @@ function MovieCardEditHeader({
           onChange={(e) => handleChange(e)}
           fullWidth
           type="number"
+          inputProps={{
+            min: 1890,
+            max: new Date().getFullYear(),
+            step: 1,
+          }}
           sx={textFieldSx}
         />
 
