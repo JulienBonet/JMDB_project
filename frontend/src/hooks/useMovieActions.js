@@ -93,7 +93,7 @@ export function useMovieActions({
         countries: selectedCountries.map((country) => country.id),
         tags: selectedTags.map((tag) => tag.id),
         focus: selectedFocus.map((item) => item.id),
-        isTvShow: movieData.isTvShow,
+        isTvShow: Number(movieData.isTvShow) === 1 ? 1 : 0,
         tvSeasons: movieData.tvSeasons || null,
         nbTvEpisodes: movieData.nbTvEpisodes || null,
         episodeDuration: movieData.episodeDuration || null,
