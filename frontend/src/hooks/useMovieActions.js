@@ -38,6 +38,27 @@ export function useMovieActions({
   };
 
   const handleUpdateMovie = async () => {
+    // verification titre
+    if (!movieData.title) {
+      toast.warn('Merci de saisir un titre');
+      return;
+    }
+
+    // verification date
+    const currentYear = new Date().getFullYear();
+    const year = Number(movieData.year);
+
+    if (
+      movieData.year === '' ||
+      movieData.year == null ||
+      !Number.isInteger(year) ||
+      year < 1890 ||
+      year > currentYear
+    ) {
+      toast.warn(`Merci de saisir une année comprise entre 1890 et ${currentYear}`);
+      return;
+    }
+
     setIsConfirmUpdateOpen(false);
     setIsUpdating(true);
 
@@ -52,7 +73,7 @@ export function useMovieActions({
       const payload = {
         title: movieData.title,
         altTitle: movieData.altTitle,
-        year: movieData.year,
+        year,
         duration: movieData.duration || null,
         trailer: movieData.trailer,
         story: movieData.story,

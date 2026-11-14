@@ -167,10 +167,16 @@ function AddMovieMainInfoSection({
           {/* movie year */}
           <TextField
             name="year"
+            type="number"
             value={movie.year}
             onChange={handleInputChange}
             label="Année"
             variant="outlined"
+            inputProps={{
+              min: 1890,
+              max: new Date().getFullYear(),
+              step: 1,
+            }}
             sx={{ flexGrow: 1 }}
           />
 
