@@ -55,6 +55,7 @@ export const searchMovies = async ({
   country = '',
   year = '',
   tvshow = 'all',
+  videoSupport = 'all',
   orderby = 'id',
   direction = 'DESC',
 }) => {
@@ -67,6 +68,10 @@ export const searchMovies = async ({
 
   if (tvshow !== 'all') {
     params.append('tvshow', tvshow === 'movies' ? 0 : 1);
+  }
+
+  if (videoSupport !== 'all') {
+    params.append('videoSupport', videoSupport);
   }
 
   params.append('orderby', orderby);

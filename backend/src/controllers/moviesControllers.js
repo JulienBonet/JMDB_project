@@ -284,6 +284,7 @@ const getFilteredMovies = async (req, res, next) => {
       country = '',
       year = '',
       tvshow,
+      videoSupport = 'all',
       orderby = 'title',
       direction = 'ASC',
     } = req.query;
@@ -294,6 +295,7 @@ const getFilteredMovies = async (req, res, next) => {
       country,
       year,
       tvshow,
+      videoSupport,
       orderby,
       direction,
       isAdmin,
