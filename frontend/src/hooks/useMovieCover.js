@@ -13,32 +13,48 @@ export function useMovieCover({ movie, isModify, getImageUrl }) {
 
     const originalImageUrl = getImageUrl(movie.cover);
 
-    if (image === originalImageUrl) {
-      setShowUploadButton(true);
-    } else {
-      setShowUploadButton(false);
-    }
+    setShowUploadButton(image === originalImageUrl);
   }, [isModify, image, movie.cover, getImageUrl]);
 
-  const handleCoverUpload = (event) => {
-    const file = event.target.files[0];
+  // Prépare une image locale ou distante sans l'enregistrer
+  const handleCoverFileSelection = (file) => {
+    if (!file) return;
+
     const newImageUrl = URL.createObjectURL(file);
+
+    const dataTransfer = new DataTransfer();
+    dataTransfer.items.add(file);
+
+    if (fileCoverRef.current) {
+      fileCoverRef.current.files = dataTransfer.files;
+    }
 
     setImage(newImageUrl);
     setShowUploadButton(false);
+
+    return newImageUrl;
+  };
+
+  const handleCoverUpload = (event) => {
+    const file = event.target.files[0];
+    handleCoverFileSelection(file);
   };
 
   const handleUploadClick = () => {
-    fileCoverRef.current.click();
+    fileCoverRef.current?.click();
   };
 
   const handleResetImage = () => {
+    if (fileCoverRef.current) {
+      fileCoverRef.current.value = '';
+    }
+
     setImage(getImageUrl(movie.cover));
     setShowUploadButton(true);
   };
 
   const handleUpdateImage = async () => {
-    const file = fileCoverRef.current.files[0];
+    const file = fileCoverRef.current?.files[0];
 
     if (!file) return null;
 
@@ -57,6 +73,7 @@ export function useMovieCover({ movie, isModify, getImageUrl }) {
     setShowImageButton,
     fileCoverRef,
     handleCoverUpload,
+    handleCoverFileSelection,
     handleUploadClick,
     handleResetImage,
     handleUpdateImage,

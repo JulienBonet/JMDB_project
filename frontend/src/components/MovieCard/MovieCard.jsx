@@ -206,6 +206,7 @@ function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, on
     setShowImageButton,
     fileCoverRef,
     handleCoverUpload,
+    handleCoverFileSelection,
     handleUploadClick,
     handleResetImage,
     handleUpdateImage,
@@ -322,15 +323,13 @@ function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, on
 
   const handleSyncFromTMDB = async () => {
     const confirmReplace = window.confirm(
-      "Êtes-vous sûr de vouloir remplacer définitivement l'image ?"
+      "Voulez-vous utiliser l'affiche TMDB ? Vous pourrez encore réinitialiser ce choix avant la sauvegarde."
     );
 
     if (!confirmReplace) return;
 
     await refetchMovieCoverFromTMDB(idTheMovieDb, {
-      movieId: movieData.id,
-      setImage,
-      setShowImageButton,
+      handleCoverFileSelection,
     });
   };
 
