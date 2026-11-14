@@ -124,7 +124,7 @@ function MovieCard({ movie, origin, closeModal, onUpdateMovie, onDeleteMovie, on
   });
 
   const { idTheMovieDb } = movie;
-  const isTvShow = movieData.isTvShow === 1;
+  const isTvShow = Number(movieData.isTvShow) === 1;
   const tvSeason = movieData.tvSeasons;
   const safeValue = (val) => val ?? '';
 
