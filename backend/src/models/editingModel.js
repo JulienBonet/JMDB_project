@@ -261,7 +261,13 @@ const findTagByNameInBackend = async (name) => {
 };
 
 const insertTag = async (name) => {
-  const [result] = await db.query('INSERT INTO tag (name) VALUES (?);', [name]);
+  const [result] = await db.query(
+    `INSERT INTO tag (name)
+     VALUES (?)
+     ON DUPLICATE KEY UPDATE id = LAST_INSERT_ID(id);`,
+    [name]
+  );
+
   return result.insertId;
 };
 
