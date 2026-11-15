@@ -27,7 +27,7 @@ export const getArtistMoviesSorted = async (type, id, sort) => {
 
 export const deleteArtist = async (type, id) => {
   const endpoints = {
-    directors: `/api/director/delete/${id}`,
+    directors: `/api/director/${id}`,
     casting: `/api/casting/${id}`,
     screenwriters: `/api/screenwriter/${id}`,
     music: `/api/compositor/${id}`,
@@ -38,6 +38,11 @@ export const deleteArtist = async (type, id) => {
 
   return response.status;
 };
+
+// export const deleteArtist = async (type, id) => {
+//   const response = await api.delete(`/api/${type}/${id}`);
+//   return response.status;
+// };
 
 export const getRandomArtistFocus = async (type) => {
   const response = await api.get(`/api/${type}/focus/random`);

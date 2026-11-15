@@ -21,7 +21,7 @@ const safeUpload = (req, res, next) => {
 router.post('/director', editingController.addDirector);
 router.put('/director/:id', editingController.editingDirector);
 router.put('/director/:id/image', safeUpload, editingController.uploadDirectorImage);
-router.delete('/director/delete/:id', editingController.eraseDirector);
+router.delete('/director/:id', editingController.eraseDirector);
 
 // ---------------------- CASTING ----------------------
 router.post('/casting', editingController.addCasting);
