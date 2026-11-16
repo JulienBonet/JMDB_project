@@ -7,7 +7,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useAuth } from '../../../Context/AuthContext';
 
 export default function NavBarBurger() {
-  const { isAdmin } = useAuth();
+  const { isAdmin, logout } = useAuth();
   const navigate = useNavigate();
 
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -18,10 +18,8 @@ export default function NavBarBurger() {
 
   // Fonction logout
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('role');
-    localStorage.removeItem('user');
-    navigate('/login'); // redirection vers login
+    logout();
+    navigate('/login');
   };
 
   return (

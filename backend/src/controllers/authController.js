@@ -14,7 +14,6 @@ const login = async (req, res) => {
 
   if (!user) return res.status(401).json({ error: 'Invalid credentials' });
 
-  // IMPORTANT : on utilise user.password_hash
   if (!user.password_hash) return res.status(400).json({ error: 'User has no password set' });
 
   const valid = await bcrypt.compare(password, user.password_hash);
@@ -35,7 +34,6 @@ const register = async (req, res) => {
   const { name, password, isAdmin } = req.body;
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  // Assure-toi que createUser insère bien dans password_hash
   await createUser(name, hashedPassword, isAdmin);
 
   return res.status(201).json({ message: 'User created' });
@@ -48,7 +46,6 @@ const changePassword = async (req, res) => {
   const { password } = req.body;
   const hashed = await bcrypt.hash(password, 10);
 
-  // Assure-toi que updatePassword met à jour password_hash
   await updatePassword(req.params.id, hashed);
 
   return res.json({ message: 'Password updated' });

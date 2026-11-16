@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../Context/AuthContext';
 import { Box, Button, useMediaQuery } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -7,6 +8,7 @@ import NavBar from './NavBar/NavBar';
 import NavBarBurger from './NavBarBurger/NavBarBurger';
 
 function Header() {
+  const { logout } = useAuth();
   const navigate = useNavigate();
 
   const isDesktop = useMediaQuery('(min-width:1280px)');
@@ -16,9 +18,7 @@ function Header() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('role');
-    localStorage.removeItem('user');
+    logout();
     navigate('/login');
   };
 
