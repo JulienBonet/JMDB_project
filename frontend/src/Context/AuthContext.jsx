@@ -1,15 +1,71 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable no-param-reassign */
-/* eslint-disable react/jsx-no-constructed-context-values */
-import { createContext, useContext, useState, useEffect } from 'react';
-import axios from 'axios';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import api from '../api/apiClient';
 
 const AuthContext = createContext();
 
+// -------------------------------------------------------
+// DÉCODAGE DU JWT
+// -------------------------------------------------------
+const decodeJwtPayload = (token) => {
+  try {
+    const base64Url = token.split('.')[1];
+    if (!base64Url) return null;
+
+    const base64 = base64Url
+      .replace(/-/g, '+')
+      .replace(/_/g, '/')
+      .padEnd(Math.ceil(base64Url.length / 4) * 4, '=');
+
+    const binary = atob(base64);
+    const bytes = Uint8Array.from(binary, (char) => char.charCodeAt(0));
+
+    return JSON.parse(new TextDecoder().decode(bytes));
+  } catch {
+    return null;
+  }
+};
+
+// -------------------------------------------------------
+// RÉCUPÉRATION DE LA DATE D'EXPIRATION
+// -------------------------------------------------------
+const getTokenExpiration = (token) => {
+  const payload = decodeJwtPayload(token);
+
+  return Number.isFinite(payload?.exp) ? payload.exp * 1000 : null;
+};
+
 export function AuthProvider({ children }) {
-  const [token, setToken] = useState(localStorage.getItem('token') || null);
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')) || null);
+  // -------------------------------------------------------
+  // INITIALISATION : VÉRIFICATION DU TOKEN STOCKÉ
+  // -------------------------------------------------------
+  const [token, setToken] = useState(() => {
+    const storedToken = localStorage.getItem('token');
+
+    if (!storedToken) {
+      localStorage.removeItem('user');
+      return null;
+    }
+
+    const expiration = getTokenExpiration(storedToken);
+
+    if (!expiration || expiration <= Date.now()) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      return null;
+    }
+
+    return storedToken;
+  });
+
+  const [user, setUser] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem('user')) || null;
+    } catch {
+      localStorage.removeItem('user');
+      return null;
+    }
+  });
+
   const [authReady, setAuthReady] = useState(false);
 
   const isAuthenticated = !!token;
@@ -22,9 +78,11 @@ export function AuthProvider({ children }) {
     const response = await api.post('/api/auth/login', { name, password });
 
     const receivedToken = response.data.token;
+    const payload = decodeJwtPayload(receivedToken);
 
-    // Décoder le token pour récupérer infos utilisateur
-    const payload = JSON.parse(atob(receivedToken.split('.')[1]));
+    if (!payload?.exp || payload.exp * 1000 <= Date.now()) {
+      throw new Error('Token JWT invalide ou expiré');
+    }
 
     const userData = {
       id: payload.id,
@@ -32,7 +90,6 @@ export function AuthProvider({ children }) {
       isAdmin: payload.isAdmin,
     };
 
-    // Stockage
     localStorage.setItem('token', receivedToken);
     localStorage.setItem('user', JSON.stringify(userData));
 
@@ -43,34 +100,66 @@ export function AuthProvider({ children }) {
   // -------------------------------------------------------
   // LOGOUT
   // -------------------------------------------------------
-  const logout = () => {
+  const logout = useCallback(() => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
 
     setToken(null);
     setUser(null);
-  };
+  }, []);
 
   // -------------------------------------------------------
-  // Axios Interceptor : ajoute le token automatiquement
+  // DÉCONNEXION AUTOMATIQUE À L'EXPIRATION
   // -------------------------------------------------------
   useEffect(() => {
-    const interceptor = axios.interceptors.request.use((config) => {
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
-      return config;
-    });
+    if (!token) return undefined;
+
+    const expiration = getTokenExpiration(token);
+
+    if (!expiration || expiration <= Date.now()) {
+      logout();
+      return undefined;
+    }
+
+    const remainingTime = expiration - Date.now();
+
+    const timeoutId = window.setTimeout(logout, remainingTime);
 
     return () => {
-      axios.interceptors.request.eject(interceptor);
+      window.clearTimeout(timeoutId);
     };
-  }, [token]);
+  }, [token, logout]);
 
+  // -------------------------------------------------------
+  // INTERCEPTEUR : GESTION DE L'EXPIRATION VIA L'API
+  // -------------------------------------------------------
+  useEffect(() => {
+    const interceptor = api.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        if (error.response?.status === 401 && error.response?.data?.error === 'Token expired') {
+          logout();
+        }
+
+        return Promise.reject(error);
+      }
+    );
+
+    return () => {
+      api.interceptors.response.eject(interceptor);
+    };
+  }, [logout]);
+
+  // -------------------------------------------------------
+  // AUTHENTIFICATION PRÊTE
+  // -------------------------------------------------------
   useEffect(() => {
     setAuthReady(true);
   }, []);
 
+  // -------------------------------------------------------
+  // RETURN
+  // -------------------------------------------------------
   return (
     <AuthContext.Provider
       value={{

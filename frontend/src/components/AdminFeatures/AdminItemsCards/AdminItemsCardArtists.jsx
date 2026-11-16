@@ -98,15 +98,17 @@ function AdminItemsCardArtists({ item, origin, onUpdate, closeModal }) {
       setIsLoading(true);
 
       const hasChanges =
-        name !== item.name ||
-        (isArtistFocus && pitch !== item.pitch) ||
-        (isArtistFocus && wikilink !== item.wikilink) ||
-        (isArtistFocus && imdblink !== item.imdblink) ||
-        (isArtistFocus && senscritiquelink !== item.senscritiquelink) ||
-        (isArtistFocus && websitelink !== item.websitelink) ||
-        (isArtistFocus && birthDate !== item.birthDate) ||
-        (isArtistFocus && deathDate !== item.deathDate) ||
-        (isArtistFocus && isFocus !== item.isFocus);
+        name !== (item.name || '') ||
+        (isArtistFocus &&
+          (pitch !== (item.pitch || '') ||
+            wikilink !== (item.wikilink || '') ||
+            imdblink !== (item.imdblink || '') ||
+            senscritiquelink !== (item.senscritiquelink || '') ||
+            websitelink !== (item.websitelink || '') ||
+            birthDate !== String(item.birthDate || '') ||
+            normalizedDeathDate !== String(item.deathDate || '') ||
+            (Number(isFocus) === 1 || isFocus === true) !==
+              (Number(item.isFocus) === 1 || item.isFocus === true)));
 
       if (hasChanges) {
         const data = { name };
