@@ -12,10 +12,6 @@
     "format:check": "prettier --check \"backend/**/*.{js,jsx}\" \"frontend/**/*.{js,jsx}\"",
     "start": "node backend/index.js",
     "preview": "vite preview",
-    "db:migrate": "node backend/migrate.js",
-    "db:seed": "node backend/seed.js",
-    "db:import-tags": "node backend/database/import_tags_from_tmdb.js",
-    "db:import-tags:reset": "node backend/database/import_tags_from_tmdb.js --reset",
     "test": "jest"
   },
   "dependencies": {
