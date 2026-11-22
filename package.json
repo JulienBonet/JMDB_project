@@ -1,5 +1,5 @@
 {
-  "name": "monolythe-app",
+  "name": "jmdb",
   "version": "1.0.0",
   "main": "backend/index.js",
   "scripts": {
@@ -7,6 +7,9 @@
     "server": "nodemon --cwd backend index.js",
     "client": "vite --host",
     "build": "npm --prefix frontend run build",
+    "lint": "eslint backend frontend",
+    "lint:fix": "eslint backend frontend --fix",
+    "format:check": "prettier --check \"backend/**/*.{js,jsx}\" \"frontend/**/*.{js,jsx}\"",
     "start": "node backend/index.js",
     "preview": "vite preview",
     "db:migrate": "node backend/migrate.js",

@@ -1,6 +1,8 @@
 const router = require('express').Router();
 
+const auth = require('../middlewares/authMiddleware');
 const musicController = require('../controllers/musicControllers');
+router.use(auth);
 
 router.get('/music', musicController.getAllArtistAsc);
 router.get('/music/sorted_z', musicController.getAllArtistDesc);

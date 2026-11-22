@@ -1,23 +1,21 @@
 import api from '../api/apiClient';
 
-export const getFavoriteStatus = async (userId, movieId) => {
-  const response = await api.get(`/api/favorites/${userId}/${movieId}`);
+export const getFavoriteStatus = async (movieId) => {
+  const response = await api.get(`/api/favorites/${movieId}`);
   return response.data;
 };
 
-export const addFavorite = async (userId, movieId) => {
+export const addFavorite = async (movieId) => {
   const response = await api.post('/api/favorites', {
-    userId,
     movieId,
   });
 
   return response.data;
 };
 
-export const removeFavorite = async (userId, movieId) => {
+export const removeFavorite = async (movieId) => {
   const response = await api.delete('/api/favorites', {
     data: {
-      userId,
       movieId,
     },
   });

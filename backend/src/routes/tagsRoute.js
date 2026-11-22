@@ -1,6 +1,8 @@
 const router = require('express').Router();
 
+const auth = require('../middlewares/authMiddleware');
 const tagsController = require('../controllers/tagsControllers');
+router.use(auth);
 
 router.get('/tags', tagsController.getAllTagAsc);
 router.get('/tags/sorted_z', tagsController.getAllTagDesc);

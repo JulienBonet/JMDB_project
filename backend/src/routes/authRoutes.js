@@ -1,5 +1,3 @@
-// backend/src/routes/authRoutes.js
-
 const router = require('express').Router();
 const authController = require('../controllers/authController');
 const auth = require('../middlewares/authMiddleware');
@@ -9,8 +7,10 @@ const adminOnly = require('../middlewares/adminMiddleware');
 router.post('/login', authController.login);
 
 // Admin-only routes
-router.post('/user', auth, adminOnly, authController.register);
-router.patch('/user/:id/password', auth, adminOnly, authController.changePassword);
-router.delete('/user/:id', auth, adminOnly, authController.deleteUser);
+router.use('/user', auth, adminOnly);
+
+router.post('/user', authController.register);
+router.patch('/user/:id/password', authController.changePassword);
+router.delete('/user/:id', authController.deleteUser);
 
 module.exports = router;
