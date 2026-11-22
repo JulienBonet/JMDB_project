@@ -2,8 +2,20 @@
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
+const helmet = require('helmet');
 
 const app = express();
+
+// Helmet
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        imgSrc: ["'self'", 'data:', 'https://image.tmdb.org'],
+      },
+    },
+  })
+);
 
 // CORS
 app.use(
