@@ -39,9 +39,12 @@ app.get('/', (req, res) => {
 
 // Error handler
 app.use((err, req, res, next) => {
-  console.error('🔥 Server Error:', err.message);
-  console.error('➡️ On route:', req.method, req.url);
-  res.status(500).json({ error: err.message });
+  console.error('Server Error:', err);
+  console.error('On route:', req.method, req.originalUrl);
+
+  res.status(500).json({
+    error: 'Internal server error',
+  });
 });
 
 module.exports = app;
