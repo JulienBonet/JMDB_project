@@ -2,7 +2,6 @@
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
-const authRoutes = require('./routes/authRoutes');
 
 const app = express();
 
@@ -24,9 +23,6 @@ app.use(
 // Parsing
 app.use(express.json({ limit: '30mb' }));
 app.use(express.urlencoded({ extended: false, limit: '30mb', parameterLimit: 50000 }));
-
-// Auth routes
-app.use('/auth', authRoutes);
 
 // Import des routes API
 const router = require('./router');

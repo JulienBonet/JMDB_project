@@ -1,18 +1,19 @@
 const router = require('express').Router();
 const moviesController = require('../controllers/moviesControllers');
-const authOptional = require('../middlewares/authOptional');
+const auth = require('../middlewares/authMiddleware');
+router.use(auth);
 
 // ⭐ ROUTE PRINCIPALE DES FILTRES
-router.get('/movies/search-filter', authOptional, moviesController.getFilteredMovies);
+router.get('/movies/search-filter', moviesController.getFilteredMovies);
 
 // ⭐ LISTE COMPLÈTE (non filtrée)
-router.get('/movies', authOptional, moviesController.getAll);
+router.get('/movies', moviesController.getAll);
 
 // ⭐ FILMS PAR NOM
 router.get('/movies/name/:name', moviesController.getByName);
 
 // ⭐ FILMS PAR ID
-router.get('/movies/:id', authOptional, moviesController.getById);
+router.get('/movies/:id', moviesController.getById);
 
 // ⭐ TRI DIVERS
 router.get('/movies/sorted/0', moviesController.getAllSorted0);

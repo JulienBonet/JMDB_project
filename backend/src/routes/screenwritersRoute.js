@@ -1,6 +1,8 @@
 const router = require('express').Router();
 
+const auth = require('../middlewares/authMiddleware');
 const screewritersController = require('../controllers/screenwritersControllers');
+router.use(auth);
 
 router.get('/screenwriters', screewritersController.getAllArtistAsc);
 router.get('/screenwriters/sorted_z', screewritersController.getAllArtistDesc);

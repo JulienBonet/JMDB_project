@@ -28,6 +28,12 @@ const favoriteRouter = require('./routes/favoriteRoutes');
 const healthRouter = require('./routes/healthRoute');
 
 // Apply routes
+
+// Routes publiques
+router.use('/auth', authRouter);
+router.use(healthRouter);
+
+// Routes métier
 router.use(moviesRouter);
 router.use(kindsRouter);
 router.use(directorsRouter);
@@ -44,9 +50,7 @@ router.use(purgeRouter);
 router.use(userRouter);
 router.use(tmdbRouter);
 router.use('/', exportStatsRouter);
-router.use('/auth', authRouter);
 router.use(favoriteRouter);
-router.use(healthRouter);
 
 /* ************************************************************************* */
 

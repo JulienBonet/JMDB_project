@@ -1,6 +1,8 @@
 const router = require('express').Router();
 
+const auth = require('../middlewares/authMiddleware');
 const directorsController = require('../controllers/directorsControllers');
+router.use(auth);
 
 router.get('/directors', directorsController.getAllArtistAsc);
 router.get('/directors/sorted_z', directorsController.getAllArtistDesc);

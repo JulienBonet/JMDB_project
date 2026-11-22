@@ -3,6 +3,8 @@ const express = require('express');
 
 const router = express.Router();
 
+const auth = require('../middlewares/authMiddleware');
+const adminOnly = require('../middlewares/adminMiddleware');
 const {
   fetchMovieById,
   fetchTmdbData,
@@ -13,6 +15,7 @@ const {
   searchTMDB,
   fetchMovieDetails,
 } = require('../controllers/tmdbController');
+router.use(auth, adminOnly);
 
 // TMDB search
 router.get('/tmdb/search', searchTMDB);
