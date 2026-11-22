@@ -2,9 +2,10 @@ const router = require('express').Router();
 const authController = require('../controllers/authController');
 const auth = require('../middlewares/authMiddleware');
 const adminOnly = require('../middlewares/adminMiddleware');
+const { loginLimiter } = require('../middlewares/rateLimitMiddleware');
 
 // Public route
-router.post('/login', authController.login);
+router.post('/login', loginLimiter, authController.login);
 
 // Admin-only routes
 router.use('/user', auth, adminOnly);

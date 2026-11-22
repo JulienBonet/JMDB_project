@@ -3,6 +3,7 @@ const express = require('express');
 const path = require('path');
 const cors = require('cors');
 const helmet = require('helmet');
+const { apiLimiter } = require('./middlewares/rateLimitMiddleware');
 
 const app = express();
 
@@ -39,6 +40,7 @@ app.use(express.urlencoded({ extended: false, limit: '30mb', parameterLimit: 500
 // Import des routes API
 const router = require('./router');
 
+app.use('/api', apiLimiter);
 app.use('/api', router);
 
 // Build React
