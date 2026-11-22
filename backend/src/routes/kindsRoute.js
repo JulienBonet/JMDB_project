@@ -1,6 +1,8 @@
 const router = require('express').Router();
 
+const auth = require('../middlewares/authMiddleware');
 const kindsController = require('../controllers/kindsControllers');
+router.use(auth);
 
 router.get('/kinds', kindsController.getAllKindsNameAsc);
 router.get('/kinds/sorted_id', kindsController.getAllKindsIdDesc);

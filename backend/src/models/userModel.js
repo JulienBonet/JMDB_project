@@ -21,7 +21,7 @@ const findByName = (name) => {
 };
 
 const findAllByIdDesc = () => {
-  return db.query('SELECT * FROM user ORDER BY id DESC');
+  return db.query('SELECT id, name, isAdmin FROM user ORDER BY id DESC');
 };
 
 module.exports = {

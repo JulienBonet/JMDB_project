@@ -9,7 +9,7 @@ export function useFavorites(userId, movieId) {
 
     const fetchFavoriteStatus = async () => {
       try {
-        const data = await getFavoriteStatus(userId, movieId);
+        const data = await getFavoriteStatus(movieId);
         setIsFavorite(data.isFavorite);
       } catch (err) {
         console.error('Erreur récupération favori', err);
@@ -23,12 +23,12 @@ export function useFavorites(userId, movieId) {
     if (!userId) return null;
 
     if (isFavorite) {
-      await removeFavorite(userId, movieId);
+      await removeFavorite(movieId);
       setIsFavorite(false);
       return false;
     }
 
-    await addFavorite(userId, movieId);
+    await addFavorite(movieId);
     setIsFavorite(true);
     return true;
   };

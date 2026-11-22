@@ -1,5 +1,8 @@
 const router = require('express').Router();
+
+const auth = require('../middlewares/authMiddleware');
 const focusController = require('../controllers/focusControllers');
+router.use(auth);
 
 // -------------------------------------------------
 // FOCUS LIST

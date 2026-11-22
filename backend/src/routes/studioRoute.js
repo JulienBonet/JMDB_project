@@ -1,6 +1,8 @@
 const router = require('express').Router();
 
+const auth = require('../middlewares/authMiddleware');
 const studioController = require('../controllers/studioControllers');
+router.use(auth);
 
 router.get('/studio', studioController.getAllArtistAsc);
 router.get('/studio/sorted_z', studioController.getAllArtistDesc);

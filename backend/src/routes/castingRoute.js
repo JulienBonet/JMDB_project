@@ -1,6 +1,8 @@
 const router = require('express').Router();
 
+const auth = require('../middlewares/authMiddleware');
 const castingController = require('../controllers/castingControllers');
+router.use(auth);
 
 router.get('/casting', castingController.getAllArtistAsc);
 router.get('/casting/sorted_z', castingController.getAllArtistDesc);

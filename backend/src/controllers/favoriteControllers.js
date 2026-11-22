@@ -2,7 +2,9 @@ const favoriteModel = require('../models/favoriteModel');
 
 const addFavorite = async (req, res, next) => {
   try {
-    const { userId, movieId } = req.body;
+    const { movieId } = req.body;
+    const userId = req.user.id;
+
     await favoriteModel.insertFavorite(userId, movieId);
     res.status(201).json({ message: 'Favori ajouté' });
   } catch (error) {
@@ -12,7 +14,9 @@ const addFavorite = async (req, res, next) => {
 
 const unFavorite = async (req, res, next) => {
   try {
-    const { userId, movieId } = req.body;
+    const { movieId } = req.body;
+    const userId = req.user.id;
+
     await favoriteModel.removeFavorite(userId, movieId);
     res.status(200).json({ message: 'Favori supprimé' });
   } catch (error) {
@@ -54,15 +58,19 @@ const getFavoritesYearDesc = async (req, res) => {
   const [data] = await favoriteModel.findFavoritesYearDesc(userId);
   res.json(data);
 };
+
 const isFavorite = async (req, res, next) => {
   try {
-    const { userId, movieId } = req.params;
+    const { movieId } = req.params;
+    const userId = req.user.id;
+
     const [[result]] = await favoriteModel.isFavorite(userId, movieId);
     res.status(200).json({ isFavorite: !!result });
   } catch (error) {
     next(error);
   }
 };
+
 module.exports = {
   addFavorite,
   unFavorite,

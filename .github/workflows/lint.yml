@@ -1,4 +1,5 @@
-name: dev
+
+name: CI
 
 on:
   pull_request:
@@ -10,32 +11,27 @@ on:
 
 jobs:
   lint:
-    name: Run linters
+    name: Lint and format check
     runs-on: ubuntu-latest
 
     permissions:
-      checks: write
-      contents: write
+      contents: read
 
     steps:
-      - name: Check out Git repository
-        uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          fetch-depth: 0
+          node-version: 24
+          cache: npm
 
-      - name: Cache dependencies
-        id: cache-nextjob
-        uses: actions/cache@v3
-        with:
-          path: |
-            ./node_modules
-            ./backend/node_modules
-            ./frontend/node_modules
-          key: ${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+      - name: Install dependencies
+        run: npm ci
 
-      - name: Install package dependencies
-        if: steps.cache-nextjob.outputs.cache-hit != 'true'
-        run: npm install
+      - name: Run ESLint
+        run: npm run lint
 
-      - name: Run linters
-        run: npx lint-staged --diff="origin/${GITHUB_BASE_REF}...origin/${GITHUB_HEAD_REF}"
+      - name: Check Prettier formatting
+        run: npm run format:check
