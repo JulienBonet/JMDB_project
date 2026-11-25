@@ -243,9 +243,10 @@ JMDB_project/
 ## 👤 Auteur
 
 **Julien Bonet**
+Développement web Full Stack JavaScript
 
-JMDB est un projet personnel développé et maintenu par mes soins.
+Site professionnel : [julienbonet.fr](https://julienbonet.fr)
 
-- **GitHub :** [JulienBonet](https://github.com/JulienBonet)
-- **Projet :** [JMDB_project](https://github.com/JulienBonet/JMDB_project)
-- **Application :** [jmdb.julienbonet.fr](https://jmdb.julienbonet.fr)
+---
+
+*JMDB — Projet personnel de conception et de développement web full stack.*
