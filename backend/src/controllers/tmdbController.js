@@ -5,7 +5,7 @@
 const fetchTMDB = async (url) => {
   const r = await fetch(url, {
     headers: {
-      Authorization: `Bearer ${process.env.VITE_APP_TMDB_AUTH_TOKEN}`,
+      Authorization: `Bearer ${process.env.TMDB_ACCESS_TOKEN}`,
       Accept: 'application/json',
     },
   });
@@ -132,7 +132,7 @@ const fetchKeywordsFromTMDB = async (req, res) => {
     const response = await fetch(tmdbUrl, {
       headers: {
         Accept: 'application/json',
-        Authorization: `Bearer ${process.env.VITE_APP_TMDB_AUTH_TOKEN}`,
+        Authorization: `Bearer ${process.env.TMDB_ACCESS_TOKEN}`,
       },
     });
 
@@ -174,7 +174,7 @@ const fetchTvSeasons = async (req, res) => {
     const response = await fetch(tmdbUrl, {
       headers: {
         Accept: 'application/json',
-        Authorization: `Bearer ${process.env.VITE_APP_TMDB_AUTH_TOKEN}`,
+        Authorization: `Bearer ${process.env.TMDB_ACCESS_TOKEN}`,
       },
     });
 
